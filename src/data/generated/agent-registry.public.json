@@ -246,7 +246,7 @@
       "department": "Marketing",
       "department_id": "marketing",
       "reports_to": "chief-of-staff",
-      "mission": "Drives brand awareness, demand generation, market positioning, and owns the external company website (lightspeedholdings.com).",
+      "mission": "Drives brand awareness, demand generation, market positioning, and owns the external company website (lightspeedholdings.vercel.app).",
       "tools": [
         "read",
         "edit",
@@ -257,13 +257,13 @@
         "Content Quality Score"
       ],
       "decision_rights": [
-        "Decides and owns: Own the external company website (https://lightspeedholdings.com) including content, UX, SEO, and conversion optimization",
+        "Decides and owns: Own the external company website (https://lightspeedholdings.vercel.app) including content, UX, SEO, and conversion optimization",
         "Decides and owns: Develop marketing strategy and brand positioning",
         "Decides and owns: Drive demand generation and campaign management",
         "Decides and owns: Track marketing ROI and attribution"
       ],
       "responsibilities": [
-        "Own the external company website (https://lightspeedholdings.com) including content, UX, SEO, and conversion optimization.",
+        "Own the external company website (https://lightspeedholdings.vercel.app) including content, UX, SEO, and conversion optimization.",
         "Develop marketing strategy and brand positioning.",
         "Drive demand generation and campaign management.",
         "Track marketing ROI and attribution.",

@@ -43,8 +43,8 @@ from pptx.util import Inches, Pt, Emu
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.dml.color import RGBColor
 
-prs = Presentation()                      # default template opens at 4:3
-prs.slide_width  = Inches(13.333)          # so set 16:9 (720p) explicitly
+prs = Presentation()  # default template opens at 4:3
+prs.slide_width = Inches(13.333)  # so set 16:9 (720p) explicitly
 prs.slide_height = Inches(7.5)
 
 # layout indices for the default template:
@@ -64,7 +64,7 @@ prs.save("review.pptx")
 from pptx.util import Pt
 from pptx.enum.text import PP_ALIGN
 
-slide = prs.slides.add_slide(prs.slide_layouts[5])   # title-only layout
+slide = prs.slides.add_slide(prs.slide_layouts[5])  # title-only layout
 slide.shapes.title.text = "Revenue grew 34% on 22% headcount"
 
 # free-standing text box (not tied to a placeholder)
@@ -72,7 +72,7 @@ tb = slide.shapes.add_textbox(Inches(0.5), Inches(1.5), Inches(12.3), Inches(4.5
 tf = tb.text_frame
 tf.word_wrap = True
 
-p = tf.paragraphs[0]                   # first paragraph exists by default
+p = tf.paragraphs[0]  # first paragraph exists by default
 p.text = "The efficiency story."
 p.alignment = PP_ALIGN.LEFT
 p.runs[0].font.size = Pt(28)
@@ -96,6 +96,7 @@ Notes on text:
 
   ```python
   from pptx.enum.text import MSO_AUTO_SIZE
+
   tf.auto_size = MSO_AUTO_SIZE.NONE
   ```
 
@@ -111,9 +112,10 @@ containing CJK text, set all three slots (`a:latin`, `a:ea`, `a:cs`) via XML:
 ```python
 from pptx.oxml.ns import qn
 
+
 def set_cjk_font(run, font_name):
     """Set Latin (a:latin), East-Asian (a:ea) and complex-script (a:cs) typefaces."""
-    run.font.name = font_name                      # a:latin (python-pptx inserts it in order)
+    run.font.name = font_name  # a:latin (python-pptx inserts it in order)
     rPr = run._r.get_or_add_rPr()
     # a:ea / a:cs aren't exposed by python-pptx, so build them by hand. But a:rPr
     # enforces child order (a:latin, a:ea, a:cs, a:sym, a:hlinkClick, ...); a bare
@@ -131,7 +133,8 @@ def set_cjk_font(run, font_name):
             rPr.insert_element_before(el, *successors[tag])
         el.set("typeface", font_name)
 
-set_cjk_font(p.runs[0], "Noto Sans CJK SC")        # a CJK-capable font present on the render machine
+
+set_cjk_font(p.runs[0], "Noto Sans CJK SC")  # a CJK-capable font present on the render machine
 ```
 
 Choose a font that actually ships CJK glyphs and exists on the machine where
@@ -175,14 +178,15 @@ rect = slide.shapes.add_shape(
     MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), prs.slide_width, prs.slide_height
 )
 rect.fill.solid()
-rect.fill.fore_color.rgb = RGBColor(0x1F, 0x3A, 0x5F)   # deep navy
-rect.line.fill.background()                              # no border
+rect.fill.fore_color.rgb = RGBColor(0x1F, 0x3A, 0x5F)  # deep navy
+rect.line.fill.background()  # no border
 
 # big number
 n = slide.shapes.add_textbox(Inches(1), Inches(1.8), Inches(11), Inches(3))
 n.text_frame.text = "34%"
 r = n.text_frame.paragraphs[0].runs[0]
-r.font.size = Pt(140); r.font.bold = True
+r.font.size = Pt(140)
+r.font.bold = True
 r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
 
 # label under the number
@@ -201,6 +205,7 @@ to make it invisible, or set a color explicitly.
 
 ```python
 from pptx.util import Inches
+
 slide.shapes.add_picture("chart.png", Inches(1), Inches(1.5), Inches(11), Inches(5.5))
 ```
 
@@ -218,8 +223,9 @@ Resample large images before adding them:
 
 ```python
 from PIL import Image
+
 img = Image.open("photo.jpg")
-img.thumbnail((1600, 1600))              # cap the longest side
+img.thumbnail((1600, 1600))  # cap the longest side
 img.save("photo_small.jpg", quality=88, optimize=True)
 slide.shapes.add_picture("photo_small.jpg", Inches(1), Inches(1.5), width=Inches(11))
 ```
@@ -230,8 +236,7 @@ A 4000×3000 photo in a 720p slide bloats the file for zero visual benefit.
 
 ```python
 rows, cols = 4, 3
-tbl = slide.shapes.add_table(rows, cols,
-    Inches(1), Inches(1.5), Inches(11), Inches(4.5)).table
+tbl = slide.shapes.add_table(rows, cols, Inches(1), Inches(1.5), Inches(11), Inches(4.5)).table
 
 # header row
 headers = ["Metric", "Q2", "Q3"]
@@ -268,9 +273,7 @@ data.categories = ["Q1", "Q2", "Q3", "Q4"]
 data.add_series("Revenue ($M)", (3.1, 3.9, 4.6, 5.4))
 
 chart = slide.shapes.add_chart(
-    XL_CHART_TYPE.COLUMN_CLUSTERED,
-    Inches(1), Inches(1.5), Inches(11), Inches(5.5),
-    data
+    XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(1), Inches(1.5), Inches(11), Inches(5.5), data
 ).chart
 
 chart.has_title = True
@@ -283,6 +286,7 @@ To style series colors (Office defaults look generic):
 
 ```python
 from pptx.dml.color import RGBColor
+
 series = chart.series[0]
 fill = series.format.fill
 fill.solid()
@@ -323,9 +327,7 @@ color all work.
 rectangle at the back z-order:
 
 ```python
-bg = slide.shapes.add_shape(
-    MSO_SHAPE.RECTANGLE, 0, 0, prs.slide_width, prs.slide_height
-)
+bg = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, prs.slide_width, prs.slide_height)
 bg.fill.solid()
 bg.fill.fore_color.rgb = RGBColor(0xF7, 0xF5, 0xF0)
 bg.line.fill.background()
@@ -333,7 +335,7 @@ bg.line.fill.background()
 # push it to the back
 spTree = bg._element.getparent()
 spTree.remove(bg._element)
-spTree.insert(2, bg._element)   # 2 skips the layout's nvGrpSpPr + grpSpPr
+spTree.insert(2, bg._element)  # 2 skips the layout's nvGrpSpPr + grpSpPr
 ```
 
 Or edit the master (see `edit.md` → *Editing slide masters*).

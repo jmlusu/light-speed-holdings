@@ -32,25 +32,27 @@ Classify incoming task to correct specialist agent.
 ### Jev Primitives
 ```python
 questions = {
-    "intent": ChoiceQuestion(criteria={
-        "research": "Information gathering, analysis, synthesis, literature review, market research",
-        "coding": "Code generation, refactoring, debugging, code review, architecture, DevOps",
-        "creative": "Writing, design, content creation, brainstorming, marketing, branding",
-        "ops": "Infrastructure, deployment, monitoring, maintenance, security, compliance",
-        "other": "General inquiries, coordination, planning, meta-tasks"
-    }),
-    "complexity": ScoreQuestion(criteria=[
-        "trivial", "standard", "expert", "novel"
-    ]),
-    "risk": ChoiceQuestion(criteria={
-        "low": "Read-only, reversible, no external impact, local operations",
-        "medium": "Write operations, reversible with effort, internal state changes",
-        "high": "External API calls, data modification, user-facing changes, financial",
-        "critical": "Irreversible, production deployments, security-sensitive, legal/regulatory"
-    }),
-    "requires_human": NoulQuestion(instructions=
-        "Does this request involve regulated/high-stakes/irreversible actions requiring human approval?"
-    )
+    "intent": ChoiceQuestion(
+        criteria={
+            "research": "Information gathering, analysis, synthesis, literature review, market research",
+            "coding": "Code generation, refactoring, debugging, code review, architecture, DevOps",
+            "creative": "Writing, design, content creation, brainstorming, marketing, branding",
+            "ops": "Infrastructure, deployment, monitoring, maintenance, security, compliance",
+            "other": "General inquiries, coordination, planning, meta-tasks",
+        }
+    ),
+    "complexity": ScoreQuestion(criteria=["trivial", "standard", "expert", "novel"]),
+    "risk": ChoiceQuestion(
+        criteria={
+            "low": "Read-only, reversible, no external impact, local operations",
+            "medium": "Write operations, reversible with effort, internal state changes",
+            "high": "External API calls, data modification, user-facing changes, financial",
+            "critical": "Irreversible, production deployments, security-sensitive, legal/regulatory",
+        }
+    ),
+    "requires_human": NoulQuestion(
+        instructions="Does this request involve regulated/high-stakes/irreversible actions requiring human approval?"
+    ),
 }
 ```
 
@@ -90,24 +92,26 @@ Verify tool arguments match declared schema and intent before execution.
 ### Jev Primitives
 ```python
 questions = {
-    "tool_appropriate": ChoiceQuestion(criteria={
-        "yes": "Tool matches the current step intent and advances the task",
-        "no": "Tool is inappropriate for this step or contradicts intent",
-        "ambiguous": "Unclear if tool matches intent; could go either way"
-    }),
-    "args_valid": NoulQuestion(instructions=
-        "Do the tool arguments match the declared schema AND the intended operation? "
+    "tool_appropriate": ChoiceQuestion(
+        criteria={
+            "yes": "Tool matches the current step intent and advances the task",
+            "no": "Tool is inappropriate for this step or contradicts intent",
+            "ambiguous": "Unclear if tool matches intent; could go either way",
+        }
+    ),
+    "args_valid": NoulQuestion(
+        instructions="Do the tool arguments match the declared schema AND the intended operation? "
         "Check: required fields present, types correct, values in valid ranges, "
         "references resolve (file paths exist, IDs valid), no contradictory params."
     ),
-    "policy_compliant": ChoiceQuestion(criteria={
-        "compliant": "Action follows all organizational policies (security, data, cost, quality)",
-        "violates": "Action violates one or more policies",
-        "needs_review": "Borderline case requiring human review before execution"
-    }),
-    "side_effect_risk": ScoreQuestion(criteria=[
-        "none", "reversible", "audited", "irreversible"
-    ])
+    "policy_compliant": ChoiceQuestion(
+        criteria={
+            "compliant": "Action follows all organizational policies (security, data, cost, quality)",
+            "violates": "Action violates one or more policies",
+            "needs_review": "Borderline case requiring human review before execution",
+        }
+    ),
+    "side_effect_risk": ScoreQuestion(criteria=["none", "reversible", "audited", "irreversible"]),
 }
 ```
 
@@ -152,21 +156,19 @@ Score agent traces for anomalies, task completion, policy adherence, tool effici
 ### Jev Primitives
 ```python
 questions = {
-    "anomaly_score": ScoreQuestion(criteria=[
-        "normal", "unusual", "suspicious", "malicious"
-    ]),
-    "task_completion": NoulQuestion(instructions=
-        "Did the agent achieve the stated objective based on the trace? "
+    "anomaly_score": ScoreQuestion(criteria=["normal", "unusual", "suspicious", "malicious"]),
+    "task_completion": NoulQuestion(
+        instructions="Did the agent achieve the stated objective based on the trace? "
         "Consider: explicit completion signals, output quality, task requirements met."
     ),
-    "policy_adherence": ChoiceQuestion(criteria={
-        "full": "All steps comply with policies; no deviations",
-        "minor_deviation": "Minor policy deviations that don't affect outcome",
-        "major_violation": "Significant policy violation requiring investigation"
-    }),
-    "tool_efficiency": ScoreQuestion(criteria=[
-        "optimal", "redundant", "excessive", "failed"
-    ])
+    "policy_adherence": ChoiceQuestion(
+        criteria={
+            "full": "All steps comply with policies; no deviations",
+            "minor_deviation": "Minor policy deviations that don't affect outcome",
+            "major_violation": "Significant policy violation requiring investigation",
+        }
+    ),
+    "tool_efficiency": ScoreQuestion(criteria=["optimal", "redundant", "excessive", "failed"]),
 }
 ```
 
@@ -207,22 +209,22 @@ Classify and prioritize customer support requests.
 ### Jev Primitives
 ```python
 questions = {
-    "category": ChoiceQuestion(criteria={
-        "billing": "Payment, subscription, invoice, refund, pricing questions",
-        "technical": "Bugs, errors, configuration, integrations, API issues",
-        "security": "Vulnerabilities, access control, compliance, incidents, data privacy",
-        "feature": "Feature requests, enhancements, product feedback",
-        "general": "How-to, documentation, account management, other"
-    }),
-    "urgency": ScoreQuestion(criteria=[
-        "routine", "urgent", "critical", "catastrophic"
-    ]),
-    "is_known_issue": NoulQuestion(instructions=
-        "Does this match a known issue, documented bug, or existing ticket?"
+    "category": ChoiceQuestion(
+        criteria={
+            "billing": "Payment, subscription, invoice, refund, pricing questions",
+            "technical": "Bugs, errors, configuration, integrations, API issues",
+            "security": "Vulnerabilities, access control, compliance, incidents, data privacy",
+            "feature": "Feature requests, enhancements, product feedback",
+            "general": "How-to, documentation, account management, other",
+        }
     ),
-    "requires_escalation": NoulQuestion(instructions=
-        "Does this require immediate human escalation (security incident, data loss, SLA breach)?"
-    )
+    "urgency": ScoreQuestion(criteria=["routine", "urgent", "critical", "catastrophic"]),
+    "is_known_issue": NoulQuestion(
+        instructions="Does this match a known issue, documented bug, or existing ticket?"
+    ),
+    "requires_escalation": NoulQuestion(
+        instructions="Does this require immediate human escalation (security incident, data loss, SLA breach)?"
+    ),
 }
 ```
 
@@ -262,21 +264,21 @@ Verify actions comply with organizational policies before execution.
 ### Jev Primitives
 ```python
 questions = {
-    "compliance": ChoiceQuestion(criteria={
-        "compliant": "Action fully complies with all applicable policies",
-        "conditional": "Compliant if specific conditions are met (list in rationale)",
-        "non_compliant": "Action violates one or more policies",
-        "insufficient_info": "Cannot determine; need more context"
-    }),
-    "risk_level": ScoreQuestion(criteria=[
-        "none", "low", "medium", "high", "critical"
-    ]),
-    "requires_approval": NoulQuestion(instructions=
-        "Does this action require human approval per policy (regulatory, financial, security)?"
+    "compliance": ChoiceQuestion(
+        criteria={
+            "compliant": "Action fully complies with all applicable policies",
+            "conditional": "Compliant if specific conditions are met (list in rationale)",
+            "non_compliant": "Action violates one or more policies",
+            "insufficient_info": "Cannot determine; need more context",
+        }
     ),
-    "policy_conflict": NoulQuestion(instructions=
-        "Are there conflicting policies that create ambiguity for this action?"
-    )
+    "risk_level": ScoreQuestion(criteria=["none", "low", "medium", "high", "critical"]),
+    "requires_approval": NoulQuestion(
+        instructions="Does this action require human approval per policy (regulatory, financial, security)?"
+    ),
+    "policy_conflict": NoulQuestion(
+        instructions="Are there conflicting policies that create ambiguity for this action?"
+    ),
 }
 ```
 
@@ -310,7 +312,7 @@ metrics = {
     "cost_per_decision_usd": 0.00038,
     "confidence_distribution": {"0.9-1.0": 0.65, "0.8-0.9": 0.25, "0.7-0.8": 0.08, "<0.7": 0.02},
     "false_positive_rate": 0.015,
-    "false_negative_rate": 0.008
+    "false_negative_rate": 0.008,
 }
 ```
 

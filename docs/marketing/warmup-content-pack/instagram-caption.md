@@ -41,7 +41,7 @@ We built and run it in Malawi, for resource-constrained environments. No hype â€
 the architecture is the answer. If you are building or regulating agentic AI in
 Africa, follow along.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 #AgenticAI #AIGovernance #AINativeCompany #Malawi #SADC
 

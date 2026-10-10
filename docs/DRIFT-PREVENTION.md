@@ -69,6 +69,7 @@ The doc contains a number that doesn't match the source file. Find the stale ref
 Code uses `Path(__file__).parent.parent` instead of `get_project_root()`. Replace with:
 ```python
 from ai_company.paths import get_project_root
+
 root = get_project_root()
 ```
 

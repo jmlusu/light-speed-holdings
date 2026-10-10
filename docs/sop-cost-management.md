@@ -137,7 +137,7 @@ If budget limits need adjustment:
 ```python
 # In company/models.yaml or via CostTracker configuration
 daily_budget_usd: 50.00  # Adjust as needed
-task_budget_usd: 5.00    # Adjust as needed
+task_budget_usd: 5.00  # Adjust as needed
 ```
 
 **Escalation for budget changes:**

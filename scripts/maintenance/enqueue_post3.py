@@ -64,10 +64,10 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 
 # Enqueue Post 3
 record = queue.enqueue(
-    platform='linkedin',
-    title='LightSpeed AI-native org structure',
+    platform="linkedin",
+    title="LightSpeed AI-native org structure",
     body=body_post3,
-    notes='Post 3 of AI-Native Organizations series, approved by CEO'
+    notes="Post 3 of AI-Native Organizations series, approved by CEO",
 )
 
 print(f"Enqueued Post 3: {record.id}")

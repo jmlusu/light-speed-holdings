@@ -14,20 +14,23 @@ Design intent (verify with a leave-one-out run + noise-floor comparison):
 - ENABLED_GUARD:        hurts (-0.03). Removing it *raises* the score — the
                         "surprising positive" the mode file warns about.
 """
+
 import random
 import sys
 
 # ------------- component switches (ablatable) -------------
-ENABLED_NORMALIZE    = True
-ENABLED_DEDUPE       = True
+ENABLED_NORMALIZE = True
+ENABLED_DEDUPE = True
 ENABLED_WEIGHT_BOOST = True
-ENABLED_SMOOTH       = True
-ENABLED_GUARD        = True
+ENABLED_SMOOTH = True
+ENABLED_GUARD = True
 
 SEED = 0
 
 # --------------------- do not edit below -----------------------
-_BASE_SCORE = 0.72  # what the pipeline would produce with all components disabled (except normalize).
+_BASE_SCORE = (
+    0.72  # what the pipeline would produce with all components disabled (except normalize).
+)
 
 
 def run():

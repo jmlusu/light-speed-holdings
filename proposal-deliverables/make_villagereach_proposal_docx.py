@@ -177,7 +177,7 @@ def cover(doc):
     )
     para(
         doc,
-        "Email:  info@lightspeedholdings.com  |  Web:  lightspeedholdings.com",
+        "Email:  info@lightspeedholdings.vercel.app  |  Web:  lightspeedholdings.vercel.app",
         size=9,
         color=GREY,
         align=WD_ALIGN_PARAGRAPH.CENTER,
@@ -1004,7 +1004,7 @@ def build():
     )
     para(
         doc,
-        "info@lightspeedholdings.com  |  lightspeedholdings.com",
+        "info@lightspeedholdings.vercel.app  |  lightspeedholdings.vercel.app",
         size=10,
         color=GREY,
         align=WD_ALIGN_PARAGRAPH.CENTER,

@@ -310,7 +310,7 @@ company:
     name: Chief Marketing Officer
     title: CMO
     description: Drives brand awareness, demand generation, market positioning, and
-      owns the external company website (lightspeedholdings.com).
+      owns the external company website (lightspeedholdings.vercel.app).
     type: executive
     department: Marketing
     reports_to: chief_of_staff
@@ -319,7 +319,7 @@ company:
     - head_of_developer_relations
     - product_marketing_manager
     responsibilities:
-    - Own the external company website (https://lightspeedholdings.com) including
+    - Own the external company website (https://lightspeedholdings.vercel.app) including
       content, UX, SEO, and conversion optimization.
     - Develop marketing strategy and brand positioning.
     - Drive demand generation and campaign management.
@@ -344,7 +344,7 @@ company:
     - Campaign Generation Rate
     - Content Quality Score
     decision_rights:
-    - 'Decides and owns: Own the external company website (https://lightspeedholdings.com)
+    - 'Decides and owns: Own the external company website (https://lightspeedholdings.vercel.app)
       including content, UX, SEO, and conversion optimization'
     - 'Decides and owns: Develop marketing strategy and brand positioning'
     - 'Decides and owns: Drive demand generation and campaign management'

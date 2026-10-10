@@ -73,13 +73,13 @@ The existing `OrgHealthCalculator.detect_anomalies()` (z-score on org-health com
 class HealthEvent:
     """A single health anomaly detected for an agent."""
 
-    id: str                          # UUID
+    id: str  # UUID
     agent_id: str
-    detector: str                    # e.g. "stuck_loop", "token_spike"
-    severity: str                    # "info" | "warning" | "critical"
-    timestamp: str                   # ISO 8601
-    message: str                     # Human-readable description
-    metadata: dict[str, Any]         # Detector-specific payload
+    detector: str  # e.g. "stuck_loop", "token_spike"
+    severity: str  # "info" | "warning" | "critical"
+    timestamp: str  # ISO 8601
+    message: str  # Human-readable description
+    metadata: dict[str, Any]  # Detector-specific payload
     action_taken: str | None = None  # "auto_paused" | "context_reset" | None
 
     def to_dict(self) -> dict[str, Any]: ...
@@ -90,14 +90,14 @@ class AgentHealthStatus:
     """Rolling health summary for a single agent."""
 
     agent_id: str
-    status: str                      # "healthy" | "degraded" | "critical" | "paused"
+    status: str  # "healthy" | "degraded" | "critical" | "paused"
     active_anomalies: list[HealthEvent]
     last_check: str
     consecutive_failures: int
-    token_rate_15m: float            # tokens/min
-    tool_error_rate_10: float        # 0.0–1.0
+    token_rate_15m: float  # tokens/min
+    tool_error_rate_10: float  # 0.0–1.0
     stuck_loop_detected: bool
-    paused_by: str | None            # "auto" | "manual" | None
+    paused_by: str | None  # "auto" | "manual" | None
     paused_at: str | None
 
     def to_dict(self) -> dict[str, Any]: ...
@@ -197,6 +197,7 @@ def _auto_pause_agent(agent_id: str, event: HealthEvent) -> None:
     # 3. Broadcast WS "health" event with action: "auto_paused"
     # 4. Log to audit trail
     ...
+
 
 # When resume fires:
 def _resume_agent(agent_id: str, reason: str) -> None:

@@ -24,19 +24,18 @@ df = pd.read_excel("raw.xlsx", sheet_name="Data")
 # 2. Transform
 df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
 df["revenue"] = pd.to_numeric(df["revenue"], errors="coerce").fillna(0)
-df["month"]   = pd.to_datetime(df["date"]).dt.to_period("M").astype(str)
+df["month"] = pd.to_datetime(df["date"]).dt.to_period("M").astype(str)
 
 monthly = (
     df.groupby("month", as_index=False)
-      .agg(revenue=("revenue", "sum"),
-           orders =("order_id", "nunique"))
-      .sort_values("month")
+    .agg(revenue=("revenue", "sum"), orders=("order_id", "nunique"))
+    .sort_values("month")
 )
 monthly["avg_order"] = monthly["revenue"] / monthly["orders"]
 
 # 3. Write raw + summary
 with pd.ExcelWriter("out.xlsx", engine="openpyxl") as w:
-    df.to_excel(w,      sheet_name="Data",    index=False)
+    df.to_excel(w, sheet_name="Data", index=False)
     monthly.to_excel(w, sheet_name="Monthly", index=False)
 
 # 4. Polish
@@ -81,7 +80,7 @@ df = df.drop_duplicates(subset=["order_id"], keep="last")
 ```python
 df["region"] = df["region"].fillna("Unknown")
 df["revenue"] = df["revenue"].fillna(0)
-df["cost"]   = df.groupby("region")["cost"].transform(lambda s: s.fillna(s.median()))
+df["cost"] = df.groupby("region")["cost"].transform(lambda s: s.fillna(s.median()))
 ```
 
 Do not fill with `0` when the value is genuinely unknown — it lies to the
@@ -126,7 +125,7 @@ df["revenue_band"] = pd.cut(
 
 ```python
 df = df.sort_values("date")
-df["revenue_7d"]  = df["revenue"].rolling(window=7, min_periods=1).sum()
+df["revenue_7d"] = df["revenue"].rolling(window=7, min_periods=1).sum()
 df["revenue_ytd"] = df.groupby(df["date"].dt.year)["revenue"].cumsum()
 ```
 
@@ -142,7 +141,7 @@ Anti-pattern:
 
 ```python
 totals = df.groupby("region")["revenue"].sum().reset_index()
-totals.to_excel(writer, sheet_name="Totals", index=False)   # numbers hardcoded
+totals.to_excel(writer, sheet_name="Totals", index=False)  # numbers hardcoded
 ```
 
 If the user later fixes a typo in the Data sheet, `Totals` does not update.
@@ -160,8 +159,7 @@ with pd.ExcelWriter("out.xlsx", engine="openpyxl") as w:
     ws.append(["Region", "Revenue"])
     for i, region in enumerate(regions, start=2):
         ws.cell(row=i, column=1, value=region)
-        cell = ws.cell(row=i, column=2,
-                       value=f'=SUMIFS(Data!C:C, Data!B:B, "{region}")')
+        cell = ws.cell(row=i, column=2, value=f'=SUMIFS(Data!C:C, Data!B:B, "{region}")')
         cell.number_format = "$#,##0"
 ```
 
@@ -191,7 +189,7 @@ Then re-read.
 pandas categoricals write as their underlying values by default:
 
 ```python
-df["region"].astype(str).to_excel(...)     # forces string, safe
+df["region"].astype(str).to_excel(...)  # forces string, safe
 ```
 
 Or convert to string before writing, especially if the categories are used in
@@ -219,7 +217,7 @@ convention to communicate the offset.
 
 ```python
 with pd.ExcelWriter("big.xlsx", engine="xlsxwriter") as w:
-    df.to_excel(w, sheet_name="Data", index=False)   # streams
+    df.to_excel(w, sheet_name="Data", index=False)  # streams
 
 wb = load_workbook("big.xlsx")
 mon = wb.create_sheet("Monthly")
@@ -242,6 +240,7 @@ Before shipping:
    match.
    ```python
    from openpyxl import load_workbook
+
    wb = load_workbook("out.xlsx", data_only=True)
    assert wb["Totals"]["B2"].value == monthly.iloc[0]["revenue"]
    ```

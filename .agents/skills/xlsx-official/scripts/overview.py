@@ -90,10 +90,7 @@ def _read_sample(ws_values, sample_size: int) -> tuple[list, list[list], list[st
         column_values = [row[col] if col < len(row) else None for row in sample]
         column_types.append(infer_column_type(column_values))
 
-    stringified = [
-        ["" if v is None else str(v) for v in row]
-        for row in sample
-    ]
+    stringified = [["" if v is None else str(v) for v in row] for row in sample]
     return header, stringified, column_types
 
 
@@ -116,8 +113,12 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Emit a JSON snapshot of an xlsx workbook.",
     )
     parser.add_argument("workbook", type=Path)
-    parser.add_argument("--rows", type=int, default=5,
-                        help="how many data rows to include per worksheet (default: 5)")
+    parser.add_argument(
+        "--rows",
+        type=int,
+        default=5,
+        help="how many data rows to include per worksheet (default: 5)",
+    )
     return parser
 
 
@@ -142,12 +143,14 @@ def main(argv: list[str] | None = None) -> int:
         values_wb.close()
         formula_wb.close()
 
-    _emit({
-        "ok": True,
-        "path": str(args.workbook.resolve()),
-        "worksheet_count": len(worksheets),
-        "worksheets": worksheets,
-    })
+    _emit(
+        {
+            "ok": True,
+            "path": str(args.workbook.resolve()),
+            "worksheet_count": len(worksheets),
+            "worksheets": worksheets,
+        }
+    )
     return 0
 
 

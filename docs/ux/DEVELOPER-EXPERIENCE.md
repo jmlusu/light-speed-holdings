@@ -219,6 +219,7 @@ def sample_task():
         instruction="Test instruction",
     )
 
+
 def test_task_status(sample_task):
     assert sample_task.status == TaskStatus.PENDING
 ```

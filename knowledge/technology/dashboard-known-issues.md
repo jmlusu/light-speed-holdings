@@ -386,6 +386,7 @@ async fetchWithRetry(url, opts = {}, retries = 3, delay = 1000) {
 
 from pydantic import BaseModel
 
+
 class FeedbackSubmission(BaseModel):
     type: str  # bug, feature, general
     message: str
@@ -395,6 +396,7 @@ class FeedbackSubmission(BaseModel):
     userAgent: str
     wsConnected: bool
     lastErrors: list[dict] = []
+
 
 @router.post("/api/feedback")
 async def submit_feedback(feedback: FeedbackSubmission) -> dict:

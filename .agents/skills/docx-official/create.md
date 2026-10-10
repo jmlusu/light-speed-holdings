@@ -16,11 +16,11 @@ Every generator you write follows the same shape:
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
 
-doc = Document()                     # blank document with default styles
-setup_page(doc)                      # margins, orientation, size
+doc = Document()  # blank document with default styles
+setup_page(doc)  # margins, orientation, size
 add_cover(doc, title="Q3 Financial Review", subtitle="Prepared for the Board")
 doc.add_page_break()
-add_toc_placeholder(doc)             # optional
+add_toc_placeholder(doc)  # optional
 doc.add_page_break()
 add_body(doc, sections=...)
 add_appendix(doc, tables=...)
@@ -35,14 +35,16 @@ Keep each `add_*` function small (< 40 lines). It is much easier to fix a broken
 from docx.shared import Cm
 from docx.enum.section import WD_ORIENTATION
 
+
 def setup_page(doc, size="A4"):
     section = doc.sections[0]
     if size == "A4":
         section.page_width, section.page_height = Cm(21.0), Cm(29.7)
         section.top_margin = section.bottom_margin = Cm(2.54)
         section.left_margin = section.right_margin = Cm(3.18)
-    else:                                     # Letter
+    else:  # Letter
         from docx.shared import Inches
+
         section.page_width, section.page_height = Inches(8.5), Inches(11.0)
         section.top_margin = section.bottom_margin = Inches(1.0)
         section.left_margin = section.right_margin = Inches(1.25)
@@ -56,12 +58,12 @@ def setup_page(doc, size="A4"):
 Word's usefulness — Navigation Pane, ToC, cross-references, screen readers — all depend on paragraphs having the right **style name**. Assign styles by name, do not fake headings with bold text.
 
 ```python
-title    = doc.add_paragraph("Q3 Financial Review", style="Title")
-h1       = doc.add_paragraph("Executive Summary", style="Heading 1")
-h2       = doc.add_paragraph("Key drivers", style="Heading 2")
-body     = doc.add_paragraph("Revenue grew 12% year-over-year …", style="Normal")
-quote    = doc.add_paragraph("Momentum is real.", style="Quote")
-caption  = doc.add_paragraph("Figure 1 — quarterly revenue", style="Caption")
+title = doc.add_paragraph("Q3 Financial Review", style="Title")
+h1 = doc.add_paragraph("Executive Summary", style="Heading 1")
+h2 = doc.add_paragraph("Key drivers", style="Heading 2")
+body = doc.add_paragraph("Revenue grew 12% year-over-year …", style="Normal")
+quote = doc.add_paragraph("Momentum is real.", style="Quote")
+caption = doc.add_paragraph("Figure 1 — quarterly revenue", style="Caption")
 ```
 
 Built-in style names that always exist: `Normal`, `Title`, `Subtitle`, `Heading 1` … `Heading 9`, `List Bullet`, `List Number`, `Quote`, `Intense Quote`, `Caption`.
@@ -70,6 +72,7 @@ Built-in style names that always exist: `Normal`, `Title`, `Subtitle`, `Heading 
 
 ```python
 from docx.shared import Pt, RGBColor
+
 
 def tune_styles(doc):
     body = doc.styles["Normal"]
@@ -98,7 +101,9 @@ A paragraph is a list of *runs*. Each run has its own formatting. Do not create 
 p = doc.add_paragraph()
 p.add_run("Revenue: ").bold = True
 p.add_run("$4.2M ")
-r = p.add_run("(+12% YoY)"); r.italic = True; r.font.color.rgb = RGBColor(0x2E, 0x7D, 0x32)
+r = p.add_run("(+12% YoY)")
+r.italic = True
+r.font.color.rgb = RGBColor(0x2E, 0x7D, 0x32)
 ```
 
 ## Lists
@@ -120,7 +125,7 @@ Nested lists: use `List Bullet 2`, `List Bullet 3` (or `List Number 2` etc.). De
 ```python
 def add_table(doc, header, rows):
     table = doc.add_table(rows=1 + len(rows), cols=len(header))
-    table.style = "Light Grid Accent 1"     # any style Word ships with
+    table.style = "Light Grid Accent 1"  # any style Word ships with
 
     hdr = table.rows[0].cells
     for i, name in enumerate(header):
@@ -142,6 +147,7 @@ Rules of thumb:
 - **Numbers align right**, text left. Set alignment on the paragraph inside the cell, not the cell itself:
   ```python
   from docx.enum.text import WD_ALIGN_PARAGRAPH
+
   cells[c_idx].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
   ```
 - **Never leave a cell empty** — insert a non-breaking space (` `) or a dash, otherwise Word can collapse the row height and the borders look broken.
@@ -152,7 +158,7 @@ Rules of thumb:
 ```python
 from docx.shared import Cm
 
-doc.add_picture("chart.png", width=Cm(15))       # height auto-computes to preserve ratio
+doc.add_picture("chart.png", width=Cm(15))  # height auto-computes to preserve ratio
 last_paragraph = doc.paragraphs[-1]
 last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 doc.add_paragraph("Figure 1 — quarterly revenue", style="Caption")
@@ -165,6 +171,7 @@ Always add a caption paragraph directly beneath the image; readers can cross-ref
 ```python
 import docx
 from docx.oxml.ns import qn
+
 
 def set_alt_text(picture_shape, description):
     inline = picture_shape._inline
@@ -179,12 +186,19 @@ def set_alt_text(picture_shape, description):
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
+
 def add_page_number(paragraph):
     run = paragraph.add_run()
-    fldChar1 = OxmlElement("w:fldChar"); fldChar1.set(qn("w:fldCharType"), "begin")
-    instrText = OxmlElement("w:instrText"); instrText.text = "PAGE"
-    fldChar2 = OxmlElement("w:fldChar"); fldChar2.set(qn("w:fldCharType"), "end")
-    run._r.append(fldChar1); run._r.append(instrText); run._r.append(fldChar2)
+    fldChar1 = OxmlElement("w:fldChar")
+    fldChar1.set(qn("w:fldCharType"), "begin")
+    instrText = OxmlElement("w:instrText")
+    instrText.text = "PAGE"
+    fldChar2 = OxmlElement("w:fldChar")
+    fldChar2.set(qn("w:fldCharType"), "end")
+    run._r.append(fldChar1)
+    run._r.append(instrText)
+    run._r.append(fldChar2)
+
 
 section = doc.sections[0]
 footer = section.footer.paragraphs[0]
@@ -206,13 +220,17 @@ Word builds the ToC from headings the moment a user opens the file — but only 
 def add_toc(doc):
     p = doc.add_paragraph()
     run = p.add_run()
-    fldChar1 = OxmlElement("w:fldChar"); fldChar1.set(qn("w:fldCharType"), "begin")
+    fldChar1 = OxmlElement("w:fldChar")
+    fldChar1.set(qn("w:fldCharType"), "begin")
     instrText = OxmlElement("w:instrText")
     instrText.set(qn("xml:space"), "preserve")
-    instrText.text = 'TOC \\o "1-3" \\h \\z \\u'          # levels 1–3, hyperlinked
-    fldChar2 = OxmlElement("w:fldChar"); fldChar2.set(qn("w:fldCharType"), "separate")
-    fldChar3 = OxmlElement("w:t"); fldChar3.text = "Right-click and choose Update Field."
-    fldChar4 = OxmlElement("w:fldChar"); fldChar4.set(qn("w:fldCharType"), "end")
+    instrText.text = 'TOC \\o "1-3" \\h \\z \\u'  # levels 1–3, hyperlinked
+    fldChar2 = OxmlElement("w:fldChar")
+    fldChar2.set(qn("w:fldCharType"), "separate")
+    fldChar3 = OxmlElement("w:t")
+    fldChar3.text = "Right-click and choose Update Field."
+    fldChar4 = OxmlElement("w:fldChar")
+    fldChar4.set(qn("w:fldCharType"), "end")
     for x in (fldChar1, instrText, fldChar2, fldChar3, fldChar4):
         run._r.append(x)
 ```
@@ -225,18 +243,27 @@ To reference "see Section 3.1" and have it update as sections shift:
 
 ```python
 def bookmark(paragraph, name):
-    start = OxmlElement("w:bookmarkStart"); start.set(qn("w:id"), "0"); start.set(qn("w:name"), name)
-    end   = OxmlElement("w:bookmarkEnd"); end.set(qn("w:id"), "0")
-    paragraph._p.insert(0, start); paragraph._p.append(end)
+    start = OxmlElement("w:bookmarkStart")
+    start.set(qn("w:id"), "0")
+    start.set(qn("w:name"), name)
+    end = OxmlElement("w:bookmarkEnd")
+    end.set(qn("w:id"), "0")
+    paragraph._p.insert(0, start)
+    paragraph._p.append(end)
+
 
 def ref(paragraph, name):
     run = paragraph.add_run()
-    for tag, attr in [("fldChar", ("w:fldCharType", "begin")),
-                      ("instrText", None),
-                      ("fldChar", ("w:fldCharType", "end"))]:
+    for tag, attr in [
+        ("fldChar", ("w:fldCharType", "begin")),
+        ("instrText", None),
+        ("fldChar", ("w:fldCharType", "end")),
+    ]:
         el = OxmlElement(f"w:{tag}")
-        if attr: el.set(qn(attr[0]), attr[1])
-        if tag == "instrText": el.text = f" REF {name} \\h "
+        if attr:
+            el.set(qn(attr[0]), attr[1])
+        if tag == "instrText":
+            el.text = f" REF {name} \\h "
         run._r.append(el)
 ```
 
@@ -260,7 +287,7 @@ def ref(paragraph, name):
 ```python
 def add_cover(doc, title, subtitle=None, author=None, date=None):
     for _ in range(6):
-        doc.add_paragraph()                       # push content down the page
+        doc.add_paragraph()  # push content down the page
     p = doc.add_paragraph(title, style="Title")
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     if subtitle:
@@ -287,9 +314,10 @@ cols = sectPr.find(qn("w:cols"))
 if cols is None:
     cols = OxmlElement("w:cols")
     sectPr.append(cols)
-cols.set(qn("w:num"), "2"); cols.set(qn("w:space"), "425")   # 425 twips ≈ 0.3 in
+cols.set(qn("w:num"), "2")
+cols.set(qn("w:space"), "425")  # 425 twips ≈ 0.3 in
 # … add paragraphs …
-doc.add_section(WD_SECTION.CONTINUOUS)             # revert to single column
+doc.add_section(WD_SECTION.CONTINUOUS)  # revert to single column
 ```
 
 ### Callout box (shaded paragraph)
@@ -298,6 +326,7 @@ doc.add_section(WD_SECTION.CONTINUOUS)             # revert to single column
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
+
 def shade_paragraph(paragraph, hex_color="F2F4F7"):
     pPr = paragraph._p.get_or_add_pPr()
     shd = OxmlElement("w:shd")
@@ -305,6 +334,7 @@ def shade_paragraph(paragraph, hex_color="F2F4F7"):
     shd.set(qn("w:color"), "auto")
     shd.set(qn("w:fill"), hex_color)
     pPr.append(shd)
+
 
 p = doc.add_paragraph("Note: figures are unaudited.")
 shade_paragraph(p, "FFF4CE")
@@ -322,7 +352,9 @@ from lxml import etree
 doc = Document()
 
 # Per-OS CJK face (table below); copy-paste safe on any platform.
-CJK_FONT = {"Windows": "Microsoft YaHei", "Darwin": "PingFang SC"}.get(platform.system(), "Noto Sans CJK SC")
+CJK_FONT = {"Windows": "Microsoft YaHei", "Darwin": "PingFang SC"}.get(
+    platform.system(), "Noto Sans CJK SC"
+)
 
 # --- patch theme font definitions ---
 theme_rel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
@@ -331,12 +363,14 @@ theme_xml = etree.fromstring(theme_part.blob)
 
 ns = {"a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
 for latin in theme_xml.xpath("//a:majorFont/a:latin | //a:minorFont/a:latin", namespaces=ns):
-    latin.set("typeface", "Times New Roman")       # or your preferred Latin font
+    latin.set("typeface", "Times New Roman")  # or your preferred Latin font
 for font in theme_xml.xpath("//a:majorFont/a:font | //a:minorFont/a:font", namespaces=ns):
     if font.get("script", "") in ("Hans", "Hant", "Jpan", "Hang"):
         font.set("typeface", CJK_FONT)
 
-theme_part._blob = etree.tostring(theme_xml, xml_declaration=True, encoding="UTF-8", standalone=True)
+theme_part._blob = etree.tostring(
+    theme_xml, xml_declaration=True, encoding="UTF-8", standalone=True
+)
 
 # --- patch Courier → Courier New in macro styles ---
 for style in doc.styles:

@@ -19,7 +19,7 @@ humans stay accountable for what matters.
 
 LightSpeed Holdings Limited™ — ASPIRE. ACT. ACHIEVE.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 ---
 

@@ -33,6 +33,7 @@ class ApprovalTier(str, Enum):
     TIER_3_DUAL = "tier_3_dual"
     TIER_4_CEO = "tier_4_ceo"
 
+
 class ApprovalRequest(BaseModel):
     # Existing fields (unchanged)
     id: str
@@ -53,12 +54,13 @@ class ApprovalRequest(BaseModel):
     required_approvals: int = 1
     escalation_path: list[str] = Field(default_factory=list)
     escalated_from: Optional[str] = None
-    action_category: str = ""     # e.g. "code_change", "financial", "infrastructure"
-    risk_score: int = 0           # 0-100, computed by decision engine
+    action_category: str = ""  # e.g. "code_change", "financial", "infrastructure"
+    risk_score: int = 0  # 0-100, computed by decision engine
+
 
 class ApprovalSignature(BaseModel):
     approver_id: str
-    decision: str    # "approved" | "rejected"
+    decision: str  # "approved" | "rejected"
     decided_at: datetime
     notes: Optional[str] = None
 ```

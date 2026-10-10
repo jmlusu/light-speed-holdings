@@ -1367,7 +1367,9 @@ def render_svg_chart(chart: ChartItem, out_dir: Path) -> tuple[Path | None, dict
     }
 
 
-def render_embedded_png_chart(chart: ChartItem, out_dir: Path) -> tuple[Path | None, dict[str, Any]]:
+def render_embedded_png_chart(
+    chart: ChartItem, out_dir: Path
+) -> tuple[Path | None, dict[str, Any]]:
     asset_dir = out_dir / "assets" / "charts"
     asset_dir.mkdir(parents=True, exist_ok=True)
     image_path = asset_dir / f"chart_{chart.index:02d}.png"

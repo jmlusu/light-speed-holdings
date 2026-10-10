@@ -14,6 +14,7 @@ Usage:
     python render_slides.py deck.pptx --out slides/ --first 3 --last 5
     python render_slides.py deck.pptx --keep-pdf     # keep the intermediate PDF
 """
+
 from __future__ import annotations
 
 import argparse
@@ -30,24 +31,32 @@ from soffice_bridge import BridgeError, translate  # noqa: E402
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("source", type=Path)
-    ap.add_argument("--out", type=Path, default=None,
-                    help="destination directory (default: alongside source)")
-    ap.add_argument("--format", dest="fmt", choices=("png", "jpg"), default="png",
-                    help="output image format (default: png)")
-    ap.add_argument("--dpi", type=int, default=150,
-                    help="rasterisation DPI (default 150)")
-    ap.add_argument("--first", type=int, default=None,
-                    help="first slide (1-based) to render")
-    ap.add_argument("--last", type=int, default=None,
-                    help="last slide (1-based) to render")
-    ap.add_argument("--keep-pdf", action="store_true",
-                    help="preserve the intermediate PDF file")
+    ap.add_argument(
+        "--out", type=Path, default=None, help="destination directory (default: alongside source)"
+    )
+    ap.add_argument(
+        "--format",
+        dest="fmt",
+        choices=("png", "jpg"),
+        default="png",
+        help="output image format (default: png)",
+    )
+    ap.add_argument("--dpi", type=int, default=150, help="rasterisation DPI (default 150)")
+    ap.add_argument("--first", type=int, default=None, help="first slide (1-based) to render")
+    ap.add_argument("--last", type=int, default=None, help="last slide (1-based) to render")
+    ap.add_argument("--keep-pdf", action="store_true", help="preserve the intermediate PDF file")
     ns = ap.parse_args(argv)
 
     try:
-        images = translate(ns.source, ns.fmt, out_dir=ns.out,
-                           dpi=ns.dpi, first=ns.first, last=ns.last,
-                           keep_intermediate_pdf=ns.keep_pdf)
+        images = translate(
+            ns.source,
+            ns.fmt,
+            out_dir=ns.out,
+            dpi=ns.dpi,
+            first=ns.first,
+            last=ns.last,
+            keep_intermediate_pdf=ns.keep_pdf,
+        )
     except BridgeError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from ai_company.data.database import Database
-from ai_company.data.task_store import TaskStore
+from ai_company.data.task_store import TERMINAL_STATUSES, TaskStore, terminal_count
 from ai_company.models.task import Task, TaskPriority, TaskStatus
 
 
@@ -232,3 +232,36 @@ class TestTaskStoreMigration:
         assert task is not None
 
         fresh_db.close()
+
+
+class TestTerminalDenominator:
+    """Shared ATC/unit-cost denominator (single source of truth)."""
+
+    def test_terminal_statuses_definition(self) -> None:
+        assert (
+            frozenset({"completed", "failed", "timeout", "cancelled", "escalated"})
+            == TERMINAL_STATUSES
+        )
+
+    def test_terminal_count_sums_terminal_only(self) -> None:
+        counts = {
+            "completed": 3,
+            "failed": 1,
+            "timeout": 1,
+            "cancelled": 1,
+            "escalated": 1,
+            "pending": 5,
+            "in_progress": 2,
+        }
+        assert terminal_count(counts) == 7
+
+    def test_terminal_count_empty(self) -> None:
+        assert terminal_count({}) == 0
+
+    def test_terminal_count_excludes_non_terminal_alone(self) -> None:
+        assert terminal_count({"pending": 4, "in_progress": 1}) == 0
+
+    def test_studio_reexports_shared_constant(self) -> None:
+        from ai_company.dashboard.kpis import studio
+
+        assert studio.TERMINAL_STATUSES is TERMINAL_STATUSES

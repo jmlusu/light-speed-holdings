@@ -108,8 +108,8 @@ CONTACT
 ================================================================================
 
 Primary Contact: Jmlus (Consulting Lead)
-Email: info@lightspeedholdings.com
-Web: lightspeedholdings.com
+Email: info@lightspeedholdings.vercel.app
+Web: lightspeedholdings.vercel.app
 Malawi · Nairobi · Washington DC
 
 Confidential — Prepared for VillageReach CHOICE Project Evaluation

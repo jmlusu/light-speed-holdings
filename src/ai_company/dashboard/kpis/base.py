@@ -177,6 +177,7 @@ class KPICollector(ABC):
                 "total_cost": summary.total_cost,
                 "overall_roi": summary.overall_roi,
                 "period_days": summary.period_days,
+                "entered_tasks": summary.entered_tasks,
                 "by_department": [
                     {
                         "department": a.department,

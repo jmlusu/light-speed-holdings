@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from ai_company.data.database import Database
+from ai_company.data.task_store import terminal_count
 from ai_company.models.models import RevenueAttribution, RevenueSummary
 
 logger = logging.getLogger(__name__)
@@ -89,6 +90,22 @@ class RevenueAnalytics:
         )
         return {r["assignee"]: r["completed"] for r in rows}
 
+    def _terminal_tasks(self, start_date: str, end_date: str) -> int:
+        """Count tasks that reached a terminal status within a date range.
+
+        Mirrors the ``_tasks_completed_by_agent`` window (``>= start`` /
+        ``< end``) so the terminal-task denominator shares exactly the
+        same period as the revenue and cost numerators.
+        """
+        rows = self._db.fetchall(
+            """SELECT status, COUNT(*) as n
+               FROM tasks
+               WHERE date(created_at) >= ? AND date(created_at) < ?
+               GROUP BY status""",
+            (start_date, end_date),
+        )
+        return terminal_count({r["status"]: r["n"] for r in rows})
+
     def get_revenue_attribution(self, period_days: int = 30) -> RevenueSummary:
         """Compute revenue attribution and ROI for all agents/departments."""
         today = datetime.now(timezone.utc)
@@ -162,6 +179,7 @@ class RevenueAnalytics:
 
         total_revenue = sum(a.revenue_attributed for a in attributions)
         total_cost = sum(a.cost_incurred for a in attributions)
+        entered_tasks = self._terminal_tasks(start_date, end_date)
 
         return RevenueSummary(
             total_revenue=round(total_revenue, 2),
@@ -170,6 +188,7 @@ class RevenueAnalytics:
             by_department=by_department,
             by_agent=attributions,
             period_days=period_days,
+            entered_tasks=entered_tasks,
         )
 
     def get_revenue_trend(self, period_days: int = 30) -> list[dict[str, Any]]:

@@ -52,6 +52,7 @@ def _parse_one_range(token: str, total: int) -> RangeSpec:
 
 def _emit(pages, dest: Path) -> None:
     from pypdf import PdfWriter
+
     w = PdfWriter()
     for p in pages:
         w.add_page(p)
@@ -62,7 +63,7 @@ def _emit(pages, dest: Path) -> None:
 
 def _carve_by_range(reader, ranges: list[RangeSpec], dest: Path, stem: str) -> None:
     for r in ranges:
-        pages = list(reader.pages[r.start - 1: r.end])
+        pages = list(reader.pages[r.start - 1 : r.end])
         _emit(pages, dest / f"{stem}__{r.label()}.pdf")
 
 
@@ -84,8 +85,7 @@ def _main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description="Carve a PDF into pieces.")
     ap.add_argument("path", type=Path)
     mode = ap.add_mutually_exclusive_group(required=True)
-    mode.add_argument("--by-range", nargs="+", metavar="RANGE",
-                      help='e.g. 1-3 4-6 7-z')
+    mode.add_argument("--by-range", nargs="+", metavar="RANGE", help="e.g. 1-3 4-6 7-z")
     mode.add_argument("--every-page", action="store_true")
     mode.add_argument("--chunk-size", type=int)
     ap.add_argument("--dest", type=Path, required=True)

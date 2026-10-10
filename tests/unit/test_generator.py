@@ -372,7 +372,9 @@ def test_registry_media_owner(real_generator: AgentGenerator) -> None:
     assert media_owner["department"] == "Marketing"
     assert media_owner["reports_to"] == "cmo"
     assert media_owner["model_tier"] == "standard"
-    assert "bash" in media_owner["tools"], "media_generation_owner must have bash tool for comfyui-mcp"
+    assert "bash" in media_owner["tools"], (
+        "media_generation_owner must have bash tool for comfyui-mcp"
+    )
 
     # Generate all agents and verify the card
     real_generator.generate_all()
@@ -399,4 +401,6 @@ def test_registry_media_owner(real_generator: AgentGenerator) -> None:
     )
 
     # Verify description mentions ComfyUI/MCP
-    assert "ComfyUI" in frontmatter["description"] or "comfyui" in frontmatter["description"].lower()
+    assert (
+        "ComfyUI" in frontmatter["description"] or "comfyui" in frontmatter["description"].lower()
+    )

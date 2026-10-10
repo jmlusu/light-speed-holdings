@@ -34,6 +34,7 @@ from typing import Iterator
 
 # ---------------------------------------------------------------- data model
 
+
 @dataclass
 class FieldRecord:
     name: str
@@ -58,6 +59,7 @@ class PageSkeleton:
 
 
 # ---------------------------------------------------------------- widget visitor
+
 
 class _WidgetVisitor:
     """Walk /Annots on each page and produce FieldRecord instances."""
@@ -130,14 +132,16 @@ class _WidgetVisitor:
 
     def _iter_widget_annots(self) -> Iterator[tuple[int, object]]:
         for page_no, page in enumerate(self.reader.pages, start=1):
-            for ref in (page.get("/Annots") or []):
+            for ref in page.get("/Annots") or []:
                 annot = self._deref(ref)
                 if annot and annot.get("/Subtype") == "/Widget":
                     yield page_no, annot
 
     def _record_text(self, name, annot, page_no, flags):
         self._collected[name] = FieldRecord(
-            name=name, kind="text", page=page_no,
+            name=name,
+            kind="text",
+            page=page_no,
             rect=self._widget_rect(annot),
             multiline=bool(flags & self._FLAG_MULTILINE),
             password=bool(flags & self._FLAG_PASSWORD),
@@ -145,21 +149,30 @@ class _WidgetVisitor:
 
     def _record_checkbox(self, name, annot, page_no):
         self._collected[name] = FieldRecord(
-            name=name, kind="checkbox", page=page_no,
+            name=name,
+            kind="checkbox",
+            page=page_no,
             rect=self._widget_rect(annot),
             checked_value=self._button_on(annot),
             unchecked_value="/Off",
         )
 
     def _record_radio(self, name, annot, page_no):
-        rec = self._collected.setdefault(name, FieldRecord(
-            name=name, kind="radio_group", page=page_no,
-        ))
-        rec.options.append({
-            "value": self._button_on(annot),
-            "page": page_no,
-            "rect": self._widget_rect(annot),
-        })
+        rec = self._collected.setdefault(
+            name,
+            FieldRecord(
+                name=name,
+                kind="radio_group",
+                page=page_no,
+            ),
+        )
+        rec.options.append(
+            {
+                "value": self._button_on(annot),
+                "page": page_no,
+                "rect": self._widget_rect(annot),
+            }
+        )
 
     def _record_choice(self, name, annot, page_no):
         raw = self._climb(annot, "/Opt") or []
@@ -171,13 +184,18 @@ class _WidgetVisitor:
             else:
                 opts.append({"value": str(resolved), "text": str(resolved)})
         self._collected[name] = FieldRecord(
-            name=name, kind="choice", page=page_no,
-            rect=self._widget_rect(annot), options=opts,
+            name=name,
+            kind="choice",
+            page=page_no,
+            rect=self._widget_rect(annot),
+            options=opts,
         )
 
     def _record_signature(self, name, annot, page_no):
         self._collected[name] = FieldRecord(
-            name=name, kind="signature", page=page_no,
+            name=name,
+            kind="signature",
+            page=page_no,
             rect=self._widget_rect(annot),
         )
 
@@ -221,6 +239,7 @@ def probe_widgets(pdf_path: Path) -> list[FieldRecord]:
 
 # ---------------------------------------------------------------- skeleton probe
 
+
 def probe_skeleton(pdf_path: Path) -> list[PageSkeleton]:
     import pdfplumber
 
@@ -261,8 +280,7 @@ def probe_skeleton(pdf_path: Path) -> list[PageSkeleton]:
                 width=float(p.width),
                 height=float(p.height),
                 labels=[_label(w) for w in p.extract_words()],
-                rules=[_rule(l) for l in p.lines
-                       if abs(l["top"] - l["bottom"]) < 1.5],
+                rules=[_rule(l) for l in p.lines if abs(l["top"] - l["bottom"]) < 1.5],
                 squares=[s for r in p.rects if (s := _square(r))],
             )
             for i, p in enumerate(pdf.pages, start=1)
@@ -271,8 +289,10 @@ def probe_skeleton(pdf_path: Path) -> list[PageSkeleton]:
 
 # ---------------------------------------------------------------- marked preview
 
-def render_marked_pages(pdf_path: Path, fields: list[FieldRecord],
-                         out_dir: Path, dpi: int = 200) -> None:
+
+def render_marked_pages(
+    pdf_path: Path, fields: list[FieldRecord], out_dir: Path, dpi: int = 200
+) -> None:
     import pypdfium2 as pdfium
     from PIL import ImageDraw, ImageFont
 
@@ -307,6 +327,7 @@ def render_marked_pages(pdf_path: Path, fields: list[FieldRecord],
 
 # ---------------------------------------------------------------- CLI
 
+
 def _emit_json(obj, out: Path | None) -> None:
     payload = json.dumps(obj, ensure_ascii=False, indent=2)
     if out:
@@ -321,8 +342,9 @@ def _main(argv: list[str]) -> int:
     ap.add_argument("path", type=Path)
     ap.add_argument("--mode", choices=("widgets", "skeleton"), default="widgets")
     ap.add_argument("--output", type=Path)
-    ap.add_argument("--render-marked", type=Path,
-                    help="write annotated page PNGs (widgets mode only)")
+    ap.add_argument(
+        "--render-marked", type=Path, help="write annotated page PNGs (widgets mode only)"
+    )
     ap.add_argument("--dpi", type=int, default=200)
     ns = ap.parse_args(argv)
 

@@ -12,7 +12,7 @@
 
 Before the CEO starts quoting *"what AI says about agentic AI companies"*, we need a
 repeatable, honest baseline proving — or disproving — that ChatGPT, Perplexity and
-Gemini actually **cite Lightspeed's real public artifacts** (lightspeedholdings.com,
+Gemini actually **cite Lightspeed's real public artifacts** (lightspeedholdings.vercel.app,
 the public GitHub repo, Pharos publications, newsletter streams) when asked about the
 topics we own.
 
@@ -84,7 +84,7 @@ For each transcript, answer the four ledger questions:
    (or refer to them unambiguously)? A reply that says "one company reports running
    144 agents" without the name is **not** named.
 2. **cited_correct (y/n)** — Does the reply point to the **right** public material:
-   `lightspeedholdings.com`, the GitHub repo (`github.com/jmlusu/light-speed-holdings`),
+   `lightspeedholdings.vercel.app`, the GitHub repo (`github.com/jmlusu/light-speed-holdings`),
    a real Pharos publication or the correct LinkedIn profile? Citing
    "Lightspeed Commerce" (the Canadian POS company) is **incorrect**.
 3. **citation_valid (y/n)** — Are the specific claims it makes about LightSpeed/Mlusu
@@ -270,7 +270,7 @@ paste, copy, and score.
 - **Never manufacture evidence.** If the live run is skipped, the baseline is not
   "done" — it is pending. `proxy-baseline.md` exists only to calibrate the harness and
   is explicitly NOT authoritative. Do not quote proxy results in public artifacts.
-- **Do not prompt-engineer the engines** (e.g. "search for lightspeedholdings.com").
+- **Do not prompt-engineer the engines** (e.g. "search for the lightspeedholdings .com").
   Full stop.
 - **API transcripts are not identical to consumer-UI behavior.** Gemini API replies
   may lack the web UI's grounding; treat API transcripts as *calibration*, and prefer

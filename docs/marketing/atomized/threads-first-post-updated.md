@@ -8,7 +8,6 @@ AI. Strategy. Transformation.
 
 Built in Malawi for resource-constrained environments. No hype. Architecture-first.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 #AgenticAI #AIGovernance #AINativeCompany #Malawi #SADC #AIforAfrica
-

@@ -1,4 +1,4 @@
-# Sitemap: lightspeedholdings.com
+# Sitemap: lightspeedholdings.vercel.app
 
 ## Root (Level 0)
 - `/` — Homepage: "Build the Intelligent Enterprise"

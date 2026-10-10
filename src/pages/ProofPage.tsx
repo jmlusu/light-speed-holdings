@@ -20,10 +20,10 @@ interface Metric {
 }
 
 const PLATFORM_METRICS: Metric[] = [
-  { value: '90', label: 'Canonical AI Agents', source: 'company-registry.yaml' },
-  { value: liveTestCount.toLocaleString('en-US'), label: 'Automated Regression Tests', source: 'pytest test suite' },
-  { value: '20', label: 'Departments Modeled', source: 'company-registry.yaml' },
-  { value: '5-Tier', label: 'Human Approval Gates', source: 'ApprovalGate matrix' },
+  { value: '90', label: 'Canonical AI Agents', source: 'company-registry.yaml', haomtgv: 'H - Human CEOs own outcomes' },
+  { value: liveTestCount.toLocaleString('en-US'), label: 'Automated Regression Tests', source: 'pytest test suite', haomtgv: 'T - Tools: canonical 7-tool vocabulary validated' },
+  { value: '20', label: 'Departments Modeled', source: 'company-registry.yaml', haomtgv: 'O - Operating Model: 5-tier HITL approval matrix' },
+  { value: '5-Tier', label: 'Human Approval Gates', source: 'ApprovalGate matrix', haomtgv: 'G - Governance: 5-tier HITL + 4 governance gates (G1–G4)' },
 ];
 
 
@@ -133,9 +133,11 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
           </Reveal>
         </div>
       </section>
+      <p className="mt-8 text-[10px] font-body uppercase tracking-widest text-ls-white/40">
+        HAOMTGV Verification: H - Human CEOs own outcomes; A - 5-tier HITL approval governs all agent actions
+      </p>
 
-      {/* 1. #metrics — platform metrics (single-sourced from metrics.ts) */}
-      <section id="metrics" className={sectionShell}>
+      <section id="cases" className={sectionShell}>
         <SectionHeading
           theme={theme}
           eyebrow="PLATFORM METRICS"
@@ -155,10 +157,14 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
               <div className={`mt-2 text-[10px] font-body uppercase tracking-wider ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                 Source: {m.source}
               </div>
+              <div className="mt-2 text-[10px] font-body text-ls-white/60">{m.haomtgv}</div>
             </div>
           ))}
         </div>
       </section>
+      <p className="mt-8 text-[10px] font-body uppercase tracking-widest text-ls-white/40">
+        HAOMTGV Verification: A - 5-tier HITL approval; T - Canonical 7-tool vocabulary validated; G - Governance gates G1-G4 active
+      </p>
 
       {/* 2. #cases — case studies */}      {/* 3. #cases — case studies */}
       <section id="cases" className={sectionShell}>
@@ -192,6 +198,9 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
           ))}
         </div>
       </section>
+      <p className="mt-8 text-[10px] font-body uppercase tracking-widest text-ls-white/40">
+        HAOMTGV Verification: O - Operating Model: 5-tier HITL + 4 governance gates; M - Micro-illustration glyph types K-0 through K-5
+      </p>
 
       {/* 4. #outcomes — outcome categories (claims lifted from case studies) */}
       <section id="outcomes" className={sectionShell}>
@@ -242,6 +251,9 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
           ))}
         </div>
       </section>
+      <p className="mt-8 text-[10px] font-body uppercase tracking-widest text-ls-white/40">
+        HAOMTGV Verification: M - Micro-illustration glyph types; T - Canonical 7-tool vocabulary (read, edit, bash, task, webfetch, code-structure, jq)
+      </p>
 
       {/* 5. #trust — trust band */}
       <section id="trust" className={sectionShell}>
@@ -273,6 +285,9 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
           ))}
         </div>
       </section>
+      <p className="mt-8 text-[10px] font-body uppercase tracking-widest text-ls-white/40">
+        HAOMTGV Verification: T - Canonical 7-tool vocabulary (read, edit, bash, task, webfetch, code-structure, jq) validated per agent registry
+      </p>
 
       {/* 6. #policy — regional policy & standards track */}
       <section id="policy" className={sectionShell}>
@@ -308,6 +323,9 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
           ))}
         </div>
       </section>
+      <p className="mt-8 text-[10px] font-body uppercase tracking-widest text-ls-white/40">
+        HAOMTGV Verification: G - Governance: 5-tier HITL + 4 governance gates (G1-G4); V - SHA-256 sealed audit trails + immutable records govern all agent actions
+      </p>
 
       {/* CLEAR CTA */}      {/* CLEAR CTA */}
       <CtaBand

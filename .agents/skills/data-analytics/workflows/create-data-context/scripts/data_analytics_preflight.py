@@ -29,7 +29,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--workflow", default="ordinary")
     parser.add_argument(
         "--request-mode",
-        choices=("ordinary_workflow", "orientation", "direct_setup_status", "guided_setup_workflow"),
+        choices=(
+            "ordinary_workflow",
+            "orientation",
+            "direct_setup_status",
+            "guided_setup_workflow",
+        ),
         default="ordinary_workflow",
     )
     parser.add_argument("--codex-home", type=Path, default=None)

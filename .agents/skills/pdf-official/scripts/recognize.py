@@ -44,12 +44,14 @@ def _pages_wanted(spec: str, total: int) -> list[int]:
 
 def _render_page(path: str, page_no: int, dpi: int) -> "PIL.Image.Image":
     import pypdfium2 as pdfium
+
     doc = pdfium.PdfDocument(path)
     return doc[page_no - 1].render(scale=dpi / 72.0).to_pil()
 
 
 def _ocr_image(img, language: str) -> str:
     import pytesseract
+
     return pytesseract.image_to_string(img, lang=language)
 
 
@@ -95,8 +97,7 @@ def _main(argv: list[str]) -> int:
     try:
         import pytesseract  # noqa: F401
     except ImportError:
-        print("error: pytesseract required (and Tesseract must be installed)",
-              file=sys.stderr)
+        print("error: pytesseract required (and Tesseract must be installed)", file=sys.stderr)
         return 1
 
     doc = pdfium.PdfDocument(str(ns.path))

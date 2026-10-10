@@ -15,7 +15,7 @@
 | 4 | 36–50s | KPI rows showing `current: null` → rendered "n/a" | "Where no real source exists, the number reads n/a, never a hardcoded comforting figure." |
 | 5 | 50–64s | 30-day vs 90-day instrumentation checklist building on screen | "Thirty days: registry, queue, utilization, success rate, dead-letter count. Ninety days: cost, tiers, SLA, outcomes." |
 | 6 | 64–80s | Call to action: Malawi Agentic AI Monitor cover | "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context." |
-| 7 | 80–90s | Fade to black, website URL | "LightspeedHoldings.com" |
+| 7 | 80–90s | Fade to black, website URL | "LightspeedHoldings.vercel.app" |
 
 ## Script Narrative (Full)
 

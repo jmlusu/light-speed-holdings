@@ -18,6 +18,7 @@ Usage (as a CLI, mostly for smoke testing):
     python soffice_bridge.py --target png  deck.pptx --out slides/
     python soffice_bridge.py --target odp  deck.pptx
 """
+
 from __future__ import annotations
 
 import argparse
@@ -41,7 +42,9 @@ class BridgeError(RuntimeError):
 
 
 def _which_soffice() -> str:
-    bundled = os.environ.get("MIMO_SOFFICE")  # bundled runtime: use only when present, else fall through
+    bundled = os.environ.get(
+        "MIMO_SOFFICE"
+    )  # bundled runtime: use only when present, else fall through
     if bundled and Path(bundled).is_file():
         return bundled
     for name in ("soffice", "libreoffice"):
@@ -52,15 +55,16 @@ def _which_soffice() -> str:
         return str(_MAC_APP_PATH)
     raise BridgeError(
         "soffice / libreoffice not found on PATH. Install LibreOffice or "
-        "make its `soffice` binary reachable.")
+        "make its `soffice` binary reachable."
+    )
 
 
 def _which_pdftoppm() -> str:
     found = shutil.which("pdftoppm")
     if not found:
         raise BridgeError(
-            "pdftoppm (poppler) not found. Install poppler-utils or "
-            "convert to PDF only.")
+            "pdftoppm (poppler) not found. Install poppler-utils or convert to PDF only."
+        )
     return found
 
 
@@ -73,7 +77,9 @@ def _isolated_profile() -> Iterator[str]:
     its own scratch directory sidesteps the problem entirely.
     """
     with tempfile.TemporaryDirectory(prefix="soffice-profile-") as td:
-        yield Path(td).as_uri()  # proper file:/// URI on every platform (bare f"file://{td}" breaks on Windows)
+        yield Path(
+            td
+        ).as_uri()  # proper file:/// URI on every platform (bare f"file://{td}" breaks on Windows)
 
 
 def _invoke(input_path: Path, out_dir: Path, target: str) -> Path:
@@ -82,38 +88,49 @@ def _invoke(input_path: Path, out_dir: Path, target: str) -> Path:
     with _isolated_profile() as profile_uri:
         result = subprocess.run(
             [
-                binary, "--headless", "--invisible", "--norestore",
+                binary,
+                "--headless",
+                "--invisible",
+                "--norestore",
                 f"-env:UserInstallation={profile_uri}",
-                "--convert-to", target,
-                "--outdir", str(out_dir),
+                "--convert-to",
+                target,
+                "--outdir",
+                str(out_dir),
                 str(input_path),
             ],
-            capture_output=True, text=True,
+            capture_output=True,
+            text=True,
         )
     if result.returncode != 0:
         raise BridgeError(
-            f"soffice exited {result.returncode}:\n"
-            f"stdout: {result.stdout}\nstderr: {result.stderr}")
+            f"soffice exited {result.returncode}:\nstdout: {result.stdout}\nstderr: {result.stderr}"
+        )
 
     produced = out_dir / f"{input_path.stem}.{target.split(':', 1)[0]}"
     if not produced.exists():
         raise BridgeError(
             f"soffice claimed success but {produced} is missing.\n"
-            f"stdout: {result.stdout}\nstderr: {result.stderr}")
+            f"stdout: {result.stdout}\nstderr: {result.stderr}"
+        )
     return produced
 
 
-def _rasterize(pdf_path: Path, out_dir: Path, image_ext: str, *,
-               dpi: int = 150,
-               first: int | None = None,
-               last: int | None = None) -> list[Path]:
+def _rasterize(
+    pdf_path: Path,
+    out_dir: Path,
+    image_ext: str,
+    *,
+    dpi: int = 150,
+    first: int | None = None,
+    last: int | None = None,
+) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     file_ext = "jpg" if image_ext in ("jpg", "jpeg") else image_ext
 
     if shutil.which("pdftoppm") is None and os.environ.get("MIMO_PYTHON"):
         # No Poppler, but a bundled Python (with pypdfium2 preinstalled) is available.
-        return _rasterize_pypdfium2(pdf_path, out_dir, file_ext,
-                                    dpi=dpi, first=first, last=last)
+        return _rasterize_pypdfium2(pdf_path, out_dir, file_ext, dpi=dpi, first=first, last=last)
 
     binary = _which_pdftoppm()
     prefix = out_dir / "slide"
@@ -135,10 +152,9 @@ def _rasterize(pdf_path: Path, out_dir: Path, image_ext: str, *,
     return sorted(out_dir.glob(f"slide-*.{file_ext}"))
 
 
-def _rasterize_pypdfium2(pdf_path: Path, out_dir: Path, file_ext: str, *,
-                         dpi: int,
-                         first: int | None,
-                         last: int | None) -> list[Path]:
+def _rasterize_pypdfium2(
+    pdf_path: Path, out_dir: Path, file_ext: str, *, dpi: int, first: int | None, last: int | None
+) -> list[Path]:
     """Poppler-free fallback: render via pypdfium2 in the bundled interpreter.
 
     Renders all pages into a scratch directory (pypdfium2_cli page-range syntax
@@ -152,15 +168,28 @@ def _rasterize_pypdfium2(pdf_path: Path, out_dir: Path, file_ext: str, *,
     with tempfile.TemporaryDirectory(prefix="pypdfium2-render-") as scratch_str:
         scratch = Path(scratch_str)
         result = subprocess.run(
-            [python_bin, "-m", "pypdfium2_cli", "render", str(pdf_path),
-             "--output", str(scratch), "--format", file_ext, "--scale", str(dpi / 72.0)],
-            capture_output=True, text=True,
+            [
+                python_bin,
+                "-m",
+                "pypdfium2_cli",
+                "render",
+                str(pdf_path),
+                "--output",
+                str(scratch),
+                "--format",
+                file_ext,
+                "--scale",
+                str(dpi / 72.0),
+            ],
+            capture_output=True,
+            text=True,
         )
         if result.returncode != 0:
             raise BridgeError(
                 f"pypdfium2 fallback exited {result.returncode}: {result.stderr}\n"
                 "(is pypdfium2 with its pypdfium2_cli module available in the "
-                "MIMO_PYTHON interpreter?)")
+                "MIMO_PYTHON interpreter?)"
+            )
 
         for page in sorted(scratch.glob(f"{pdf_path.stem}_*.{file_ext}")):
             digits = page.stem.rsplit("_", 1)[1]
@@ -177,12 +206,16 @@ def _rasterize_pypdfium2(pdf_path: Path, out_dir: Path, file_ext: str, *,
     return sorted(kept)
 
 
-def translate(source: Path, target: str, *,
-              out_dir: Path | None = None,
-              dpi: int = 150,
-              first: int | None = None,
-              last: int | None = None,
-              keep_intermediate_pdf: bool = False) -> Path | list[Path]:
+def translate(
+    source: Path,
+    target: str,
+    *,
+    out_dir: Path | None = None,
+    dpi: int = 150,
+    first: int | None = None,
+    last: int | None = None,
+    keep_intermediate_pdf: bool = False,
+) -> Path | list[Path]:
     """Convert `source` to `target` (one of `pdf`, `odp`, `pptx`, `png`, `jpg`).
 
     Returns a single Path for direct targets and a list of Paths for image
@@ -199,8 +232,7 @@ def translate(source: Path, target: str, *,
         pdf = _invoke(source, out_dir, "pdf")
         image_ext = "jpeg" if target == "jpg" else target
         try:
-            images = _rasterize(pdf, out_dir, image_ext,
-                                dpi=dpi, first=first, last=last)
+            images = _rasterize(pdf, out_dir, image_ext, dpi=dpi, first=first, last=last)
         finally:
             if not keep_intermediate_pdf:
                 try:
@@ -217,24 +249,32 @@ def translate(source: Path, target: str, *,
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("source", type=Path)
-    ap.add_argument("--target", required=True,
-                    choices=sorted(DIRECT_TARGETS | IMAGE_TARGETS))
-    ap.add_argument("--out", type=Path, default=None,
-                    help="destination directory (default: alongside source)")
-    ap.add_argument("--dpi", type=int, default=150,
-                    help="rasterisation DPI for image targets (default 150)")
-    ap.add_argument("--first", type=int, default=None,
-                    help="first slide (1-based) to rasterise")
-    ap.add_argument("--last", type=int, default=None,
-                    help="last slide (1-based) to rasterise")
-    ap.add_argument("--keep-pdf", action="store_true",
-                    help="do not delete the intermediate PDF when rasterising")
+    ap.add_argument("--target", required=True, choices=sorted(DIRECT_TARGETS | IMAGE_TARGETS))
+    ap.add_argument(
+        "--out", type=Path, default=None, help="destination directory (default: alongside source)"
+    )
+    ap.add_argument(
+        "--dpi", type=int, default=150, help="rasterisation DPI for image targets (default 150)"
+    )
+    ap.add_argument("--first", type=int, default=None, help="first slide (1-based) to rasterise")
+    ap.add_argument("--last", type=int, default=None, help="last slide (1-based) to rasterise")
+    ap.add_argument(
+        "--keep-pdf",
+        action="store_true",
+        help="do not delete the intermediate PDF when rasterising",
+    )
     ns = ap.parse_args(argv)
 
     try:
-        result = translate(ns.source, ns.target, out_dir=ns.out,
-                           dpi=ns.dpi, first=ns.first, last=ns.last,
-                           keep_intermediate_pdf=ns.keep_pdf)
+        result = translate(
+            ns.source,
+            ns.target,
+            out_dir=ns.out,
+            dpi=ns.dpi,
+            first=ns.first,
+            last=ns.last,
+            keep_intermediate_pdf=ns.keep_pdf,
+        )
     except BridgeError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

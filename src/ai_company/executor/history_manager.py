@@ -28,11 +28,15 @@ class ConversationHistoryManager:
         max_full_turns: int = 3,
         max_summary_tokens: int = 1000,
         max_total_tokens: int = 6000,
+        task_id: str = "",
     ):
         self.llm = llm
         self.max_full_turns = max_full_turns
         self.max_summary_tokens = max_summary_tokens
         self.max_total_tokens = max_total_tokens
+        # Task ID for cost attribution — summarizer LLM calls only get
+        # recorded in cost_tracker when they carry the owning task_id.
+        self.task_id = task_id
         self._summary: str = ""
         self._full_history: list[str] = []  # Recent turns kept in full
 
@@ -111,6 +115,7 @@ class ConversationHistoryManager:
                 priority="low",
                 system_prompt="You are a concise summarizer for agent conversation history.",
                 max_retries=2,
+                task_id=self.task_id,
             )
 
             # Extract result from parsed JSON or use raw
@@ -174,6 +179,7 @@ class ConversationHistoryManager:
 def create_history_manager(
     llm: LLMClient | None = None,
     config: dict[str, Any] | None = None,
+    task_id: str = "",
 ) -> ConversationHistoryManager:
     """Factory function to create a history manager with config."""
     cfg = config or {}
@@ -182,4 +188,5 @@ def create_history_manager(
         max_full_turns=cfg.get("max_full_turns", 3),
         max_summary_tokens=cfg.get("max_summary_tokens", 1000),
         max_total_tokens=cfg.get("max_total_tokens", 6000),
+        task_id=task_id,
     )

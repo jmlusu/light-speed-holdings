@@ -160,21 +160,22 @@ Use modern Python 3.12+ syntax:
 
 ```python
 # Good — builtin generics, union syntax
-def fetch(url: str, timeout: float = 30.0) -> list[dict[str, str | None]]:
-    ...
+def fetch(url: str, timeout: float = 30.0) -> list[dict[str, str | None]]: ...
+
 
 # Bad — legacy typing imports
 from typing import List, Dict, Optional
-def fetch(url: str, timeout: float = 30.0) -> List[Dict[str, Optional[str]]]:
-    ...
+
+
+def fetch(url: str, timeout: float = 30.0) -> List[Dict[str, Optional[str]]]: ...
 ```
 
 Always annotate function parameters. Local variables can rely on inference unless the type is ambiguous:
 
 ```python
-items: list[tuple[str, int]] = []    # annotate — empty literal
-config: dict[str, Any] = {}          # annotate — empty literal
-result = some_api()                  # inference is fine
+items: list[tuple[str, int]] = []  # annotate — empty literal
+config: dict[str, Any] = {}  # annotate — empty literal
+result = some_api()  # inference is fine
 ```
 
 ### pydantic v2
@@ -193,9 +194,11 @@ from typing import Annotated
 
 cli = typer.Typer(add_completion=False)
 
+
 @cli.command()
 def main(name: Annotated[str, typer.Argument(help="Your name")]) -> None:
     typer.echo(f"Hello {name}")
+
 
 if __name__ == "__main__":
     cli()

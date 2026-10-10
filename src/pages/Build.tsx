@@ -64,7 +64,7 @@ export const Build: React.FC = () => {
         }}
       >
         <p style={{ fontFamily: 'var(--font-caption, Arial)', fontSize: 'var(--size-caption, 12pt)', color: 'var(--color-grey-light-text, #9CA3AF)', margin: 0 }}>
-          LightSpeed Holdings Limited™ &copy; {new Date().getFullYear()} — <a href="/" style={{ color: 'var(--color-cyan, #00BFFF)' }}>lightspeedholdings.com</a>
+          LightSpeed Holdings Limited™ &copy; {new Date().getFullYear()} — <a href="/" style={{ color: 'var(--color-cyan, #00BFFF)' }}>lightspeedholdings.vercel.app</a>
         </p>
       </footer>
     </>

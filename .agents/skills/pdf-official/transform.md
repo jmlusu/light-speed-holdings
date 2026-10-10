@@ -88,7 +88,7 @@ reader = PdfReader("scan.pdf")
 writer = PdfWriter()
 for i, page in enumerate(reader.pages, start=1):
     if i in {2, 5, 6}:
-        page.rotate(90)          # 90 / 180 / 270 clockwise
+        page.rotate(90)  # 90 / 180 / 270 clockwise
     writer.add_page(page)
 
 with open("scan_rotated.pdf", "wb") as fh:
@@ -141,7 +141,7 @@ Overlay a source PDF (the "stamp") onto every page of a target:
 from pypdf import PdfReader, PdfWriter
 
 target = PdfReader("contract.pdf")
-stamp  = PdfReader("draft_watermark.pdf").pages[0]
+stamp = PdfReader("draft_watermark.pdf").pages[0]
 
 writer = PdfWriter()
 for page in target.pages:
@@ -159,6 +159,7 @@ import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
+
 def build_stamp(text="DRAFT"):
     buf = io.BytesIO()
     c = canvas.Canvas(buf, pagesize=letter)
@@ -172,6 +173,7 @@ def build_stamp(text="DRAFT"):
     c.save()
     buf.seek(0)
     return buf
+
 
 stamp_page = PdfReader(build_stamp("DRAFT")).pages[0]
 ```
@@ -205,8 +207,7 @@ from pypdf import PdfReader, PdfWriter
 
 reader = PdfReader("input.pdf")
 writer = PdfWriter(clone_from=reader)
-writer.encrypt(user_password="reader_pw", owner_password="owner_pw",
-               algorithm="AES-256")
+writer.encrypt(user_password="reader_pw", owner_password="owner_pw", algorithm="AES-256")
 with open("secured.pdf", "wb") as fh:
     writer.write(fh)
 ```
@@ -270,7 +271,7 @@ with open("book_trimmed.pdf", "wb") as fh:
 ```python
 from pypdf import PdfReader, PdfWriter
 
-original    = PdfReader("book.pdf")
+original = PdfReader("book.pdf")
 replacement = PdfReader("new_page_42.pdf").pages[0]
 
 writer = PdfWriter()

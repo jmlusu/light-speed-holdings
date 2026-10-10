@@ -3,12 +3,12 @@
 **Status:** Accepted
 **Date:** 2026-09-15
 **Deciders:** Human CMO/CEO (ratification), CMO agent, Frontend Architect, Chief of Staff
-**Technical Domain:** Client-facing website (lightspeedholdings.com) / frontend SPA
+**Technical Domain:** Client-facing website (lightspeedholdings.vercel.app) / frontend SPA
 
 ## Context
 
 The CMO mandate — "LightSpeed Holdings — Guiding Principles for the Client-Facing
-Website (lightspeedholdings.com), version 1.0" — introduces binding rules for the
+Website (lightspeedholdings.vercel.app), version 1.0" — introduces binding rules for the
 external site: outcome-led 5-second pages, evidence-backed or qualified claims,
 canonical brand tokens, no fake success states, and an Appendix A review gate with
 an Appendix B acknowledgment roster.
@@ -54,5 +54,5 @@ Human CMO/CEO ratified (2026-09-15, no redlines):
   token/component migration grilling) are unblocked.
 - The fake-form guard (`scripts/test/check-site-form-backend.py`) and the Appendix A PR
   template now have ratified SLA copy and ownership to enforce against.
-- Any deviation from section 7.1 tokens on lightspeedholdings.com is a violation,
+- Any deviation from section 7.1 tokens on lightspeedholdings.vercel.app is a violation,
   not a stylistic choice.

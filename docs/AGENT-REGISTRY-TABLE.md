@@ -2,7 +2,7 @@
 
 > **Source**: `company-registry.yaml`
 > **Total Agents**: 90 across 20 departments
-> **Generated**: 2026-10-07
+> **Generated**: 2026-10-10
 
 ---
 
@@ -86,7 +86,7 @@
 
 | # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
 |---|----------|-----------|------------|----------------|-----------------|
-| 32 | `cmo` | Chief Marketing Officer | `chief-of-staff` | None | Own the external company website (https://lightspeedholdings.com) including content, UX, SEO, and conversion optimization.; Develop marketing strategy and brand positioning.; Drive demand generation and campaign management.; Track marketing ROI and attribution.; Build brand positioning and messaging.; Analyze market trends and competitive landscape.; Coordinate with sales on lead generation.; Oversee PR and communications. |
+| 32 | `cmo` | Chief Marketing Officer | `chief-of-staff` | None | Own the external company website (https://lightspeedholdings.vercel.app) including content, UX, SEO, and conversion optimization.; Develop marketing strategy and brand positioning.; Drive demand generation and campaign management.; Track marketing ROI and attribution.; Build brand positioning and messaging.; Analyze market trends and competitive landscape.; Coordinate with sales on lead generation.; Oversee PR and communications. |
 | 33 | `content-creator` | Content Creator | `cmo` | None | Create visual and multimedia content.; Produce video and audio content.; Design social media assets.; Manage content distribution channels.; Track content engagement metrics.; Collaborate with writers on content themes. |
 | 34 | `creative-director` | Creative Director | `cmo` | None | Read the creative brief and extract artifact type, audience, objective, narrative, and visual language.; Decide the production chain, specifying which production skill plus support skills to invoke.; Route every creative task so it loads the LightSpeed design system first and ends at artifact QA.; Hand off an executable creative brief to the target production specialist.; Keep rendered artifacts on-brand by enforcing brand tokens (navy 070A40, red E63946, cyan 00BFFF, Arial scale, 4px grid) without inventing brand colors or fonts. |
 | 35 | `growth-hacker` | Growth Hacker | `cmo` | None | Design and execute growth experiments.; Analyze user acquisition funnels.; Optimize conversion and retention rates.; Manage A/B testing programs.; Identify new growth channels.; Track and report growth metrics. |

@@ -15,6 +15,7 @@ Usage:
 Flags:
     --verbatim   skip indent normalisation; write every part byte-for-byte
 """
+
 from __future__ import annotations
 
 import argparse
@@ -31,7 +32,7 @@ def _reformat(raw: bytes) -> bytes:
     junk that we shouldn't silently discard)."""
     try:
         from lxml import etree  # local import: keep the tool usable if the
-                                # caller only wants --verbatim mode.
+        # caller only wants --verbatim mode.
     except ImportError:
         return raw
     try:
@@ -39,8 +40,7 @@ def _reformat(raw: bytes) -> bytes:
         tree = etree.fromstring(raw, parser)
     except etree.XMLSyntaxError:
         return raw
-    return etree.tostring(tree, pretty_print=True,
-                          xml_declaration=True, encoding="UTF-8")
+    return etree.tostring(tree, pretty_print=True, xml_declaration=True, encoding="UTF-8")
 
 
 def _ensure_target(target: Path) -> None:
@@ -48,8 +48,7 @@ def _ensure_target(target: Path) -> None:
         if not target.is_dir():
             raise SystemExit(f"{target} exists and is not a directory")
         if any(target.iterdir()):
-            raise SystemExit(
-                f"{target} is not empty; remove it or choose another path")
+            raise SystemExit(f"{target} is not empty; remove it or choose another path")
     else:
         target.mkdir(parents=True)
 
@@ -73,8 +72,8 @@ def explode(source: Path, target: Path, *, indent: bool = True) -> int:
             out_path = (target / info.filename).resolve()
             if not out_path.is_relative_to(resolved_target):
                 raise SystemExit(
-                    f"refusing to extract {info.filename!r}: "
-                    "path escapes the target directory")
+                    f"refusing to extract {info.filename!r}: path escapes the target directory"
+                )
             out_path.parent.mkdir(parents=True, exist_ok=True)
             data = zf.read(info)
             if indent and out_path.suffix.lower() in INDENTED:
@@ -88,8 +87,11 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("source", type=Path)
     ap.add_argument("target", type=Path)
-    ap.add_argument("--verbatim", action="store_true",
-                    help="write XML parts unmodified (no indent normalisation)")
+    ap.add_argument(
+        "--verbatim",
+        action="store_true",
+        help="write XML parts unmodified (no indent normalisation)",
+    )
     ns = ap.parse_args(argv)
 
     written = explode(ns.source, ns.target, indent=not ns.verbatim)

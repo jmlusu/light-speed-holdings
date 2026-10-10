@@ -40,10 +40,8 @@ def _targets(spec: str, total: int) -> frozenset[int]:
 def _main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description="Rotate PDF pages.")
     ap.add_argument("path", type=Path)
-    ap.add_argument("--angle", type=int, required=True,
-                    choices=(90, 180, 270))
-    ap.add_argument("--targets", required=True,
-                    help="e.g. 1,3-5 or 'all'")
+    ap.add_argument("--angle", type=int, required=True, choices=(90, 180, 270))
+    ap.add_argument("--targets", required=True, help="e.g. 1,3-5 or 'all'")
     ap.add_argument("--out", type=Path, required=True)
     ns = ap.parse_args(argv)
 

@@ -8,7 +8,7 @@
     "promise": "YAML-defined, type-safe, auditable hierarchies",
     "proof": "37 agents, 3 offers, 1 CLI",
     "differentiation": "Only platform with HITL governance + cost transparency + Malawi/SADC presence",
-    "cta": "Start Free → lightspeedholdings.com"
+    "cta": "Start Free → lightspeedholdings.vercel.app"
   },
   "brandTokens": {
     "navy": "#070A40",
@@ -52,7 +52,7 @@
       "copy": {
         "headline": "Deploy an agent company in 5 minutes",
         "subhead": "37 agents. 3 offers. 1 CLI. Governance included.",
-        "cta": "Start Free → lightspeedholdings.com"
+        "cta": "Start Free → lightspeedholdings.vercel.app"
       },
       "safeZones": "Content ≥15% inset from edges (180px horizontal, 94px vertical)"
     },
@@ -65,7 +65,7 @@
       "copy": {
         "headline": "Deploy an agent company in 5 minutes",
         "subhead": "YAML → Generator → Orchestrator. Done.",
-        "cta": "Link in bio → lightspeedholdings.com"
+        "cta": "Link in bio → lightspeedholdings.vercel.app"
       },
       "safeZones": "Content ≥15% inset from edges (162px all sides)"
     },
@@ -78,7 +78,7 @@
       "copy": {
         "headline": "Deploy an agent company in 5 minutes",
         "body": "Registry → Generator → Orchestrator\n37 agents • 3 offers • 1 CLI\nHITL governance built in",
-        "cta": "Swipe Up → lightspeedholdings.com"
+        "cta": "Swipe Up → lightspeedholdings.vercel.app"
       },
       "safeZones": "Content ≥15% inset (162px horizontal, 288px vertical)"
     },
@@ -91,7 +91,7 @@
       "copy": {
         "headline": "Deploy an agent company in 5 minutes",
         "subhead": "Agent sprawl? No governance? Runaway costs? Fixed.",
-        "cta": "Learn More → lightspeedholdings.com"
+        "cta": "Learn More → lightspeedholdings.vercel.app"
       },
       "safeZones": "Content ≥15% inset from edges (180px horizontal, 94px vertical)"
     },
@@ -104,7 +104,7 @@
       "copy": {
         "headline": "Deploy an agent company in 5 minutes",
         "subhead": "YAML-defined. Type-safe. Auditable. 37 agents, 3 offers, 1 CLI.",
-        "cta": "Start Free → lightspeedholdings.com"
+        "cta": "Start Free → lightspeedholdings.vercel.app"
       },
       "safeZones": "Content ≥15% inset from edges (240px horizontal, 135px vertical)"
     },
@@ -155,7 +155,7 @@
       "copy": {
         "headline": "Deploy an agent company in 5 minutes",
         "subhead": "YAML-defined hierarchies. Type-safe. HITL governed.",
-        "cta": "Start Free → lightspeedholdings.com"
+        "cta": "Start Free → lightspeedholdings.vercel.app"
       },
       "safeZones": "Content ≥15% inset (146px horizontal, 38px vertical)"
     },
@@ -168,7 +168,7 @@
       "copy": {
         "headline": "Deploy an agent company in 5 minutes",
         "subhead": "LightSpeed Holdings Limited™ — ASPIRE. ACT. ACHIEVE.",
-        "cta": "lightspeedholdings.com"
+        "cta": "lightspeedholdings.vercel.app"
       },
       "safeZones": "Content ≥15% inset (210px horizontal, 90px vertical)",
       "printSpecs": {
@@ -202,6 +202,6 @@
     "name": "Jack Mlusu",
     "email": "jmlusu@gmail.com",
     "phone": "+265 (0) 980 016 004",
-    "website": "lightspeedholdings.com"
+    "website": "lightspeedholdings.vercel.app"
   }
 }
