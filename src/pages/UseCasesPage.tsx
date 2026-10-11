@@ -20,9 +20,9 @@ import { Stack } from '@lightspeed/design-system';
 import { Grid } from '@lightspeed/design-system';
 import { Button } from '@lightspeed/design-system';
 import { tokens } from '@lightspeed/design-system/tokens';
-import { useCasesRegistry, getUseCasesByStatus, getUseCasesBySector, getUseCasesBySolution, getUseCasesByProblemCategory, getFeaturedUseCases, UseCase, UseCaseStatus, ProblemCategory, SolutionCategory } from '@lightspeed/data/use-cases';
-import { sectorsRegistry } from '@lightspeed/data/sectors';
-import { solutionsRegistry } from '@lightspeed/data/solutions';
+import { useCasesRegistry, getUseCasesByStatus, getUseCasesBySector, getUseCasesBySolution, getUseCasesByProblemCategory, getFeaturedUseCases, UseCase, UseCaseStatus, ProblemCategory, SolutionCategory } from '../data/use-cases/registry';
+import { sectorsRegistry } from '../data/sectors/registry';
+import { solutionsRegistry } from '../data/solutions/registry';
 
 const STATUS_OPTIONS: { value: UseCaseStatus; label: string }[] = [
   { value: 'LIVE', label: 'Live' },

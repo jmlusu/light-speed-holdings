@@ -9,19 +9,17 @@ import { WhatWeDoPage } from './pages/WhatWeDoPage';
 import { AiCompanyBuilderPage } from './pages/AiCompanyBuilderPage';
 import { SolutionsPage } from './pages/SolutionsPage';
 import { SectorsPage } from './pages/SectorsPage';
-import { ProofPage } from './pages/ProofPage';
+import { UseCasesPage } from './pages/UseCasesPage';
+import { UseCaseDetailPage } from './pages/UseCaseDetailPage';
+import { SectorDetailPage } from './pages/SectorDetailPage';
+import { AiAssessmentPage } from './pages/AiAssessmentPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { InsightsPage } from './pages/InsightsPage';
 import { InsightArticlePage } from './pages/InsightArticlePage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
-import { AskLightSpeed } from './components/AskLightSpeed';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
-import { Architecture } from './pages/Architecture';
-import { Build } from './pages/Build';
-import { OfferB } from './pages/OfferB';
-import { OfferC } from './pages/OfferC';
-import { OfferE } from './pages/OfferE';
 
 
 const HomePageRoute = withSite(HomePage);
@@ -29,7 +27,8 @@ const WhatWeDoPageRoute = withSite(WhatWeDoPage);
 const AiCompanyBuilderPageRoute = withSite(AiCompanyBuilderPage);
 const SolutionsPageRoute = withSite(SolutionsPage);
 const SectorsPageRoute = withSite(SectorsPage);
-const ProofPageRoute = withSite(ProofPage);
+const SectorDetailPageRoute = withSite(SectorDetailPage);
+const AiAssessmentPageRoute = withSite(AiAssessmentPage);
 const InsightsPageRoute = withSite(InsightsPage);
 const InsightArticlePageRoute = withSite(InsightArticlePage);
 const AboutPageRoute = withSite(AboutPage);
@@ -85,19 +84,24 @@ export const App: React.FC = () => {
           { path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
           { path: 'solutions', element: <SolutionsPageRoute /> },
           { path: 'sectors', element: <SectorsPageRoute /> },
-          { path: 'proof', element: <ProofPageRoute /> },
+          { path: 'sectors/:slug', element: <SectorDetailPageRoute /> },
+          { path: 'use-cases', element: <UseCasesPage /> },
+          { path: 'use-cases/:slug', element: <UseCaseDetailPage /> },
+          { path: 'ai-assessment', element: <AiAssessmentPageRoute /> },
           { path: 'insights', element: <InsightsPageRoute /> },
           { path: 'insights/:slug', element: <InsightArticlePageRoute /> },
           { path: 'about', element: <AboutPageRoute /> },
           { path: 'contact', element: <ContactPageRoute /> },
-          { path: 'ask', element: <AskLightSpeed /> },
           { path: 'legal/privacy', element: <PrivacyPageRoute /> },
           { path: 'legal/terms', element: <TermsPageRoute /> },
-          { path: 'architecture', element: <Architecture /> },
-          { path: 'build', element: <Build /> },
-          { path: 'offer-b', element: <OfferB /> },
-          { path: 'offer-c', element: <OfferC /> },
-          { path: 'offer-e', element: <OfferE /> },
+          { path: 'proof', element: <Navigate to="/use-cases" replace /> },
+          { path: 'architecture', element: <Navigate to="/" replace /> },
+          { path: 'build', element: <Navigate to="/" replace /> },
+          { path: 'offer-b', element: <Navigate to="/" replace /> },
+          { path: 'offer-c', element: <Navigate to="/" replace /> },
+          { path: 'offer-e', element: <Navigate to="/" replace /> },
+          { path: 'ask', element: <Navigate to="/contact" replace /> },
+          { path: '*', element: <NotFoundPage /> },
         ],
       },
 

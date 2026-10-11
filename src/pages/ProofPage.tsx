@@ -17,6 +17,7 @@ interface Metric {
   value: string;
   label: string;
   source: string;
+  haomtgv?: string;
 }
 
 const PLATFORM_METRICS: Metric[] = [
