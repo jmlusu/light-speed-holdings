@@ -84,9 +84,12 @@ def score_task_throughput(
         ts = t.get("created_at", "")
         if ts:
             try:
-                timestamps.append(datetime.fromisoformat(ts))
+                dt = datetime.fromisoformat(ts)
             except (ValueError, TypeError):
                 continue
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            timestamps.append(dt)
     if not timestamps:
         return None
     oldest = min(timestamps)
