@@ -341,3 +341,21 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 - New issues must be added as new rows, not appended to existing entries
 - Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
 - Before removing any entry, a replacement fix must be documented
+
+## 17 Tool Usage Issues (Session Records)
+
+| Issue | Fix | Date Identified | Date Fixed | Status |
+|-------|-----|-----------------|------------|--------|
+| **PowerShell Select-Object validation** — `$input | Select-Object -First $n` fails with "Cannot validate argument on parameter 'First'. The -30 argument is less than the minimum allowed range 0". PowerShell 5.1 does not accept negative numbers for `-First`/`-Last` parameters. | Use positive numbers only, or avoid `-First`/`-Last` and pipe through other means. | 2026-10-11 | 🟡 In Progress |
+| **PowerShell `&&` token not valid separator** — `cd "path" && command` fails with "The token '&&' is not a valid statement separator in this version". Windows PowerShell 5.1 does not support `&&` as a statement separator like bash. | Use `pwsh -Command "cd 'path'; & command"` syntax or run commands separately. | 2026-10-11 | 🟡 In Progress |
+| **Git cherry-pick stuck in conflict state** — Cherry-pick of commit `3d37314c` (logo v2) got stuck showing "all conflicts fixed: run git cherry-pick --continue" but wouldn't complete. | Use `git cherry-pick --continue` after ensuring all conflict resolutions are staged, or abort and use merge instead. | 2026-10-11 | 🟡 In Progress |
+| **Git merge conflicts in FloatingNav.tsx** — PR #431 merge blocked due to FloatingNav.tsx TS1128 error from merge conflict resolution. The governance overlay section was placed outside the `return (` statement during conflict resolution. | Manually restructure JSX to put governance section inside return, then merge the fix branch into main. | 2026-10-11 | ✅ Fixed |
+| **TypeScript check failures after file edits** — After editing FloatingNav.tsx, `npx tsc --noEmit` kept failing on same lines due to duplicate governance sections (unused `governanceOverlay` variable + governance outside return). | Remove unused variables entirely, ensure single governance section inside return statement. | 2026-10-11 | ✅ Fixed |
+| **Bash/PowerShell command execution issues** — Multiple bash tool calls had syntax issues with PowerShell heredocs, line continuations, and string quoting due to different quoting rules between Windows PowerShell 5.1 and bash/cmd. | Use `pwsh -Command` with proper escaping, or break complex commands into simpler steps with careful quoting. | 2026-10-11 | ⚠️ Workaround |
+| **PowerShell `&&` token not valid separator (manual test)** — `cd "path" && command` fails in PowerShell 5.1 with "The token '&&' is not a valid statement separator". | Use `pwsh -Command "cd 'path'; & command"` syntax or run commands separately.; this is a known limitation, not a bug; use alternative syntax. | 2026-10-11 | ❌ Cant Fix |
+
+**Rules for this section:**
+- Entries are tracked by date and status; do not delete without replacement
+- New issues must be added as new rows, not appended to existing entries
+- Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
+- Before removing any entry, a replacement fix must be documented
