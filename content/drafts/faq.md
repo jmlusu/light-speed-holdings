@@ -12,7 +12,7 @@
 
 ## 1. What is LightSpeed Holdings?
 
-LightSpeed Holdings Limited is an AI-native company builder and operating company based in Lilongwe, Malawi. We design, build, and govern AI-native businesses, intelligent workflows, and agentic systems for organisations across Malawi, SADC, and Africa. Our tagline: ASPIRE. ACT. ACHIEVE. Our positioning: The AI-native company builder for Southern Africa.
+LightSpeed Holdings Limited combines human leadership, intelligent agents, governed automation, and persistent memory to build businesses, transform workflows, and deliver measurable value across Africa. As an AI‑native company builder, we operate from Lilongwe, Malawi, serving organisations across Malawi, SADC, and the continent. Our H‑A‑O‑M‑T‑G‑V framework (Human authority, Orchestrated AI agents, Governed automation, Persistent memory, Tools, Governance, Value creation) ensures every engagement is guided by human intent, executed by specialized agents, controlled by five‑tier HITL approvals, contextualized by enduring memory, and measured by tangible business outcomes. Tagline: ASPIRE. ACT. ACHIEVE. Positioning: The AI‑native company builder for Africa.
 
 <!-- src: faq-registry#faq-01, Directive section 18, Q1 -->
 

@@ -15,8 +15,6 @@ import json
 from collections import Counter
 from pathlib import Path
 
-import pytest
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INDEX_PATH = REPO_ROOT / "harness" / "changes" / "INDEX.json"
 
@@ -40,9 +38,7 @@ class TestNoDuplicateArchiveEntries:
         archive = _archive_entries(index_entries)
         # Each entry should have a 'slug' field
         slugs = [e["slug"] for e in archive]
-        assert len(slugs) == len(set(slugs)), (
-            f"Duplicate slugs found in INDEX.json: {slugs}"
-        )
+        assert len(slugs) == len(set(slugs)), f"Duplicate slugs found in INDEX.json: {slugs}"
 
 
 class TestCompletedChangeMetadata:
@@ -86,9 +82,7 @@ class TestDuplicateSessionIdDetection:
         session_ids = [e["session_id"] for e in archive]
         counts = Counter(session_ids)
         duplicated = {sid: n for sid, n in counts.items() if n > 1}
-        assert not duplicated, (
-            f"Duplicate session_ids found in INDEX.json: {duplicated}"
-        )
+        assert not duplicated, f"Duplicate session_ids found in INDEX.json: {duplicated}"
 
 
 def test_reindex_preserves_integrity() -> None:
@@ -100,9 +94,17 @@ def test_reindex_preserves_integrity() -> None:
       phase in {validate, implement}, spec_review != pending)
     """
     import subprocess
+
     result = subprocess.run(
-        ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass",
-         "-File", "scripts\\maintenance\\harness-change.ps1", "reindex"],
+        [
+            "powershell",
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "scripts\\maintenance\\harness-change.ps1",
+            "reindex",
+        ],
         cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,
@@ -114,9 +116,7 @@ def test_reindex_preserves_integrity() -> None:
 
     # No duplicate slugs
     slugs = [e["slug"] for e in archive]
-    assert len(slugs) == len(set(slugs)), (
-        f"Duplicate slugs after reindex: {slugs}"
-    )
+    assert len(slugs) == len(set(slugs)), f"Duplicate slugs after reindex: {slugs}"
 
     # All completed changes have proper metadata
     completed = [e for e in archive if e.get("status") == "completed"]

@@ -30,16 +30,7 @@ If the existing application conflicts with this document, this document takes pr
 
 ## Core positioning
 
-LightSpeed is an AI-native company that combines:
-
-- Strategy
-- Build
-- Govern
-- Research & Policy
-
-into an operating model for building, transforming, governing, and scaling AI-enabled organizations.
-
-LightSpeed should be presented as an **AI Company Builder**, not as a generic consulting firm or an AI chatbot company.
+LightSpeed Holdings Limited combines human leadership, intelligent agents, governed automation, and persistent memory to build businesses, transform workflows, and deliver measurable value across Africa. Our H‑A‑O‑M‑T‑G‑V framework (Human authority, Orchestrated AI agents, Governed automation, Persistent memory, Tools, Governance, Value creation) defines how we operate: H — Human authority sets strategic intent and final decision power; A — Orchestrated AI agents execute specialized tasks across 20 departments; O — Governed automation runs through five‑tier HITL approvals and four governance gates (Contract, DPA, Compliance, Security); M — Persistent memory preserves contextual data across long‑running tasks; T — Tools provide isolated execution environments for APIs and actions; G — Governance enforces immutable audit trails and risk‑classified routing; V — Value creation delivers measurable reductions in cost and operational latency. LightSpeed is presented as an **AI‑native company builder**, not as a generic consulting firm or AI chatbot company.
 
 ## Geographic ambition
 
