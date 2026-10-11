@@ -16,7 +16,7 @@ const Logo: React.FC<LogoProps> = ({
   theme = 'dark',
   instance = 'first',
 }) => {
-  const src = variant === 'icon' ? '/logo-icon.svg' : '/logo-full.svg';
+  const src = variant === 'icon' ? '/logo-icon-v2.svg' : '/logo-full-v2.svg';
   const isFirst = instance === 'first';
 
   return (

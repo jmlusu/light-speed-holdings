@@ -1,9 +1,9 @@
 # Marketing Site Artifact Inventory
 
-**Source:** Merged from `docs/assets/README.md` (generation tracker, 15 planned assets) and `public/assets/manifest.json` (live site asset map, ~48 entries).  
-**Dev server:** `http://localhost:1441` — serves from `src/` + `public/` (source mode).  
-**Preview server:** `http://localhost:1440` — serves from built `dist/` (identical file set, different port).  
-**Local paths:** Identical for dev and preview; only the serving URL port differs (1441 vs 1440).  
+**Source:** Merged from `docs/assets/README.md` (generation tracker, 15 planned assets) and `public/assets/manifest.json` (live site asset map, ~48 entries).
+**Dev server:** `http://localhost:1441` — serves from `src/` + `public/` (source mode).
+**Preview server:** `http://localhost:1440` — serves from built `dist/` (identical file set, different port).
+**Local paths:** Identical for dev and preview; only the serving URL port differs (1441 vs 1440).
 **QA gate:** All assets must pass `ls-artifact-qa` before status can change from `pending`.
 
 | # | Name | Description | Status | File type | Local path | Dev URL | Preview URL | Notes |

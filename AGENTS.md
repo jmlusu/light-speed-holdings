@@ -226,6 +226,11 @@ curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" https://api.example.com/health
 
 1. **Dev cold-start probe timeout (1 failure — cycle 1, `:1441/` returned ERR).** The first request after `npm run dev` exceeded the 15 s probe timeout while Vite optimized the 1676-module dependency graph. Re-measured cold start: port binds in ~2.5 s, first request completes in ~6.3 s and returns 200; subsequent requests ~8 ms. **Fix:** documented here — automated health checks and QA probes must tolerate the first dev request (retry once after the `VITE ready in ...` log line, allow ≥30 s timeout). No code change required; reproduced deterministically (warm dep cache ≈ 6 s, cold ≈ >15 s).
 
+2. **Port conflict / server startup failure.** If ports 1440/1441 are already in use (e.g., leftover `node.exe` processes from a previous session), the Vite dev server will fall back to the next available port (e.g., 1442) or fail to bind. **Fix:** Always kill any lingering `node.exe` processes before restarting servers:
+   - `taskkill /F /IM node.exe` (Windows) — kills all Node.js processes
+   - Then restart with `npm run dev` (port 1441) or `npm run preview` (port 1440)
+   - Verify ports are free: `netstat -an | findstr "1440 1441"` should show no listeners before restart
+
 **Servers were stopped and ports 1440/1441 released after the session.**
 
 ## 13 Application Boundary — CEO Dashboard vs Vite/React App
