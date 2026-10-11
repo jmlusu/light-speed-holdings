@@ -1,0 +1,8 @@
+- [ ] T001 [P?] [US?] Resolve check_port.py conflict - keep 1441/1440 ports
+- [ ] T002 [P?] [US?] Update AGENT-REGISTRY-TABLE.md generation date
+- [ ] T003 [P?] [US?] Fix App.tsx route components
+- [ ] T004 [P?] [US?] Add FloatingNav governance overlay
+- [ ] T005 [P?] [US?] Update utils.cn() function
+- [ ] T006 [P?] [US?] Migrate UseCaseDetailPage to @lightspeed/data/*
+- [ ] T007 [P?] [US?] Replace start_vite.bat with npx vite
+- [ ] T008 [P?] [US?] Update conftest.py data root fixture
