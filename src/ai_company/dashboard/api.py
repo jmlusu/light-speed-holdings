@@ -2490,6 +2490,59 @@ def clear_all_alerts(
     return {"cleared": cleared}
 
 
+@router.post("/marketing-site/journey-events", tags=["marketing-site"], status_code=201)
+async def ingest_journey_events(request: Request) -> dict[str, Any]:
+    """Ingest marketing-site journey events into the durable store.
+
+    Called by the Vercel edge function (``api/journey-events.ts``) after
+    validation and rate-limiting. Events are persisted via
+    :class:`JourneyEventStore` (FileStore-backed, 400-day retention).
+    """
+    from ai_company.dashboard.journey_event_store import get_journey_event_store
+
+    try:
+        body = await request.json()
+    except ValueError:
+        raise HTTPException(status_code=400, detail="invalid_json") from None
+
+    events = body if isinstance(body, list) else [body]
+    if not events:
+        raise HTTPException(status_code=400, detail="no_events")
+
+    # Basic shape check: require eventType + route + timestamp on each row.
+    valid: list[dict[str, Any]] = []
+    for e in events:
+        if not isinstance(e, dict):
+            continue
+        if not all(
+            isinstance(e.get(k), str) and e[k].strip() for k in ("eventType", "route", "timestamp")
+        ):
+            continue
+        valid.append(e)
+
+    if not valid:
+        raise HTTPException(status_code=400, detail="no_valid_events")
+
+    store = get_journey_event_store()
+    ids = store.add(valid)
+    return {"status": "recorded", "count": len(ids), "ids": ids}
+
+
+@router.get("/marketing-site/journey-events", tags=["marketing-site"])
+def list_journey_events(
+    event_type: str | None = Query(None, description="Filter by eventType"),
+    route: str | None = Query(None, description="Filter by route"),
+    limit: int = Query(500, ge=1, le=5000),
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """List persisted marketing-site journey events, newest-first."""
+    from ai_company.dashboard.journey_event_store import get_journey_event_store
+
+    store = get_journey_event_store()
+    events = store.list_events(event_type=event_type, route=route, limit=limit)
+    return {"events": events, "count": len(events), "total": store.count()}
+
+
 @router.get("/kpis/collect")
 def collect_and_store_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
     """Manually trigger a KPI collection cycle, store the snapshot, and return it.
