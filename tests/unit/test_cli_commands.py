@@ -199,7 +199,11 @@ class TestCommandSmokeTests:
         """Missing registry produces a clear error instead of a crash."""
         # Config resolution is CWD-independent (anchored to the project root),
         # so point AI_COMPANY_ROOT at an empty dir to simulate a missing registry.
+        # Also set DASHBOARD_DATA_DIR to the same path (pairing rule: see
+        # tests/conftest.py::_isolate_data_root docstring) so get_data_root()
+        # does not silently stay at the autouse fixture's tmp_path.
         monkeypatch.setenv("AI_COMPANY_ROOT", str(tmp_path))
+        monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
         monkeypatch.chdir(tmp_path)
         result = runner.invoke(app, ["agents", "list"])
         assert result.exit_code != 0
