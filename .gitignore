@@ -86,7 +86,47 @@ memory/*.json
 memory/*.yaml
 memory/vector_index/
 memory/embeddings/
-/data/
+# data/ is runtime/local state, but the 12 site registries aliased in
+# vite.config.ts MUST be tracked or CI/Vercel clean checkouts fail with
+# ENOENT (root cause of the Site Build + Principles Gate red on main).
+# Precise pattern: ignore data/*, re-include only <dir>/registry.ts per dir.
+/data/*
+!/data/capabilities/
+/data/capabilities/*
+!/data/capabilities/registry.ts
+!/data/claims/
+/data/claims/*
+!/data/claims/registry.ts
+!/data/company/
+/data/company/*
+!/data/company/registry.ts
+!/data/ctas/
+/data/ctas/*
+!/data/ctas/registry.ts
+!/data/faqs/
+/data/faqs/*
+!/data/faqs/registry.ts
+!/data/governance/
+/data/governance/*
+!/data/governance/registry.ts
+!/data/insights/
+/data/insights/*
+!/data/insights/registry.ts
+!/data/media/
+/data/media/*
+!/data/media/registry.ts
+!/data/metrics/
+/data/metrics/*
+!/data/metrics/registry.ts
+!/data/sectors/
+/data/sectors/*
+!/data/sectors/registry.ts
+!/data/solutions/
+/data/solutions/*
+!/data/solutions/registry.ts
+!/data/use-cases/
+/data/use-cases/*
+!/data/use-cases/registry.ts
 logs/
 results/
 /orchestrator/
