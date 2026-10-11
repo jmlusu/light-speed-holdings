@@ -153,10 +153,12 @@ company-registry.yaml  →  Jinja2 (agent.md.j2)  →  .opencode/agents/*.md
 ```python
 # Single Jev call (~150ms, $0.0004) replaces 1–3 LLM router calls
 questions = {
-    "intent": Choice(criteria={"research": "...", "coding": "...", "creative": "...", "ops": "..."}),
+    "intent": Choice(
+        criteria={"research": "...", "coding": "...", "creative": "...", "ops": "..."}
+    ),
     "complexity": Score(criteria=["trivial", "standard", "expert", "novel"]),
     "risk": Choice(criteria={"low": "...", "medium": "...", "high": "...", "critical": "..."}),
-    "requires_human": Noul("Does this request involve regulated/high-stakes/irreversible actions?")
+    "requires_human": Noul("Does this request involve regulated/high-stakes/irreversible actions?"),
 }
 ```
 **ROI:** 40–200× speedup, 76–200× cost reduction on routing layer. Enables per-message routing on *every* inbound task, not just sampled.
@@ -174,15 +176,17 @@ questions = {
 verify_questions = {
     "tool_appropriate": Choice(criteria={"yes": "...", "no": "...", "ambiguous": "..."}),
     "args_valid": Noul("Do the tool arguments match the declared schema and intent?"),
-    "policy_compliant": Choice(criteria={"compliant": "...", "violates": "...", "needs_review": "..."}),
-    "side_effect_risk": Score(criteria=["none", "reversible", "audited", "irreversible"])
+    "policy_compliant": Choice(
+        criteria={"compliant": "...", "violates": "...", "needs_review": "..."}
+    ),
+    "side_effect_risk": Score(criteria=["none", "reversible", "audited", "irreversible"]),
 }
 
 # After LLM generation (output guardrail)
 output_questions = {
     "addresses_request": Noul("Does the response answer the user's actual question?"),
     "cites_evidence": Choice(criteria={"well_cited": "...", "partial": "...", "uncited": "..."}),
-    "no_hallucination": Noul("Are all factual claims supported by provided context?")
+    "no_hallucination": Noul("Are all factual claims supported by provided context?"),
 }
 ```
 **ROI:** Catches 90%+ of tool hallucinations and policy violations *before* side effects. Cost: ~$0.001/task (vs. $0.05–$0.50 for LLM-based verification).
@@ -227,8 +231,10 @@ agents:
 trace_questions = {
     "anomaly_score": Score(criteria=["normal", "unusual", "suspicious", "malicious"]),
     "task_completion": Noul("Did the agent achieve the stated objective?"),
-    "policy_adherence": Choice(criteria={"full": "...", "minor_deviation": "...", "major_violation": "..."}),
-    "tool_efficiency": Score(criteria=["optimal", "redundant", "excessive", "failed"])
+    "policy_adherence": Choice(
+        criteria={"full": "...", "minor_deviation": "...", "major_violation": "..."}
+    ),
+    "tool_efficiency": Score(criteria=["optimal", "redundant", "excessive", "failed"]),
 }
 ```
 **ROI:** Full-trace observability for ~$4/day vs. $400–$4,000/day with LLMs. Enables real-time dashboards, automated alerting, continuous calibration.
