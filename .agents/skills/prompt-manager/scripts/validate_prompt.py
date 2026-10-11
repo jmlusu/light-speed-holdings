@@ -12,14 +12,11 @@ Exit code 0 = PASS, 1 = FAIL, 2 = usage error.
 import os
 import sys
 
-# Try to import the bundled validator, fall back to basic checks
-try:
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-    from scripts.validate_skill import main as validate_skill
-
-    HAS_BUNDLED = True
-except ImportError:
-    HAS_BUNDLED = False
+# Probe for the bundled validator, fall back to basic checks
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+HAS_BUNDLED = (
+    __import__("importlib.util", fromlist=["util"]).find_spec("scripts.validate_skill") is not None
+)
 
 
 KEBAB_RE = __import__("re").compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
@@ -33,25 +30,29 @@ def check_folder_name(folder):
 
 
 def check_skill_md(text):
-    """Check SKILL.md frontmatter format."""
+    """Check SKILL.md frontmatter format.
+
+    Returns (errors, warnings) lists.
+    """
     errors = []
+    warnings = []
 
     if not text.startswith("---"):
         errors.append(
             "ERROR: frontmatter missing or malformed: SKILL.md must start with '---' delimited YAML"
         )
-        return errors
+        return errors, warnings
 
     # Check for matching --- delimiters
     if text.count("---") < 2:
         errors.append("ERROR: frontmatter missing second '---' delimiter")
-        return errors
+        return errors, warnings
 
     # Check for XML angle brackets in frontmatter block
     match = __import__("re").match(r"^---\s*\n(.*?)\n---\s*\n?", text, __import__("re").DOTALL)
     if not match:
         errors.append("ERROR: frontmatter malformed: cannot parse YAML block")
-        return errors
+        return errors, warnings
 
     fm_block = match.group(1)
     if "<" in fm_block or ">" in fm_block:
@@ -95,7 +96,7 @@ def check_skill_md(text):
                     "WARNING: description has no obvious WHEN clause (e.g. 'Use when ...') — add trigger conditions"
                 )
 
-    return errors
+    return errors, warnings
 
 
 def main():
@@ -118,8 +119,9 @@ def main():
         with open(skill_md_path, encoding="utf-8") as f:
             text = f.read()
 
-        fm_errors = check_skill_md(text)
+        fm_errors, fm_warnings = check_skill_md(text)
         errors.extend(fm_errors)
+        warnings.extend(fm_warnings)
         for w in __import__("re").finditer(r"(?:scripts|references|assets)/[\w./-]*\w", text):
             rel = w.group(0)
             if not os.path.exists(os.path.join(skill_dir, rel)):
