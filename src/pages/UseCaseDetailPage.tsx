@@ -12,17 +12,10 @@ import { ArrowLeft } from 'lucide-react';
 import { PageContainer } from '../layouts/PageContainer';
 import { Section, Heading, Text, Badge, Stack, Button, tokens } from '@lightspeed/design-system';
 import type { BadgeVariant } from '@lightspeed/design-system';
-import { useCasesRegistry } from '@lightspeed/data/use-cases';
-import type { UseCaseStatus } from '@lightspeed/data/use-cases';
-import { sectorsRegistry } from '@lightspeed/data/sectors';
-import { solutionsRegistry } from '@lightspeed/data/solutions';
-
-/**
- * NOTE: tsconfig resolves @lightspeed/data/* to src/data/* (sector/solution are
- * single strings, no getUseCaseBySlug) while Vite resolves to ./data/* (arrays,
- * has getUseCaseBySlug). This page is written to type-check under BOTH shapes:
- * lookups use useCasesRegistry.find, and sector/solution are normalised to arrays.
- */
+import { useCasesRegistry } from '../data/use-cases/registry';
+import type { UseCaseStatus } from '../data/use-cases/registry';
+import { sectorsRegistry } from '../data/sectors/registry';
+import { solutionsRegistry } from '../data/solutions/registry';
 type AnyUseCase = {
   slug: string;
   title: string;
