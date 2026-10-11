@@ -108,6 +108,9 @@ export const App: React.FC = () => {
           { path: 'offer-c', element: <OfferC /> },
           { path: 'offer-d', element: <OfferD /> },
           { path: 'offer-e', element: <OfferE /> },
+          { path: 'proof', element: <Navigate to="/use-cases" replace /> },
+          { path: 'ask', element: <Navigate to="/contact" replace /> },
+          { path: '*', element: <NotFoundPage /> },
         ],
       },
 
