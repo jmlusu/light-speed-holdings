@@ -20,6 +20,13 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
+import { Architecture } from './pages/Architecture';
+import { Build } from './pages/Build';
+import { OfferA } from './pages/OfferA';
+import { OfferB } from './pages/OfferB';
+import { OfferC } from './pages/OfferC';
+import { OfferD } from './pages/OfferD';
+import { OfferE } from './pages/OfferE';
 
 
 const HomePageRoute = withSite(HomePage);
