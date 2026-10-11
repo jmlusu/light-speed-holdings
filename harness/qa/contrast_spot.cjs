@@ -12,7 +12,7 @@ async function main() {
   const all = [];
 
   for (const route of ROUTES) {
-    await page.goto("http://localhost:3001" + route, { waitUntil: "load", timeout: 30000 });
+    await page.goto("http://localhost:1441" + route, { waitUntil: "load", timeout: 30000 });
     await page.waitForTimeout(800);
     const fails = await page.evaluate(() => {
       const parse = (c) => {

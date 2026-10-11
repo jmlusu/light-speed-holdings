@@ -473,10 +473,13 @@ New WebSocket topic for real-time event streaming. Follows the existing `Connect
 # In ws.py ConnectionManager
 async def broadcast_timeline_event(self, event: dict[str, Any]) -> None:
     """Push new audit events to timeline subscribers."""
-    await self.broadcast("timeline", {
-        "type": "timeline_event",
-        "data": event,
-    })
+    await self.broadcast(
+        "timeline",
+        {
+            "type": "timeline_event",
+            "data": event,
+        },
+    )
 ```
 
 ### 6.2 Client Subscription
@@ -507,6 +510,7 @@ The audit writer (`audit/writer.py`) already calls `AuditStore.append()`. Add a 
 async def _emit_to_websocket(self, event: AuditEvent) -> None:
     """Push event to WebSocket timeline subscribers."""
     from ai_company.dashboard.ws import ws_manager
+
     await ws_manager.broadcast_timeline_event(event.model_dump())
 ```
 
@@ -516,6 +520,7 @@ To avoid flooding the WebSocket with rapid sequential events (e.g., a batch of t
 
 ```python
 import asyncio
+
 
 class TimelineDebouncer:
     def __init__(self, delay: float = 0.2):
@@ -531,6 +536,7 @@ class TimelineDebouncer:
     async def _flush(self) -> None:
         await asyncio.sleep(self._delay)
         from ai_company.dashboard.ws import ws_manager
+
         for event in self._buffer:
             await ws_manager.broadcast_timeline_event(event)
         self._buffer.clear()

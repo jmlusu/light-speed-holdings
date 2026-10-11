@@ -445,7 +445,7 @@ return (
 pwsh scripts/build/sync-brand.ps1
 
 # Visual QA (3 viewports)
-node harness/qa/visual_check.cjs https://staging.lightspeedholdings.com \
+node harness/qa/visual_check.cjs https://staging.lightspeedholdings.vercel.app \
   --viewport 1280x800 --viewport 375x667 --viewport 768x1024 \
   --json visual-report.json
 

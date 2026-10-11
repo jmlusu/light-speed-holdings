@@ -40,6 +40,11 @@ scheduler:
       description: "Generate weekly cost and performance summary"
       command: "llm usage --days 7 --json"
       output: "results/weekly-report-{date}.json"
+    competitive_monitoring_review:
+      enabled: true
+      cron_expression: "0 0 1 * *"
+      description: "Chief-of-Staff reviews and updates competitive monitoring template"
+      command: "orchestrator competitive-monitoring-review"
 
   # Human review checkpoints
   linkedin_series_reminder:

@@ -86,8 +86,8 @@ from ai_company.llm.cost_tracker import CostTracker
 
 tracker = CostTracker(
     results_dir="results",
-    daily_budget_usd=50.00,    # Maximum daily spend
-    task_budget_usd=5.00,      # Maximum per-task spend
+    daily_budget_usd=50.00,  # Maximum daily spend
+    task_budget_usd=5.00,  # Maximum per-task spend
 )
 ```
 
@@ -217,8 +217,8 @@ summary = tracker.get_usage_summary(agent_name="lead-backend")  # agent filter o
     "by_model": {
         "gpt-4o": {"cost_usd": 8.20, "calls": 32},
         "gpt-4o-mini": {"cost_usd": 3.10, "calls": 45},
-        "llama3.1-8b-32k": {"cost_usd": 0.0, "calls": 10}
-    }
+        "llama3.1-8b-32k": {"cost_usd": 0.0, "calls": 10},
+    },
 }
 ```
 

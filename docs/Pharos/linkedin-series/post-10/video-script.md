@@ -15,7 +15,7 @@
 | 4 | 38–52s | Tier 5 wall visual: four forbidden actions listed, model-proposed promotion stamped VIOLATION | "Tier 5 is a wall, not a higher approval. A model proposing its own promotion is executing a violation." |
 | 5 | 52–66s | RACI one-pager: agent = Responsible, named human = Accountable; expired-approval counter ticking | "The agent is always Responsible. The named human is always Accountable. And the expired count proves the human layer is real." |
 | 6 | 66–80s | Call to action: Malawi Agentic AI Monitor cover | "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context." |
-| 7 | 80–90s | Fade to black, website URL | "LightspeedHoldings.com" |
+| 7 | 80–90s | Fade to black, website URL | "LightspeedHoldings.vercel.app" |
 
 ## Script Narrative (Full)
 

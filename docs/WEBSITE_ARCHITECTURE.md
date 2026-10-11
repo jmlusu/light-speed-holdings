@@ -490,7 +490,7 @@ jobs:
 ### Production Deployment
 
 - **Platform:** Vercel (connected to `main` branch)
-- **Domain:** `lightspeedholdings.com`
+- **Domain:** `lightspeedholdings.vercel.app`
 - **Environment variables:** Managed in Vercel dashboard (never in repo)
 - **Preview deployments:** Automatic for every PR
 

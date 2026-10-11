@@ -2,7 +2,33 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def _isolate_data_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Anchor the data root at a per-test temp dir.
+
+    Default-constructed ``AuditWriter`` / ``MessageBus`` / ``StateStore``
+    instances resolve their paths through ``DASHBOARD_DATA_DIR``
+    (``paths.get_data_root``).  Without this, unit tests append synthetic
+    events to the canonical ``.opencode/audit`` ledger, polluting the
+    studio-scorecard baseline window.  Tests that need a specific root
+    override this by setting the env var themselves (their ``setenv``
+    runs after this fixture); tests that assert *default* resolution
+    must ``delenv`` it (see ``tests/unit/test_paths.py``).
+
+    **Pairing rule**: ``get_data_root()`` checks ``DASHBOARD_DATA_DIR``
+    *before* falling through to ``AI_COMPANY_ROOT``.  A test that sets
+    ``AI_COMPANY_ROOT`` to a path *other than* this fixture's ``tmp_path``
+    (e.g. a subdirectory such as ``tmp_path / "fake-project"``) MUST also
+    set ``DASHBOARD_DATA_DIR`` to that same path; otherwise the data root
+    silently stays at ``tmp_path`` and the test exercises the wrong tree.
+    (See ``tests/unit/test_dashboard_backfill.py:_run_backfill``.)
+    """
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
 
 
 @pytest.fixture(autouse=True)

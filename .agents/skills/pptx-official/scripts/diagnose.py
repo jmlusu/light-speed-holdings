@@ -26,6 +26,7 @@ Exit codes:
     1   at least one issue reported
     2   usage error / target missing
 """
+
 from __future__ import annotations
 
 import argparse

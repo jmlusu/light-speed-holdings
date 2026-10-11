@@ -139,7 +139,9 @@ class DataAnalyticsStateHelperTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             state_dir = Path(tmp) / "state"
             state_dir.mkdir()
-            (state_dir / "plugin-install-suppressions.json").write_text("{not json", encoding="utf-8")
+            (state_dir / "plugin-install-suppressions.json").write_text(
+                "{not json", encoding="utf-8"
+            )
             payload = self.run_preflight("--state-dir", str(state_dir))
 
         suppressions = payload["context"]["suppressed_plugin_installs"]
@@ -184,7 +186,10 @@ class DataAnalyticsStateHelperTests(unittest.TestCase):
             index_text,
         )
         self.assertIn("route to `create-data-context`", index_text)
-        self.assertIn("This index owns task selection, setup-adjacent routing, and guided workflow continuation.", index_text)
+        self.assertIn(
+            "This index owns task selection, setup-adjacent routing, and guided workflow continuation.",
+            index_text,
+        )
         self.assertIn("name: create-data-context", data_context_text)
         self.assertIn(
             "Use this skill only when the user asks to save data context or create, update, inspect, or repair a semantic layer.",

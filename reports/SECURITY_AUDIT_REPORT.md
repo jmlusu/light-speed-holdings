@@ -63,10 +63,11 @@ self.env = Environment(
 **Remediation:**
 ```python
 from jinja2 import select_autoescape
+
 self.env = Environment(
     loader=FileSystemLoader(str(self.templates_dir)),
     keep_trailing_newline=True,
-    autoescape=select_autoescape(['html', 'xml', 'md']),  # or True for all
+    autoescape=select_autoescape(["html", "xml", "md"]),  # or True for all
 )
 ```
 
@@ -121,14 +122,15 @@ import ipaddress
 from urllib.parse import urlparse
 
 BLOCKED_NETWORKS = [
-    ipaddress.ip_network("127.0.0.0/8"),      # Loopback
-    ipaddress.ip_network("10.0.0.0/8"),        # RFC1918
-    ipaddress.ip_network("172.16.0.0/12"),     # RFC1918
-    ipaddress.ip_network("192.168.0.0/16"),    # RFC1918
-    ipaddress.ip_network("169.254.0.0/16"),    # Link-local (AWS metadata)
-    ipaddress.ip_network("::1/128"),           # IPv6 loopback
-    ipaddress.ip_network("fc00::/7"),          # IPv6 ULA
+    ipaddress.ip_network("127.0.0.0/8"),  # Loopback
+    ipaddress.ip_network("10.0.0.0/8"),  # RFC1918
+    ipaddress.ip_network("172.16.0.0/12"),  # RFC1918
+    ipaddress.ip_network("192.168.0.0/16"),  # RFC1918
+    ipaddress.ip_network("169.254.0.0/16"),  # Link-local (AWS metadata)
+    ipaddress.ip_network("::1/128"),  # IPv6 loopback
+    ipaddress.ip_network("fc00::/7"),  # IPv6 ULA
 ]
+
 
 def validate_url_no_ssrf(url: str) -> None:
     parsed = urlparse(url)
@@ -139,6 +141,7 @@ def validate_url_no_ssrf(url: str) -> None:
     except ValueError:
         # Hostname — resolve and check (with timeout)
         import socket
+
         try:
             ip = ipaddress.ip_address(socket.gethostbyname(parsed.hostname))
         except socket.gaierror:
@@ -167,7 +170,9 @@ cursor = self._db.execute(f"DELETE FROM tasks WHERE {_TEST_TASK_WHERE}")
 
 #### 3. etl/extractors/sqlite_extractor.py (line 77)
 ```python
-sql = f"SELECT {col_sql} FROM {self.table}{where_sql} ORDER BY {self.timestamp_column} ASC{limit_sql}"
+sql = (
+    f"SELECT {col_sql} FROM {self.table}{where_sql} ORDER BY {self.timestamp_column} ASC{limit_sql}"
+)
 ```
 
 #### 4. etl/loaders/sqlite_loader.py (lines 75, 166, 177)

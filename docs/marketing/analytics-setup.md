@@ -10,7 +10,7 @@
 
 ### Property Setup
 - **Property Name:** Light Speed Holdings — Social Traffic
-- **Data Stream:** Web (lightspeedholdings.com / blog subdomain)
+- **Data Stream:** Web (lightspeedholdings.vercel.app / blog subdomain)
 - **Enhanced Measurement:** ON (scrolls, video plays, file downloads, form interactions)
 - **Data Retention:** 14 months
 
@@ -36,12 +36,12 @@
 ## 2. Google Search Console (GSC)
 
 ### Property
-- **Type:** Domain property (lightspeedholdings.com)
+- **Type:** Domain property (lightspeedholdings.vercel.app)
 - **Verification:** DNS TXT record
 
 ### Sitemap
-- Submit: `https://lightspeedholdings.com/sitemap.xml`
-- Blog sitemap: `https://lightspeedholdings.com/blog/sitemap.xml`
+- Submit: `https://lightspeedholdings.vercel.app/sitemap.xml`
+- Blog sitemap: `https://lightspeedholdings.vercel.app/blog/sitemap.xml`
 
 ### Monitoring
 - **Weekly:** Index coverage, performance (clicks, impressions, CTR, position)

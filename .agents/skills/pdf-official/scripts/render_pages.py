@@ -86,8 +86,7 @@ def _main(argv: list[str]) -> int:
     ap.add_argument("path", type=Path)
     ap.add_argument("out_dir", type=Path)
     ap.add_argument("--dpi", type=int, default=150)
-    ap.add_argument("--format", choices=("png", "jpg"), default="png",
-                    dest="fmt")
+    ap.add_argument("--format", choices=("png", "jpg"), default="png", dest="fmt")
     ap.add_argument("--select", default="", help="e.g. 1-3,5,8")
     ap.add_argument("--prefix", default="page")
     ap.add_argument("--quality", type=int, default=90)
@@ -114,8 +113,12 @@ def _main(argv: list[str]) -> int:
         return 2
 
     job = RenderJob(
-        src=ns.path, out_dir=ns.out_dir,
-        dpi=ns.dpi, fmt=ns.fmt, quality=ns.quality, prefix=ns.prefix,
+        src=ns.path,
+        out_dir=ns.out_dir,
+        dpi=ns.dpi,
+        fmt=ns.fmt,
+        quality=ns.quality,
+        prefix=ns.prefix,
     )
     try:
         _run(job, pages)

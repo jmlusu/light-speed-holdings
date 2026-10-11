@@ -33,6 +33,7 @@ Flags:
     --dest DIR     Download directory (download only)
     --json         Emit JSON instead of readable text
 """
+
 import argparse
 import json
 import os
@@ -60,7 +61,9 @@ def http_get(url, timeout=30):
             return resp.read()
     except urllib.error.HTTPError as e:
         if e.code == 429:
-            sys.exit(f"Rate limited by {urllib.parse.urlsplit(url).netloc} — wait a few seconds and retry.")
+            sys.exit(
+                f"Rate limited by {urllib.parse.urlsplit(url).netloc} — wait a few seconds and retry."
+            )
         sys.exit(f"HTTP {e.code} fetching {url}")
     except urllib.error.URLError as e:
         sys.exit(f"Network error: {e.reason}")
@@ -82,7 +85,7 @@ def parse_entry(entry):
     journal = text_of(entry, "arxiv:journal_ref")
     return {
         "id": base_id,
-        "version": full_id[len(base_id):],
+        "version": full_id[len(base_id) :],
         "title": re.sub(r"\s+", " ", text_of(entry, "a:title")),
         "authors": [a.find("a:name", NS).text for a in entry.findall("a:author", NS)],
         "published": text_of(entry, "a:published")[:10],
@@ -121,7 +124,9 @@ def print_paper(p, i=None, full=False):
         print(f"   Comment: {p['comment']}")
     if p["doi"]:
         print(f"   DOI: {p['doi']}")
-    abstract = p["abstract"] if full else p["abstract"][:300] + ("..." if len(p["abstract"]) > 300 else "")
+    abstract = (
+        p["abstract"] if full else p["abstract"][:300] + ("..." if len(p["abstract"]) > 300 else "")
+    )
     print(f"   Abstract: {abstract}")
     print(f"   Links: {p['abs_url']} | {p['pdf_url']}")
     print()
@@ -129,8 +134,13 @@ def print_paper(p, i=None, full=False):
 
 def emit(papers, args, total=None, full=False):
     if args.json:
-        print(json.dumps({"total": total, "results": papers} if total is not None else papers,
-                         ensure_ascii=False, indent=2))
+        print(
+            json.dumps(
+                {"total": total, "results": papers} if total is not None else papers,
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
         return
     if not papers:
         print("No results found.")
@@ -152,13 +162,15 @@ def cmd_search(args):
     if not parts:
         sys.exit("Provide a query, --author, or --category.")
     sort_map = {"relevance": "relevance", "date": "submittedDate", "updated": "lastUpdatedDate"}
-    total, papers = fetch_entries({
-        "search_query": " AND ".join(parts),
-        "start": args.start,
-        "max_results": args.max,
-        "sortBy": sort_map[args.sort],
-        "sortOrder": "descending",
-    })
+    total, papers = fetch_entries(
+        {
+            "search_query": " AND ".join(parts),
+            "start": args.start,
+            "max_results": args.max,
+            "sortBy": sort_map[args.sort],
+            "sortOrder": "descending",
+        }
+    )
     emit(papers, args, total=total)
 
 
@@ -169,7 +181,11 @@ def cmd_get(args):
 
 def bibtex_key(p):
     last = p["authors"][0].split()[-1].lower() if p["authors"] else "unknown"
-    return re.sub(r"[^a-z0-9]", "", last) + p["published"][:4] + p["id"].replace(".", "").replace("/", "")
+    return (
+        re.sub(r"[^a-z0-9]", "", last)
+        + p["published"][:4]
+        + p["id"].replace(".", "").replace("/", "")
+    )
 
 
 def cmd_bibtex(args):
@@ -215,12 +231,14 @@ def cmd_download(args):
 
 
 def cmd_new(args):
-    total, papers = fetch_entries({
-        "search_query": f"cat:{args.category}",
-        "max_results": args.max,
-        "sortBy": "submittedDate",
-        "sortOrder": "descending",
-    })
+    total, papers = fetch_entries(
+        {
+            "search_query": f"cat:{args.category}",
+            "max_results": args.max,
+            "sortBy": "submittedDate",
+            "sortOrder": "descending",
+        }
+    )
     emit(papers, args, total=total)
 
 
@@ -257,7 +275,9 @@ def print_s2(rows, args, header):
 
 def cmd_s2_links(args, direction):
     paper_id = args.ids.split(",")[0]
-    url = f"{S2_API}/graph/v1/paper/arXiv:{paper_id}/{direction}?fields={S2_FIELDS}&limit={args.max}"
+    url = (
+        f"{S2_API}/graph/v1/paper/arXiv:{paper_id}/{direction}?fields={S2_FIELDS}&limit={args.max}"
+    )
     data = json.loads(http_get(url))
     key = "citingPaper" if direction == "citations" else "citedPaper"
     rows = [s2_paper_row(item[key]) for item in data.get("data", [])]
@@ -300,7 +320,9 @@ def main():
         "get": cmd_get,
         "bibtex": cmd_bibtex,
         "download": cmd_download,
-        "new": lambda a: cmd_new(argparse.Namespace(**{**vars(a), "category": a.query or a.category})),
+        "new": lambda a: cmd_new(
+            argparse.Namespace(**{**vars(a), "category": a.query or a.category})
+        ),
         "cites": lambda a: cmd_s2_links(a, "citations"),
         "refs": lambda a: cmd_s2_links(a, "references"),
         "similar": cmd_similar,

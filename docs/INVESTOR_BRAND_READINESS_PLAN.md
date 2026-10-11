@@ -235,7 +235,7 @@ LIGHTSPEED HOLDINGS LIMITED — Brand Assets
 ============================================
 
 Usage: These assets are provided for editorial and media use only.
-       For commercial or promotional use, please contact investor.relations@lightspeedholdings.com
+       For commercial or promotional use, please contact investor.relations@lightspeedholdings.vercel.app
 
 Company: LightSpeed Holdings Limited
 Tagline: Aspire. Act. Achieve.
@@ -468,4 +468,4 @@ If we need to reference brand colors in CSS, email templates, or digital materia
 ---
 
 *Prepared by Investor Relations Lead, LightSpeed Holdings Limited*
-*For questions: investor.relations@lightspeedholdings.com*
+*For questions: investor.relations@lightspeedholdings.vercel.app*

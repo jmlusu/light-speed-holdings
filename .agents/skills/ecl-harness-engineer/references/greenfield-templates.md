@@ -533,6 +533,7 @@ __version__ = "0.1.0"
 
 ```python
 """Entry point for {project-name}."""
+
 import sys
 
 
@@ -567,12 +568,14 @@ if __name__ == "__main__":
 Core types shared across the application.
 Layer 0: No internal imports allowed.
 """
+
 from dataclasses import dataclass
 
 
 @dataclass
 class Config:
     """Application configuration."""
+
     pass
 ```
 
@@ -637,6 +640,7 @@ Layer 1: src/{package}/core/        — May import types only
 Layer 2: src/{package}/api/         — May import core and types
 Layer 3: src/{package}/main.py      — May import anything
 """
+
 import ast
 import sys
 from pathlib import Path
@@ -732,6 +736,7 @@ Validates quality rules:
 - File size limits (max 500 lines)
 - No print() in production code (use logging)
 """
+
 import sys
 from pathlib import Path
 
@@ -798,6 +803,7 @@ Same as Python CLI, with these additions:
 
 ```python
 """Entry point for {project-name} web API."""
+
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 

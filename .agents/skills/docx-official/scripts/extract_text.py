@@ -19,6 +19,7 @@ Usage:
     uv run extract_text.py <input.docx> --out out.txt
     uv run extract_text.py <input.docx> --include-notes --include-comments
 """
+
 from __future__ import annotations
 
 import argparse
@@ -34,9 +35,11 @@ _MC_FALLBACK = f"{{{_MC_NS}}}Fallback"
 
 try:  # Prefer lxml when available; otherwise fall back to stdlib.
     from lxml import etree as _et
+
     _HAVE_LXML = True
 except ImportError:  # pragma: no cover
     from xml.etree import ElementTree as _et  # type: ignore
+
     _HAVE_LXML = False
 
 
@@ -49,7 +52,8 @@ def _paragraph_text_lxml(paragraph) -> str:
     xpath = _et.XPath(
         ".//*[(self::w:t or self::w:tab[parent::w:r] or self::w:br[parent::w:r])"
         " and not(ancestor::mc:Fallback)]",
-        namespaces={"w": _W_NS, "mc": _MC_NS})
+        namespaces={"w": _W_NS, "mc": _MC_NS},
+    )
     for node in xpath(paragraph):
         if node.tag == f"{_W}t":
             if node.text:
@@ -93,7 +97,8 @@ def _paragraphs_in(payload: bytes) -> list[str]:
         # mc:Choice content, so skip it entirely.
         paragraphs = _et.XPath(
             "//w:p[not(ancestor::w:p) and not(ancestor::mc:Fallback)]",
-            namespaces={"w": _W_NS, "mc": _MC_NS})(root)
+            namespaces={"w": _W_NS, "mc": _MC_NS},
+        )(root)
     else:
         paragraphs = []
 
@@ -126,9 +131,11 @@ def _selected_parts(
     if include_headers_footers:
         for name in names:
             base = Path(name).name
-            if name.startswith("word/") and (
-                base.startswith("header") or base.startswith("footer")
-            ) and name.endswith(".xml"):
+            if (
+                name.startswith("word/")
+                and (base.startswith("header") or base.startswith("footer"))
+                and name.endswith(".xml")
+            ):
                 picked.append(name)
 
     if include_notes:
@@ -165,21 +172,29 @@ def extract_text(
 
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Extract plain text from a .docx file."
-    )
+    parser = argparse.ArgumentParser(description="Extract plain text from a .docx file.")
     parser.add_argument("source", type=Path, help="Input .docx file")
-    parser.add_argument("--out", type=Path, default=None,
-                        help="Write text to this file (default: stdout).")
-    parser.add_argument("--include-headers-footers", action="store_true",
-                        help="Also include text from headers and footers.")
-    parser.add_argument("--include-notes", action="store_true",
-                        help="Also include text from footnotes and endnotes.")
-    parser.add_argument("--include-comments", action="store_true",
-                        help="Also include text from review comments.")
-    parser.add_argument("--all", action="store_true",
-                        help="Shortcut for --include-headers-footers "
-                             "--include-notes --include-comments.")
+    parser.add_argument(
+        "--out", type=Path, default=None, help="Write text to this file (default: stdout)."
+    )
+    parser.add_argument(
+        "--include-headers-footers",
+        action="store_true",
+        help="Also include text from headers and footers.",
+    )
+    parser.add_argument(
+        "--include-notes",
+        action="store_true",
+        help="Also include text from footnotes and endnotes.",
+    )
+    parser.add_argument(
+        "--include-comments", action="store_true", help="Also include text from review comments."
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Shortcut for --include-headers-footers --include-notes --include-comments.",
+    )
     return parser.parse_args(argv)
 
 

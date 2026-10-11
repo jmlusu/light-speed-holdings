@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
@@ -8,13 +8,35 @@ import path from 'path';
 // embed TURNSTILE_SECRET_KEY) must never be baked into the client bundle.
 const TURNSTILE_SITE_KEY_RE = /^[0-9a-zA-Z._-]{10,120}$/;
 
+// Boundary guard (CTO ratification 2026-10-10, G-3): 8420/8421 are CEO
+// Dashboard ports; Vite must never bind them — including via `vite --port`
+// CLI overrides, which configResolved sees after CLI merge.
+const DASHBOARD_PORTS = new Set([8420, 8421]);
+
+function dashboardPortGuard(): Plugin {
+  return {
+    name: 'lightspeed-dashboard-port-guard',
+    configResolved(config) {
+      const candidates = [config.server?.port, config.preview?.port];
+      for (const p of candidates) {
+        if (typeof p === 'number' && DASHBOARD_PORTS.has(p)) {
+          throw new Error(
+            `Port ${p} belongs to the CEO Dashboard (FastAPI), not the Marketing Site. ` +
+              'Use 1441 (dev) or 1440 (preview). Refusing to start.',
+          );
+        }
+      }
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const rawSiteKey = env.VITE_TURNSTILE_SITE_KEY ?? '';
   const turnstileSiteKey = TURNSTILE_SITE_KEY_RE.test(rawSiteKey) ? rawSiteKey : '';
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), dashboardPortGuard()],
     resolve: {
       alias: [
         { find: '@', replacement: path.resolve(__dirname, './src') },

@@ -302,22 +302,24 @@ dashboard/alerting/
 from pydantic import BaseModel
 from enum import Enum
 
+
 class Severity(str, Enum):
     INFO = "info"
     WARNING = "warning"
     CRITICAL = "critical"
 
+
 class AlertRule(BaseModel):
     id: str
     name: str
     description: str
-    source: str                    # "kpi" | "escalation" | "approval" | "system"
-    metric: str                    # e.g., "build_success_rate", "escalation_count"
-    condition: str                 # "lt" | "gt" | "eq" | "gte" | "lte"
+    source: str  # "kpi" | "escalation" | "approval" | "system"
+    metric: str  # e.g., "build_success_rate", "escalation_count"
+    condition: str  # "lt" | "gt" | "eq" | "gte" | "lte"
     threshold: float
     severity: Severity
-    cooldown_minutes: int = 30     # Don't re-alert within this window
-    escalation_tier: int = 1       # 1-5, starts here and escalates
+    cooldown_minutes: int = 30  # Don't re-alert within this window
+    escalation_tier: int = 1  # 1-5, starts here and escalates
     runbook_url: str | None = None
     enabled: bool = True
 ```
@@ -385,7 +387,7 @@ class ChannelRouter:
             self._send_email(
                 recipients=["ceo@company.com", "cto@company.com", "coo@company.com"],
                 subject=f"[CRITICAL] {alert.name}",
-                body=self._format_email(alert)
+                body=self._format_email(alert),
             )
 
         # Critical: webhook (Slack/Teams)

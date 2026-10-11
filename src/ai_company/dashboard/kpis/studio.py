@@ -30,12 +30,13 @@ from typing import Any
 
 from ai_company.dashboard.kpis.base import KPICollector
 from ai_company.data.database import Database
+from ai_company.data.task_store import TERMINAL_STATUSES
 
 logger = logging.getLogger(__name__)
 
-TERMINAL_STATUSES = frozenset(
-    {"completed", "failed", "timeout", "cancelled", "escalated"}
-)
+# Re-exported from the shared single source of truth (data.task_store) so
+# ATC and unit cost can never drift onto different denominators.
+__all__ = ["StudioScorecardCollector", "TERMINAL_STATUSES"]
 
 _KNOWN_VENTURES = ("venture-a", "venture-b", "venture-c", "studio-core")
 
@@ -102,14 +103,20 @@ class StudioScorecardCollector(KPICollector):
 
         atc_overall = self._atc(terminal, None)
         atc_quality = tasks_quality if terminal else "error"
-        atc_error = tasks_error if tasks_error else (
-            None if terminal else "No terminal tasks yet — ATC has no denominator"
+        atc_error = (
+            tasks_error
+            if tasks_error
+            else (None if terminal else "No terminal tasks yet — ATC has no denominator")
         )
 
         ventures: dict[str, Any] = {}
         for vid in _KNOWN_VENTURES:
             cfg = ventures_cfg.get(vid, {})
-            v_tasks = [t for t in terminal if str(t.get("venture_id", "studio-core") or "studio-core") == vid]
+            v_tasks = [
+                t
+                for t in terminal
+                if str(t.get("venture_id", "studio-core") or "studio-core") == vid
+            ]
             ventures[vid] = {
                 "name": str(cfg.get("name", vid)),
                 "archetype": str(cfg.get("archetype", "")),
@@ -123,24 +130,32 @@ class StudioScorecardCollector(KPICollector):
         capital, capital_quality, capital_error = self._capital(cfo, ventures_cfg)
         risk = self._risk_strip()
 
-        baseline_active, baseline_info = self._baseline_state(
-            baseline_start, baseline_days
-        )
+        baseline_active, baseline_info = self._baseline_state(baseline_start, baseline_days)
 
         kpis: dict[str, Any] = {
             "atc_rate": self._banded_kpi(
-                atc_overall, 90.0, "%", higher_is_better=True,
+                atc_overall,
+                90.0,
+                "%",
+                higher_is_better=True,
                 bands=[(90.0, "green"), (80.0, "watch")],
                 below_band="block_scale",
-                data_quality=atc_quality, error=atc_error,
+                data_quality=atc_quality,
+                error=atc_error,
             ),
             "correction_per_1k": self._baseline_kpi(
-                correction, "count/1k", correction_quality,
-                correction_error, baseline_active,
+                correction,
+                "count/1k",
+                correction_quality,
+                correction_error,
+                baseline_active,
             ),
             "capital_efficiency": self._baseline_kpi(
-                capital, "multiple", capital_quality,
-                capital_error, baseline_active,
+                capital,
+                "multiple",
+                capital_quality,
+                capital_error,
+                baseline_active,
             ),
         }
 
@@ -158,17 +173,14 @@ class StudioScorecardCollector(KPICollector):
     # ATC
     # ------------------------------------------------------------------
 
-    def _atc(
-        self, terminal: list[dict[str, Any]], _venture: str | None
-    ) -> float | None:
+    def _atc(self, terminal: list[dict[str, Any]], _venture: str | None) -> float | None:
         """ATC = completed-without-manual / terminal-entered * 100."""
         if not terminal:
             return None
         clean = sum(
             1
             for t in terminal
-            if str(t.get("status", "")) == "completed"
-            and not t.get("manual_intervention", False)
+            if str(t.get("status", "")) == "completed" and not t.get("manual_intervention", False)
         )
         return round(clean / len(terminal) * 100, 1)
 
@@ -181,21 +193,29 @@ class StudioScorecardCollector(KPICollector):
         thesis = str(cfg.get("thesis_approved", "") or "")
         deploy = str(cfg.get("deploy", "") or "")
         if not thesis or not deploy:
-            return {"current": None, "status": "no_data",
-                    "error": "Gate timestamps missing (thesis_approved/deploy)"}
+            return {
+                "current": None,
+                "status": "no_data",
+                "error": "Gate timestamps missing (thesis_approved/deploy)",
+            }
         if not cfg.get("gate_reviewed_at") or not cfg.get("gate_reviewed_by"):
-            return {"current": None, "status": "no_data",
-                    "error": "No recorded gate review — phase advance unreviewed"}
+            return {
+                "current": None,
+                "status": "no_data",
+                "error": "No recorded gate review — phase advance unreviewed",
+            }
         try:
             start = datetime.fromisoformat(thesis.replace("Z", "+00:00"))
             end = datetime.fromisoformat(deploy.replace("Z", "+00:00"))
         except ValueError:
-            return {"current": None, "status": "no_data",
-                    "error": "Unparseable gate timestamps"}
+            return {"current": None, "status": "no_data", "error": "Unparseable gate timestamps"}
         days = (end - start).days
         if days < 0:
-            return {"current": None, "status": "no_data",
-                    "error": "Deploy predates thesis approval — tracker data invalid"}
+            return {
+                "current": None,
+                "status": "no_data",
+                "error": "Deploy predates thesis approval — tracker data invalid",
+            }
         paused = 0
         pauses = cfg.get("pauses", []) or []
         for p in pauses:
@@ -215,8 +235,13 @@ class StudioScorecardCollector(KPICollector):
             status = "attention"
         else:
             status = "critical"
-        return {"current": net, "unit": "days", "status": status,
-                "gross_days": days, "paused_days": paused}
+        return {
+            "current": net,
+            "unit": "days",
+            "status": status,
+            "gross_days": days,
+            "paused_days": paused,
+        }
 
     # ------------------------------------------------------------------
     # Correction ratio (audit trail, trailing 30d)
@@ -251,9 +276,7 @@ class StudioScorecardCollector(KPICollector):
             logger.warning("Studio correction read failed", exc_info=True)
             return None, "error", f"Audit trail unreadable: {exc}"
 
-        manual = sum(
-            1 for t in self._terminal_cache() if t.get("manual_intervention", False)
-        )
+        manual = sum(1 for t in self._terminal_cache() if t.get("manual_intervention", False))
         numerator = denials + rejections + manual
         if tool_calls == 0:
             return None, "error", "No tool_call events in trailing 30d — no action volume"
@@ -331,9 +354,7 @@ class StudioScorecardCollector(KPICollector):
     # Baseline + KPI shaping helpers
     # ------------------------------------------------------------------
 
-    def _baseline_state(
-        self, start: str, window_days: int
-    ) -> tuple[bool, dict[str, Any]]:
+    def _baseline_state(self, start: str, window_days: int) -> tuple[bool, dict[str, Any]]:
         """Measurement-only window anchored at instrumentation_start."""
         info: dict[str, Any] = {
             "window_days": window_days,
@@ -375,9 +396,12 @@ class StudioScorecardCollector(KPICollector):
         error: str | None = None,
     ) -> dict[str, Any]:
         kpi = self._kpi(
-            current, target, unit,
+            current,
+            target,
+            unit,
             higher_is_better=higher_is_better,
-            data_quality=data_quality, error=error,
+            data_quality=data_quality,
+            error=error,
         )
         if current is None:
             kpi["band"] = "no_data"
@@ -414,9 +438,7 @@ class StudioScorecardCollector(KPICollector):
             if error:
                 result["error"] = error
             return result
-        return self._kpi(
-            current, None, unit, data_quality=data_quality, error=error
-        )
+        return self._kpi(current, None, unit, data_quality=data_quality, error=error)
 
     @staticmethod
     def _iso_days_ago(days: int) -> str:

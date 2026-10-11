@@ -25,6 +25,7 @@ Usage:
     python prune.py unpacked/
     python prune.py unpacked/ --dry-run
 """
+
 from __future__ import annotations
 
 import argparse
@@ -58,6 +59,7 @@ class PruneReport:
 
 
 # ------------------------------------------------------------ path resolver
+
 
 def _canonicalise(base: str, target: str) -> str:
     """Return an archive-relative path for a Relationship Target.
@@ -95,6 +97,7 @@ def _rels_targets(root, base: str) -> list[tuple[str, str, str]]:
 
 # ------------------------------------------------------------ graph walker
 
+
 def _rels_path_for(part: str) -> str:
     parent = str(Path(part).parent.as_posix())
     return f"{parent}/_rels/{Path(part).name}.rels" if parent else f"_rels/{Path(part).name}.rels"
@@ -131,6 +134,7 @@ def _reachable_parts(root: Path) -> set[str]:
 
 # ---------------------------------------------------- sldIdLst filter step
 
+
 def _visible_slide_targets(root: Path) -> set[str]:
     presentation = root / "ppt" / "presentation.xml"
     pres_rels = root / "ppt" / "_rels" / "presentation.xml.rels"
@@ -164,6 +168,7 @@ def _notes_target_for(slide_part: str, root: Path) -> str | None:
 
 # ------------------------------------------------------------ deletion step
 
+
 def _delete_part(root: Path, part_archive_path: str) -> None:
     disk_path = root / part_archive_path
     if disk_path.is_file():
@@ -190,8 +195,7 @@ def _drop_presentation_rels(root: Path, doomed_slide_parts: set[str]) -> list[st
     return removed_rids
 
 
-def _drop_content_type_overrides(root: Path,
-                                 doomed_parts: set[str]) -> list[str]:
+def _drop_content_type_overrides(root: Path, doomed_parts: set[str]) -> list[str]:
     ct_path = root / "[Content_Types].xml"
     if not ct_path.is_file():
         return []
@@ -218,6 +222,7 @@ def _serialise(root_elem, default_ns: str = NS["ct"]) -> bytes:
 
 # ---------------------------------------------------------------- driver
 
+
 def prune_tree(root: Path, *, dry_run: bool = False) -> PruneReport:
     if not root.is_dir():
         raise SystemExit(f"{root} is not a directory")
@@ -225,15 +230,15 @@ def prune_tree(root: Path, *, dry_run: bool = False) -> PruneReport:
     reachable = _reachable_parts(root)
     visible_slides = _visible_slide_targets(root)
 
-    reachable_slides = {p for p in reachable
-                        if p.startswith("ppt/slides/") and p.endswith(".xml")}
+    reachable_slides = {p for p in reachable if p.startswith("ppt/slides/") and p.endswith(".xml")}
     if reachable_slides and not visible_slides:
         # An empty visible set on a deck that clearly has slides means
         # presentation.xml (or its rels) is missing/unreadable — deleting
         # every slide would destroy the deck, so refuse instead.
         raise RuntimeError(
             "could not read any slide ids from ppt/presentation.xml "
-            "<p:sldIdLst>; refusing to prune — inspect the tree first")
+            "<p:sldIdLst>; refusing to prune — inspect the tree first"
+        )
 
     # Slides reachable but not visible -> doomed. Also all their notes.
     doomed_slides: set[str] = set()
@@ -242,8 +247,9 @@ def prune_tree(root: Path, *, dry_run: bool = False) -> PruneReport:
             doomed_slides.add(part)
 
     # Any file on disk under ppt/slides/ that's not reachable is also doomed.
-    for slide_file in (root / "ppt" / "slides").glob("slide*.xml") \
-            if (root / "ppt" / "slides").is_dir() else []:
+    for slide_file in (
+        (root / "ppt" / "slides").glob("slide*.xml") if (root / "ppt" / "slides").is_dir() else []
+    ):
         archive = f"ppt/slides/{slide_file.name}"
         if archive not in reachable:
             doomed_slides.add(archive)
@@ -329,19 +335,25 @@ def _print_report(report: PruneReport, verb: str) -> None:
         for path in entries:
             print(f"  ({group_name}) {path}")
     if report.presentation_rels:
-        print(f"{verb} {len(report.presentation_rels)} presentation rel(s):",
-              ", ".join(report.presentation_rels))
+        print(
+            f"{verb} {len(report.presentation_rels)} presentation rel(s):",
+            ", ".join(report.presentation_rels),
+        )
     if report.content_type_overrides:
-        print(f"{verb} {len(report.content_type_overrides)} content-type override(s):",
-              ", ".join(report.content_type_overrides))
+        print(
+            f"{verb} {len(report.content_type_overrides)} content-type override(s):",
+            ", ".join(report.content_type_overrides),
+        )
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("root", type=Path,
-                    help="path to the exploded tree (as produced by explode.py)")
-    ap.add_argument("--dry-run", action="store_true",
-                    help="report what would be removed without changing anything")
+    ap.add_argument("root", type=Path, help="path to the exploded tree (as produced by explode.py)")
+    ap.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="report what would be removed without changing anything",
+    )
     ns = ap.parse_args(argv)
 
     try:

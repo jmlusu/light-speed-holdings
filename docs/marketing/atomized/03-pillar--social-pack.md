@@ -6,7 +6,7 @@
 **Claims source:** pillar claims_ledger (fact checklist at bottom).
 **Template system:** P1 foundational templates (ticket #311) — canonical PNGs at `static/brand/social/templates/`. Slot keys per `static/brand/templates/social-templates/GENERATED-P1.md`.
 
-**ADD fact (flagged once per pack):** the Malawi Agentic AI Monitor subscription URL is not stated in the pillar ("Subscribe, and bring the objections"). This pack uses the established site root `https://lightspeedholdings.com` (`docs/BRAND_DEPLOYMENT_GUIDE.md:46`). `ADD: Malawi Agentic AI Monitor subscription URL — requires pillar update.`
+**ADD fact (flagged once per pack):** the Malawi Agentic AI Monitor subscription URL is not stated in the pillar ("Subscribe, and bring the objections"). This pack uses the established site root `https://lightspeedholdings.vercel.app` (`docs/BRAND_DEPLOYMENT_GUIDE.md:46`). `ADD: Malawi Agentic AI Monitor subscription URL — requires pillar update.`
 
 ---
 
@@ -37,7 +37,7 @@ Strip the four reservations down and they are one position: your architecture ne
 
 LightSpeed Holdings Limited™ publishes this conversation monthly in the Malawi Agentic AI Monitor. Issue 7 is "The Four Reservations — Trust-by-Engineering." Subscribe, and bring the objections.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 #AgenticAI #AIGovernance #Malawi #SADC
 ```
@@ -96,7 +96,7 @@ Malawi's first National AI Strategy is being drafted now. The UNESCO AI Readines
 ```text
 Skepticism is healthy — every vendor has a demo. Proof: J&S StopOver Bar, "The World's Smallest AI-Native Bar," a real non-tech SME running agentic pricing decisions — five agents, one human owner. Come see the registry and the bar.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 ```
 
 ---
@@ -177,7 +177,7 @@ VO: There is a SADC-facing governance framework built on this logic: tiered huma
 [1:05–1:22] On screen: J&S StopOver Bar.
 VO: And the proof: a real small business running real agents — five agents, one human owner in control. That is what turns a hype cycle into a decision.
 
-[1:22–1:30] End card: https://lightspeedholdings.com.
+[1:22–1:30] End card: https://lightspeedholdings.vercel.app.
 VO: Come and see the registry, the approval queue, and the bar.
 ```
 

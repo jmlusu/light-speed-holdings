@@ -27,7 +27,7 @@ async function main() {
 
   const results = {};
   for (const route of ROUTES) {
-    const resp = await page.goto("http://localhost:3001" + route, { waitUntil: "load", timeout: 30000 });
+    const resp = await page.goto("http://localhost:1441" + route, { waitUntil: "load", timeout: 30000 });
     await page.waitForTimeout(600);
     const info = await page.evaluate(() => ({
       h1: [...document.querySelectorAll("h1")].map((h) => (h.textContent || "").trim()).filter(Boolean),

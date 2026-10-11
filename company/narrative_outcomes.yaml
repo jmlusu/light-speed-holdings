@@ -1,0 +1,165 @@
+# Narrative Outcomes Tracker — clinic / NGO / Offer E instrumentation
+# Created: 2026-10-10 (audit: docs/AUDIT-NARRATIVE-CLAIMS-2026-10-10.md)
+# Owner: chief-of-staff (metrics) / human-ceo (claim approval)
+# Mirrors company/studio_tracker.yaml: read-only runtime inputs, gates before claims.
+#
+# Purpose: the three outcome claims in docs/NARRATIVE-AND-POSITIONING.md:29
+# ("clinic answers patients on WhatsApp", "NGO donor report lands on time",
+# "agency licenses Offer E") had no measurement surface. This file defines,
+# for each pillar, the metrics that would prove the claim and the gate that
+# must hold before the claim may be restated as fact.
+#
+# Rules (ADR-020 + kpis.yaml CEO decision 2026-08-08):
+# - `current` stays null until a REAL source exists. No dummy or estimated values.
+# - A pillar may only reach status "shipped" when every claim_gate item holds.
+# - Publishing a pillar's claim externally additionally requires T3 human
+#   approval (docs/architecture/EVIDENCE_ARCHITECTURE.md claim tiers).
+# - status enum: not_started | pilot | blocked | shipped
+
+instrumentation_start: "2026-10-10"
+
+rules:
+  - "`current` stays null until a real source exists; no dummy or estimated values (kpis.yaml CEO decision 2026-08-08)."
+  - "A pillar may only reach status `shipped` when every claim_gate condition holds."
+  - "Publishing a pillar's claim externally requires T3 human approval (EVIDENCE_ARCHITECTURE.md claim tiers, ADR-020)."
+  - "status enum: not_started | pilot | blocked | shipped; blocked pillars must mirror client_intake.BLOCKED_OFFERS."
+
+outcomes:
+  clinic_whatsapp:
+    name: "Malawi clinic answers patients on WhatsApp"
+    claim: "The Malawi clinic that now answers patients on WhatsApp"
+    claim_source: "docs/NARRATIVE-AND-POSITIONING.md:29"
+    status: "blocked"
+    status_reason: >-
+      Runtime governance gate still blocks offer_b (BLOCKED_OFFERS in
+      src/ai_company/services/client_intake.py), and no signed health-sector
+      partnership exists (docs/client-facing/USE-CASE-CATALOG.md pilot status).
+      The underlying Health/M&E workflow is a separate pilot and does not
+      evidence the patient-channel claim.
+    owner: "customer-success-owner"
+    governance_refs:
+      - "docs/legal/client-onboarding-policy.md"
+      - "docs/client-facing/USE-CASE-CATALOG.md"
+      - "config/company/malawi_offers.yaml"
+      - "src/ai_company/services/client_intake.py"
+    blocked_by:
+      - "client_intake.BLOCKED_OFFERS contains offer_b"
+      - "No signed partnership with a named clinic (USE-CASE-CATALOG.md)"
+    metrics:
+      - id: "clinic-01"
+        name: "patient_inquiries_answered_whatsapp"
+        unit: "count_per_week"
+        current: null
+        source: "WhatsApp Business Management API account insights (not connected in repo)"
+        formula: "inbound patient messages receiving a reply within SLA / week"
+        frequency: "weekly"
+      - id: "clinic-02"
+        name: "patient_median_first_response_minutes"
+        unit: "minutes"
+        current: null
+        source: "WhatsApp Business Management API timestamps (not connected in repo)"
+        formula: "median(first_reply_at - inbound_at) over the week"
+        frequency: "weekly"
+      - id: "clinic-03"
+        name: "clinic_patient_csat_percent"
+        unit: "percent"
+        current: null
+        source: "orchestrator/cs/surveys.json (file exists, 0 records)"
+        formula: "AVG(score) over post-interaction patient surveys x 100"
+        frequency: "quarterly"
+    claim_gate:
+      - "Signed partnership with a named Malawian clinic recorded under docs/client-facing/."
+      - "offer_b excluded from client_intake.BLOCKED_OFFERS (or a recorded, ratified waiver)."
+      - "All three metrics above have a non-null current from their declared source."
+      - "T3 human approval of the published claim and numbers (ADR-020)."
+
+  ngo_donor_reporting:
+    name: "NGO donor report lands on time"
+    claim: "The NGO whose donor report lands on time instead of weeks later"
+    claim_source: "docs/NARRATIVE-AND-POSITIONING.md:29"
+    status: "blocked"
+    status_reason: >-
+      Runtime governance gate still blocks offer_c (BLOCKED_OFFERS in
+      src/ai_company/services/client_intake.py), and the NGO lighthouse client
+      is a week 3-6 goal (docs/MALAWI_FOCUS_ALIGNMENT.md), not a landed
+      engagement. No donor report has been delivered under a contract.
+    owner: "data-engineer"
+    governance_refs:
+      - "docs/legal/client-onboarding-policy.md"
+      - "docs/client-facing/USE-CASE-CATALOG.md"
+      - "docs/MALAWI_FOCUS_ALIGNMENT.md"
+      - "src/ai_company/services/client_intake.py"
+    blocked_by:
+      - "client_intake.BLOCKED_OFFERS contains offer_c"
+      - "No landed NGO engagement; lighthouse is a week 3-6 target"
+    metrics:
+      - id: "ngo-01"
+        name: "donor_reports_on_time_percent"
+        unit: "percent"
+        current: null
+        source: "engagement deliverable log (no donor-report deliverables recorded)"
+        formula: "reports delivered on or before deadline / total reports x 100"
+        frequency: "monthly"
+      - id: "ngo-02"
+        name: "donor_report_days_to_delivery"
+        unit: "days"
+        current: null
+        source: "report request_at vs delivered_at timestamps (none recorded)"
+        formula: "mean(delivered_at - request_at) in days over the period"
+        frequency: "monthly"
+      - id: "ngo-03"
+        name: "analyst_hours_saved_per_report"
+        unit: "hours"
+        current: null
+        source: "before/after manual-effort logs with the NGO (none recorded)"
+        formula: "manual_baseline_hours - automated_hours, averaged per report"
+        frequency: "per_report"
+    claim_gate:
+      - "Signed Offer C engagement with a named NGO recorded under docs/client-facing/."
+      - "offer_c excluded from client_intake.BLOCKED_OFFERS (or a recorded, ratified waiver)."
+      - "At least ngo-01 and ngo-02 have non-null current over >=1 completed reporting cycle."
+      - "T3 human approval of the published claim and numbers (ADR-020)."
+
+  offer_e_licensing:
+    name: "Agency licenses Offer E and builds for its own clients"
+    claim: "The agency that licenses Offer E and builds for its own clients"
+    claim_source: "docs/NARRATIVE-AND-POSITIONING.md:29"
+    status: "not_started"
+    status_reason: >-
+      Offer E is governance-approved and "fieldable in 2026 - proven in-house"
+      (docs/client-facing/USE-CASE-CATALOG.md), but zero licensees are recorded
+      anywhere in the repo and E2 is still in development with no public
+      pricing. Product readiness is not a licensee.
+    owner: "cpo"
+    governance_refs:
+      - "docs/legal/client-onboarding-policy.md"
+      - "docs/client-facing/USE-CASE-CATALOG.md"
+      - "config/company/malawi_offers.yaml"
+    blocked_by:
+      - "No licensee recorded; E2 in development, no public pricing (USE-CASE-CATALOG.md)"
+    metrics:
+      - id: "oe-01"
+        name: "licensees_active"
+        unit: "count"
+        current: null
+        source: "license ledger (none exists in repo yet)"
+        formula: "count of active signed Offer E licenses"
+        frequency: "monthly"
+      - id: "oe-02"
+        name: "licensee_days_to_first_agent_team"
+        unit: "days"
+        current: null
+        source: "license issue_at vs licensee's first generated agent team (not recorded)"
+        formula: "mean(first_agent_team_at - license_issued_at) in days"
+        frequency: "monthly"
+      - id: "oe-03"
+        name: "licensee_mrr_usd"
+        unit: "usd"
+        current: null
+        source: "CFO revenue ledger (none exists in repo yet; see KPI-001, config/company/kpis.yaml)"
+        formula: "SUM(monthly license fees in USD) over active licensees"
+        frequency: "monthly"
+    claim_gate:
+      - ">=1 signed Offer E license recorded with a named agency."
+      - "All three metrics above have a non-null current from their declared source."
+      - "T3 human approval of the published claim and numbers (ADR-020)."

@@ -45,6 +45,7 @@ class Finding:
 def _check_open(path: Path) -> tuple[Finding, object]:
     from pypdf import PdfReader
     from pypdf.errors import PdfReadError
+
     try:
         reader = PdfReader(str(path))
     except (PdfReadError, OSError) as err:
@@ -63,6 +64,7 @@ def _check_pages(reader) -> Finding:
 
 def _check_roundtrip(reader) -> Finding:
     from pypdf import PdfWriter
+
     if reader.is_encrypted:
         return Finding("roundtrip", Severity.INFO, "skipped (encrypted)")
     try:
@@ -83,7 +85,8 @@ def _check_qpdf(path: Path) -> Finding:
         return Finding("qpdf", Severity.INFO, "qpdf not on PATH (skipped)")
     proc = subprocess.run(
         [binary, "--check", str(path)],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     if proc.returncode == 0:
         return Finding("qpdf", Severity.OK, "qpdf --check passed")
@@ -101,8 +104,7 @@ def _print(finding: Finding) -> None:
 def _main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description="Sanity-check a PDF.")
     ap.add_argument("path", type=Path)
-    ap.add_argument("--strict", action="store_true",
-                    help="treat WARN as non-zero exit")
+    ap.add_argument("--strict", action="store_true", help="treat WARN as non-zero exit")
     ns = ap.parse_args(argv)
 
     if not ns.path.exists():
@@ -114,8 +116,7 @@ def _main(argv: list[str]) -> int:
     if reader is None:
         return 1
 
-    findings = [open_finding, _check_pages(reader), _check_roundtrip(reader),
-                _check_qpdf(ns.path)]
+    findings = [open_finding, _check_pages(reader), _check_roundtrip(reader), _check_qpdf(ns.path)]
     for f in findings[1:]:
         _print(f)
 

@@ -30,7 +30,7 @@ for name, df in sheets.items():
     print(name, df.shape)
 
 # Skip garbage rows above the header
-df = pd.read_excel("input.xlsx", header=3)         # header on row 4
+df = pd.read_excel("input.xlsx", header=3)  # header on row 4
 
 # Custom header + skip trailing footer
 df = pd.read_excel("input.xlsx", header=0, skipfooter=2)
@@ -62,9 +62,9 @@ Notes:
 ```python
 from openpyxl import load_workbook
 
-wb = load_workbook("input.xlsx", data_only=True)      # for values
+wb = load_workbook("input.xlsx", data_only=True)  # for values
 # OR
-wb = load_workbook("input.xlsx", data_only=False)     # keep formula strings
+wb = load_workbook("input.xlsx", data_only=False)  # keep formula strings
 
 # List sheets
 for name in wb.sheetnames:
@@ -126,7 +126,7 @@ for name, dn in wb.defined_names.items():
 ws = wb["Sales"]
 for name, tbl in ws.tables.items():
     print(name, tbl.ref)
-    rng = ws[tbl.ref]                   # e.g. A1:D100
+    rng = ws[tbl.ref]  # e.g. A1:D100
     headers = [c.value for c in rng[0]]
     rows = [[c.value for c in r] for r in rng[1:]]
 ```
@@ -141,6 +141,7 @@ def read_named_range(wb, name):
         ws = wb[sheet]
         rng = ws[ref]
         return [[c.value for c in row] for row in rng]
+
 
 data = read_named_range(wb, "SalesRegion")
 ```
@@ -167,17 +168,16 @@ for i, row in raw.iterrows():
 ### Fixing merged-cell headers
 
 ```python
-raw = pd.read_excel("input.xlsx", header=[0, 1])         # two-row header
-raw.columns = [" ".join(str(c) for c in col if str(c) != "nan").strip()
-               for col in raw.columns]
+raw = pd.read_excel("input.xlsx", header=[0, 1])  # two-row header
+raw.columns = [" ".join(str(c) for c in col if str(c) != "nan").strip() for col in raw.columns]
 ```
 
 ### Stripping whitespace and empty columns
 
 ```python
 df.columns = df.columns.str.strip()
-df = df.dropna(axis=1, how="all")                        # empty columns
-df = df.dropna(axis=0, how="all")                        # empty rows
+df = df.dropna(axis=1, how="all")  # empty columns
+df = df.dropna(axis=0, how="all")  # empty rows
 df = df.reset_index(drop=True)
 ```
 
@@ -185,8 +185,8 @@ df = df.reset_index(drop=True)
 
 ```python
 df["revenue"] = pd.to_numeric(df["revenue"], errors="coerce")
-df["date"]    = pd.to_datetime(df["date"], errors="coerce")
-df["email"]   = df["email"].astype("string").str.lower()
+df["date"] = pd.to_datetime(df["date"], errors="coerce")
+df["email"] = df["email"].astype("string").str.lower()
 ```
 
 `errors="coerce"` turns unparseable values into `NaN`/`NaT` — safer than
@@ -204,6 +204,7 @@ Programmatic version:
 
 ```python
 import pandas as pd
+
 sheets = pd.read_excel("input.xlsx", sheet_name=None)
 for name, df in sheets.items():
     df.to_csv(f"out_dir/{name}.csv", index=False)

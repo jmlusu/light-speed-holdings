@@ -63,7 +63,7 @@ This roadmap tracks the organization-wide adoption of official LightSpeed Holdin
 | 2.2 | Replace `[placeholder]` text in board meeting deck | ✅ Done | CEO | 1.8 |
 | 2.3 | Replace `[placeholder]` text in one-pager | ✅ Done | CMO | 1.9 |
 | 2.4 | Replace `[placeholder]` text in investor update email | ✅ Done | IR Lead | 1.10 |
-| 2.5 | Update image URLs from `your-domain.com` to actual domain | ⚠️ Partial — assets must be hosted on `lightspeedholdings.com/brand/...` before sending | Engineering | — |
+| 2.5 | Update image URLs from `your-domain.com` to actual domain | ⚠️ Partial — assets must be hosted on `lightspeedholdings.vercel.app/brand/...` before sending | Engineering | — |
 | 2.6 | Add team member details to templates (names, titles, contacts) | 🔲 TODO — CEO pre-filled; other exec placeholders await details | HR + CEO | 2.1-2.4 |
 | 2.7 | Add financial projections to pitch deck | ⚠️ Partial — targets added ($120K/$300K/$600K ARR); pending CFO validation & sign-off | CFO | 2.1 |
 | 2.8 | Add real KPI metrics to traction slide | ✅ Done — 135 agents, 19 departments, 5 offers, 8 products | CFO + CMO | 2.1 |

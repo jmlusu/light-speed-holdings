@@ -199,6 +199,7 @@ If a deployment introduces issues:
 5. **Review**: Conduct a postmortem within 48 hours using the `PostmortemStore`:
    ```python
    from ai_company.orchestrator.escalation import PostmortemStore, Postmortem
+
    store = PostmortemStore()
    postmortem = Postmortem(
        incident_id="INC-<task_id>",

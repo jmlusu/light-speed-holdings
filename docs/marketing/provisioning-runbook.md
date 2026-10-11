@@ -31,7 +31,7 @@ Work order: **Facebook → Instagram → LinkedIn → X → TikTok → YouTube �
 | Company / brand name | LIGHTSPEED HOLDINGS LIMITED (brand: LIGHTSPEED) |
 | Primary username | `@lightspeedholdings` (fallbacks `@lightspeedholdingsmw` → `@lightspeedhq`) |
 | Email | `info.lightspeedholdings@gmail.com` |
-| Website | `https://lightspeedholdings.com` (parked lander today; refresh once domain live) |
+| Website | `https://lightspeedholdings.vercel.app` (parked lander today; refresh once domain live) |
 | Tagline | ASPIRE. ACT. ACHIEVE. |
 | Positioning | AI. Strategy. Transformation. |
 | Logo | `static/brand/social/avatar-1024.png` (universal profile image) |
@@ -43,14 +43,14 @@ Work order: **Facebook → Instagram → LinkedIn → X → TikTok → YouTube �
 - Name: **Lightspeed Holdings Limited** · Category: Consulting / Information Technology / Business Service.
 - Personal profile is only the administrator; the Page is owned by the company.
 - Profile image: `facebook-profile.png` (1080×1080) — larger, icon+logo clearer. Cover: `facebook-cover.png` (1640×664) — larger text and full logo (regenerate via `python static/brand/templates/generate-social-assets.py --platform facebook` if needed).
-- Bio: use the **Facebook variant** below; website `https://lightspeedholdings.com`.
+- Bio: use the **Facebook variant** below; website `https://lightspeedholdings.vercel.app`.
 - Register: set `Status: Live`, `URL: https://www.facebook.com/…`, admins.
 
 ### 2. Instagram (Professional/Business)
 
 - Handle: `@lightspeedholdings` · Professional/Business account (link with the FB Page in Meta Business Suite, Phase 2).
 - Profile image: `static/brand/social/instagram-profile.png` · Story frame: `instagram-story.png`.
-- Bio: **Instagram variant** + link `https://lightspeedholdings.com` (link-in-bio).
+- Bio: **Instagram variant** + link `https://lightspeedholdings.vercel.app` (link-in-bio).
 - Register: set `Live` + URL + admins.
 
 ### 3. LinkedIn (Company Page; highest priority)
@@ -66,14 +66,14 @@ Work order: **Facebook → Instagram → LinkedIn → X → TikTok → YouTube �
 
 - Handle: `@lightspeedholdings` · Convert to **X Professional Account → Business**.
 - Profile photo: `twitter-profile.png` (400×400, crop to circle) · Header: `twitter-header.png` (1500×500).
-- Bio: **X variant**; website `https://lightspeedholdings.com`.
+- Bio: **X variant**; website `https://lightspeedholdings.vercel.app`.
 - Register: set `Live` + URL + admins.
 
 ### 5. TikTok (Business Account → TikTok Business Center)
 
 - Handle: `@lightspeedholdings` · **Business Account**, two-step verification.
 - Profile image: `tiktok-profile.png`.
-- Bio: **TikTok variant**; link/website `https://lightspeedholdings.com` (bio link when available).
+- Bio: **TikTok variant**; link/website `https://lightspeedholdings.vercel.app` (bio link when available).
 - Register: set `Live` + URL + admins.
 
 ### 6. YouTube (company channel)
@@ -99,7 +99,7 @@ Work order: **Facebook → Instagram → LinkedIn → X → TikTok → YouTube �
 ### 9. Resend stand-up (stand up now; delivery later)
 
 - **Owner:** `social_media_manager`
-- Account setup on `resend.com` (ties to #317/#192). 
+- Account setup on `resend.com` (ties to #317/#192).
 - Sending domain **parked** until the company domain is settled — DKIM/SPF/DMARC records to land in #194.
 - 2FA enabled; credentials stored in Bitwarden.
 - Register: public URL captured (if applicable), admin role confirmed, short verification note, status updated appropriately.

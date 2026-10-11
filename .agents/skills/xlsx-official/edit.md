@@ -35,19 +35,20 @@ different `load_workbook` call from the one you intend to save.
 ```python
 from openpyxl import load_workbook
 
-wb = load_workbook("model.xlsx")   # keeps formulas as strings
-ws = wb["Inputs"]                  # or wb.active for the first sheet
+wb = load_workbook("model.xlsx")  # keeps formulas as strings
+ws = wb["Inputs"]  # or wb.active for the first sheet
 
-ws["B2"] = 1_500_000               # patch a hardcoded input
-ws["B3"] = 0.07                    # bump the growth assumption
+ws["B2"] = 1_500_000  # patch a hardcoded input
+ws["B3"] = 0.07  # bump the growth assumption
 
-wb.save("model.xlsx")              # overwrites — write to a copy if unsure
+wb.save("model.xlsx")  # overwrites — write to a copy if unsure
 ```
 
 Always save to a new path first in destructive workflows:
 
 ```python
 import shutil
+
 shutil.copy("model.xlsx", "model.backup.xlsx")
 wb.save("model.xlsx")
 ```
@@ -62,7 +63,7 @@ new_rows = [
     ("2026-06-30", "product-A", 1315.00),
 ]
 for row in new_rows:
-    ws.append(row)                        # writes to next unused row
+    ws.append(row)  # writes to next unused row
 ```
 
 If the sheet has a defined `Table` object (Excel's ListObject), you should
@@ -72,16 +73,16 @@ expand its range so filters and totals pick up the new rows:
 from openpyxl.worksheet.table import Table
 
 tbl = ws.tables["SalesTable"]
-tbl.ref = f"A1:C{ws.max_row}"             # extend to include appended rows
+tbl.ref = f"A1:C{ws.max_row}"  # extend to include appended rows
 ```
 
 ### Inserting and deleting rows / columns
 
 ```python
-ws.insert_rows(idx=5, amount=3)           # insert 3 blank rows starting at row 5
-ws.delete_rows(idx=10, amount=1)          # delete row 10
-ws.insert_cols(idx=2, amount=1)           # insert one column between A and B
-ws.delete_cols(idx=4, amount=2)           # delete D and E
+ws.insert_rows(idx=5, amount=3)  # insert 3 blank rows starting at row 5
+ws.delete_rows(idx=10, amount=1)  # delete row 10
+ws.insert_cols(idx=2, amount=1)  # insert one column between A and B
+ws.delete_cols(idx=4, amount=2)  # delete D and E
 ```
 
 **Warning:** openpyxl inserts/deletes rows and columns naively — it does *not*
@@ -100,7 +101,7 @@ from openpyxl.formula.translate import Translator
 
 # Original formula lives at B2. After inserting a row above it, the formula
 # is now at B3 and should shift references down by one row.
-formula = ws["B3"].value                          # e.g. "=A2*1.05"
+formula = ws["B3"].value  # e.g. "=A2*1.05"
 ws["B3"] = Translator(formula, origin="B2").translate_formula("B3")
 ```
 
@@ -115,6 +116,7 @@ def col_by_header(ws, header, row=1):
             return cell.column_letter
     raise KeyError(header)
 
+
 rev_col = col_by_header(ws, "Revenue")
 ws[f"{rev_col}5"] = 42_000
 ```
@@ -123,7 +125,7 @@ ws[f"{rev_col}5"] = 42_000
 
 ```python
 # Read current formula
-current = ws["D2"].value                # "=B2-C2"
+current = ws["D2"].value  # "=B2-C2"
 
 # Rewrite with a guard against divide-by-zero
 ws["E2"] = "=IF(B2=0, 0, D2/B2)"
@@ -146,10 +148,10 @@ if ws["D2"].data_type == "f":
 
 ```python
 new = wb.create_sheet("QA")
-wb.move_sheet("QA", offset=-1)           # move it before the current position
+wb.move_sheet("QA", offset=-1)  # move it before the current position
 
 # Or place it at a specific index:
-wb.create_sheet("Cover", 0)              # 0 = first tab
+wb.create_sheet("Cover", 0)  # 0 = first tab
 ```
 
 Renaming a sheet does *not* auto-rewrite formulas that reference it. Rename
@@ -162,6 +164,7 @@ wb[old_name].title = new_name
 
 # Then walk all formulas and rewrite references
 import re
+
 for sheet in wb.worksheets:
     for row in sheet.iter_rows():
         for cell in row:
@@ -199,7 +202,7 @@ constructing a new `Font` replaces it. If you need to preserve everything but
 the value:
 
 ```python
-ws["B2"].value = 42                   # style, format, alignment untouched
+ws["B2"].value = 42  # style, format, alignment untouched
 ```
 
 If you assign via `ws.cell(row=1, column=2).value = 42`, the same holds.
@@ -272,22 +275,24 @@ from lxml import etree
 
 NS = {
     "main": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-    "r":    "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+    "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
 }
 
 tree = etree.parse("unpacked/xl/worksheets/sheet1.xml")
 root = tree.getroot()
 
 for c in root.iterfind(".//main:c", NS):
-    ref = c.get("r")                             # e.g. "B2"
+    ref = c.get("r")  # e.g. "B2"
     if ref == "B2":
         f = c.find("main:f", NS)
         if f is not None:
-            f.text = "SUM(B3:B100)"              # note: no leading "="
+            f.text = "SUM(B3:B100)"  # note: no leading "="
 
 tree.write(
     "unpacked/xl/worksheets/sheet1.xml",
-    xml_declaration=True, encoding="UTF-8", standalone=True,
+    xml_declaration=True,
+    encoding="UTF-8",
+    standalone=True,
 )
 ```
 
@@ -324,7 +329,7 @@ ws["B2"].comment = Comment(
     text="Source: Q4 filing, page 14",
     author="Analyst",
 )
-ws["B2"].comment.width  = 200
+ws["B2"].comment.width = 200
 ws["B2"].comment.height = 60
 ```
 
@@ -363,6 +368,7 @@ If you touched a formula, spot-check its new value with:
 
 ```python
 from openpyxl import load_workbook
-wb = load_workbook("output.xlsx", data_only=True)   # read-only view
+
+wb = load_workbook("output.xlsx", data_only=True)  # read-only view
 print(wb["Model"]["B12"].value)
 ```

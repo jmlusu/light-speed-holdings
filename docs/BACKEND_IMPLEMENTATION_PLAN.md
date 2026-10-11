@@ -63,6 +63,7 @@ Multiple dashboard modules bypass the `MessageBus` abstraction and read `inbox.j
 # Add imports
 from ai_company.orchestrator.message_bus import MessageBus
 
+
 class KPICollector(ABC):
     department: str = ""
 
@@ -82,14 +83,15 @@ class KPICollector(ABC):
 - Add a new method:
 
 ```python
-    def _get_all_tasks_raw(self) -> list[dict[str, Any]]:
-        """Return all inbox tasks as raw dicts (for KPI aggregation).
+def _get_all_tasks_raw(self) -> list[dict[str, Any]]:
+    """Return all inbox tasks as raw dicts (for KPI aggregation).
 
-        Uses MessageBus for atomic reads instead of direct file I/O.
-        """
-        from ai_company.models.task import Task as TaskModel
-        tasks = self.bus.get_all_tasks()
-        return [t.model_dump() for t in tasks]
+    Uses MessageBus for atomic reads instead of direct file I/O.
+    """
+    from ai_company.models.task import Task as TaskModel
+
+    tasks = self.bus.get_all_tasks()
+    return [t.model_dump() for t in tasks]
 ```
 
 #### Step 1.2: Update each KPI collector to use `_get_all_tasks_raw()` (1.5h)
@@ -116,6 +118,7 @@ Add a module-level lazy bus helper:
 from ai_company.orchestrator.message_bus import MessageBus
 
 _bus: MessageBus | None = None
+
 
 def _get_bus() -> MessageBus:
     global _bus
@@ -157,12 +160,14 @@ def _delegate_task(task_id: str, delegate_to: str) -> dict[str, Any]:
 ```python
 def reassign_task(self, task_id: str, new_receiver_id: str) -> Task | None:
     """Change the receiver of a task (delegation/reassignment)."""
+
     def _updater(tasks: List[dict]) -> List[dict]:
         for i, t in enumerate(tasks):
             if t.get("id") == task_id:
                 tasks[i]["receiver_id"] = new_receiver_id
                 tasks[i]["updated_at"] = datetime.now().isoformat()
         return tasks
+
     updated = self._mutate_tasks(_updater)
     for t in updated:
         if t.get("id") == task_id:
@@ -211,9 +216,9 @@ Remove the raw JSON iteration loop and replace with the pre-computed dict from `
 `briefing.py` lines 40-43 treat `Task` Pydantic objects as raw dicts:
 
 ```python
-for task_dict in self.bus.get_inbox("all"):   # Returns List[Task], not dicts
-    if task_dict.get("status") == "pending":   # Task has .status, not .get()
-        receiver = task_dict["receiver_id"]     # Task has .receiver_id attribute
+for task_dict in self.bus.get_inbox("all"):  # Returns List[Task], not dicts
+    if task_dict.get("status") == "pending":  # Task has .status, not .get()
+        receiver = task_dict["receiver_id"]  # Task has .receiver_id attribute
         pending_tasks.setdefault(receiver, []).append(task_dict)
 ```
 
@@ -338,6 +343,7 @@ def __init__(
     self.expires_at: str | None = None
     if ttl_days is not None:
         from datetime import timedelta
+
         self.expires_at = (datetime.now() + timedelta(days=ttl_days)).isoformat()
 ```
 
@@ -637,8 +643,11 @@ def add(
     store = MemoryStore()
     tag_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
     entry = store.store(
-        memory_type, content,
-        agent_id=agent_id, tags=tag_list, ttl_days=ttl_days,
+        memory_type,
+        content,
+        agent_id=agent_id,
+        tags=tag_list,
+        ttl_days=ttl_days,
     )
     console.print(f"[green]Stored {memory_type} memory:[/green] {entry.id}")
     if entry.expires_at:
@@ -795,6 +804,7 @@ class CycleDaemon:
         executor = None
         if self.run_executor:
             from ai_company.executor.loop import Executor
+
             executor = Executor(poll_interval=self.interval_seconds)
 
         while self._running:
@@ -906,7 +916,9 @@ def daemon(
         pid_file=pid_file,
         run_executor=not no_executor,
     )
-    typer.echo(f"Starting daemon (interval={interval}s, executor={'on' if not no_executor else 'off'})")
+    typer.echo(
+        f"Starting daemon (interval={interval}s, executor={'on' if not no_executor else 'off'})"
+    )
     typer.echo("Press Ctrl+C or send SIGTERM to stop.")
     cycles = daemon.start()
     typer.echo(f"Daemon completed {cycles} cycle(s).")
@@ -1009,6 +1021,7 @@ Add a convenience context manager and decorator:
 
 ```python
 from contextlib import contextmanager
+
 
 @contextmanager
 def correlation_scope(cid: str | None = None):
@@ -1113,7 +1126,9 @@ Update `_load_json()` and `_load_yaml()` to include file path in structured logs
 def _load_json(self, rel_path: str | Path) -> Any:
     path = self.root / rel_path
     if not path.exists():
-        logger.debug("JSON file not found, returning empty: %s", path, extra={"file_path": str(path)})
+        logger.debug(
+            "JSON file not found, returning empty: %s", path, extra={"file_path": str(path)}
+        )
         return []
     # ... rest unchanged
 ```
@@ -1276,6 +1291,7 @@ Looking at the code flow:
 ```python
 from ai_company.llm.cost_tracker import CostTracker
 
+
 class LLMClient:
     def __init__(
         self,
@@ -1325,9 +1341,9 @@ class ChatResponse:
     content: str
     model: str = ""
     provider: str = ""
-    prompt_tokens: int = 0      # NEW
+    prompt_tokens: int = 0  # NEW
     completion_tokens: int = 0  # NEW
-    total_tokens: int = 0       # NEW
+    total_tokens: int = 0  # NEW
 ```
 
 Check provider implementations to extract token counts from API responses.

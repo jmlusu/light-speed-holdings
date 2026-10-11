@@ -49,7 +49,7 @@ def parse_frontmatter(text):
         key, _, value = line.partition(":")
         current_key = key.strip()
         fields[current_key] = value.strip().strip("\"'")
-    return fields, text[match.end():]
+    return fields, text[match.end() :]
 
 
 def main():
@@ -112,9 +112,15 @@ def main():
             error(f"description is {len(description)} chars (max {MAX_DESCRIPTION})")
         lowered = description.lower()
         if len(description) < 40:
-            warn(f"description is very short ({len(description)} chars) — likely too vague to trigger")
-        if not any(cue in lowered for cue in ("use when", "use this", "use for", "trigger", "use it when")):
-            warn("description has no obvious WHEN clause (e.g. 'Use when ...') — add trigger conditions")
+            warn(
+                f"description is very short ({len(description)} chars) — likely too vague to trigger"
+            )
+        if not any(
+            cue in lowered for cue in ("use when", "use this", "use for", "trigger", "use it when")
+        ):
+            warn(
+                "description has no obvious WHEN clause (e.g. 'Use when ...') — add trigger conditions"
+            )
 
     compat = fields.get("compatibility", "")
     if compat and not (1 <= len(compat) <= 500):
@@ -122,7 +128,9 @@ def main():
 
     word_count = len(body.split())
     if word_count > MAX_BODY_WORDS:
-        warn(f"SKILL.md body is {word_count} words (recommended max {MAX_BODY_WORDS}) — move detail to references/")
+        warn(
+            f"SKILL.md body is {word_count} words (recommended max {MAX_BODY_WORDS}) — move detail to references/"
+        )
 
     for match in re.finditer(r"(?:scripts|references|assets)/[\w./-]*\w", body):
         rel = match.group(0)

@@ -15,7 +15,7 @@
 | 4 | 36–52s | Governance mechanism callouts: five-tier matrix, approval sweep, seven-tool sandbox | "Five-tier governance, an approval sweep, a seven-tool sandbox, KPIs computed from real sources." |
 | 5 | 52–64s | Malawi/SADC frame: registry → queue → agents, 90-day pilot badge | "Install authorization before throughput: a 90-day pilot can validate the full framework on one department." |
 | 6 | 64–80s | Call to action: Malawi Agentic AI Monitor cover | "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context." |
-| 7 | 80–90s | Fade to black, website URL | "LightspeedHoldings.com" |
+| 7 | 80–90s | Fade to black, website URL | "LightspeedHoldings.vercel.app" |
 
 ## Script Narrative (Full)
 

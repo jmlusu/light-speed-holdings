@@ -110,10 +110,7 @@ def render_simple_svg_with_pillow(
     draw = ImageDraw.Draw(image)
 
     def scaled_points_from_attribute(points_value: str) -> list[tuple[float, float]]:
-        values = [
-            float(value)
-            for value in re.findall(r"-?[0-9]+(?:\.[0-9]+)?", points_value)
-        ]
+        values = [float(value) for value in re.findall(r"-?[0-9]+(?:\.[0-9]+)?", points_value)]
         return [
             (values[index] * scale, values[index + 1] * scale)
             for index in range(0, len(values) - 1, 2)

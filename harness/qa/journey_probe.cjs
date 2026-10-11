@@ -24,15 +24,15 @@ async function main() {
 
   const waitFlush = () => page.waitForTimeout(5600);
 
-  await page.goto("http://localhost:3001/", { waitUntil: "load", timeout: 30000 });
+  await page.goto("http://localhost:1441/", { waitUntil: "load", timeout: 30000 });
   await waitFlush();
-  await page.goto("http://localhost:3001/solutions#ai-company-builder", { waitUntil: "load", timeout: 30000 });
+  await page.goto("http://localhost:1441/solutions#ai-company-builder", { waitUntil: "load", timeout: 30000 });
   await waitFlush();
-  await page.goto("http://localhost:3001/sectors#financial-services", { waitUntil: "load", timeout: 30000 });
+  await page.goto("http://localhost:1441/sectors#financial-services", { waitUntil: "load", timeout: 30000 });
   await waitFlush();
-  await page.goto("http://localhost:3001/proof", { waitUntil: "load", timeout: 30000 });
+  await page.goto("http://localhost:1441/proof", { waitUntil: "load", timeout: 30000 });
   await waitFlush();
-  await page.goto("http://localhost:3001/insights", { waitUntil: "load", timeout: 30000 });
+  await page.goto("http://localhost:1441/insights", { waitUntil: "load", timeout: 30000 });
   await waitFlush();
 
   const types = posts.map((p) => p.eventType);

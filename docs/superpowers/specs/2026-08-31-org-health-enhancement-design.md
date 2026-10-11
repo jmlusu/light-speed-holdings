@@ -167,14 +167,17 @@ def _score_task_throughput(self, database) -> float | None:
     # Count completed tasks in 30d window
     # Normalize: (actual_per_day / target_per_day) * 100, capped at 100
 
+
 def _score_escalation_rate(self, database) -> float | None:
     """100 - (escalated / total * 100). Lower escalation = higher score."""
     # Reuse _read_all_tasks() data already fetched in compute()
+
 
 def _score_security_posture(self, database) -> float | None:
     """Audit trail health + compliance indicators."""
     # Check: audit events exist, no critical severity events,
     # compliance-related tasks completed
+
 
 def _score_strategic_alignment(self, database) -> float | None:
     """% of tasks mapped to active goals/OKRs."""

@@ -23,6 +23,7 @@ Exit code is 0 if no FAIL findings, 1 otherwise. 2 for argument errors.
 Usage:
     uv run audit.py <file.docx> [--json]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -60,8 +61,7 @@ def _probe_required_parts(zf: zipfile.ZipFile) -> Finding:
     names = set(zf.namelist())
     missing = [name for name in _REQUIRED if name not in names]
     if missing:
-        return Finding("required-parts", "FAIL",
-                       "missing: " + ", ".join(missing))
+        return Finding("required-parts", "FAIL", "missing: " + ", ".join(missing))
     return Finding("required-parts", "OK")
 
 
@@ -77,8 +77,7 @@ def _probe_xml_wellformed(zf: zipfile.ZipFile) -> Finding:
         except _stdet.ParseError as exc:
             bad.append(f"{info.filename}: {exc}")
     if bad:
-        return Finding("xml-wellformed", "FAIL",
-                       f"{len(bad)} bad parts; first: " + bad[0])
+        return Finding("xml-wellformed", "FAIL", f"{len(bad)} bad parts; first: " + bad[0])
     return Finding("xml-wellformed", "OK")
 
 
@@ -109,8 +108,7 @@ def _probe_lxml_strict(zf: zipfile.ZipFile) -> Finding:
         except etree.XMLSyntaxError as exc:
             bad.append(f"{info.filename}: {exc}")
     if bad:
-        return Finding("lxml-strict", "FAIL",
-                       f"{len(bad)} strict-parse failures; first: " + bad[0])
+        return Finding("lxml-strict", "FAIL", f"{len(bad)} strict-parse failures; first: " + bad[0])
     return Finding("lxml-strict", "OK")
 
 
@@ -167,12 +165,9 @@ def audit_file(path: Path, *, as_json: bool = False) -> int:
 
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Report on the well-formedness of a .docx file."
-    )
+    parser = argparse.ArgumentParser(description="Report on the well-formedness of a .docx file.")
     parser.add_argument("file", type=Path, help="Target .docx file")
-    parser.add_argument("--json", action="store_true",
-                        help="Emit findings as JSON on stdout.")
+    parser.add_argument("--json", action="store_true", help="Emit findings as JSON on stdout.")
     return parser.parse_args(argv)
 
 

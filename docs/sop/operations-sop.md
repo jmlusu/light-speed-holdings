@@ -335,6 +335,7 @@ After SEV-1 or SEV-2 incidents:
 1. **Create postmortem** using `PostmortemStore`:
    ```python
    from ai_company.orchestrator.escalation import PostmortemStore, Postmortem
+
    store = PostmortemStore()
    postmortem = Postmortem(
        incident_id="INC-<task_id>",

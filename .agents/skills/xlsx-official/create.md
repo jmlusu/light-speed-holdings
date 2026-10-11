@@ -50,7 +50,7 @@ from openpyxl import Workbook
 
 rows = [
     {"date": "2026-01-31", "product": "A", "revenue": 1200.50},
-    {"date": "2026-02-28", "product": "B", "revenue":  980.00},
+    {"date": "2026-02-28", "product": "B", "revenue": 980.00},
 ]
 
 wb = Workbook()
@@ -73,7 +73,7 @@ row for a clean tidy layout.
 ```python
 import pandas as pd
 
-df = pd.DataFrame(rows)                    # rows from the previous block
+df = pd.DataFrame(rows)  # rows from the previous block
 df.to_excel("sales.xlsx", sheet_name="Sales", index=False)
 ```
 
@@ -85,9 +85,9 @@ carries real meaning.
 
 ```python
 with pd.ExcelWriter("multi.xlsx", engine="openpyxl") as writer:
-    df_sales.to_excel(writer, sheet_name="Sales",   index=False)
-    df_costs.to_excel(writer, sheet_name="Costs",   index=False)
-    df_agg.to_excel(writer,   sheet_name="Summary", index=False)
+    df_sales.to_excel(writer, sheet_name="Sales", index=False)
+    df_costs.to_excel(writer, sheet_name="Costs", index=False)
+    df_agg.to_excel(writer, sheet_name="Summary", index=False)
 ```
 
 To attach openpyxl formatting after pandas writes, keep the writer open and
@@ -109,8 +109,8 @@ does not evaluate them.
 ```python
 ws["B10"] = "=SUM(B2:B9)"
 ws["C10"] = "=B10/COUNT(B2:B9)"
-ws["D2"]  = "=IF(B2=0, 0, C2/B2)"        # guard against #DIV/0!
-ws["E2"]  = "=VLOOKUP(A2, Products!A:C, 3, FALSE)"
+ws["D2"] = "=IF(B2=0, 0, C2/B2)"  # guard against #DIV/0!
+ws["E2"] = "=VLOOKUP(A2, Products!A:C, 3, FALSE)"
 ```
 
 Use built-in Excel functions freely — `SUM`, `AVERAGE`, `IF`, `IFERROR`,
@@ -145,7 +145,7 @@ bold = Font(name="Calibri", size=11, bold=True, color="1F1F1F")
 center = Alignment(horizontal="center", vertical="center", wrap_text=True)
 header_fill = PatternFill("solid", fgColor="F2F2F2")
 
-for cell in ws[1]:                              # header row
+for cell in ws[1]:  # header row
     cell.font = bold
     cell.alignment = center
     cell.fill = header_fill
@@ -171,7 +171,7 @@ other platforms substitute a reasonable CJK face).
 from openpyxl.styles import NamedStyle, Font, PatternFill, Alignment
 
 input_style = NamedStyle(name="Input")
-input_style.font = Font(color="0033CC")           # blue
+input_style.font = Font(color="0033CC")  # blue
 input_style.number_format = "#,##0.00"
 input_style.alignment = Alignment(horizontal="right")
 
@@ -187,9 +187,9 @@ Registering once and applying by name keeps the file small and consistent.
 ### Column widths and row heights
 
 ```python
-ws.column_dimensions["A"].width = 22        # ~22 characters
+ws.column_dimensions["A"].width = 22  # ~22 characters
 ws.column_dimensions["B"].width = 14
-ws.row_dimensions[1].height = 22            # header row, taller
+ws.row_dimensions[1].height = 22  # header row, taller
 
 # Auto-fit is not native. Approximate with the longest value:
 for column_cells in ws.columns:
@@ -236,8 +236,8 @@ does not.
 ### Freeze panes
 
 ```python
-ws.freeze_panes = "A2"     # freeze header row
-ws.freeze_panes = "B2"     # freeze header row + first column
+ws.freeze_panes = "A2"  # freeze header row
+ws.freeze_panes = "B2"  # freeze header row + first column
 ```
 
 Always freeze when the table scrolls.
@@ -263,12 +263,12 @@ chart.title = "Monthly revenue"
 chart.y_axis.title = "USD"
 chart.x_axis.title = "Month"
 
-data = Reference(ws, min_col=2, min_row=1, max_col=2, max_row=13)   # includes header
+data = Reference(ws, min_col=2, min_row=1, max_col=2, max_row=13)  # includes header
 cats = Reference(ws, min_col=1, min_row=2, max_row=13)
 chart.add_data(data, titles_from_data=True)
 chart.set_categories(cats)
 
-ws.add_chart(chart, "D2")   # anchor top-left of chart at D2
+ws.add_chart(chart, "D2")  # anchor top-left of chart at D2
 ```
 
 `BarChart`, `PieChart`, `ScatterChart`, and `AreaChart` follow the same
@@ -281,7 +281,7 @@ have properties — check the openpyxl docs for the exact attribute names.
 from openpyxl.drawing.image import Image
 
 img = Image("logo.png")
-img.width  = 120     # pixels, not points
+img.width = 120  # pixels, not points
 img.height = 40
 ws.add_image(img, "A1")
 ```
@@ -298,7 +298,7 @@ dv = DataValidation(
     type="list",
     formula1='"North,South,East,West"',
     allow_blank=True,
-    showDropDown=False,   # confusingly, False = show the dropdown
+    showDropDown=False,  # confusingly, False = show the dropdown
 )
 dv.error = "Choose a region from the list."
 dv.errorTitle = "Invalid region"
@@ -326,9 +326,13 @@ ws.conditional_formatting.add(
 ws.conditional_formatting.add(
     "D2:D100",
     ColorScaleRule(
-        start_type="min", start_color="F8696B",
-        mid_type="percentile", mid_value=50, mid_color="FFEB84",
-        end_type="max", end_color="63BE7B",
+        start_type="min",
+        start_color="F8696B",
+        mid_type="percentile",
+        mid_value=50,
+        mid_color="FFEB84",
+        end_type="max",
+        end_color="63BE7B",
     ),
 )
 ```
@@ -340,11 +344,11 @@ openpyxl. They will not affect `data_only=True` reads.
 
 ```python
 ws.page_setup.orientation = "landscape"
-ws.page_setup.paperSize = ws.PAPERSIZE_A4        # or PAPERSIZE_LETTER
+ws.page_setup.paperSize = ws.PAPERSIZE_A4  # or PAPERSIZE_LETTER
 ws.page_setup.fitToWidth = 1
-ws.page_setup.fitToHeight = 0                    # 0 = as many pages tall as needed
+ws.page_setup.fitToHeight = 0  # 0 = as many pages tall as needed
 ws.print_options.horizontalCentered = True
-ws.print_title_rows = "1:1"                      # repeat row 1 on every page
+ws.print_title_rows = "1:1"  # repeat row 1 on every page
 ws.print_area = "A1:F100"
 ws.oddHeader.center.text = "&BFY2026 Sales Report"
 ws.oddFooter.right.text = "Page &P of &N"
@@ -365,7 +369,7 @@ inputs.title = "Inputs"
 inputs["A1"] = "Assumption"
 inputs["B1"] = "Value"
 inputs.append(["Starting revenue", 1_000_000])
-inputs.append(["Monthly growth",   0.05])
+inputs.append(["Monthly growth", 0.05])
 inputs.append(["COGS % of revenue", 0.42])
 
 for cell in inputs[1]:

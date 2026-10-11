@@ -34,6 +34,7 @@ Extract the command execution into a **Strategy interface**. The `ToolRunner` de
 
 from abc import ABC, abstractmethod
 
+
 class CommandBackend(ABC):
     """Abstract base for command execution backends."""
 
@@ -86,13 +87,20 @@ class DockerBackend(CommandBackend):
 
     def execute(self, tokens, cwd, timeout=120):
         docker_cmd = [
-            "docker", "run", "--rm",
-            "--network", self.network,
-            "--memory", self.memory_limit,
-            "--cpus", str(self.cpu_quota / self.cpu_period),
+            "docker",
+            "run",
+            "--rm",
+            "--network",
+            self.network,
+            "--memory",
+            self.memory_limit,
+            "--cpus",
+            str(self.cpu_quota / self.cpu_period),
             "--read-only" if self.read_only else "",
-            "-v", f"{cwd}:/workspace:rw",
-            "-w", "/workspace",
+            "-v",
+            f"{cwd}:/workspace:rw",
+            "-w",
+            "/workspace",
             self.image,
             *tokens,
         ]
@@ -108,7 +116,8 @@ class DockerBackend(CommandBackend):
         try:
             result = subprocess.run(
                 ["docker", "info"],
-                capture_output=True, timeout=5,
+                capture_output=True,
+                timeout=5,
             )
             return result.returncode == 0
         except (FileNotFoundError, subprocess.TimeoutExpired):

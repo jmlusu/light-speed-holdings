@@ -63,12 +63,13 @@ Add to `src/ai_company/dashboard/models.py`:
 ```python
 class PaginatedTasks(BaseModel):
     """Server-side paginated task response."""
+
     items: list[TaskItem]
-    total: int                          # Total matching tasks (before pagination)
-    page: int                           # Current page (1-indexed)
-    page_size: int                      # Requested page size
-    total_pages: int                    # ceil(total / page_size)
-    counts_by_status: dict[str, int]    # {"pending": 42, "in_progress": 15, ...}
+    total: int  # Total matching tasks (before pagination)
+    page: int  # Current page (1-indexed)
+    page_size: int  # Requested page size
+    total_pages: int  # ceil(total / page_size)
+    counts_by_status: dict[str, int]  # {"pending": 42, "in_progress": 15, ...}
 ```
 
 ### 3.2 New Query Parameters
@@ -105,8 +106,11 @@ def _apply_priority_sort_key(task: dict, reverse: bool) -> tuple:
 def _apply_status_sort_key(task: dict) -> tuple:
     """Sort key that orders status: escalated > failed > pending > in_progress > completed."""
     status_order = {
-        "escalated": 0, "failed": 1, "pending": 2,
-        "in_progress": 3, "completed": 4,
+        "escalated": 0,
+        "failed": 1,
+        "pending": 2,
+        "in_progress": 3,
+        "completed": 4,
     }
     return (status_order.get(task.get("status", ""), 5),)
 
@@ -148,19 +152,26 @@ def list_tasks_paginated(
     if department:
         registry = _load_registry()
         dept_agent_names = {
-            a["name"] for a in registry
+            a["name"]
+            for a in registry
             if (a.get("department") or "").lower() == department.lower()
             or (a.get("department") or "").replace(" ", "_").lower() == department.lower()
         }
-        tasks = [t for t in tasks if t.get("receiver_id") in dept_agent_names
-                 or t.get("sender_id") in dept_agent_names]
+        tasks = [
+            t
+            for t in tasks
+            if t.get("receiver_id") in dept_agent_names or t.get("sender_id") in dept_agent_names
+        ]
 
     # ── Filter: agent (substring match on sender_id or receiver_id) ──
     if agent:
         agent_lower = agent.lower()
-        tasks = [t for t in tasks
-                 if agent_lower in t.get("receiver_id", "").lower()
-                 or agent_lower in t.get("sender_id", "").lower()]
+        tasks = [
+            t
+            for t in tasks
+            if agent_lower in t.get("receiver_id", "").lower()
+            or agent_lower in t.get("sender_id", "").lower()
+        ]
 
     # ── Counts by status (before pagination) ──
     counts: dict[str, int] = {}
@@ -577,9 +588,12 @@ Add a CLI subcommand to the Typer app in `src/ai_company/cli/main.py`:
 ```python
 # In src/ai_company/cli/main.py, add subcommand:
 
+
 @cli_app.command()
 def cleanup_tasks(
-    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would be deleted without deleting"),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Show what would be deleted without deleting"
+    ),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show details of each dummy task"),
 ) -> None:
     """Remove dummy/placeholder tasks from inbox.json.
@@ -596,7 +610,7 @@ def cleanup_tasks(
 
     def is_dummy(task) -> bool:
         # Rule 1: Short ID pattern (t1, t2, etc.)
-        if re.match(r'^t\d+$', task.id):
+        if re.match(r"^t\d+$", task.id):
             return True
         # Rule 2: Trivial instruction (<=5 chars)
         if len(task.instruction.strip()) <= 5:
@@ -608,9 +622,9 @@ def cleanup_tasks(
         if not task.sender_id.strip() or not task.receiver_id.strip():
             return True
         # Rule 5: Test instruction patterns
-        if re.match(r'^test\b', task.instruction, re.IGNORECASE):
+        if re.match(r"^test\b", task.instruction, re.IGNORECASE):
             return True
-        if re.match(r'^do [a-z]$', task.instruction, re.IGNORECASE):
+        if re.match(r"^do [a-z]$", task.instruction, re.IGNORECASE):
             return True
         return False
 
@@ -621,7 +635,9 @@ def cleanup_tasks(
 
     if verbose:
         for t in dummies:
-            typer.echo(f"  - {t.id[:8]} | {t.sender_id[:20]} -> {t.receiver_id[:20]} | {t.instruction[:50]}")
+            typer.echo(
+                f"  - {t.id[:8]} | {t.sender_id[:20]} -> {t.receiver_id[:20]} | {t.instruction[:50]}"
+            )
 
     if dry_run:
         typer.echo(f"\n[dry-run] Would remove {len(dummies)} tasks, keep {len(real)}.")
@@ -645,7 +661,8 @@ Add validation to `POST /api/v1/tasks` in `api.py` to reject trivial tasks at cr
 ```python
 import re
 
-_TRIVIAL_INSTRUCTION_RE = re.compile(r'^(do [a-z]|test|.{0,5})$', re.IGNORECASE)
+_TRIVIAL_INSTRUCTION_RE = re.compile(r"^(do [a-z]|test|.{0,5})$", re.IGNORECASE)
+
 
 @router.post("/tasks", response_model=TaskItem, status_code=201, tags=["tasks"])
 def create_task(assign: TaskAssign, background_tasks: BackgroundTasks) -> TaskItem:
@@ -673,15 +690,18 @@ Add a startup hook in `app.py` that logs a warning if dummy tasks are detected:
 ```python
 # In create_app(), after configure_state_store():
 
+
 @app.on_event("startup")
 async def _warn_dummy_tasks():
     """Log a warning if dummy tasks are detected in the inbox."""
     from ai_company.dashboard.api import _read_all_tasks
     import re
+
     tasks = _read_all_tasks()
     dummies = [
-        t for t in tasks
-        if re.match(r'^t\d+$', t.get("id", ""))
+        t
+        for t in tasks
+        if re.match(r"^t\d+$", t.get("id", ""))
         or len(t.get("instruction", "").strip()) <= 5
         or len(t.get("sender_id", "").strip()) == 1
         or len(t.get("receiver_id", "").strip()) == 1
@@ -718,6 +738,7 @@ async def _warn_dummy_tasks():
 
 ```python
 """Tests for the paginated tasks endpoint."""
+
 
 class TestPaginatedTasks:
     """Server-side pagination, filtering, sorting."""
@@ -788,6 +809,7 @@ class TestPaginatedTasks:
 ```python
 """End-to-end integration tests for the paginated tasks API."""
 
+
 class TestPaginatedTasksE2E:
     def test_create_then_paginate(self, client):
         """Create 30 tasks, paginate at page_size=10, verify 3 pages."""
@@ -813,6 +835,7 @@ class TestPaginatedTasksE2E:
 ```python
 """Tests for the dummy task cleanup CLI command."""
 
+
 class TestCleanupDetection:
     def test_short_id_pattern(self):
         """'t1', 't2', 't100' are detected as dummy."""
@@ -828,6 +851,7 @@ class TestCleanupDetection:
 
     def test_mixed_real_and_dummy(self):
         """Correctly separates real from dummy tasks."""
+
 
 class TestCleanupCommand:
     def test_dry_run_does_not_delete(self):

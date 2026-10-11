@@ -6,7 +6,7 @@
 **Claims source:** pillar claims_ledger (fact checklist at bottom).
 **Template system:** P1 foundational templates (ticket #311) — canonical PNGs at `static/brand/social/templates/`. Slot keys per `static/brand/templates/social-templates/GENERATED-P1.md`.
 
-**ADD fact (flagged once per pack):** the Malawi Agentic AI Monitor subscription URL is not stated in the pillar ("subscribe at the link below"). This pack uses the established site root `https://lightspeedholdings.com` (`docs/BRAND_DEPLOYMENT_GUIDE.md:46`). `ADD: Malawi Agentic AI Monitor subscription URL — requires pillar update.`
+**ADD fact (flagged once per pack):** the Malawi Agentic AI Monitor subscription URL is not stated in the pillar ("subscribe at the link below"). This pack uses the established site root `https://lightspeedholdings.vercel.app` (`docs/BRAND_DEPLOYMENT_GUIDE.md:46`). `ADD: Malawi Agentic AI Monitor subscription URL — requires pillar update.`
 
 ---
 
@@ -41,7 +41,7 @@ The cost of the queue is the price of the permission. It is the discipline that 
 
 Everything else goes out monthly through the Malawi Agentic AI Monitor.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 #AgenticAI #AIGovernance #HumanInTheLoop #Malawi
 ```
@@ -100,7 +100,7 @@ Tier 3 requires two distinct human approvers. The system rejects self-approval o
 ```text
 Ask your system tonight: what does it do at the timeout? If the answer is not "it escalates to a more senior human and never auto-approves," fix it before the regulator — or the incident — finds it.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 ```
 
 ---
@@ -182,7 +182,7 @@ VO: The second approver signs from a different account. Approved. The audit log 
 [0:58–1:15] On screen: timeout path diagram.
 VO: And if nobody had signed? At 30 minutes this card would escalate to the CEO — never auto-approve, never drop. The ask gets louder until a human answers.
 
-[1:15–1:30] End card: https://lightspeedholdings.com.
+[1:15–1:30] End card: https://lightspeedholdings.vercel.app.
 VO: Ask your system tonight: what does it do at the timeout?
 ```
 

@@ -25,7 +25,9 @@ We use **Typer** as the CLI framework for `ai-company`.
 
 ```python
 import typer
+
 app = typer.Typer()
+
 
 @app.command()
 def tick():

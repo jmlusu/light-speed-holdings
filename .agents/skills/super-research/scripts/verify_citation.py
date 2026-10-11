@@ -13,6 +13,7 @@ Usage:
   verify_citation.py --title "Attention Is All You Need" --author Vaswani --year 2017
   verify_citation.py --bib refs.bib --out audit.json
 """
+
 import argparse
 import difflib
 import json
@@ -62,37 +63,47 @@ def q_crossref(title):
             if parts[0][0]:
                 year = parts[0][0]
                 break
-        out.append({
-            "title": (it.get("title") or [""])[0],
-            "authors": [a.get("family", "") for a in (it.get("author") or [])],
-            "year": year,
-            "venue": (it.get("container-title") or [None])[0],
-            "doi": it.get("DOI"),
-            "url": it.get("URL"),
-            "source": "crossref",
-        })
+        out.append(
+            {
+                "title": (it.get("title") or [""])[0],
+                "authors": [a.get("family", "") for a in (it.get("author") or [])],
+                "year": year,
+                "venue": (it.get("container-title") or [None])[0],
+                "doi": it.get("DOI"),
+                "url": it.get("URL"),
+                "source": "crossref",
+            }
+        )
     return out
 
 
 def q_s2(title):
-    url = (f"https://api.semanticscholar.org/graph/v1/paper/search?"
-           f"query={urllib.parse.quote(title)}&limit=3"
-           f"&fields=title,authors,year,venue,externalIds,url")
+    url = (
+        f"https://api.semanticscholar.org/graph/v1/paper/search?"
+        f"query={urllib.parse.quote(title)}&limit=3"
+        f"&fields=title,authors,year,venue,externalIds,url"
+    )
     body = http_get(url)
     if not body:
         return []
     out = []
     for p in json.loads(body).get("data", []):
         ext = p.get("externalIds") or {}
-        out.append({
-            "title": p.get("title", ""),
-            "authors": [(a.get("name") or "").split()[-1] for a in (p.get("authors") or []) if a.get("name")],
-            "year": p.get("year"),
-            "venue": p.get("venue"),
-            "doi": ext.get("DOI"),
-            "url": p.get("url"),
-            "source": "s2",
-        })
+        out.append(
+            {
+                "title": p.get("title", ""),
+                "authors": [
+                    (a.get("name") or "").split()[-1]
+                    for a in (p.get("authors") or [])
+                    if a.get("name")
+                ],
+                "year": p.get("year"),
+                "venue": p.get("venue"),
+                "doi": ext.get("DOI"),
+                "url": p.get("url"),
+                "source": "s2",
+            }
+        )
     return out
 
 
@@ -104,16 +115,20 @@ def q_openalex(title):
     out = []
     for w in json.loads(body).get("results", []):
         loc = (w.get("primary_location") or {}).get("source") or {}
-        out.append({
-            "title": w.get("title", ""),
-            "authors": [(a["author"]["display_name"] or "").split()[-1]
-                        for a in (w.get("authorships") or [])],
-            "year": w.get("publication_year"),
-            "venue": loc.get("display_name"),
-            "doi": (w.get("doi") or "").replace("https://doi.org/", "") or None,
-            "url": w.get("doi") or w.get("id"),
-            "source": "openalex",
-        })
+        out.append(
+            {
+                "title": w.get("title", ""),
+                "authors": [
+                    (a["author"]["display_name"] or "").split()[-1]
+                    for a in (w.get("authorships") or [])
+                ],
+                "year": w.get("publication_year"),
+                "venue": loc.get("display_name"),
+                "doi": (w.get("doi") or "").replace("https://doi.org/", "") or None,
+                "url": w.get("doi") or w.get("id"),
+                "source": "openalex",
+            }
+        )
     return out
 
 
@@ -125,16 +140,20 @@ def q_arxiv(title):
     ns = {"a": "http://www.w3.org/2005/Atom"}
     out = []
     for e in ET.fromstring(body).findall("a:entry", ns):
-        out.append({
-            "title": re.sub(r"\s+", " ", e.findtext("a:title", "", ns)).strip(),
-            "authors": [(a.findtext("a:name", "", ns) or "").split()[-1]
-                        for a in e.findall("a:author", ns)],
-            "year": int((e.findtext("a:published", "0000", ns) or "0000")[:4] or 0) or None,
-            "venue": "arXiv",
-            "doi": None,
-            "url": e.findtext("a:id", "", ns),
-            "source": "arxiv",
-        })
+        out.append(
+            {
+                "title": re.sub(r"\s+", " ", e.findtext("a:title", "", ns)).strip(),
+                "authors": [
+                    (a.findtext("a:name", "", ns) or "").split()[-1]
+                    for a in e.findall("a:author", ns)
+                ],
+                "year": int((e.findtext("a:published", "0000", ns) or "0000")[:4] or 0) or None,
+                "venue": "arXiv",
+                "doi": None,
+                "url": e.findtext("a:id", "", ns),
+                "source": "arxiv",
+            }
+        )
     return out
 
 
@@ -155,7 +174,9 @@ def check_meta(cand, s, authors, year):
         cited = {surname(a) for a in authors if a.strip()}
         found = {(a or "").lower() for a in cand.get("authors", [])}
         if cited and found and not (cited & found):
-            issues.append(f"no author overlap: cited {sorted(cited)[:3]}, found {sorted(found)[:3]}")
+            issues.append(
+                f"no author overlap: cited {sorted(cited)[:3]}, found {sorted(found)[:3]}"
+            )
     return issues
 
 
@@ -176,12 +197,20 @@ def verify(title, authors=None, year=None):
             break
 
     if not best:
-        return {"verdict": "NOT_FOUND", "similarity": 0, "matched": None,
-                "issues": ["no plausible match in crossref/s2/openalex/arxiv"]}
+        return {
+            "verdict": "NOT_FOUND",
+            "similarity": 0,
+            "matched": None,
+            "issues": ["no plausible match in crossref/s2/openalex/arxiv"],
+        }
 
     has_issues, s, cand, issues = best
-    return {"verdict": "MISMATCH" if has_issues else "VERIFIED",
-            "similarity": round(s, 3), "matched": cand, "issues": issues}
+    return {
+        "verdict": "MISMATCH" if has_issues else "VERIFIED",
+        "similarity": round(s, 3),
+        "matched": cand,
+        "issues": issues,
+    }
 
 
 def parse_bib(path):
@@ -196,16 +225,22 @@ def parse_bib(path):
         while i < len(text) and depth > 0:
             depth += {"{": 1, "}": -1}.get(text[i], 0)
             i += 1
-        body = text[start:i - 1]
+        body = text[start : i - 1]
 
         def field(name):
-            fm = re.search(name + r"\s*=\s*[{\"](.*?)[}\"]\s*,?\s*\n", body,
-                           re.IGNORECASE | re.DOTALL)
+            fm = re.search(
+                name + r"\s*=\s*[{\"](.*?)[}\"]\s*,?\s*\n", body, re.IGNORECASE | re.DOTALL
+            )
             return re.sub(r"[{}\s]+", " ", fm.group(1)).strip() if fm else None
 
-        entries.append({"key": m.group(2), "title": field("title"),
-                        "authors": [a.strip() for a in (field("author") or "").split(" and ") if a.strip()],
-                        "year": field("year")})
+        entries.append(
+            {
+                "key": m.group(2),
+                "title": field("title"),
+                "authors": [a.strip() for a in (field("author") or "").split(" and ") if a.strip()],
+                "year": field("year"),
+            }
+        )
     return entries
 
 
@@ -223,14 +258,19 @@ def main():
         entries = parse_bib(args.bib)
         for i, e in enumerate(entries):
             if not e["title"]:
-                results.append({"key": e["key"], "verdict": "NOT_FOUND",
-                                "issues": ["entry has no title field"]})
+                results.append(
+                    {
+                        "key": e["key"],
+                        "verdict": "NOT_FOUND",
+                        "issues": ["entry has no title field"],
+                    }
+                )
                 continue
             r = verify(e["title"], e["authors"], e["year"])
             r["key"] = e["key"]
             r["cited_title"] = e["title"]
             results.append(r)
-            print(f"[{i+1}/{len(entries)}] {e['key']}: {r['verdict']}", file=sys.stderr)
+            print(f"[{i + 1}/{len(entries)}] {e['key']}: {r['verdict']}", file=sys.stderr)
             time.sleep(1)
         summary = {}
         for r in results:
@@ -243,8 +283,7 @@ def main():
         else:
             print(text)
     elif args.title:
-        print(json.dumps(verify(args.title, args.author, args.year),
-                         ensure_ascii=False, indent=2))
+        print(json.dumps(verify(args.title, args.author, args.year), ensure_ascii=False, indent=2))
     else:
         ap.error("provide --title or --bib")
 

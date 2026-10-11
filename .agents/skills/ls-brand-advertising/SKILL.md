@@ -24,7 +24,7 @@ Attention ──► Problem ──► Promise ──► Proof ──► Differen
 - **Promise:** the specific outcome the offer delivers.
 - **Proof:** a verifiable fact, number, or client result from `results/`/registry/brief.
 - **Differentiation:** why LightSpeed over alternatives (turnkey AI-native org, cost transparency, HITL governance, local Malawi/SADC presence).
-- **CTA:** one action — visit, download, book, contact. Contact: Jack Mlusu, jmlusu@gmail.com, +265 (0) 980 016 004, lightspeedholdings.com when appropriate.
+- **CTA:** one action — visit, download, book, contact. Contact: Jack Mlusu, jmlusu@gmail.com, +265 (0) 980 016 004, lightspeedholdings.vercel.app when appropriate.
 
 ## Ad Formats & Dimensions (Enforce Automatically)
 

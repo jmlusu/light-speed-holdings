@@ -40,7 +40,9 @@ from pptx import Presentation
 prs = Presentation("input.pptx")
 
 print(f"slide size: {prs.slide_width}, {prs.slide_height} EMU")
-print(f"masters: {len(prs.slide_masters)}, layouts: {sum(len(m.slide_layouts) for m in prs.slide_masters)}")
+print(
+    f"masters: {len(prs.slide_masters)}, layouts: {sum(len(m.slide_layouts) for m in prs.slide_masters)}"
+)
 print(f"slides: {len(prs.slides)}")
 
 for i, slide in enumerate(prs.slides, 1):
@@ -82,13 +84,14 @@ for slide in prs.slides:
 
 ```python
 from pptx import Presentation
+
 prs = Presentation("input.pptx")
 p = prs.core_properties
-print("title:",    p.title)
-print("author:",   p.author)
-print("subject:",  p.subject)
+print("title:", p.title)
+print("author:", p.author)
+print("subject:", p.subject)
 print("keywords:", p.keywords)
-print("created:",  p.created)
+print("created:", p.created)
 print("modified:", p.modified)
 print("category:", p.category)
 ```
@@ -115,6 +118,7 @@ with zipfile.ZipFile("input.pptx") as zf:
 
 ```python
 from pptx import Presentation
+
 prs = Presentation("input.pptx")
 for i, slide in enumerate(prs.slides, 1):
     if slide.has_notes_slide:
@@ -135,7 +139,9 @@ for i, slide in enumerate(prs.slides, 1):
     for shape in slide.shapes:
         if not shape.has_table:
             continue
-        print(f"\n--- table on slide {i} ({shape.table.rows.__len__()}x{shape.table.columns.__len__()}) ---")
+        print(
+            f"\n--- table on slide {i} ({shape.table.rows.__len__()}x{shape.table.columns.__len__()}) ---"
+        )
         for row in shape.table.rows:
             print("\t".join(cell.text_frame.text for cell in row.cells))
 ```
@@ -176,7 +182,9 @@ for i, slide in enumerate(prs.slides, 1):
             header = ["category"] + [series.name for plot in plots for series in plot.series]
             w.writerow(header)
             for row_i, cat in enumerate(categories):
-                row = [cat] + [list(series.values)[row_i] for plot in plots for series in plot.series]
+                row = [cat] + [
+                    list(series.values)[row_i] for plot in plots for series in plot.series
+                ]
                 w.writerow(row)
 ```
 
@@ -205,6 +213,7 @@ Two ways to get images out:
 
    ```python
    from pptx import Presentation
+
    prs = Presentation("input.pptx")
    for i, slide in enumerate(prs.slides, 1):
        for j, shape in enumerate(s for s in slide.shapes if s.shape_type == 13):

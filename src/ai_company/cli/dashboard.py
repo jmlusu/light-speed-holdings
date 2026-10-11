@@ -49,6 +49,17 @@ def dashboard(
         )
         raise typer.Exit(1)
 
+    # Boundary guard (CTO ratification 2026-10-10, G-2): 1440/1441 are
+    # Marketing Site (Vite) ports; the CEO Dashboard must never bind them.
+    if port in (1440, 1441):
+        typer.echo(
+            f"Error: port {port} belongs to the Marketing Site (Vite), "
+            "not the CEO Dashboard. Use 8420 (prod) or 8421 (dev/staging). "
+            "Refusing to start.",
+            err=True,
+        )
+        raise typer.Exit(1)
+
     import uvicorn
 
     if not no_open:

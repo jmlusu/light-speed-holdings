@@ -449,11 +449,11 @@ Scan dependency files to detect what the project uses:
 **Python patterns:**
 ```python
 # requirements.txt or pyproject.toml
-psycopg2       # PostgreSQL
-mysql-connector-python  # MySQL
-pymongo        # MongoDB
-redis          # Redis
-boto3          # AWS
+psycopg2  # PostgreSQL
+mysql - connector - python  # MySQL
+pymongo  # MongoDB
+redis  # Redis
+boto3  # AWS
 ```
 
 ### 4.2 Environment Variable Collection

@@ -31,16 +31,17 @@ def render_pdf(source: Path, out_dir: Path, timeout_seconds: float) -> Path:
             [
                 "--headless",
                 "--calc",
-                "--convert-to", "pdf",
-                "--outdir", scratch,
+                "--convert-to",
+                "pdf",
+                "--outdir",
+                scratch,
                 str(source.resolve()),
             ],
             timeout=timeout_seconds,
         )
         if not result.ok:
             raise RenderFailed(
-                f"soffice returned {result.returncode}: "
-                f"{result.stderr.strip() or '(no stderr)'}"
+                f"soffice returned {result.returncode}: {result.stderr.strip() or '(no stderr)'}"
             )
         produced = next(Path(scratch).glob("*.pdf"), None)
         if produced is None:
@@ -53,10 +54,10 @@ def render_pdf(source: Path, out_dir: Path, timeout_seconds: float) -> Path:
 def _parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Render an xlsx as PDF.")
     p.add_argument("workbook", type=Path)
-    p.add_argument("--dest", type=Path, default=None,
-                   help="output directory (default: same as input)")
-    p.add_argument("--timeout", type=float, default=60.0,
-                   help="LibreOffice timeout in seconds")
+    p.add_argument(
+        "--dest", type=Path, default=None, help="output directory (default: same as input)"
+    )
+    p.add_argument("--timeout", type=float, default=60.0, help="LibreOffice timeout in seconds")
     return p
 
 

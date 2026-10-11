@@ -301,11 +301,13 @@ the bytes:
 from urllib.request import Request, urlopen
 from pathlib import Path
 
+
 def download_image(url: str, dest: Path) -> Path:
     req = Request(url, headers={"User-Agent": "Mozilla/5.0"})  # some CDNs 403 an empty UA
     with urlopen(req, timeout=15) as r:
         dest.write_bytes(r.read())
     return dest
+
 
 path = download_image(hit_url, Path("assets/hero.jpg"))
 slide.shapes.add_picture(str(path), Inches(1), Inches(1.5), width=Inches(11))

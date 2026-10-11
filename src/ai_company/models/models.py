@@ -798,6 +798,7 @@ class RevenueSummary(BaseModel):
     by_department: list[RevenueAttribution]
     by_agent: list[RevenueAttribution]
     period_days: int
+    entered_tasks: int = 0
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -808,6 +809,7 @@ class RevenueSummary(BaseModel):
                 "by_department": [],
                 "by_agent": [],
                 "period_days": 30,
+                "entered_tasks": 120,
             }
         }
     )

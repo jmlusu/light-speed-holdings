@@ -69,10 +69,10 @@ Follow along if you are building, governing, or procuring AI in Malawi and the S
 
 # Enqueue Post 1
 record = queue.enqueue(
-    platform='linkedin',
-    title='What is an AI-Native Organization?',
+    platform="linkedin",
+    title="What is an AI-Native Organization?",
     body=body_post1,
-    notes='Post 1 of AI-Native Organizations series, approved by CEO'
+    notes="Post 1 of AI-Native Organizations series, approved by CEO",
 )
 
 print(f"Enqueued Post 1: {record.id}")

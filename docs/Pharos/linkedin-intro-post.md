@@ -3,7 +3,7 @@
 **Author:** Pharos thought-leadership team (on behalf of the Human CEO)
 **Status:** Ready — awaiting account + CEO approval (blocked by #194)
 **Audiences:** Malawi · SADC · Global
-**Live domain (verified):** https://lightspeedholdings.com
+**Live domain (verified):** https://lightspeedholdings.vercel.app
 **Length (verified 2026-09-16):** 2,134 characters incl. hashtags (2,078 without) — within LinkedIn's 3,000-character post limit
 
 ---
@@ -89,7 +89,7 @@ clickable link. Tag once, not on every mention.
 | H-A-O-M-T-G-V framework | `docs/Pharos/positioning.md:41-52`; `docs/Pharos/h-a-o-m-t-g-v-framework.md:1-40` |
 | Use cases (SME / health / finance / public) | `docs/Pharos/manifesto-draft.md:133-144` |
 | National AI Strategy / Data Protection Act 2024 / SADC / AU | `docs/Pharos/manifesto-draft.md:32-41` |
-| Website `lightspeedholdings.com` | `docs/BRAND_DEPLOYMENT_GUIDE.md:46`; `docs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md:17` |
+| Website `lightspeedholdings.vercel.app` | `docs/BRAND_DEPLOYMENT_GUIDE.md:46`; `docs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md:17` |
 
 **Ground-truth check (2026-09-17):** The "90 agents / 20 departments" claim is
 **CORRECT**. Programmatic count of `company-registry.yaml`: 90 agent entries,
