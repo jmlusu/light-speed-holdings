@@ -336,6 +336,56 @@ class TestFinanceCollector:
         result = FinanceKPICollector(empty_project).collect()
         assert result["kpis"]["active_agents"]["current"] == 0
 
+    def test_revenue_per_task_uses_entered_tasks(
+        self, project: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """revenue_per_task divides by entered_tasks, not by_department task counts."""
+        monkeypatch.setattr(
+            FinanceKPICollector,
+            "_revenue_from_sqlite",
+            lambda self: {
+                "total_revenue": 30.0,
+                "total_cost": 10.0,
+                "overall_roi": 3.0,
+                "period_days": 30,
+                "entered_tasks": 3,
+                "by_department": [
+                    {
+                        "department": "Technology",
+                        "revenue": 30.0,
+                        "cost": 10.0,
+                        "roi": 3.0,
+                        "tasks": 2,
+                    }
+                ],
+            },
+        )
+        result = FinanceKPICollector(project).collect()
+        kpi = result["kpis"]["revenue_per_task"]
+        # 30 / 3 entered_tasks == 10.0; a by_department denominator (2) would give 15.0.
+        assert kpi["current"] == pytest.approx(10.0)
+
+    def test_revenue_per_task_no_data_without_terminal_tasks(
+        self, project: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Zero terminal tasks (entered_tasks == 0) yields no_data, not 0.0 or an error."""
+        monkeypatch.setattr(
+            FinanceKPICollector,
+            "_revenue_from_sqlite",
+            lambda self: {
+                "total_revenue": 30.0,
+                "total_cost": 10.0,
+                "overall_roi": 3.0,
+                "period_days": 30,
+                "entered_tasks": 0,
+                "by_department": [],
+            },
+        )
+        result = FinanceKPICollector(project).collect()
+        kpi = result["kpis"]["revenue_per_task"]
+        assert kpi["current"] is None
+        assert kpi["status"] == "no_data"
+
 
 # ---------------------------------------------------------------------------
 # Marketing
@@ -369,14 +419,29 @@ class TestMarketingCollector:
         assert pharos["subscribers"]["data_quality"] == "error"
 
     def test_pharos_content_with_data(self, project: Path) -> None:
+        from datetime import datetime, timedelta
+
         marketing_dir = project / "orchestrator" / "marketing"
         marketing_dir.mkdir(parents=True, exist_ok=True)
+        now = datetime.now()
         content_log = [
-            {"id": "c1", "status": "published", "published_at": "2026-09-10T08:00:00"},
-            {"id": "c2", "status": "published", "published_at": "2026-09-12T08:00:00"},
+            {
+                "id": "c1",
+                "status": "published",
+                "published_at": (now - timedelta(days=5)).isoformat(),
+            },
+            {
+                "id": "c2",
+                "status": "published",
+                "published_at": (now - timedelta(days=10)).isoformat(),
+            },
             {"id": "c3", "status": "draft"},
             {"id": "c4", "status": "draft"},
-            {"id": "c5", "status": "published", "published_at": "2025-01-01T08:00:00"},
+            {
+                "id": "c5",
+                "status": "published",
+                "published_at": (now - timedelta(days=40)).isoformat(),
+            },
         ]
         (marketing_dir / "content_log.json").write_text(json.dumps(content_log), encoding="utf-8")
         (marketing_dir / "pharos_subscribers.json").write_text(
@@ -545,6 +610,92 @@ class TestSqliteCollectors:
         # No cost_tracker.json in the fixture — spend must come from SQLite.
         assert kpis["total_spent"]["current"] == pytest.approx(5.0)
         assert kpis["estimated_llm_spend"]["current"] == pytest.approx(5.0)
+
+    def test_finance_revenue_per_task_uses_terminal_tasks(
+        self, project: Path, db, tmp_path: Path
+    ) -> None:
+        """revenue_per_task = total_revenue / terminal tasks in the 30-day window."""
+        from datetime import datetime, timedelta, timezone
+
+        from ai_company.data import TaskStore
+
+        now = datetime.now(timezone.utc)
+        yesterday = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+        stale = (now - timedelta(days=60)).strftime("%Y-%m-%d")
+
+        tasks = [
+            # In-window terminal (3) → the denominator.
+            {
+                "id": "rp-t1",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "assignee": "cto",
+                "instruction": "ship feature",
+                "status": "completed",
+                "created_at": yesterday,
+            },
+            {
+                "id": "rp-t2",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "review patch",
+                "status": "failed",
+                "created_at": yesterday,
+            },
+            {
+                "id": "rp-t3",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "cancel job",
+                "status": "cancelled",
+                "created_at": yesterday,
+            },
+            # In-window non-terminal (2) → must not inflate the denominator.
+            {
+                "id": "rp-t4",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "queued work",
+                "status": "pending",
+                "created_at": yesterday,
+            },
+            {
+                "id": "rp-t5",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "work in progress",
+                "status": "in_progress",
+                "created_at": yesterday,
+            },
+            # Out-of-window terminal (60 days old) → excluded by the 30-day window.
+            {
+                "id": "rp-t6",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "stale task",
+                "status": "completed",
+                "created_at": stale,
+            },
+        ]
+        path = tmp_path / "revenue-per-task-tasks.json"
+        path.write_text(json.dumps(tasks), encoding="utf-8")
+        assert TaskStore(db).import_json(path) == 6
+
+        db.execute(
+            """INSERT INTO revenue_transactions
+               (id, linked_task_id, status, amount, currency, timestamp)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            ("REV-TEST-001", "rp-t1", "completed", 30.0, "USD", yesterday),
+        )
+        db.commit()
+
+        result = FinanceKPICollector(project, database=db).collect()
+        kpis = result["kpis"]
+
+        assert kpis["total_revenue"]["current"] == pytest.approx(30.0)
+        # 30.0 / 3 terminal tasks (completed + failed + cancelled, in window).
+        # completed-only denominator (2) → 15.0; all-tasks (5) → 6.0; stale (6) → 5.0.
+        assert kpis["revenue_per_task"]["current"] == pytest.approx(10.0)
 
     def test_department_tasks_read_from_sqlite(self, project: Path, db, tmp_path: Path) -> None:
         _seed_sqlite_tasks(db, tmp_path)

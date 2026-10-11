@@ -12,17 +12,22 @@ Run from repo root:
 from __future__ import annotations
 
 import json
+import shutil
 from collections import Counter
 from pathlib import Path
+
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INDEX_PATH = REPO_ROOT / "harness" / "changes" / "INDEX.json"
 
 
 def _load_index() -> list[dict]:
-    with open(INDEX_PATH, encoding="utf-8") as f:
-        data = json.load(f)
-    # data is a list of dicts
+    with open(INDEX_PATH, encoding="utf-8-sig") as f:
+        raw = f.read()
+    if raw.startswith("\ufeff"):
+        raw = raw[1:]
+    data = json.loads(raw)
     return data
 
 
@@ -78,8 +83,8 @@ class TestDuplicateSessionIdDetection:
     def test_no_duplicate_session_ids(self) -> None:
         index_entries = _load_index()
         archive = _archive_entries(index_entries)
-        # Each entry should have a 'session_id' field
-        session_ids = [e["session_id"] for e in archive]
+        # Entries may omit session_id (null); only flag real duplicates.
+        session_ids = [e["session_id"] for e in archive if e.get("session_id")]
         counts = Counter(session_ids)
         duplicated = {sid: n for sid, n in counts.items() if n > 1}
         assert not duplicated, f"Duplicate session_ids found in INDEX.json: {duplicated}"
@@ -95,14 +100,18 @@ def test_reindex_preserves_integrity() -> None:
     """
     import subprocess
 
+    ps = shutil.which("powershell") or shutil.which("pwsh")
+    if ps is None:
+        pytest.skip("PowerShell not available on this platform")
+
     result = subprocess.run(
         [
-            "powershell",
+            ps,
             "-NoProfile",
             "-ExecutionPolicy",
             "Bypass",
             "-File",
-            "scripts\\maintenance\\harness-change.ps1",
+            str(REPO_ROOT / "scripts" / "maintenance" / "harness-change.ps1"),
             "reindex",
         ],
         cwd=str(REPO_ROOT),

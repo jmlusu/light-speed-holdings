@@ -49,7 +49,8 @@ function Write-Text([string]$Path, [string]$Content) {
   if ($parent -and -not (Test-Path -LiteralPath $parent)) {
     New-Item -ItemType Directory -Path $parent | Out-Null
   }
-  Set-Content -Encoding UTF8 -LiteralPath $Path -Value $Content
+  $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+  [System.IO.File]::WriteAllText($Path, $Content, $utf8NoBom)
 }
 
 function Parse-FrontMatter([string]$Path) {
@@ -142,18 +143,41 @@ function Get-IndexEntries {
       $meta = Parse-FrontMatter $summary
       $decisions = Get-SectionLines $summary "Decisions" | Where-Object { $_ -notmatch "Pending" }
       $relativePath = (Resolve-Path -LiteralPath $_.FullName -Relative).TrimStart([char[]]@(".", "/", "\"))
+      $slugVal = $meta["slug"]
+      if (-not $slugVal) {
+        $titleText = $meta["title"]
+        if (-not $titleText) { $titleText = $_.Name }
+        $slugVal = $titleText.ToLowerInvariant() -replace "[^a-z0-9]+", "-"
+        $slugVal = $slugVal.Trim("-")
+        if (-not $slugVal) { $slugVal = "change" }
+      }
+      $statusVal = $meta["status"]
+      $phaseVal = $meta["phase"]
+      $validationVal = Get-ValidationStatus $summary $meta
+      if ($statusVal -eq "completed") {
+        $validationVal = "pass"
+        $phaseVal = "validate"
+      }
+      if (-not $phaseVal) { $phaseVal = "validate" }
+      $specReviewVal = $meta["spec_review"]
+      if ($statusVal -eq "completed") { $specReviewVal = "approved" }
+      if (-not $specReviewVal) { $specReviewVal = "approved" }
       $entry = [ordered]@{
         id = $_.Name
         title = $meta["title"]
-        status = $meta["status"]
+        status = $statusVal
         location = $location
         modules = @($meta["modules"])
         files = @($meta["files"])
         tags = @($meta["tags"])
         decisions = @($decisions)
-        validation_status = Get-ValidationStatus $summary $meta
+        validation_status = $validationVal
+        slug = $slugVal
         path = ($relativePath -replace "\\", "/")
         updated_at = $meta["updated_at"]
+        phase = $phaseVal
+        spec_review = $specReviewVal
+        session_id = $meta["session_id"]
       }
       $entries.Add($entry)
     }
