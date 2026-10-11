@@ -87,6 +87,7 @@ _TIMESTAMP_COLUMNS: dict[str, str] = {
     "escalation_events": "timestamp",
     "kpi_values": "timestamp",
     "cost_records": "timestamp",
+    "marketing_site_events": "timestamp",
 }
 
 
@@ -189,6 +190,14 @@ DEFAULT_POLICIES: list[RetentionPolicy] = [
         action=RetentionAction.ARCHIVE,
         description="LLM cost tracking. Archived after 1 year for budget audits.",
     ),
+    RetentionPolicy(
+        table="marketing_site_events",
+        owner="cmo",
+        classification=DataClassification.INTERNAL,
+        retention_days=400,
+        action=RetentionAction.ARCHIVE,
+        description="Marketing site journey events. Archived after ~13 months.",
+    ),
 ]
 
 
@@ -251,6 +260,16 @@ DEFAULT_OWNERS: list[DataOwner] = [
             "Spend reporting",
         ],
     ),
+    DataOwner(
+        owner_id="cmo",
+        department="Marketing",
+        role="cmo",
+        responsibilities=[
+            "Marketing site journey event quality",
+            "Funnel instrumentation completeness",
+            "Site analytics governance",
+        ],
+    ),
 ]
 
 
@@ -291,6 +310,10 @@ class DataGovernance:
     def apply_retention_policies(self) -> dict[str, int]:
         """Run retention enforcement across all governed tables.
 
+        Tables that are not present in the current database are skipped
+        (count 0) so a feature-gated table (e.g. ``marketing_site_events``)
+        never aborts the whole pass.
+
         Returns a mapping of ``table_name → records_processed``.
         """
         results: dict[str, int] = {}
@@ -299,10 +322,24 @@ class DataGovernance:
             results[table] = count
         return results
 
+    def _table_exists(self, table: str) -> bool:
+        """Return True when *table* exists in the connected database."""
+        try:
+            row = self._db.fetchone(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name = ?",
+                (table,),
+            )
+        except Exception:  # noqa: BLE001 — treat as absent, never raise
+            return False
+        return row is not None
+
     def _enforce_table_retention(self, table: str, policy: RetentionPolicy) -> int:
         """Enforce retention on a single table. Returns records processed."""
         _validate_table_name(table)
         if policy.action == RetentionAction.NONE:
+            return 0
+        if not self._table_exists(table):
+            logger.debug("Governed table %s not present in this database — skipping", table)
             return 0
 
         # Determine the timestamp column for each table
@@ -518,6 +555,18 @@ class DataGovernance:
         for table in self._policies:
             _validate_table_name(table)
             policy = self._policies[table]
+            if not self._table_exists(table):
+                table_stats[table] = {
+                    "row_count": 0,
+                    "classification": policy.classification.value,
+                    "owner": policy.owner,
+                    "retention_days": policy.retention_days,
+                    "action": policy.action.value,
+                    "records_past_retention": 0,
+                    "oldest_record": None,
+                    "newest_record": None,
+                }
+                continue
             ts_col = self._get_timestamp_column(table)
             row_count = self._db.table_count(table)
 
@@ -572,6 +621,8 @@ class DataGovernance:
 
         for table, policy in self._policies.items():
             _validate_table_name(table)
+            if not self._table_exists(table):
+                continue
             ts_col = self._get_timestamp_column(table)
             if ts_col is None:
                 findings.append(
@@ -749,6 +800,8 @@ class DataGovernance:
 
     def _check_table_source(self, table_name: str) -> str:
         """Check a database table: 'available' if rows exist, 'empty' otherwise."""
+        if not self._table_exists(table_name):
+            return "missing"
         row = self._db.fetchone(f"SELECT COUNT(*) as cnt FROM {table_name}")  # nosec B608
         count = row["cnt"] if row else 0
         return "available" if count > 0 else "empty"
