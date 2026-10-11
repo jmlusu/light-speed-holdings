@@ -389,9 +389,9 @@ export const PLATFORM_SCENARIOS: CatalogPlatformScenario[] = [
     code: "FOW-01",
     title: "Startup Acceleration",
     subtitle: "Solo Founder + Governed AI Workforce",
-    description: "A solo founder operates with the functional coverage of a multi-person team: agents handle CTO, CFO, CMO, and CLO roles, with a CEO dashboard for real-time visibility. Founder sets vision; 143 agents execute operations.",
+    description: "A solo founder operates with the functional coverage of a multi-person team: agents handle CTO, CFO, CMO, and CLO roles, with a CEO dashboard for real-time visibility. Founder sets vision; 89 agents execute operations.",
     honestyBadge: "Proven in-house",
-    targetAudience: "Tech-savvy founders & solo entrepreneurs (LightSpeed itself operates as 1 human + 143 agents)."
+    targetAudience: "Tech-savvy founders & solo entrepreneurs (LightSpeed itself operates as 1 human + 89 agents)."
   },
   {
     id: "fow-02",

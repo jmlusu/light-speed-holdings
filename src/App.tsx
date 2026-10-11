@@ -20,6 +20,13 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
+import { Architecture } from './pages/Architecture';
+import { Build } from './pages/Build';
+import { OfferA } from './pages/OfferA';
+import { OfferB } from './pages/OfferB';
+import { OfferC } from './pages/OfferC';
+import { OfferD } from './pages/OfferD';
+import { OfferE } from './pages/OfferE';
 
 
 const HomePageRoute = withSite(HomePage);
@@ -94,14 +101,13 @@ export const App: React.FC = () => {
           { path: 'contact', element: <ContactPageRoute /> },
           { path: 'legal/privacy', element: <PrivacyPageRoute /> },
           { path: 'legal/terms', element: <TermsPageRoute /> },
-          { path: 'proof', element: <Navigate to="/use-cases" replace /> },
-          { path: 'architecture', element: <Navigate to="/" replace /> },
-          { path: 'build', element: <Navigate to="/" replace /> },
-          { path: 'offer-b', element: <Navigate to="/" replace /> },
-          { path: 'offer-c', element: <Navigate to="/" replace /> },
-          { path: 'offer-e', element: <Navigate to="/" replace /> },
-          { path: 'ask', element: <Navigate to="/contact" replace /> },
-          { path: '*', element: <NotFoundPage /> },
+          { path: 'architecture', element: <Architecture /> },
+          { path: 'build', element: <Build /> },
+          { path: 'offer-a', element: <OfferA /> },
+          { path: 'offer-b', element: <OfferB /> },
+          { path: 'offer-c', element: <OfferC /> },
+          { path: 'offer-d', element: <OfferD /> },
+          { path: 'offer-e', element: <OfferE /> },
         ],
       },
 

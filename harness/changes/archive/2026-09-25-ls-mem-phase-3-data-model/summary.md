@@ -14,7 +14,7 @@ tags: ["lsmem", "memory", "data-model", "schema", "sqlite", "fts5"]
 validation_status: "pass"
 created_at: "2026-09-25"
 updated_at: "2026-09-25"
-session_id: "0ef66804-66ce-4568-ac4f-2841f9d012f7"
+session_id: "cdab4616-e15c-4221-9504-9767c32e0eaf"
 owner_agent: "jmlus"
 claimed_at: "2026-09-25"
 ---
