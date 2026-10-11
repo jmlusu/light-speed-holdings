@@ -324,3 +324,20 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 11. Do not fabricate evidence, logs, citations, tool results, timestamps, or test outcomes.
 
 12. Compliance is determined by independent evidence and validation, not by the agent's assertion that it followed this policy.
+
+## 16 Known Issues Tracker (Permanent Record)
+
+**Purpose:** This section explicitly documents known issues and their fixes to prevent the recurring pattern of documentation being lost. Add new entries below; do not remove existing entries without a replacement fix.
+
+| Issue | Fix | Date Identified | Date Fixed | Status |
+|-------|-----|-----------------|------------|--------|
+| **Dev cold-start probe timeout** — First `npm run dev` request exceeds 15s timeout while Vite optimizes the dependency graph (~1676 modules). Cold start: port binds ~2.5s, first request ~6.3s. | Documented tolerance: automated health checks must retry once after `VITE ready in ...` log line, allow ≥30s timeout. No code change required. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **Port conflict / server startup failure** — Leftover `node.exe` processes bind ports 1440/1441, causing Vite to fall back or fail. | Always kill lingering `node.exe` processes (`taskkill /F /IM node.exe`) before restarting. Verify ports free with `netstat -an | findstr "1440 1441"`. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **Dashboard port conflict (staging)** — Host 8421 held by `athena-frontend-staging` (separate project), staging dashboard published on 8422. | Assigned development port remains 8421 — restore default mapping when Athena no longer needs 8421. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **CEO Dashboard vs Vite/React boundary** — Two independent applications with separate ports, runtimes, and health checks. | Hard port assignment: dashboard production=8420, development=8421. Vite/React uses 1440/1441. Never serve one on the other's port. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+
+**Rules for this section:**
+- Entries are tracked by date and status; do not delete without replacement
+- New issues must be added as new rows, not appended to existing entries
+- Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
+- Before removing any entry, a replacement fix must be documented
