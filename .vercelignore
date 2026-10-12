@@ -132,6 +132,8 @@ docker-compose*.yml
 # Other root files
 *.md
 *.txt
+# robots.txt must ship despite *.txt (negation must follow the rule it overrides)
+!/public/robots.txt
 !package.json
 !package-lock.json
 !tsconfig.json

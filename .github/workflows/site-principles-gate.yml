@@ -7,6 +7,10 @@ name: Site Build + Principles Gate
 # Enforces the automatable subset of Appendix A checks:
 #   check 6 — zero TypeScript/build errors (bun run build = tsc + vite) and
 #             no fake-success form states (scripts/test/check-site-form-backend.py).
+#   deploy guard — .vercelignore must keep vite alias targets and build inputs
+#             uploadable (scripts/test/check-vercelignore.py; CI builds the full
+#             checkout while Vercel builds the filtered upload, so this check
+#             cannot be folded into the build step).
 
 on:
   pull_request:
@@ -21,6 +25,9 @@ on:
       - "tsconfig.json"
       - "package.json"
       - "bun.lock"
+      - "data/**"
+      - ".vercelignore"
+      - "scripts/test/check-vercelignore.py"
       - ".github/workflows/site-principles-gate.yml"
   workflow_dispatch:
 
@@ -34,6 +41,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+
+      - name: Verify .vercelignore keeps site build inputs — deploy guard
+        run: python3 scripts/test/check-vercelignore.py
 
       - uses: oven-sh/setup-bun@v2
         with:

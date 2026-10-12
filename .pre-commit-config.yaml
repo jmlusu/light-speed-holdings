@@ -88,3 +88,17 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
+
+  # Deploy guard: .vercelignore must keep vite alias targets uploadable ──
+  # (Vercel filters the upload with .vercelignore; CI builds the full
+  # checkout, so a whitelist regression only surfaces at deploy time.
+  #  Same check runs in .github/workflows/site-principles-gate.yml.)
+  - repo: local
+    hooks:
+      - id: vercelignore-guard
+        name: verify .vercelignore keeps site build inputs
+        entry: uv run python scripts/test/check-vercelignore.py
+        language: system
+        pass_filenames: false
+        files: '^(\.vercelignore|vite\.config\.ts|scripts/test/check-vercelignore\.py|data/[^/]+/registry\.ts)$'
+        stages: [pre-commit]
