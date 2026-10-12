@@ -55,7 +55,7 @@ def _inject_isolated_memory_store(memory_base: Path) -> None:
 
 
 def patch_local_only_httpx(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Make ``httpx.get`` fail fast and provider ``httpx.Client`` construction free.
+    """Make ``httpx2.get`` fail fast and provider ``httpx.Client`` construction free.
 
     LLM tests run with ``OMNIROUTE_API_KEY`` set in the environment, so
     ``LLMClient._init_providers`` would otherwise do a real 3s gateway ping.
@@ -63,12 +63,12 @@ def patch_local_only_httpx(monkeypatch: pytest.MonkeyPatch) -> None:
     Windows) and is never actually exercised — tests replace ``_providers``
     with mocks. Stub both so LLM-heavy suites stay hermetic and fast.
     """
-    import httpx
+    import httpx2 as httpx
 
     def _refuse(*args: object, **kwargs: object) -> None:
         raise httpx.ConnectError("Connection refused")
 
-    monkeypatch.setattr("httpx.get", _refuse)
+    monkeypatch.setattr("httpx2.get", _refuse)
 
     class _LocalOnlyClient:
         """Cheap stand-in for ``httpx.Client``: no real connection attempts.

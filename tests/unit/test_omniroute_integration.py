@@ -26,9 +26,9 @@ from ai_company.llm.providers.base import ChatResponse, LLMProvider
 
 @pytest.fixture(autouse=True)
 def _no_omniroute_ping(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Failing-fast httpx.get keeps LLMClient construction hermetic.
+    """Failing-fast httpx2.get keeps LLMClient construction hermetic.
 
-    Tests that verify OmniRoute health/mock responses re-patch ``httpx.get``
+    Tests that verify OmniRoute health/mock responses re-patch ``httpx2.get``
     themselves and override this default.
     """
     from tests.unit.conftest import patch_local_only_httpx
@@ -723,7 +723,7 @@ class TestLLMClientGracefulDegradation:
 
         with (
             patch.dict("os.environ", {"OMNIROUTE_API_KEY": "sk-test-key"}),
-            patch("httpx.get", side_effect=ConnectionError("Connection refused")),
+            patch("httpx2.get", side_effect=ConnectionError("Connection refused")),
         ):
             # Should not raise
             LLMClient._log_omniroute_status(None)
@@ -764,7 +764,7 @@ class TestCheckOmniRouteHealth:
 
         with (
             patch.dict("os.environ", {"OMNIROUTE_API_KEY": "sk-test-key"}),
-            patch("httpx.get", return_value=mock_response),
+            patch("httpx2.get", return_value=mock_response),
         ):
             result = check_omniroute_health()
 
@@ -776,7 +776,7 @@ class TestCheckOmniRouteHealth:
 
         with (
             patch.dict("os.environ", {"OMNIROUTE_API_KEY": "sk-test-key"}),
-            patch("httpx.get", side_effect=ConnectionError("Connection refused")),
+            patch("httpx2.get", side_effect=ConnectionError("Connection refused")),
         ):
             result = check_omniroute_health()
 
@@ -791,7 +791,7 @@ class TestCheckOmniRouteHealth:
 
         with (
             patch.dict("os.environ", {"OMNIROUTE_API_KEY": "sk-test-key"}),
-            patch("httpx.get", return_value=mock_response),
+            patch("httpx2.get", return_value=mock_response),
         ):
             result = check_omniroute_health()
 

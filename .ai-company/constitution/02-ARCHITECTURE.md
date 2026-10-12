@@ -546,7 +546,7 @@ graph TD
 | python-dotenv | * | llm/ | Environment variables |
 | fastapi | * | dashboard/ | Web API |
 | uvicorn | * | dashboard/ | ASGI server |
-| httpx | * | llm/ | HTTP client |
+| httpx2 | * | llm/ | HTTP client (imported as `httpx2 as httpx`) |
 
 ---
 

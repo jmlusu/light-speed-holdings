@@ -416,7 +416,7 @@ def status() -> None:
     omniroute_url = os.environ.get("OMNIROUTE_API_BASE", "http://localhost:20128")
     if omniroute_key:
         try:
-            import httpx
+            import httpx2 as httpx
 
             resp = httpx.get(f"{omniroute_url}/health", timeout=3.0)
             if resp.status_code == 200:

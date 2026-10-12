@@ -125,7 +125,7 @@ def check_python_version() -> CheckResult:
 
 def check_dependencies() -> CheckResult:
     """Check that all required packages are importable."""
-    required = ["typer", "pydantic", "fastapi", "jinja2", "yaml", "httpx", "rich"]
+    required = ["typer", "pydantic", "fastapi", "jinja2", "yaml", "httpx2", "rich"]
     missing: list[str] = []
     installed: list[str] = []
 
@@ -285,7 +285,7 @@ def check_omniroute_health() -> CheckResult:
         )
 
     try:
-        import httpx
+        import httpx2 as httpx
 
         resp = httpx.get(f"{omniroute_url}/health", timeout=3.0)
         if resp.status_code == 200:
@@ -332,7 +332,7 @@ def check_llm_providers() -> CheckResult:
     # --- Ollama ---
     ollama_url = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
     try:
-        import httpx
+        import httpx2 as httpx
 
         resp = httpx.get(f"{ollama_url}/api/tags", timeout=3.0)
         if resp.status_code == 200:

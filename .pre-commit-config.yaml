@@ -41,7 +41,7 @@ repos:
           - rich
           - fastapi
           - cryptography>=42.0
-          - httpx
+          - httpx2
         pass_filenames: false
         entry: mypy --config-file pyproject.toml src/
         stages: [pre-commit]

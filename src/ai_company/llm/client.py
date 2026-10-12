@@ -178,7 +178,7 @@ class LLMClient:
             return
 
         try:
-            import httpx
+            import httpx2 as httpx
 
             resp = httpx.get(f"{omniroute_url}/health", timeout=3.0)
             if resp.status_code == 200:

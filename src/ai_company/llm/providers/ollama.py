@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Generator
 
-import httpx
+import httpx2 as httpx
 
 from ai_company.llm.providers.base import (
     ChatResponse,

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import httpx
+import httpx2 as httpx
 
 from ai_company.llm.providers.base import (
     ChatResponse,

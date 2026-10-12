@@ -21,7 +21,7 @@ import time
 from dataclasses import dataclass
 from typing import Any, cast
 
-import httpx
+import httpx2 as httpx
 
 from ai_company.llm.providers.base import LLMProviderError
 
