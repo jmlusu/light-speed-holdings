@@ -16,9 +16,9 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
     <HomeSection id="insights" label="Insights from Pharos" theme={theme}>
       <SectionHeading
         theme={theme}
-        eyebrow="INSIGHTS"
-        title="The Agentic AI Voice of the Region"
-        lead="Pharos turns LightSpeed's engineering into public intellectual work on Agentic AI Company Building, use cases, and policy — from Malawi's National AI Strategy consultation to the SADC governance framework."
+        eyebrow="PERSPECTIVES"
+        title="Perspectives on Agentic AI and Its Practical Application"
+        lead="Pharos is LightSpeed's thought-leadership practice: long-form writing, research briefs, and policy commentary on how agentic AI is built, governed, and applied in African operating environments — from Malawi outward."
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {insightTeasers.map((post, idx) => (

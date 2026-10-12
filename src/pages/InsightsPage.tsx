@@ -142,7 +142,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/proof', label: 'Proof' },
+          { to: '/use-cases', label: 'Use Cases' },
           { to: '/what-we-do', label: 'What We Do' },
           { to: '/sectors', label: 'Sectors' },
           { to: '/ask', label: 'Ask LightSpeed' },

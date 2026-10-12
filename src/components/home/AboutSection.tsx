@@ -4,7 +4,6 @@ import { ArrowRight } from 'lucide-react';
 import { SectionHeading } from '../site/SectionHeading';
 import { Reveal } from '../Reveal';
 import { HomeSection } from './HomeSection';
-import { company } from '../../data/siteContent';
 
 interface AboutSectionProps {
   theme: 'light' | 'dark';
@@ -21,11 +20,11 @@ const VALUES = [
   },
   {
     title: 'Governed by Design',
-    description: 'Five-tier human approval, immutable audit trails, and regional compliance are architecture, not bolt-ons.',
+    description: 'Five-tier human approval, append-only audit trails, and regional compliance are architecture, not bolt-ons.',
   },
   {
     title: 'African Intelligence',
-    description: 'Pharos turns our engineering into public intellectual work — SADC governance frameworks, Malawi AI Strategy, regional policy.',
+    description: 'Pharos turns our engineering into public intellectual work — SADC governance frameworks, Malawi AI Strategy engagement, regional policy.',
   },
 ];
 
@@ -36,8 +35,8 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ theme }) => {
       <SectionHeading
         theme={theme}
         eyebrow="ABOUT LIGHTSPEED"
-        title="One Human CEO. 90 AI Agents."
-        lead={company.thesis || 'We are the AI-native company we sell — governed, audited, and holding every claim to its evidence.'}
+        title="Human Direction. Intelligent Execution. Measurable Value."
+        lead="We are the AI-native company we sell — a human-led, agent-powered operating model built where constraints are real, governed by design, and measured against outcomes that matter."
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {VALUES.map((val, idx) => (

@@ -160,7 +160,7 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/proof', label: 'Proof' },
+          { to: '/use-cases', label: 'Use Cases' },
           { to: '/solutions', label: 'Solutions' },
           { to: '/insights', label: 'Insights' },
         ]}

@@ -66,6 +66,12 @@ export const insightCategories: string[] = [
 ];
 
 export const insightTeasers: { title: string; topic: string; to: string }[] = [
+  { title: 'Cutting AI Costs With Open Source: Why the Architecture Matters More Than the Arithmetic', topic: 'COST ARCHITECTURE', to: '/insights/open-source-cost-architecture' },
+  { title: 'Pricing Agentic AI in a Dual Economy: Kwacha Ladders, Dollar Retainers, and Paying for What You Run', topic: 'AI PRICING', to: '/insights/dual-economy-ai-pricing' },
+  { title: 'The Five-Tier Approval Matrix: How Friction Scales With Risk in a 90-Agent Company', topic: 'AI GOVERNANCE', to: '/insights/five-tier-approval-matrix' },
+  { title: 'Inside a 90-Agent Company: What the Registry, the Queue, and the Approval Gate Actually Do', topic: 'AI COMPANY BUILDING', to: '/insights/inside-a-90-agent-company' },
+  { title: 'Offline-First AI for Africa: Designing for Bandwidth, Sovereignty, and Mobile-Money Reality', topic: 'AI IN AFRICA', to: '/insights/offline-first-ai-for-africa' },
+  { title: 'The Evidence Ladder: How Every Public Claim Gets a Class — and What Buyers Should Demand', topic: 'EVIDENCE & PROOF', to: '/insights/evidence-ladder-honest-claims' },
   { title: 'The AI Opportunity in Africa', topic: 'AI IN AFRICA', to: '/insights/sadc-ai-opportunity' },
   { title: 'What Agentic AI Means for African Governments', topic: 'AGENTIC AI', to: '/insights/agentic-ai-african-governments' },
   { title: 'From Digital Transformation to AI-Native Transformation', topic: 'DIGITAL TRANSFORMATION', to: '/insights/digital-to-ai-native-transformation' },
@@ -75,7 +81,7 @@ export const solutions = [
   {
     slug: 'ai-company-builder',
     title: 'AI Company Builder',
-description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-tier approval matrix, immutable audit trails, and 4 governance gates ensure every action is accountable.',
+description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-tier approval matrix, append-only SHA-256 sealed audit trails, and 4 governance gates ensure every action is accountable.',
      eyebrow: 'AI OPERATING MODEL',
      proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
      honestyBadge: 'Fieldable in 2026' as const,
@@ -85,19 +91,19 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
     capabilities: [
       { title: 'Multi-Agent Orchestration', desc: '90 agents, 20 departments, each with explicit role definitions and approval thresholds.' },
       { title: '5-Tier Approval Matrix', desc: 'Auto through CEO sign-off with configurable thresholds and expiration sweeps.' },
-      { title: 'Immutable Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs for every agent action.' },
+      { title: 'Append-Only Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs for every agent action.' },
     ],
     useCases: [
       { title: 'Compliance Automation', lead: 'Agent-driven compliance reporting', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
       { title: 'Risk Classification', lead: 'Automated risk classification for financial services', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
-      { title: 'Audit Trail Generation', lead: 'Immutable audit trails for every transaction', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+      { title: 'Audit Trail Generation', lead: 'Append-only audit trails for every transaction', proof: { label: 'Proven in-house', tone: 'proven' as const } },
     ],
     spec: {
       problem:
         'AI agents get deployed without approval controls, audit trails, or anyone accountable for what they do.',
       audience: 'Leadership teams deploying AI across departments who need governance before scale.',
       changes:
-        'Every agent action passes a 5-tier approval gate and lands in an immutable audit log.',
+        'Every agent action passes a 5-tier approval gate and lands in an append-only SHA-256 sealed audit log.',
       builds:
         'A 90-agent operating model: multi-agent orchestration, approval matrix, SHA-256 audit trails.',
       evidence:
@@ -237,7 +243,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
 
 export const GOVERNANCE_SOLUTION = {
   title: 'The Governance Solution',
-  description: 'LightSpeed Holdings implements a 5-tier human-in-the-loop approval system where no client-facing deliverable ships without human sign-off. The platform enforces 4 mandatory governance gates (Contract, DPA, Compliance, Security) before any engagement begins. Every action is recorded on an immutable audit trail with SHA-256 seals.',
+  description: 'LightSpeed Holdings implements a 5-tier human-in-the-loop approval system where no client-facing deliverable ships without human sign-off. The platform enforces 4 mandatory governance gates (Contract, DPA, Compliance, Security) before any engagement begins. Every action is recorded on an append-only audit trail with SHA-256 seals.',
   lead: 'The governance layer that makes deployment safe',
   proof: { label: 'Proven in-house', tone: 'proven' as const },
   keyPrinciples: [
@@ -253,13 +259,13 @@ export const GOVERNANCE_SOLUTION = {
   to: '/ai-company-builder',
   capabilities: [
     { title: '5-Tier Approval Matrix', desc: 'Every action risk-classified and human-gated.' },
-    { title: 'Immutable Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs.' },
+    { title: 'Append-Only Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs.' },
     { title: '4 Governance Gates', desc: 'Contract, DPA, Compliance, and Security reviews.' },
   ],
   useCases: [
     { title: 'Compliance Automation', lead: 'Agent-driven compliance reporting', proof: { label: 'Proven in-house', tone: 'proven' as const } },
     { title: 'Risk Classification', lead: 'Automated risk classification', proof: { label: 'Proven in-house', tone: 'proven' as const } },
-    { title: 'Audit Trail Generation', lead: 'Immutable audit trails', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+    { title: 'Audit Trail Generation', lead: 'Append-only audit trails', proof: { label: 'Proven in-house', tone: 'proven' as const } },
   ],
   spec: {
     problem:
@@ -268,7 +274,7 @@ export const GOVERNANCE_SOLUTION = {
       'Every LightSpeed engagement — and any organisation deploying agents under our governance model.',
     changes:
       'Four mandatory gates (Contract, DPA, Compliance, Security) run before work starts; every action is SHA-256 sealed.',
-    builds: '5-tier approval matrix, immutable audit trails, and expiry sweeps for pending approvals.',
+    builds: '5-tier approval matrix, append-only audit trails, and expiry sweeps for pending approvals.',
     evidence: 'Compliance automation, risk classification, and audit trails all proven in-house.',
   },
   cta: { label: 'View Governance Details', to: '/ai-company-builder' },
@@ -302,7 +308,7 @@ export const proofCaseStudies = [
   {
     id: 'ws-03',
     title: 'University of Malawi Student Management System',
-    description: 'Deployed an agent-driven student management and credential verification system with GDPR-level data protection. All actions logged on immutable audit trails.',
+    description: 'Deployed an agent-driven student management and credential verification system with GDPR-level data protection. All actions logged on append-only audit trails.',
     text: 'Deployed an agent-driven student management and credential verification system with GDPR-level data protection. 3 departments onboarded with 5,000 records processed.',
     honestyBadge: 'In pilot' as const,
     featured: false,

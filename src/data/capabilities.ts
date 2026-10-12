@@ -1,6 +1,6 @@
 /* Capabilities registry — MASTER_SPEC §15.
  * Canonical source for the four operating-model capabilities.
- * Consumed by home OperatingModelSection; company.valueCycle derives from here. */
+ * Consumed by home AICompanyBuilderSection / WorkforceSection; company.valueCycle derives from here. */
 
 export interface Capability {
   id: string;

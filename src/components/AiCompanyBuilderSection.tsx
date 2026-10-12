@@ -19,7 +19,7 @@ const JOURNEY_STEPS = [
   { num: '03', title: 'Architecture', desc: 'Design the modular agent topology, data pipelines, and integration points for your stack.' },
   { num: '04', title: 'Agents', desc: 'Configure role-scoped agents from the 90-agent registry — each with explicit permissions and approval thresholds.' },
   { num: '05', title: 'Workflows', desc: 'Orchestrate agent coordination with human-in-the-loop gates — automated where safe, gated where consequential.' },
-  { num: '06', title: 'Deployment', desc: 'Ship working systems with immutable audit trails, circuit breakers, and 30 days of included support.' },
+  { num: '06', title: 'Deployment', desc: 'Ship working systems with append-only audit trails, circuit breakers, and 30 days of included support.' },
   { num: '07', title: 'Governance', desc: 'Establish the five-tier approval matrix, risk classification, and expiry sweeps that make autonomy safe.' },
   { num: '08', title: 'Measurement', desc: 'Track outcomes, cost, and quality — every metric traces to a canonical source, never invented.' },
   { num: '09', title: 'Continuous Improvement', desc: 'Scale what works, retire what does not — the system learns, adapts, and improves under human oversight.' },
@@ -29,7 +29,7 @@ const PRINCIPLES = [
   { title: 'Human-led', desc: 'Every decision has a clear owner. AI augments judgment; it does not replace it.' },
   { title: 'AI-native', desc: 'Systems designed as agentic operating layers from day one — not AI bolted onto legacy software.' },
   { title: 'Agentic', desc: '90 specialized agents coordinate across 20 departments, each with explicit role definitions.' },
-  { title: 'Governed', desc: 'Five-tier human approval, immutable audit trails, and regional compliance are the architecture.' },
+  { title: 'Governed', desc: 'Five-tier human approval, append-only audit trails, and regional compliance are the architecture.' },
   { title: 'Data-informed', desc: 'Every claim carries its honesty status. We never blur proven vs. planned.' },
   { title: 'Modular', desc: 'Role-scoped agents configured in a registry — each component can be replaced independently.' },
   { title: 'Measurable', desc: 'Time saved, processes automated, decision cycles reduced. We report on what changed.' },
@@ -127,7 +127,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
             <div className="space-y-4">
               <h4 className="font-display font-bold text-lg">Governed Execution</h4>
               <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                Immutable SHA-256 audit trails, risk-classified agent tiers, expiry sweeps on stale approvals, and circuit breakers on errors — governance is the architecture.
+                Append-only SHA-256 audit trails, risk-classified agent tiers, expiry sweeps on stale approvals, and circuit breakers on errors — governance is the architecture.
               </p>
             </div>
           </div>

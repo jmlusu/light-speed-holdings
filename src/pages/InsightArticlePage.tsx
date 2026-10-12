@@ -240,7 +240,7 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         theme={theme}
         links={[
           { to: '/insights', label: 'All Insights' },
-          { to: '/proof', label: 'Proof' },
+          { to: '/use-cases', label: 'Use Cases' },
           { to: '/solutions', label: 'Solutions' },
           { to: '/sectors', label: 'Sectors' },
           { to: '/ask', label: 'Ask LightSpeed' },

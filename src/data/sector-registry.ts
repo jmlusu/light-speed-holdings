@@ -81,7 +81,7 @@ export const sectors: Sector[] = [
     description: 'Student management, credential verification, and data-driven policy for schools and universities.',
     status: SECTOR_TIERS_CANONICAL.current,
     evidence:
-      'Agent-driven student management at the University of Malawi — 3 departments onboarded, 5,000 records processed with immutable audit trails.',
+      'Agent-driven student management at the University of Malawi — 3 departments onboarded, 5,000 records processed with append-only audit trails.',
     region: ['Malawi', 'SADC'],
     relevantSolutions: ['ai-company-builder', 'enterprise-deployment', 'business-automation'],
   },
