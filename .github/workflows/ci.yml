@@ -207,8 +207,13 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - name: uv-audit
-        # uv-audit is not a project dependency, so invoke it via uvx against uv.lock.
-        run: uvx uv-audit
+        # uv-audit is not a project dependency; run it via an ephemeral env against
+        # uv.lock. scripts/ci/uv-audit-shim.py works around a package-schemes bug:
+        # dep.startswith(name) prefix matching resolves transitive "httpx" to the
+        # direct "httpx2" entry, and PackageMeta.merge() then crashes on the name
+        # mismatch (all package-schemes 0.1.x affected; no version pin avoids it).
+        # Revert to plain `uvx uv-audit` once upstream compares parsed names.
+        run: uv run --no-project --with uv-audit python scripts/ci/uv-audit-shim.py
 
   generated-check:
     name: Generated Files Drift Check
