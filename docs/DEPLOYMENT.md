@@ -138,11 +138,23 @@ site-principles gate still type-checks them), docs, harness, scripts, `.github/`
 Safe defaults: if `VERCEL_GIT_PREVIOUS_SHA` is missing or unknown, the build runs.
 
 **`.vercelignore` coupling (critical):** Vercel runs `ignoreCommand` inside the
-`.vercelignore`-filtered tree. `/scripts/` is ignored, so the filter script MUST be
-re-included (`!/scripts/deploy/vercel-ignore-build.sh` in `.vercelignore`). Without
-that negation every deployment fails at the ignore step with
-`ENOENT ... exit code 127` (incident 2026-10-12, `c9cecc05`). Never delete that
-negation line; if the script moves, update both `vercel.json` and `.vercelignore`.
+`.vercelignore`-filtered tree. `scripts/` is excluded, so the filter script must
+be let back in with the full parent-chain pattern (gitignore cannot re-include a
+file under an excluded directory — a bare `!/scripts/deploy/vercel-ignore-build.sh`
+next to `/scripts/` is inert):
+
+```
+/scripts/*
+!/scripts/deploy/
+/scripts/deploy/*
+!/scripts/deploy/vercel-ignore-build.sh
+```
+
+Without it every deployment fails at the ignore step with
+`ENOENT ... exit code 127` (incidents `c9cecc05` and `2927304d`, 2026-10-12).
+`scripts/test/check-vercelignore.py` asserts the script survives the rules —
+never delete its `STATIC_REQUIRED` entry or the pattern above; if the script
+moves, update `vercel.json`, `.vercelignore`, and the guard together.
 
 **Force a production deploy** without a site change: redeploy the latest deployment
 from the Vercel dashboard (Redeploy), or push a trivial site-file touch (e.g. a comment

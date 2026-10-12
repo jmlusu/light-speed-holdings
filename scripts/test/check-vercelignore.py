@@ -43,6 +43,10 @@ STATIC_REQUIRED: tuple[str, ...] = (
     "vercel.json",
     "company/agent-registry.json",
     "public/robots.txt",
+    # vercel.json ignoreCommand runs this script inside the
+    # .vercelignore-filtered tree; if it is excluded the deploy fails at the
+    # ignore step with ENOENT exit 127 (incidents c9cecc05 / 2927304d).
+    "scripts/deploy/vercel-ignore-build.sh",
 )
 
 # Paths that must REMAIN excluded (guards against deleting rules wholesale).
@@ -51,6 +55,9 @@ STATIC_EXCLUDED: tuple[str, ...] = (
     ".env.local",
     "docs/ARCHITECTURE.md",
     "src/ai_company/cli/main.py",
+    # scripts/ must stay excluded apart from the single ignoreCommand file;
+    # this sibling guards against re-opening the whole tree.
+    "scripts/maintenance/lint-ecl.ps1",
 )
 
 
