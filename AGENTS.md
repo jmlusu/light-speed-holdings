@@ -4,7 +4,9 @@
 
 This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, NOT `/workspace/...` or any other container-style path. Always use this Windows path.
 
-Before Proceed always read the "C:\Users\jmlus\light-speed-holdings\.ai-company" where the overarching constitution and overall governing documents are housed.
+**Governance docs:** `.ai-company\` holds the constitution and governing documents. Read only the file relevant to the current task (e.g. `.ai-company\constitution\11-GIT-STANDARDS.md` before any git work) — do not load the directory wholesale.
+
+**Git: `main` is protected** (GitHub ruleset, 6 required checks) — work on a branch, open a PR, merge only when checks are green; see §5 and `.ai-company\constitution\11-GIT-STANDARDS.md`.
 
 ## 1 Project Snapshot
 
@@ -31,6 +33,7 @@ Before Proceed always read the "C:\Users\jmlus\light-speed-holdings\.ai-company"
 | 3.1 | [System Architecture](docs/ARCHITECTURE.md) | Module hierarchy, data flow, key files |
 | 3.2 | [ECL](docs/ECL.md) | Change lifecycle, context loading, harness workflow |
 | 3.3 | [Status](docs/STATUS.md) | Recent handoff, current state |
+| 3.4 | [Deployment](docs/DEPLOYMENT.md) | Environments, ports, website deploy verification, Vercel failure runbook |
 
 ## 4 Context Loading
 
@@ -43,6 +46,8 @@ Before Proceed always read the "C:\Users\jmlus\light-speed-holdings\.ai-company"
 7. Run `uv run graphify query "<task>"` to surface prior bug fixes and decisions relevant to the task; the knowledge graph is indexed on every commit by the post-commit `capture-fix` + `graphify-rebuild` hooks.
 
 ## 5 Development Commands
+
+**Branch rule:** `main` is protected — branch + PR, 6 required checks must pass before merge (`.ai-company\constitution\11-GIT-STANDARDS.md`).
 
 ### Quick Start (New Developers)
 
@@ -342,13 +347,12 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 | Issue | Fix | Date Identified | Date Fixed | Status |
 |-------|-----|-----------------|------------|--------|
 | **PowerShell Select-Object validation** — `$input | Select-Object -First $n` fails with "Cannot validate argument on parameter 'First'. The -30 argument is less than the minimum allowed range 0". PowerShell 5.1 does not accept negative numbers for `-First`/`-Last` parameters. | Use positive numbers only, or avoid `-First`/`-Last` and pipe through other means. | 2026-10-11 | 🟡 In Progress |
-| **PowerShell `&&` token not valid separator** — `cd "path" && command` fails with "The token '&&' is not a valid statement separator in this version". Windows PowerShell 5.1 does not support `&&` as a statement separator like bash. | Use `pwsh -Command "cd 'path'; & command"` syntax or run commands separately. | 2026-10-11 | 🟡 In Progress |
+| **PowerShell `&&` token not valid separator** — `cd "path" && command` fails in PowerShell 5.1 with "The token '&&' is not a valid statement separator in this version". Known limitation, not a bug; this row merges the duplicate "(manual test)" entry, which listed the same issue with a contradictory status. | Run commands separately, or use `pwsh -Command "cd 'path'; & command"`. | 2026-10-11 | 2026-10-12 | ⚠️ Workaround |
 | **Git cherry-pick stuck in conflict state** — Cherry-pick of commit `3d37314c` (logo v2) got stuck showing "all conflicts fixed: run git cherry-pick --continue" but wouldn't complete. | Use `git cherry-pick --continue` after ensuring all conflict resolutions are staged, or abort and use merge instead. | 2026-10-11 | 🟡 In Progress |
 | **Git merge conflicts in FloatingNav.tsx** — PR #431 merge blocked due to FloatingNav.tsx TS1128 error from merge conflict resolution. The governance overlay section was placed outside the `return (` statement during conflict resolution. | Manually restructure JSX to put governance section inside return, then merge the fix branch into main. | 2026-10-11 | ✅ Fixed |
 | **TypeScript check failures after file edits** — After editing FloatingNav.tsx, `npx tsc --noEmit` kept failing on same lines due to duplicate governance sections (unused `governanceOverlay` variable + governance outside return). | Remove unused variables entirely, ensure single governance section inside return statement. | 2026-10-11 | ✅ Fixed |
 | **Bash/PowerShell command execution issues** — Multiple bash tool calls had syntax issues with PowerShell heredocs, line continuations, and string quoting due to different quoting rules between Windows PowerShell 5.1 and bash/cmd. | Use `pwsh -Command` with proper escaping, or break complex commands into simpler steps with careful quoting. | 2026-10-11 | ⚠️ Workaround |
-| **PowerShell `&&` token not valid separator (manual test)** — `cd "path" && command` fails in PowerShell 5.1 with "The token '&&' is not a valid statement separator". | Use `pwsh -Command "cd 'path'; & command"` syntax or run commands separately.; this is a known limitation, not a bug; use alternative syntax. | 2026-10-11 | ❌ Cant Fix |
-| **PowerShell `$(...)` expands inside double-quoted `--jq` arguments** — `gh pr view --jq "state=$(.state)"` fails with `(.state) was not recognized` because PowerShell evaluates `$(...)` before `gh` receives the string. Recurred in-session 2026-10-12, so the fix is now a standing directive, not a one-off note. | **Directive:** write multi-statement PowerShell — or any one-liner containing `$(...)`, `$vars`, or nested quoting — to a temp `.ps1` file and run it with `powershell -File <path>.ps1`. When staying inline, single-quote `gh --jq` expressions (`gh pr view --jq '.state'`) so PowerShell never expands them. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **PowerShell `$(...)` expands inside double-quoted `--jq` arguments** — `gh pr view --jq "state=$(.state)"` fails with `(.state) was not recognized` because PowerShell evaluates `$(...)` before `gh` receives the string. Recurred in-session 2026-10-12, so the fix is now a standing directive, not a one-off note. Single-quoting is not sufficient by itself: PS 5.1 does not escape embedded double quotes when building native command lines, so a `--jq` expression containing string literals gets split into multiple arguments (`accepts at most 1 arg(s), received 2`). | **Directive:** write multi-statement PowerShell — or any one-liner containing `$(...)`, `$vars`, or nested quoting — to a temp `.ps1` file and run it with `powershell -File <path>.ps1`. When staying inline, single-quote `gh --jq` expressions (`gh pr view --jq '.state'`) so PowerShell never expands them; keep `--jq` expressions single-field with no string literals, and for expressions that need literals use a `.ps1` file. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
 | **INDEX.json EOL-only phantom diff after reindex** — `harness-change.ps1` `Get-IndexJson` used PS 5.1 `ConvertTo-Json`, which emits CRLF, while `.gitattributes` forces `eol=lf` for `harness/changes/INDEX.json`. After every `reindex`, `git status` shows ` M harness/changes/INDEX.json` with an empty `git diff`. | Fixed at source: `Get-IndexJson` now normalizes `` `r`n `` → `` `n `` before `Write-Text`. `lint-ecl.ps1` unaffected (semantic compare). Until merged, restore with `git checkout -- harness/changes/INDEX.json`. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
 | **Windows `Filename too long` deleting git worktrees** — `git worktree remove` fails (rc 255) on worktrees with deep `node_modules` paths exceeding MAX_PATH 260. | Set `git config --global core.longpaths true` (Git for Windows native fix, one-time). Non-git fallback: `cmd /c rmdir /S /Q "<path>"`. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
 | **INDEX.json unsorted after reindex (sort no-op)** — `Sort-Object id` on the entry list does not sort `[ordered]` hashtables in Windows PowerShell 5.1 (keys resolve unordered), so reindex emitted parking→archive enumeration order while the committed index is globally id-sorted; every reindex produced a full-file diff. | Changed to `Sort-Object { $_.id }` (script-block form sorts OrderedDictionary correctly; verified side-by-side). Complements BUG-93e21736a (Get-ChildItem Name sort within each location). | 2026-10-12 | 2026-10-12 | ✅ Fixed |
