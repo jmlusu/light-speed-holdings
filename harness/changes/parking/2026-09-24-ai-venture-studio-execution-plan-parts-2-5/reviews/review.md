@@ -1,25 +1,23 @@
 # Review
 
-## Intake Review
-
-- Status: pending
-- Notes:
-
 ## Spec Review
 
-- Status: pending
-- Open high-impact clarifications:
-- WHAT/HOW separation:
+Status: approved
+
+- Docs-only scope clear; non-goals explicit.
+- Inputs sufficient (blueprint + existing narrative/architecture/KPI sources).
 
 ## Plan Review
 
-- Status: pending
-- Spec gaps found from planning:
+Status: approved
 
-## Code Review
+- Five deliverables mapped; validation and exit criteria defined.
+- Deferred work (instrumentation, registry P2) correctly out of scope.
 
-- Status: pending
+## Final Validation
 
-## Validation Review
+Status: pass
 
-- Status: pending
+- `docs/venture-studio/README.md` + `02`–`05` written.
+- No `src/` or brand token changes for this ECL.
+- lint-ecl green at close.
