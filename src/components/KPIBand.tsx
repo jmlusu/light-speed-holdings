@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import '../../brand/tokens/brand-tokens.css';
 
 interface KPIMetric {
   id: string;

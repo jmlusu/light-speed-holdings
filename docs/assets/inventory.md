@@ -44,7 +44,7 @@ Per `docs/assets/README.md` generation commands:
 - **Architecture diagram:** `cd docs/assets; npx -y @mermaid-js/mermaid-cli -i architecture.mmd -o architecture.svg` then wrap in HTML with archify template for dark/light toggle.
 - **Grav illustrations:** Invoke `article-illustrations` skill with prompts; post-render palette check: `uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.py <file> --tolerance 3`
 - **Campaign assets:** Dispatch to `media-generation-owner` via task; use generation brief template from spec with per-platform dimensions; QA each with `ls-artifact-qa`.
-- **React components:** Implement in `src/components/`; use brand tokens `@import '../../brand/tokens/brand-tokens.css'`; import logos from ` '../../brand/logos/fulllogo/fulllogo.png'` (canonical); build & test with `bun run build` / `bun run lint`; visual QA with Playwright.
+- **React components:** Implement in `src/components/`; brand tokens load globally once via `src/index.css` (imported by `main.tsx`) — do **not** import `../../brand/tokens/brand-tokens.css` in components/pages (breaks dev server with a CSS MIME error); import logos from ` '../../brand/logos/fulllogo/fulllogo.png'` (canonical); build & test with `bun run build` / `bun run lint`; visual QA with Playwright.
 
 ## QA Checklist (all assets)
 

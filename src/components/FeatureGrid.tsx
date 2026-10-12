@@ -1,7 +1,6 @@
 import React from 'react';
 import { FileText, GitMerge, Server } from 'lucide-react';
 import { FeatureCard } from './FeatureCard';
-import '../../brand/tokens/brand-tokens.css';
 
 const features = [
   {

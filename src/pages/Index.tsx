@@ -5,7 +5,6 @@ import { KPIBand } from '../components/KPIBand';
 import { TrustStrip } from '../components/TrustStrip';
 import { LeadershipStrip } from '../components/LeadershipStrip';
 import { Playground } from '../components/Playground';
-import '../../brand/tokens/brand-tokens.css';
 
 export const Index: React.FC = () => {
   return (

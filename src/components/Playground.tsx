@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import '../../brand/tokens/brand-tokens.css';
 
 interface PlaygroundProps {
   className?: string;

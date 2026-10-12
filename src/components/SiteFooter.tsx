@@ -29,6 +29,7 @@ const COLUMNS: FooterColumn[] = [
       { name: 'Proof', to: '/proof' },
       { name: 'Insights', to: '/insights' },
       { name: 'About', to: '/about' },
+      { name: 'FAQ', to: '/#faq' },
     ],
   },
   {

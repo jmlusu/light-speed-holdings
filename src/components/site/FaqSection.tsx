@@ -6,16 +6,22 @@ import { faqs } from '../../data/faqs';
 
 interface FaqSectionProps {
   theme: 'light' | 'dark';
+  /** Optional DOM id so in-page links (e.g. footer /#faq) can target this section. */
+  id?: string;
 }
 
 /**
  * FAQ section rendered from the §15 FAQ registry (src/data/faqs.ts).
  * Native <details>/<summary> keeps it keyboard-accessible with no JS state.
  */
-export const FaqSection: React.FC<FaqSectionProps> = ({ theme }) => {
+export const FaqSection: React.FC<FaqSectionProps> = ({ theme, id }) => {
   const isLight = theme === 'light';
   return (
-    <section aria-label="Frequently asked questions" className="px-4 sm:px-8 pt-16 sm:pt-20 pb-8 max-w-7xl mx-auto w-full">
+    <section
+      id={id}
+      aria-label="Frequently asked questions"
+      className="px-4 sm:px-8 pt-16 sm:pt-20 pb-8 max-w-7xl mx-auto w-full scroll-mt-28"
+    >
       <Reveal>
         <SectionHeading
           theme={theme}
