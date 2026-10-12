@@ -182,14 +182,19 @@ function Get-IndexEntries {
       $entries.Add($entry)
     }
   }
-  return $entries | Sort-Object id
+  # Sort-Object id does not sort [ordered] hashtables in Windows PowerShell 5.1
+  # (keys resolve unordered); use the script-block form so reindex output is
+  # globally id-sorted and matches the committed index.
+  return $entries | Sort-Object { $_.id }
 }
 
 function Get-IndexJson {
   $entries = Get-IndexEntries
   if ($entries.Count -eq 0) { return "[]`n" }
   $json = $entries | ConvertTo-Json -Depth 8
-  return ($json + "`n")
+  # ConvertTo-Json in Windows PowerShell 5.1 emits CRLF; .gitattributes forces eol=lf
+  # for INDEX.json, so normalize before write to avoid an EOL-only phantom diff.
+  return (($json -replace "`r`n", "`n") + "`n")
 }
 
 function Reindex {
