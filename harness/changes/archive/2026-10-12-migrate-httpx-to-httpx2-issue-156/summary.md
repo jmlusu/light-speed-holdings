@@ -1,9 +1,9 @@
 ---
 title: "Migrate httpx to httpx2 (issue 156)"
 slug: "migrate-httpx-to-httpx2-issue-156"
-status: "in_progress"
-location: "active"
-phase: "implement"
+status: "completed"
+location: "archive"
+phase: "validate"
 intake_status: "accepted"
 spec_review: "approved"
 plan_review: "approved"
@@ -41,7 +41,7 @@ tags:
   - "httpx2"
   - "issue-156"
   - "migration"
-validation_status: "unknown"
+validation_status: "pass"
 created_at: "2026-10-12"
 updated_at: "2026-10-12"
 session_id: "481e4c43-86a2-48d1-9548-9a849641bafa"
@@ -66,8 +66,15 @@ claimed_at: "2026-10-12"
 
 ## Validation
 
-- Pending (see plan.md Verification Plan).
+- Gates on branch: `ruff check` clean, `mypy src/` 0 issues, pre-commit full run passed (16 hooks).
+- Full non-e2e suite on merged code (post-PR #438, 2026-10-12): **2584 passed, 2 skipped**, exit 0 (523s).
+- `StarletteDeprecationWarning` occurrences: **0** (baseline pre-migration: exactly 1).
+- Required CI check `Dependency Audit (uv-audit)` passes on merge commit `d18463a7` via `scripts/ci/uv-audit-shim.py` (works around package-schemes `dep.startswith(name)` prefix-match crash; no package-schemes version fixes it — workaround tested exit 0 locally and 13s in CI). All 15 PR checks green (Test ubuntu/windows, mypy, ruff, bandit, ECL lint, drift, archify, E2E, Vercel).
+- Native `uv audit --frozen` reports 48 pre-existing vulnerabilities (nltk/urllib3/virtualenv, identical at baseline `8ca467a4`) — not a regression; monitoring.yml treats it as a warning only.
+- httpx in uv.lock confirmed transitive-only (huggingface-hub runtime, safety dev); direct dependency is `httpx2>=2.12`.
+- `pwsh scripts/maintenance/lint-ecl.ps1` → 0 failures (run while active; re-run after close).
+- PR #438 squash-merged `d18463a7` 2026-10-12; issue #156 auto-closed.
 
 ## Next Step
 
-- T003: dependency swap in pyproject.toml + uv lock/sync.
+- None — all tasks complete; close via `harness-change.ps1 close completed`.
