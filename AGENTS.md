@@ -157,13 +157,7 @@ An agent performing an audit must treat its evidence set as read-only: **never w
 
 ## 10 Verification
 
-| Change Type | Minimum Verification |
-|-------------|----------------------|
-| Generator / template | `python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"` |
-| CLI commands | `ai-company --help` + `ai-company <command> --help` |
-| Models / orchestrator | `pytest` |
-| Any source change | `ruff check src/ && mypy src/ && pytest` |
-| Harness / docs | `pwsh scripts/maintenance/lint-ecl.ps1` |
+See §6 Verification — the single source of the minimum-verification table.
 
 ## 11 Security — Key Rotation Procedure
 
@@ -220,18 +214,10 @@ curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" https://api.example.com/health
 - Dashboard CORS allowlists include both origins (legacy `:3000` retained) in `src/ai_company/dashboard/app.py`, `docker-compose.yml`, `docker-compose.staging.yml`, `.env.staging.example`.
 - Updated references: `README.md` (scripts table), `check_server.py`, `docs/IMAGE_SPEC.md` (QA probe URL).
 
-**Monitoring session 2026-10-07, 22:15–22:29 (10+ min, 20 probe cycles, 120 HTTP probes):** both ports stayed listening; 119/120 probes HTTP 200 across `/`, `/insights`, `/solutions` on each port; `dev.log` and `preview.log` scans: **0 error matches**; no crashes, no port drift, no EADDRINUSE.
+**Operational rules** (session record: [docs/PORTS-MONITORING-2026-10-07.md](docs/PORTS-MONITORING-2026-10-07.md); issues tracked in §16):
 
-**Issue found and fixed:**
-
-1. **Dev cold-start probe timeout (1 failure — cycle 1, `:1441/` returned ERR).** The first request after `npm run dev` exceeded the 15 s probe timeout while Vite optimized the 1676-module dependency graph. Re-measured cold start: port binds in ~2.5 s, first request completes in ~6.3 s and returns 200; subsequent requests ~8 ms. **Fix:** documented here — automated health checks and QA probes must tolerate the first dev request (retry once after the `VITE ready in ...` log line, allow ≥30 s timeout). No code change required; reproduced deterministically (warm dep cache ≈ 6 s, cold ≈ >15 s).
-
-2. **Port conflict / server startup failure.** If ports 1440/1441 are already in use (e.g., leftover `node.exe` processes from a previous session), the Vite dev server will fall back to the next available port (e.g., 1442) or fail to bind. **Fix:** Always kill any lingering `node.exe` processes before restarting servers:
-   - `taskkill /F /IM node.exe` (Windows) — kills all Node.js processes
-   - Then restart with `npm run dev` (port 1441) or `npm run preview` (port 1440)
-   - Verify ports are free: `netstat -an | findstr "1440 1441"` should show no listeners before restart
-
-**Servers were stopped and ports 1440/1441 released after the session.**
+1. **Dev cold-start tolerance:** the first request after `npm run dev` exceeds the 15 s probe timeout while Vite optimizes the dependency graph — automated probes must retry once after the `VITE ready in ...` log line and allow ≥30 s.
+2. **Port conflicts:** kill lingering `node.exe` processes before restarting (`taskkill /F /IM node.exe`), verify ports are free (`netstat -an | findstr "1440 1441"`), then restart with `npm run dev` (1441) or `npm run preview` (1440).
 
 ## 13 Application Boundary — CEO Dashboard vs Vite/React App
 
@@ -265,6 +251,14 @@ or a skill title. Validate against the system-prompt agent roster before calling
 if a name isn't a known `subagent_type`, pick a valid roster entry or do the work
 directly — and say honestly which you did. Full rules and the cross-reference table:
 `docs/agents/subagents-vs-skills.md`.
+
+### Skills CLI install hygiene
+
+Run `git status` after any `npx skills` (skills CLI) command, before continuing with the task.
+A single-skill install with `--skill` currently installs every skill in the registry (38 of 1 on
+2026-10-12); the extras show up as untracked `.agents/skills/` paths — revert the ones you did
+not ask for in the same session. Commit `skills-lock.json` only in its corrected state: it lists
+every installed skill, so `skills update` restores anything still listed in it.
 
 ### Issue tracker
 
@@ -354,6 +348,7 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 | **TypeScript check failures after file edits** — After editing FloatingNav.tsx, `npx tsc --noEmit` kept failing on same lines due to duplicate governance sections (unused `governanceOverlay` variable + governance outside return). | Remove unused variables entirely, ensure single governance section inside return statement. | 2026-10-11 | ✅ Fixed |
 | **Bash/PowerShell command execution issues** — Multiple bash tool calls had syntax issues with PowerShell heredocs, line continuations, and string quoting due to different quoting rules between Windows PowerShell 5.1 and bash/cmd. | Use `pwsh -Command` with proper escaping, or break complex commands into simpler steps with careful quoting. | 2026-10-11 | ⚠️ Workaround |
 | **PowerShell `&&` token not valid separator (manual test)** — `cd "path" && command` fails in PowerShell 5.1 with "The token '&&' is not a valid statement separator". | Use `pwsh -Command "cd 'path'; & command"` syntax or run commands separately.; this is a known limitation, not a bug; use alternative syntax. | 2026-10-11 | ❌ Cant Fix |
+| **PowerShell `$(...)` expands inside double-quoted `--jq` arguments** — `gh pr view --jq "state=$(.state)"` fails with `(.state) was not recognized` because PowerShell evaluates `$(...)` before `gh` receives the string. Inline commands only (not `.ps1` files), so this is documentation, not a check. | Single-quote `--jq` expressions (`--jq '.state'`), or drop `--jq` and pipe the JSON through `ConvertFrom-Json`. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
 
 **Rules for this section:**
 - Entries are tracked by date and status; do not delete without replacement
