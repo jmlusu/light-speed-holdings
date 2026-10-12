@@ -123,7 +123,9 @@ We merge to `main` often (ship fast / fail fast). Most merges touch docs, harnes
 or tests — none of which change what production serves. `vercel.json` therefore sets
 `ignoreCommand` to `bash scripts/deploy/vercel-ignore-build.sh`, which diffs the commit
 against `VERCEL_GIT_PREVIOUS_SHA` (the last commit that actually produced a deploy) and
-**exits 1 to skip the build** when no site-bundle file changed. Vercel records the merge
+**exits 0 to skip the build** (exit 1 — and any exit ≥ 1 — continues the build; this is
+Vercel's contract, live-verified on `dpl_EzKiYqykZhC8dJSnc4T9DCgwq2ed`, 2026-10-13)
+when no site-bundle file changed. Vercel records the merge
 as a skipped deployment; the production alias keeps serving the previous deploy. The
 filter applies to preview deployments on other branches too.
 
@@ -155,6 +157,13 @@ Without it every deployment fails at the ignore step with
 `scripts/test/check-vercelignore.py` asserts the script survives the rules —
 never delete its `STATIC_REQUIRED` entry or the pattern above; if the script
 moves, update `vercel.json`, `.vercelignore`, and the guard together.
+
+**Exit-code contract (critical):** Vercel's Ignored Build Step uses the *opposite*
+of Unix intuition: **0 skips, 1 builds**. PR #449 shipped the inverted mapping
+(0=build, 1=skip); it never ran successfully before the ENOENT incidents masked
+it, and the first live run (`dpl_EzKiYqykZhC8dJSnc4T9DCgwq2ed`, exit 0 with a
+"building." message) was CANCELED. Fixed in PR #452. Never flip these exits
+without re-reading this section and the script header.
 
 **Force a production deploy** without a site change: redeploy the latest deployment
 from the Vercel dashboard (Redeploy), or push a trivial site-file touch (e.g. a comment

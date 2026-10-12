@@ -6,8 +6,14 @@
 # bundle or the api/ functions. Rebuilding production for those merges
 # wastes build minutes and re-ships an identical site.
 #
-# Contract (Vercel): exit 0 -> build; exit 1 -> skip; anything else -> error
-# (treated as build). Safe default is always "build".
+# Contract (Vercel, vercel.com/docs/projects/project-configuration/vercel-json
+# + live-verified 2026-10-13 on dpl_EzKiYqykZhC8dJSnc4T9DCgwq2ed):
+#   exit 0 -> skip (deployment CANCELED)
+#   exit 1 -> build (and any exit >= 1 continues the build)
+#   anything else -> error surface, still treated as "build" by Vercel
+# Safe default is always "build" (exit 1). Do NOT invert: #449 shipped the
+# opposite mapping, so every successful run would have skipped site builds
+# and built docs-only merges; it was only masked by the ENOENT incident.
 #
 # Env (set by Vercel on Git-integration builds):
 #   VERCEL_GIT_PREVIOUS_SHA  last commit that actually produced a deploy
@@ -31,7 +37,7 @@ HEAD="${VERCEL_GIT_COMMIT_SHA:-HEAD}"
 
 if [ -z "$PREV" ] || ! git cat-file -e "${PREV}^{commit}" 2>/dev/null; then
   echo "vercel-ignore-build: no usable previous deploy SHA (PREV='${PREV}'); building."
-  exit 0
+  exit 1
 fi
 
 # Filter out known non-site paths first; || true so an empty diff is not an
@@ -48,7 +54,7 @@ site_pattern='^(index\.html|vercel\.json|\.vercelignore|package\.json|package-lo
 if printf '%s\n' "$changed" | grep -E -q "$site_pattern"; then
   echo "vercel-ignore-build: site-bundle files changed between ${PREV} and ${HEAD}; building."
   printf '%s\n' "$changed" | grep -E "$site_pattern" | sed 's/^/  - /' | head -n 20
-  exit 0
+  exit 1
 fi
 
 echo "vercel-ignore-build: no site-bundle changes between ${PREV} and ${HEAD}; skipping build."
@@ -56,4 +62,4 @@ if [ -n "$changed" ]; then
   echo "Changed files (all non-site):"
   printf '%s\n' "$changed" | sed 's/^/  - /' | head -n 20
 fi
-exit 1
+exit 0
