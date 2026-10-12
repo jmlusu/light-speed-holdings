@@ -20,7 +20,7 @@ const solutionTitle = (slug: string): string =>
   solutions.find((s) => s.slug === slug)?.title ?? slug;
 
 /**
- * /sectors per CUSTOMER_JOURNEY_CONVERSION_ARCHITECTURE §12: five canonical
+ * /sectors per CUSTOMER_JOURNEY_CONVERSION_ARCHITECTURE §12: canonical
  * sectors from `sector-registry.ts`, each carrying one of four evidence
  * tiers — only claim sector experience where evidence exists. Each card
  * cross-links onward to the solutions that serve it (no dead ends).
@@ -46,7 +46,7 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
         theme={theme}
         eyebrow="SECTORS"
         title="Sectors We Serve — With the Evidence to Back It"
-        lead="Five sectors across Malawi and Africa. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show — and every card links to the solutions that serve it."
+        lead="Six sectors across Malawi and Africa. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show — and every card links to the solutions that serve it."
       />
 
       {/* Evidence tier legend */}

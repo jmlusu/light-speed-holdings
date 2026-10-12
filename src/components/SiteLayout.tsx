@@ -5,9 +5,10 @@ import { SiteFooter } from './SiteFooter';
 import { ExecutiveBriefingModal } from './ExecutiveBriefingModal';
 import { useSite } from '../site-context';
 import { trackJourneyEvent, stageForRoute } from '../hooks/useJourneyEvents';
+import { scrollToHash } from '../hooks/useSmoothScroll';
 
 export const SiteLayout: React.FC = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   const { theme, onToggleTheme, onRequestBriefing, isBriefingOpen, briefingSummary, closeBriefing } = useSite();
 
   const lastPathnameRef = useRef(pathname);
@@ -24,7 +25,16 @@ export const SiteLayout: React.FC = () => {
     document.title = `LIGHTSPEED HOLDINGS | ${pathname === '/' ? 'AI-Native Company Builder' : pathname.replace('/', '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollTo({ top: 0, left: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    if (hash) {
+      // Hash target exists after commit (same-page section or mounted route content).
+      const el = document.getElementById(hash.slice(1));
+      if (el) {
+        scrollToHash(hash);
+      }
+      // No element found: keep current position rather than jumping to top.
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    }
 
     if (lastPathnameRef.current === pathname) return;
     lastPathnameRef.current = pathname;
@@ -32,7 +42,7 @@ export const SiteLayout: React.FC = () => {
     if (main) {
       main.focus({ preventScroll: true });
     }
-  }, [pathname]);
+  }, [pathname, hash]);
 
   return (
     <>

@@ -13,6 +13,7 @@ import {
   BriefingSection,
   VisitorPathsSection,
 } from '../components/home';
+import { FaqSection } from '../components/site/FaqSection';
 
 interface HomePageProps {
   theme: 'light' | 'dark';
@@ -48,6 +49,8 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       <InsightsSection theme={theme} />
       {/* 10. About: Mission, Values, What We Promise Whom */}
       <AboutSection theme={theme} />
+      {/* 11. FAQ: Straight answers (footer link target /#faq) */}
+      <FaqSection theme={theme} id="faq" />
       {/* CTA: Start a Conversation */}
       <BriefingSection theme={theme} />
     </div>

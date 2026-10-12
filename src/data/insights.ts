@@ -21,7 +21,7 @@ export interface InsightArticle {
   source: string; // first-party provenance (honesty grounding)
   blocks: InsightBlock[];
   relatedSolutions: string[]; // solution slugs (siteContent.ts `solutions`)
-  relatedSectors: string[]; // canonical 5 sector slugs (sector-registry.ts)
+  relatedSectors: string[]; // canonical sector slugs (sector-registry.ts)
 }
 
 export const insightArticles: InsightArticle[] = [
