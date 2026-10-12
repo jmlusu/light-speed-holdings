@@ -95,8 +95,9 @@ loops); no workflow action runs twice for the same SHA.
 After merging a website PR to `main`, verify in this order (failure handling is §5 above):
 
 1. **Merge → status event.** The squash merge on `main` triggers the `Vercel` GitHub status,
-   which starts the production deployment. Its `target_url` carries the short id; the API
-   needs the full `dpl_<short-id>`.
+   which starts the production deployment — **unless the merge only touched non-site files**
+   (see §7; the build is skipped and production keeps serving the last site deploy). Its
+   `target_url` carries the short id; the API needs the full `dpl_<short-id>`.
 2. **Poll REST until `readyState` is `READY`** — the endpoint 404s without `teamId`:
 
    ```bash
@@ -115,3 +116,28 @@ After merging a website PR to `main`, verify in this order (failure handling is 
 
 Worked example (PR #445, 2026-10-12): squash merge `cab747b6` → 15 checks green → deploy
 `gc9i4ijt2` `READY` → alias 200 → prod verify 6/6 PASS.
+
+## 7 Website Deploy — Skip Filter (ignoreCommand)
+
+We merge to `main` often (ship fast / fail fast). Most merges touch docs, harness, Python,
+or tests — none of which change what production serves. `vercel.json` therefore sets
+`ignoreCommand` to `bash scripts/deploy/vercel-ignore-build.sh`, which diffs the commit
+against `VERCEL_GIT_PREVIOUS_SHA` (the last commit that actually produced a deploy) and
+**exits 1 to skip the build** when no site-bundle file changed. Vercel records the merge
+as a skipped deployment; the production alias keeps serving the previous deploy. The
+filter applies to preview deployments on other branches too.
+
+**Triggers a build** (site-bundle set): `index.html`, `vercel.json`, `.vercelignore`,
+`package.json`, `package-lock.json`, `tsconfig*.json`, `vite.config.*`, `api/`
+(Vercel Functions), `public/`, `brand/`, `packages/design-system/`, `src/` (minus
+`src/ai_company/` and `src/__tests__/`), and `data/<dir>/registry.ts` (the aliased
+site registries — mirrors the `.vercelignore` re-include rules).
+
+**Never triggers:** Python (`src/ai_company/`), unit tests (`src/__tests__/` — CI's
+site-principles gate still type-checks them), docs, harness, scripts, `.github/`.
+Safe defaults: if `VERCEL_GIT_PREVIOUS_SHA` is missing or unknown, the build runs.
+
+**Force a production deploy** without a site change: redeploy the latest deployment
+from the Vercel dashboard (Redeploy), or push a trivial site-file touch (e.g. a comment
+in `vite.config.ts`). The retry workflow (§5) is unaffected — it only re-runs
+deployments whose `readyState` is `ERROR`, and skipped builds never reach that state.
