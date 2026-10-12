@@ -4,12 +4,18 @@ import { ArrowRight } from 'lucide-react';
 import { SectionHeading } from '../site/SectionHeading';
 import { HonestyBadge } from '../site/HonestyBadge';
 import { Reveal } from '../Reveal';
-import { solutions } from '../../data/siteContent';
+import { solutions, GOVERNANCE_SOLUTION } from '../../data/siteContent';
 import { HomeSection } from './HomeSection';
 
 interface SolutionsSectionProps {
   theme: 'light' | 'dark';
 }
+
+/** Six-card home catalog: five registry solutions + the governance card. */
+const homeSolutions = [
+  ...solutions.map((s) => ({ ...s, to: '/contact' })),
+  { ...GOVERNANCE_SOLUTION, slug: 'governance' },
+];
 
 export const SolutionsSection: React.FC<SolutionsSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
@@ -22,9 +28,9 @@ export const SolutionsSection: React.FC<SolutionsSectionProps> = ({ theme }) => 
         lead="Every solution answers: what problem it solves, who it's for, what changes, what LightSpeed builds, and what evidence exists. Each carries its own honesty status."
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {solutions.map((sol, idx) => (
+        {homeSolutions.map((sol, idx) => (
           <Reveal key={sol.slug} delay={(idx % 3) * 0.06}>
-            <Link to="/contact" className={`ripple-on rounded-3xl p-6 border transition-all h-full flex flex-col justify-between group ${
+            <Link to={sol.to} className={`ripple-on rounded-3xl p-6 border transition-all h-full flex flex-col justify-between group ${
               isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl hover:-translate-y-0.5' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl hover:-translate-y-0.5'
             }`}>
               <div className="space-y-3">

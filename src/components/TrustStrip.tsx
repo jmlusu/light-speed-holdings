@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../../brand/tokens/brand-tokens.css';
 
 interface CaseStudy {
   id: string;

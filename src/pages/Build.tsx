@@ -4,7 +4,6 @@ import { FeatureGrid } from '../components/FeatureGrid';
 import { KPIBand } from '../components/KPIBand';
 import { TrustStrip } from '../components/TrustStrip';
 import { Playground } from '../components/Playground';
-import '../../brand/tokens/brand-tokens.css';
 
 export const Build: React.FC = () => {
   return (

@@ -21,13 +21,15 @@ export function prefersReducedMotion(): boolean {
 }
 
 export function smoothScrollToElement(el: HTMLElement): void {
+  // Honor CSS scroll-margin-top (e.g. scroll-mt-28) so targets clear the fixed nav.
+  const scrollMargin = parseFloat(window.getComputedStyle(el).scrollMarginTop) || 0;
   if (prefersReducedMotion()) {
     el.scrollIntoView({ behavior: 'auto', block: 'start' });
     return;
   }
 
   const startY = window.scrollY;
-  const endY = el.getBoundingClientRect().top + startY;
+  const endY = el.getBoundingClientRect().top + startY - scrollMargin;
   const delta = endY - startY;
   if (Math.abs(delta) < 1) return;
 

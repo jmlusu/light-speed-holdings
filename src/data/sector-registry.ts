@@ -1,5 +1,6 @@
 /* LightSpeed Holdings — Canonical Sector Registry (CUSTOMER_JOURNEY_CONVERSION_ARCHITECTURE §12)
-   Five canonical sectors per MASTER_SPEC and TARGET_ARCHITECTURE.
+   Six canonical sectors: the five per MASTER_SPEC and TARGET_ARCHITECTURE, plus
+   Academia and Research (CEO direction, 2026-10-12 — homepage sector cards).
    Evidence tiers: PROVEN / CURRENT / DEMO / FUTURE (mapped from SECTOR_TIERS).
    One canonical source per sector fact. Only claim sector experience where evidence exists.
    Source: sectors.ts (evidence) + MASTER_SPEC §11 (canonical 5 slugs). */
@@ -42,7 +43,7 @@ function findLegacySector(ids: string[]): typeof legacySectors[0] | undefined {
   return legacySectors.find(s => ids.some(id => s.id.includes(id) || id.includes(s.id)));
 }
 
-/* Five canonical sectors — mapped from legacy sectors where evidence exists */
+/* Six canonical sectors — mapped from legacy sectors where evidence exists */
 export const sectors: Sector[] = [
   {
     id: 'financial-services',
@@ -93,6 +94,16 @@ export const sectors: Sector[] = [
       "Advisory work on Malawi's National AI Strategy consultation. Policy-level engagement so far — no ministerial production deployment claimed.",
     region: ['Malawi', 'SADC'],
     relevantSolutions: ['ai-company-builder', 'enterprise-deployment', 'boardroom-briefing'],
+  },
+  {
+    id: 'academia-research',
+    title: 'Academia and Research',
+    description: 'Research collaboration, governance methodology, and open evidence for universities and labs.',
+    status: SECTOR_TIERS_CANONICAL.current,
+    evidence:
+      "Convening of the Malawi Agentic AI Forum and advisory input to Malawi's National AI Strategy consultation, plus published governance frameworks and thought leadership open for academic review. No dedicated research-lab production deployment claimed.",
+    region: ['Malawi', 'SADC'],
+    relevantSolutions: ['ai-company-builder', 'boardroom-briefing'],
   },
 ];
 
