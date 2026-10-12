@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../brand/tokens/brand-tokens.css';
 
 export const Architecture: React.FC = () => {
   return (

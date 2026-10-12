@@ -2,7 +2,6 @@ import React from 'react';
 import { Hero } from '../components/Hero';
 import { KPIBand } from '../components/KPIBand';
 import { Playground } from '../components/Playground';
-import '../../brand/tokens/brand-tokens.css';
 
 export const OfferE: React.FC = () => {
   return (

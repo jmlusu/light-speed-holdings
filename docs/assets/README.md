@@ -85,7 +85,10 @@ uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.
 ### React Components
 ```bash
 # Implement in src/components/
-# Use brand tokens: @import '../../brand/tokens/brand-tokens.css';
+# Brand tokens load globally once via src/index.css (imported by main.tsx) —
+# do NOT import '../../brand/tokens/brand-tokens.css' in components/pages;
+# in dev Vite serves that path from public/ as raw text/css and the import
+# fails with a MIME error, preventing React from mounting.
 # Import logos from '../../brand/logos/fulllogo/fulllogo.png' (canonical)
 # Build & test:
 bun run build
