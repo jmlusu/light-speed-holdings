@@ -137,6 +137,13 @@ site registries — mirrors the `.vercelignore` re-include rules).
 site-principles gate still type-checks them), docs, harness, scripts, `.github/`.
 Safe defaults: if `VERCEL_GIT_PREVIOUS_SHA` is missing or unknown, the build runs.
 
+**`.vercelignore` coupling (critical):** Vercel runs `ignoreCommand` inside the
+`.vercelignore`-filtered tree. `/scripts/` is ignored, so the filter script MUST be
+re-included (`!/scripts/deploy/vercel-ignore-build.sh` in `.vercelignore`). Without
+that negation every deployment fails at the ignore step with
+`ENOENT ... exit code 127` (incident 2026-10-12, `c9cecc05`). Never delete that
+negation line; if the script moves, update both `vercel.json` and `.vercelignore`.
+
 **Force a production deploy** without a site change: redeploy the latest deployment
 from the Vercel dashboard (Redeploy), or push a trivial site-file touch (e.g. a comment
 in `vite.config.ts`). The retry workflow (§5) is unaffected — it only re-runs
