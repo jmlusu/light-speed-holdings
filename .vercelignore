@@ -46,6 +46,10 @@ uv.lock
 /prompts/
 /proposal-deliverables/
 /scripts/
+# vercel.json ignoreCommand runs `bash scripts/deploy/vercel-ignore-build.sh`
+# in the .vercelignore-filtered context — the script MUST be re-included or
+# every deployment fails at the ignore step with ENOENT (exit 127).
+!/scripts/deploy/vercel-ignore-build.sh
 /survey/
 /tasks/
 /templates/
