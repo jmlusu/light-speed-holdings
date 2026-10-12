@@ -51,3 +51,41 @@ curl http://localhost:8421/health              # staging
 - `open-design/` is a declared git submodule (`.gitmodules`); fresh clones resolve it with `git submodule update --init`.
 - `models/` (24 GB local weights) is gitignored and regenerable via `scripts/build/download_models.py` — never commit weights.
 - `static/brand/` and `public/brand/` are generated mirrors of `brand/` — deploy reads them, humans edit `brand/` and run `scripts/build/sync-brand.ps1 -Verify`.
+
+## 5 Vercel Preview Failure Runbook
+
+A preview deploy can fail **before it builds** (observed 2026-10-12: `errorCode: git_info_fail`).
+These failures expose **no build logs** — `/v6/deployments/<id>/events` returns 400/empty and the
+dashboard shows a dead "Preparing" state. They are transient; the fix is a redeploy, not a code change.
+
+**Identify.** The GitHub commit status uses context `Vercel`; its `target_url` is
+`https://vercel.com/<team-slug>/<project>/<short-id>`. The API requires the full id:
+`dpl_<short-id>` (the bare short id 404s).
+
+**Auth.** Local: `VERCEL_ACCESS_TOKEN` from `.env`. CI: GitHub secret `VERCEL_API_KEY`.
+Team scope: `teamId=team_ktnrLZHZZA1CPEC8XTRYNXt1` (slug `jmlusu-8288s-projects`) — the
+deployments endpoints return 404 without it.
+
+**Manual redeploy:**
+
+```bash
+# 1. Confirm it failed
+curl -sS -H "Authorization: Bearer $VERCEL_ACCESS_TOKEN" \
+  "https://api.vercel.com/v6/deployments/dpl_<ID>?teamId=team_ktnrLZHZZA1CPEC8XTRYNXt1" \
+  | jq '.readyState, .errorCode'
+
+# 2. Redeploy — payload is exactly deploymentId + name (project slug)
+curl -sS -X POST -H "Authorization: Bearer $VERCEL_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"deploymentId":"dpl_<ID>","name":"light-speed-holdings"}' \
+  "https://api.vercel.com/v13/deployments?teamId=team_ktnrLZHZZA1CPEC8XTRYNXt1" | jq '.id'
+```
+
+Rejected payloads (HTTP 400): `target: "preview"`, `forceNew` — do not add them.
+
+**CLI caveat.** `npx vercel inspect <url> --logs` hangs without `~/.vercel/auth.json`; run
+`vercel login` once interactively, then inspect works. Prefer the REST API in scripts.
+
+**Automation.** [`.github/workflows/vercel-retry.yml`](../.github/workflows/vercel-retry.yml)
+watches `status` events and redeploys once per commit (marker context `vercel-retry` prevents
+loops); no workflow action runs twice for the same SHA.
