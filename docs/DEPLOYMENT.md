@@ -89,3 +89,29 @@ Rejected payloads (HTTP 400): `target: "preview"`, `forceNew` — do not add the
 **Automation.** [`.github/workflows/vercel-retry.yml`](../.github/workflows/vercel-retry.yml)
 watches `status` events and redeploys once per commit (marker context `vercel-retry` prevents
 loops); no workflow action runs twice for the same SHA.
+
+## 6 Website Deploy — Happy-Path Verification
+
+After merging a website PR to `main`, verify in this order (failure handling is §5 above):
+
+1. **Merge → status event.** The squash merge on `main` triggers the `Vercel` GitHub status,
+   which starts the production deployment. Its `target_url` carries the short id; the API
+   needs the full `dpl_<short-id>`.
+2. **Poll REST until `readyState` is `READY`** — the endpoint 404s without `teamId`:
+
+   ```bash
+   curl -sS -H "Authorization: Bearer $VERCEL_ACCESS_TOKEN" \
+     "https://api.vercel.com/v6/deployments/dpl_<ID>?teamId=team_ktnrLZHZZA1CPEC8XTRYNXt1" \
+     | jq -r '.readyState'
+   ```
+
+3. **Check the production alias** serves the deploy:
+
+   ```bash
+   curl -sI https://lightspeedholdings.vercel.app | head -1    # expect HTTP 200
+   ```
+
+   Then spot-check the shipped change in the browser (e.g. the footer FAQ link → `/#faq`).
+
+Worked example (PR #445, 2026-10-12): squash merge `cab747b6` → 15 checks green → deploy
+`gc9i4ijt2` `READY` → alias 200 → prod verify 6/6 PASS.
