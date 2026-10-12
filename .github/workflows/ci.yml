@@ -280,11 +280,26 @@ jobs:
           print('All Archify diagrams validated OK')
           "
 
+  # INDEX.json byte-freshness: regenerate under Windows PowerShell 5.1 (the
+  # canonical ConvertTo-Json dialect) and fail on any byte drift. Complements
+  # the harness job's lint-ecl.ps1 semantic check, which is blind to EOL/indent/
+  # escaping drift (retro finding 2026-10-12; see scripts/maintenance/check-index-freshness.ps1).
+  index-freshness:
+    name: INDEX.json Freshness Check
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      # Explicit shell: the default shell on Windows runners is pwsh (7), whose
+      # ConvertTo-Json emits a different dialect than the committed bytes.
+      - name: Reindex under Windows PowerShell 5.1 and diff
+        shell: powershell
+        run: .\scripts\maintenance\check-index-freshness.ps1
+
   # All required checks must succeed for the gate to pass.
   gate:
     name: CI Gate
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, archify-check, version-check]
+    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, archify-check, version-check, index-freshness]
     steps:
       - uses: actions/checkout@v7
       - run: echo "All required checks passed (ruff + mypy + pytest + coverage + harness + bandit + uv-audit + generated-files + archify)."
