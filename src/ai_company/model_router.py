@@ -23,7 +23,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-import httpx
+import httpx2 as httpx
 import yaml
 
 logger = logging.getLogger(__name__)

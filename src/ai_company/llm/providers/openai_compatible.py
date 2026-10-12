@@ -13,7 +13,7 @@ import time
 from collections.abc import Generator
 from typing import TYPE_CHECKING, Any
 
-import httpx
+import httpx2 as httpx
 
 from ai_company.llm.providers.base import (
     ChatResponse,

@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 from unittest.mock import MagicMock
 
-import httpx
+import httpx2 as httpx
 import pytest
 
 from ai_company.llm.oauth2 import OAuth2Config, OAuth2Error, OAuth2TokenManager
@@ -25,15 +25,15 @@ _TOKEN_URL = "https://idp.example.com/oauth/token"
 def _no_omniroute_ping(monkeypatch: pytest.MonkeyPatch) -> None:
     """Skip the real OmniRoute health ping in LLMClient's constructor.
 
-    The OAuth2 TokenManager tests intentionally use real ``httpx.Client``
+    The OAuth2 TokenManager tests intentionally use real ``httpx2.Client``
     with a MockTransport, so only the gateway ping is stubbed here.
     """
-    import httpx
+    import httpx2 as httpx
 
     def _refuse(*args: object, **kwargs: object) -> None:
         raise httpx.ConnectError("Connection refused")
 
-    monkeypatch.setattr("httpx.get", _refuse)
+    monkeypatch.setattr("httpx2.get", _refuse)
 
 
 def _token_transport(

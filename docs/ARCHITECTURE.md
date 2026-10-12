@@ -239,7 +239,7 @@ config/*.yaml (19 files)
 | rich | CLI output formatting |
 | fastapi | Dashboard REST API |
 | uvicorn | ASGI server for dashboard |
-| httpx | HTTP client for LLM providers |
+| httpx2 | HTTP client for LLM providers (imported as `httpx2 as httpx`) |
 | numpy | Array computation (ML embeddings) |
 | sentence-transformers | Local text embeddings (lazy-loaded) |
 

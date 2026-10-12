@@ -6,7 +6,7 @@ import json
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-import httpx
+import httpx2 as httpx
 import pytest
 
 from ai_company.llm.providers.base import (
@@ -81,7 +81,7 @@ def _make_openai_sse_chunks(*texts: str) -> list[str]:
 
 
 def _mock_openai_response(status_code: int = 200, body_lines: list[str] | None = None) -> MagicMock:
-    """Create a mock httpx.Response for OpenAI SSE."""
+    """Create a mock httpx2.Response for OpenAI SSE."""
     resp = MagicMock(spec=httpx.Response)
     resp.status_code = status_code
     if body_lines is None:

@@ -145,7 +145,7 @@ EXPOSE 8420
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD python -c "import httpx; httpx.get('http://localhost:8420/health').raise_for_status()"
+    CMD python -c "import httpx2; httpx2.get('http://localhost:8420/health').raise_for_status()"
 
 # Default command: start the dashboard
 CMD ["ai-company", "dashboard", "--host", "0.0.0.0", "--port", "8420", "--no-open"]
@@ -204,7 +204,7 @@ services:
       - ./.opencode:/app/.opencode
       - ./orchestrator:/app/orchestrator
     healthcheck:
-      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8420/health').raise_for_status()"]
+      test: ["CMD", "python", "-c", "import httpx2; httpx2.get('http://localhost:8420/health').raise_for_status()"]
       interval: 30s
       timeout: 5s
       retries: 3

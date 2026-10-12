@@ -118,7 +118,7 @@ class LinkedInPublisher(_BasePublisher):
         return format_linkedin(record.title, record.body)
 
     def _post(self, url: str, token: str, formatted: dict[str, Any]) -> dict[str, Any]:
-        import httpx
+        import httpx2 as httpx
 
         resp = httpx.post(
             url,
@@ -152,7 +152,7 @@ class SubstackPublisher(_BasePublisher):
         return format_substack(record.title, record.body)
 
     def _post(self, url: str, token: str, formatted: dict[str, Any]) -> dict[str, Any]:
-        import httpx
+        import httpx2 as httpx
 
         resp = httpx.post(
             url,

@@ -21,7 +21,6 @@ dependencies = [
       "python-dotenv",
       "fastapi",
       "uvicorn[standard]",
-      "httpx<0.29.0",
       # Security
       "cryptography>=42.0",
       # ML dependencies
@@ -37,6 +36,7 @@ dependencies = [
       "email-validator>=2.0",
       "apscheduler>=3.10",
       "beautifulsoup4>=4.12",
+      "httpx2>=2.12",
 ]
 
 [project.urls]

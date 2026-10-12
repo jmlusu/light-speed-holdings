@@ -73,7 +73,7 @@ def _omniroute_gateway_ok() -> bool:
     """
     import os
 
-    import httpx
+    import httpx2 as httpx
 
     url = os.environ.get("OMNIROUTE_API_BASE", "http://localhost:20128")
     try:

@@ -38,17 +38,17 @@ def tmp_workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 def _fast_network_checks(monkeypatch: pytest.MonkeyPatch) -> None:
     """Make network-dependent checks fail instantly instead of polling ports.
 
-    ``check_llm_providers`` and ``check_omniroute_health`` call ``httpx.get``
+    ``check_llm_providers`` and ``check_omniroute_health`` call ``httpx2.get``
     against local services with a 3s timeout; without a running server each
     call paid the full TCP wait. Tests that simulate reachable services
-    re-patch ``httpx.get`` themselves and override this default.
+    re-patch ``httpx2.get`` themselves and override this default.
     """
-    import httpx
+    import httpx2 as httpx
 
     def _refuse(*args: object, **kwargs: object) -> None:
         raise httpx.ConnectError("Connection refused")
 
-    monkeypatch.setattr("httpx.get", _refuse)
+    monkeypatch.setattr("httpx2.get", _refuse)
 
 
 # ---------------------------------------------------------------------------
@@ -292,7 +292,7 @@ class TestCheckLLMProviders:
         assert result.details["anthropic"]["status"] == "ok"
 
     @patch.dict("os.environ", {"OLLAMA_HOST": "http://localhost:11434"})
-    @patch("httpx.get", side_effect=Exception("connection refused"))
+    @patch("httpx2.get", side_effect=Exception("connection refused"))
     def test_ollama_unreachable(self, _mock_get):
         result = check_llm_providers()
         assert result.details["ollama"]["status"] == "unreachable"

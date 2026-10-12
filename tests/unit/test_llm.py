@@ -23,7 +23,7 @@ def _no_omniroute_ping(monkeypatch: pytest.MonkeyPatch) -> None:
     """Make LLMClient construction skip the real OmniRoute health ping.
 
     With ``OMNIROUTE_API_KEY`` set in the environment, ``LLMClient.__init__``
-    calls ``httpx.get`` against the gateway on every construction (~4s TCP
+    calls ``httpx2.get`` against the gateway on every construction (~4s TCP
     timeout). Failing fast keeps tests hermetic.
     """
     from tests.unit.conftest import patch_local_only_httpx
@@ -102,7 +102,7 @@ def test_openai_compatible_requires_api_key():
 
 
 def test_ollama_not_available_when_offline(monkeypatch: pytest.MonkeyPatch):
-    import httpx
+    import httpx2 as httpx
 
     provider = OllamaProvider(api_base="http://localhost:19999")
 
@@ -114,7 +114,7 @@ def test_ollama_not_available_when_offline(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_ollama_requires_running_server(monkeypatch: pytest.MonkeyPatch):
-    import httpx
+    import httpx2 as httpx
 
     provider = OllamaProvider(api_base="http://localhost:19999")
 
