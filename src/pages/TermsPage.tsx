@@ -17,19 +17,19 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
   {
     heading: '2. Our Services',
     paragraphs: [
-      'We provide websites, automation, reporting, digital marketing, data and analytics, agentic AI systems, and the AI Company Builder license. Scope, price, and deliverables are agreed in writing per engagement — nothing on this website is itself an offer that binds either party.',
+      'We provide websites, automation, reporting, digital marketing, data and analytics, agentic AI systems, and the AI Company Builder license. Scope, price, and deliverables are agreed in writing per engagement. Nothing on this website is itself an offer that binds either party.',
     ],
   },
   {
     heading: '3. Honesty & Claims',
     paragraphs: [
-      'We label every claim with its evidence status: Proven in-house, In pilot, Fieldable, or In development. Please treat statuses precisely as they read — we do, and we expect the same in return. If a marketing statement ever overstates what we can prove, tell us; that is a bug we will fix.',
+      'We label every claim with its evidence status: Proven in-house, In pilot, Fieldable, or In development. Please treat statuses precisely as they read. We do, and we expect the same in return. If a marketing statement ever overstates what we can prove, tell us; that is a bug we will fix.',
     ],
   },
   {
     heading: '4. Payments & Invoicing',
     paragraphs: [
-      'Local SMEs pay in Malawi Kwacha (MWK) via Airtel Money, TNM Mpamba, or bank transfer. NGO and international clients are invoiced in USD, generally net-15 with a 50% upfront payment. Every description of cost on this site includes what the deliverable actually costs to produce — we publish unit economics, not just prices.',
+      'Local SMEs pay in Malawi Kwacha (MWK) via Airtel Money, TNM Mpamba, or bank transfer. NGO and international clients are invoiced in USD, generally net-15 with a 50% upfront payment. Every description of cost on this site includes what the deliverable actually costs to produce. We publish unit economics, not just prices.',
     ],
   },
   {
@@ -65,7 +65,7 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
 ];
 
 /**
- * /legal/terms — service terms for the site and engagements.
+ * /legal/terms - service terms for the site and engagements.
  */
 export const TermsPage: React.FC<TermsPageProps> = ({ theme }) => {
   const isLight = theme === 'light';

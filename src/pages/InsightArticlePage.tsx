@@ -79,7 +79,7 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
             <p>{block.text}</p>
             {block.cite && (
               <cite className={`mt-2 block not-italic text-xs font-body font-bold tracking-wider ${bodyText}`}>
-                — {block.cite}
+                – {block.cite}
               </cite>
             )}
           </blockquote>
@@ -148,16 +148,13 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
             <div className="mt-4 grid sm:grid-cols-2 gap-4">
               {relatedSectors.map((sec) => (
                 <Reveal key={sec.id}>
-                  <Link to={`/sectors#${sec.id}`} className={cardShell}>
+                  <div className={cardShell}>
                     <div className="flex items-start justify-between gap-3">
                       <h3 className={`text-base font-black font-display ${headingText}`}>{sec.title}</h3>
                       <HonestyBadge label={sec.status} className="shrink-0" />
                     </div>
                     <p className={`text-sm leading-relaxed ${bodyText}`}>{sec.description}</p>
-                    <span className="mt-auto pt-3 inline-flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase text-ls-red">
-                      Explore <ArrowRight className="w-3 h-3" aria-hidden="true" />
-                    </span>
-                  </Link>
+                  </div>
                 </Reveal>
               ))}
             </div>
@@ -165,7 +162,7 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         </div>
       </section>
 
-      {/* §16 journey CTAs: primary "Explore Related Thinking" + secondary actions */}
+      {/* §16 related-thinking CTAs: primary "Explore Related Thinking" + secondary actions */}
       <section aria-label="Related thinking" className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-4">
         <Reveal>
           <div
@@ -210,16 +207,6 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
                 Explore Solutions
               </Link>
               <Link
-                to="/sectors"
-                className={`inline-flex items-center px-5 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all hover:bg-ls-red/10 ${
-                  isLight
-                    ? 'border-ls-grey-dark/40 text-ls-navy hover:text-ls-red'
-                    : 'border-ls-white/25 text-ls-white hover:text-ls-red'
-                }`}
-              >
-                Explore Sectors
-              </Link>
-              <Link
                 to="/contact"
                 className={`inline-flex items-center px-5 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all hover:bg-ls-red/10 ${
                   isLight
@@ -240,9 +227,7 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         theme={theme}
         links={[
           { to: '/insights', label: 'All Insights' },
-          { to: '/use-cases', label: 'Use Cases' },
           { to: '/solutions', label: 'Solutions' },
-          { to: '/sectors', label: 'Sectors' },
           { to: '/ask', label: 'Ask LightSpeed' },
         ]}
       />

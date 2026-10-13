@@ -23,9 +23,9 @@ const publicAgents: PublicAgent[] = (publicAgentsRaw as any[]).map(a => ({
 const OUT_OF_SCOPE_RE =
   /password|passphrase|api[ _-]?key|secret|credential|access token|private prompt|system prompt|internal (docs|document|documents|strategy|information|info)|confidential|source code|client (list|data|information)|unpublished|infrastructure details/i;
 
-const BOUNDARY_MESSAGE = `I can't help with that — by design. This assistant answers only from LightSpeed's published site content: solutions, sectors, proof and insights. Requests for secrets, credentials, private prompts, or internal information stay outside the public knowledge boundary.
+const BOUNDARY_MESSAGE = `I can't help with that. By design. This assistant answers only from LightSpeed's published site content: solutions, sectors, proof and insights. Requests for secrets, credentials, private prompts, or internal information stay outside the public knowledge boundary.
 
-What I can still do: map your challenge to our published capabilities. For anything else, a human will answer — pick a path below or keep typing.`;
+What I can still do: map your challenge to our published capabilities. For anything else, a human will answer. Pick a path below or keep typing.`;
 
 const agentHonestyLabel = (agent: PublicAgent): HonestyLabel => ({
   label: agent.honestyStatus.charAt(0).toUpperCase() + agent.honestyStatus.slice(1),
@@ -49,7 +49,7 @@ interface DiscoveryState {
   matchedAgents: PublicAgent[];
 }
 
-const WELCOME_MESSAGE = `Welcome to Ask LightSpeed — the interactive discovery layer for our AI Company Builder platform.
+const WELCOME_MESSAGE = `Welcome to Ask LightSpeed. The interactive discovery layer for our AI Company Builder platform.
 
 I'll help you understand which LightSpeed capabilities match your needs. Think of me as your executive briefing prep assistant.
 
@@ -58,15 +58,15 @@ To get started: what's the core challenge keeping you up at night?`;
 const PROBLEM_QUESTIONS = [
   'We need to build AI-native operations but lack the expertise',
   'Our current systems are manual and we want to automate',
-  'We need governance and compliance automation for our AI deployments — aligned with HAOMTGV pillar H: Human CEOs owning outcomes',
-  'We want to deploy AI agents across multiple departments — aligned with HAOMTGV pillar A: 90 specialized agents with canonical 7 tools',
-  'We need executive-level AI strategy and a boardroom briefing — aligned with HAOMTGV pillar O: 5-tier HITL approval matrix',
-  'We need digital presence and e-commerce with mobile money checkout — aligned with HAOMTGV pillar M: shared semantic memory system',
+  'We need governance and compliance automation for our AI deployments, aligned with HAOMTGV pillar H: Human CEOs owning outcomes',
+  'We want to deploy AI agents across multiple departments, aligned with HAOMTGV pillar A: 90 specialized agents with canonical 7 tools',
+  'We need executive-level AI strategy and a boardroom briefing, aligned with HAOMTGV pillar O: 5-tier HITL approval matrix',
+  'We need digital presence and e-commerce with mobile money checkout, aligned with HAOMTGV pillar M: shared semantic memory system',
 ];
 
 const CONTEXT_QUESTIONS = [
   { field: 'industry', label: 'Which sector best describes you?', options: ['Financial Services', 'Healthcare', 'Agriculture', 'Education', 'Government', 'Other'] },
-  { field: 'timeline', label: 'What is your target timeline?', options: ['Within 30 days', 'Within 3 months', 'Within 6 months', 'Exploring — no rush'] },
+  { field: 'timeline', label: 'What is your target timeline?', options: ['Within 30 days', 'Within 3 months', 'Within 6 months', 'Exploring, no rush'] },
 ];
 
 export const AskLightSpeed: React.FC = () => {
@@ -115,7 +115,7 @@ export const AskLightSpeed: React.FC = () => {
       const nextField = !state.industry ? 'industry' : !state.timeline ? 'timeline' : 'timeline';
       if (nextField === 'industry') {
         setState(prev => ({ ...prev, industry: userText }));
-        addMessage('assistant', `Great — ${userText}. Now, what is your target timeline?\n`);
+        addMessage('assistant', `Great, ${userText}. Now, what is your target timeline?\n`);
       } else {
         const timeline = userText;
         const matchedSolutions = matchSolutions(state.problem, userText);
@@ -142,7 +142,7 @@ export const AskLightSpeed: React.FC = () => {
         }, 500);
       }
     } else {
-      /* welcome / problem / results / cta / boundary — start a fresh discovery
+      /* welcome / problem / results / cta / boundary: start a fresh discovery
          so typed input is never a dead end (§ No dead ends). */
       const problem = PROBLEM_QUESTIONS.find(q =>
         userText.toLowerCase().includes(q.toLowerCase().split(' ').slice(0, 3).join(' '))
@@ -195,11 +195,11 @@ export const AskLightSpeed: React.FC = () => {
 
   const buildResultsText = useCallback((matched: typeof solutions, timeline: string, agentCount: number): string => {
     if (matched.length === 0 && agentCount === 0) {
-      return "I couldn't find a published capability that matches that closely — I'd rather say that than guess. Pick a next step below: start a conversation to scope it, or explore every published solution.";
+      return "I couldn't find a published capability that matches that closely. I'd rather say that than guess. Pick a next step below: start a conversation to scope it, or explore every published solution.";
     }
     let text = `Based on your inputs, I found ${matched.length} capability match${matched.length > 1 ? 'es' : ''}:\n\n`;
     matched.forEach((s, i) => {
-      text += `${i + 1}. ${s.title} — ${s.description.slice(0, 80)}...\n`;
+      text += `${i + 1}. ${s.title}. ${s.description.slice(0, 80)}...\n`;
     });
     text += `\nWith a ${timeline.toLowerCase()}, we can start with an Executive Boardroom Briefing to align on scope, then move to ${matched[0]?.title || 'deployment'}.\n`;
     if (agentCount > 0) {
@@ -215,7 +215,7 @@ export const AskLightSpeed: React.FC = () => {
     addMessage('user', question);
     setState(prev => ({ ...prev, step: 'context', problem: question }));
     setTimeout(() => {
-      addMessage('assistant', `Understanding — "${question}"\n\nWhich sector best describes your organisation?\n`);
+      addMessage('assistant', `Understood: "${question}"\n\nWhich sector best describes your organisation?\n`);
     }, 500);
   }, [addMessage, trackAskStarted]);
 
@@ -231,7 +231,7 @@ export const AskLightSpeed: React.FC = () => {
   }, [addMessage]);
 
   const handleStartConversation = useCallback(() => {
-    onRequestBriefing('Discovery via Ask LightSpeed — matched capabilities');
+    onRequestBriefing('Discovery via Ask LightSpeed, matched capabilities');
   }, [onRequestBriefing]);
 
   return (
@@ -245,7 +245,7 @@ export const AskLightSpeed: React.FC = () => {
             level="h1"
             eyebrow="INTERACTIVE DISCOVERY"
             title="Ask LightSpeed"
-            lead="Tell us your challenge. Our AI discovery layer maps it to proven capabilities, governance models, and engagement paths — all with explicit honesty badges."
+            lead="Tell us your challenge. Our AI discovery layer maps it to proven capabilities, governance models, and engagement paths, all with explicit honesty badges."
           />
         </Reveal>
 
@@ -286,7 +286,7 @@ export const AskLightSpeed: React.FC = () => {
               <strong className="text-ls-cyan">Public knowledge only.</strong> This assistant answers from
               LightSpeed&rsquo;s published site content. It cannot access secrets, credentials, private prompts,
               internal agent instructions, client information, financial data, infrastructure details, or
-              unpublished strategy — public layer in, public layer out.
+              unpublished strategy. Public layer in, public layer out.
             </span>
           </div>
 
@@ -335,7 +335,7 @@ export const AskLightSpeed: React.FC = () => {
               <p className={`text-xs font-body font-medium tracking-wider mb-3 ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>
-                Quick select — what's your core challenge?
+                Quick select: what&apos;s your core challenge?
               </p>
               <div className="flex flex-wrap gap-2">
                 {PROBLEM_QUESTIONS.map((q) => (
@@ -445,7 +445,7 @@ export const AskLightSpeed: React.FC = () => {
               </div>
               <h4 className="font-display font-black text-lg mb-2">No published match</h4>
               <p className={`text-sm mb-4 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                Nothing in our published content matches that closely — I&apos;d rather say so than guess.
+                Nothing in our published content matches that closely. I&apos;d rather say so than guess.
                 Take one of these next steps instead.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -508,7 +508,7 @@ export const AskLightSpeed: React.FC = () => {
               </div>
               <h4 className="font-display font-black text-lg mb-2">Outside the public boundary</h4>
               <p className={`text-sm mb-4 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                Ask LightSpeed answers from published content only — secrets, credentials, prompts and
+                Ask LightSpeed answers from published content only. Secrets, credentials, prompts and
                 internal information stay out. Pick a path below, or keep typing to restart discovery.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -580,7 +580,7 @@ export const AskLightSpeed: React.FC = () => {
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
               { icon: Sparkles, title: 'Structured Discovery', desc: 'Our AI discovery layer asks targeted questions to match your challenge to proven capabilities.' },
-              { icon: ShieldCheck, title: 'Honesty Guaranteed', desc: 'Every recommendation carries an explicit honesty badge — proven, pilot, fieldable, or development.' },
+              { icon: ShieldCheck, title: 'Honesty Guaranteed', desc: 'Every recommendation carries an explicit honesty badge: proven, pilot, fieldable, or development.' },
               { icon: MessageSquare, title: 'Executive Pathway', desc: 'Discovery maps directly to our engagement models: Boardroom Briefing, Architecture Sprint, Pilot, or Deployment.' },
             ].map((item, i) => (
               <div key={i} className={`p-6 rounded-2xl border ${
@@ -596,7 +596,7 @@ export const AskLightSpeed: React.FC = () => {
 
         <CtaBand
           theme={theme}
-          title={`Or Skip the Chat — ${CTAS.primary.label}`}
+          title={`Or Skip the Chat. ${CTAS.primary.label}`}
           text="If you prefer a human conversation immediately, our team responds within two business days."
         />
       </div>

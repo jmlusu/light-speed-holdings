@@ -1,7 +1,7 @@
-/* LightSpeed Holdings — Sectors Registry (MASTER_SPEC §11)
+/* LightSpeed Holdings - Sectors Registry (MASTER_SPEC §11)
    Canonical sector definitions: nine sectors, four evidence tiers.
    One canonical source per sector fact (§15). Only claim sector experience
-   where evidence exists — every sector carries an evidence tier.
+   where evidence exists - every sector carries an evidence tier.
    Source: MASTER_SPEC §11 + verified engagements (siteContent case studies). */
 
 import type { HonestyLabel, HonestyTone } from './siteContent';
@@ -33,7 +33,7 @@ export const sectorTierLegend: { tier: HonestyLabel; desc: string }[] = [
   { tier: SECTOR_TIERS.proven, desc: 'Delivered engagements with named, measurable outcomes.' },
   { tier: SECTOR_TIERS.current, desc: 'Running pilots or capability we can deploy now.' },
   { tier: SECTOR_TIERS.demonstration, desc: 'Working demonstration without a live client engagement.' },
-  { tier: SECTOR_TIERS.future, desc: 'Roadmap target — no evidence yet, and we say so.' },
+  { tier: SECTOR_TIERS.future, desc: 'Roadmap target: no evidence yet, and we say so.' },
 ];
 
 export const sectors: Sector[] = [
@@ -44,7 +44,7 @@ export const sectors: Sector[] = [
       'Digital services, compliance automation, and data-driven policy for ministries and agencies.',
     status: SECTOR_TIERS.current,
     evidence:
-      'Agent-driven student management at the University of Malawi — 3 departments onboarded, 5,000 records processed with append-only audit trails. Advisory work on Malawi\u2019s National AI Strategy consultation.',
+      'Agent-driven student management at the University of Malawi: 3 departments onboarded, 5,000 records processed with append-only audit trails. Advisory work on Malawi\u2019s National AI Strategy consultation.',
     region: ['Malawi', 'Africa'],
   },
   {
@@ -64,7 +64,7 @@ export const sectors: Sector[] = [
       'Data pipelines, reporting automation, and decision support for clinics and health systems.',
     status: SECTOR_TIERS.future,
     evidence:
-      'Offline-first, sovereignty-first architecture is designed for clinical data — but LightSpeed has no health-sector deployment yet. Listed honestly as a roadmap target.',
+      'Offline-first, sovereignty-first architecture is designed for clinical data, but LightSpeed has no health-sector deployment yet. Listed honestly as a roadmap target.',
     region: ['Malawi', 'Africa'],
   },
   {
@@ -84,7 +84,7 @@ export const sectors: Sector[] = [
       'Supply-chain intelligence, mobile-money coordination, and climate-data pipelines for rural economies.',
     status: SECTOR_TIERS.current,
     evidence:
-      'WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, with mobile-money payments and supply chain tracking — serving 1,200 members in pilot.',
+      'WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, with mobile-money payments and supply chain tracking, serving 1,200 members in pilot.',
     region: ['Malawi', 'Mozambique', 'Africa'],
   },
   {

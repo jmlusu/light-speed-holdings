@@ -41,7 +41,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
     <section id="hero" className="relative min-h-[92vh] flex flex-col justify-center pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10 w-full">
 
-        {/* Left — immersive layer over the stage */}
+        {/* Left - immersive layer over the stage */}
         <div className="lg:col-span-7 space-y-6 text-left">
           <span className={`block font-body text-[11px] font-bold tracking-widest ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
             {copy.heroEyebrow}
@@ -152,31 +152,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
 
           <div className="pt-4">
             <a
-              href="#operating-model"
+              href="#haomtgv"
               className={`group inline-flex items-center gap-2 font-body text-[11px] font-bold tracking-widest transition-colors hover:text-ls-red ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}
             >
-              <span className="sr-only">Scroll to chapter 01 — </span>
+                <span className="sr-only">Scroll to chapter 01. </span>
               <span>{copy.scrimHint}</span>
               <ArrowDown className="w-3.5 h-3.5 transition-transform group-hover:translate-y-0.5" aria-hidden="true" />
             </a>
           </div>
         </div>
 
-        {/* Right — preserved claims panel over the stage */}
+        {/* Right - preserved claims panel over the stage */}
         <div className="lg:col-span-5">
           <ScrimPanel theme={theme} blur className="space-y-5">
             <div className="space-y-3">
               <p className={`text-justify text-base sm:text-lg font-bold leading-relaxed ${
                 isLight ? 'text-ls-navy' : 'text-ls-white'
               }`}>
-                <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds AI-native companies — 90 agents, 20 departments, five-tier human approval, every decision auditable.
+                <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds AI-native companies: 90 agents, 20 departments, five-tier human approval, every decision auditable.
               </p>
               <p className={`text-justify text-xs sm:text-sm leading-relaxed ${
                 isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'
               }`}>
-                Strategy — Build — Govern — Research & Policy. We build AI-native companies with shipped work — websites, automation, reporting, and marketing — for the organizations that need them most.
+                Strategy. Build. Govern. Research & Policy. We build AI-native companies with shipped work: websites, automation, reporting, and marketing for the organizations that need them most.
               </p>
             </div>
 

@@ -41,7 +41,7 @@ const SPEC_QUESTIONS: Array<{ key: keyof SolutionCardData['spec']; label: string
 
 /**
  * One solution card answering all five MASTER_SPEC §10 questions:
- * problem, audience, changes, build, evidence — each with its honesty status.
+ * problem, audience, changes, build, evidence - each with its honesty status.
  * The card body links onward (contact / solution detail); a footer strip
  * cross-links to the sectors this solution serves, so no card dead-ends.
  */
@@ -113,7 +113,7 @@ const SolutionCard: React.FC<{
         </div>
       </Link>
 
-      {/* Sector cross-links — separate links, never nested inside the card Link */}
+      {/* Sector cross-links - separate links, never nested inside the card Link */}
       {sectors.length > 0 && (
         <div
           className={`px-6 sm:px-7 pb-5 border-t flex flex-wrap items-center gap-2 ${
@@ -128,17 +128,16 @@ const SolutionCard: React.FC<{
             WORKS IN
           </span>
           {sectors.map((s) => (
-            <Link
+            <span
               key={s.id}
-              to={`/sectors#${s.id}`}
-              className={`font-body text-[10px] font-bold px-2.5 py-1 rounded-full border transition-colors hover:border-ls-red hover:text-ls-red ${
+              className={`font-body text-[10px] font-bold px-2.5 py-1 rounded-full border ${
                 isLight
                   ? 'border-ls-grey-dark/70 text-ls-navy'
                   : 'border-ls-white/25 text-ls-white'
               }`}
             >
               {s.title}
-            </Link>
+            </span>
           ))}
         </div>
       )}
@@ -172,7 +171,7 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ theme }) => {
         theme={theme}
         eyebrow="WHAT WE DO"
         title="Solutions Built for the Work to Be Done"
-        lead="Six domains cover the arc from strategy to shipped system: agentic AI, digital transformation, data & intelligence, intelligent automation, strategy & advisory, and the governance layer that makes deployment safe. Every card answers: what problem, who it's for, what changes, what we build, and what evidence exists — each claim carries its honesty status."
+        lead="Six domains cover the arc from strategy to shipped system: agentic AI, digital transformation, data & intelligence, intelligent automation, strategy & advisory, and the governance layer that makes deployment safe. Every card answers: what problem, who it's for, what changes, what we build, and what evidence exists. Each claim carries its honesty status."
       />
 
       <section className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-8">
@@ -206,7 +205,7 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ theme }) => {
           theme={theme}
           eyebrow="HOW WE WORK"
           title="One Human CEO. A Governed Agent Workforce."
-          lead="Strategy — Build — Govern — Scale. Every engagement passes four gates (G1 discovery → G2 architecture → G3 build → G4 handover) that map to a five-tier human-approval matrix. What ships is yours: sites, data, dashboards, and agents, with 30 days of support included."
+          lead="Strategy. Build. Govern. Scale. Every engagement passes four gates (G1 discovery → G2 architecture → G3 build → G4 handover) that map to a five-tier human-approval matrix. What ships is yours: sites, data, dashboards, and agents, with 30 days of support included."
         />
         <Reveal>
           <div
@@ -221,19 +220,19 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ theme }) => {
             >
               <li className="flex items-start gap-2">
                 <span className="text-ls-red font-body font-black" aria-hidden="true">01</span>
-                G1 DISCOVERY — a governed, 5-tier-approved conversation, not a product demo.
+                G1 DISCOVERY: a governed, 5-tier-approved conversation, not a product demo.
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-ls-red font-body font-black" aria-hidden="true">02</span>
-                G2 ARCHITECTURE — target design, cost, and honesty on what we will and won't build.
+                G2 ARCHITECTURE: target design, cost, and honesty on what we will and won't build.
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-ls-red font-body font-black" aria-hidden="true">03</span>
-                G3 BUILD — 90-day pilot window, delivered against named outcomes.
+                G3 BUILD: 90-day pilot window, delivered against named outcomes.
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-ls-red font-body font-black" aria-hidden="true">04</span>
-                G4 HANDOVER — everything yours, documented, supported for 30 days.
+                G4 HANDOVER: everything yours, documented, supported for 30 days.
               </li>
             </ul>
           </div>
@@ -243,8 +242,6 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ theme }) => {
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/use-cases', label: 'Use Cases' },
-          { to: '/sectors', label: 'Sectors' },
           { to: '/insights', label: 'Insights' },
         ]}
       />

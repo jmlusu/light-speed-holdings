@@ -51,7 +51,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
         lead="LightSpeed helps organisations move from Opportunity to Continuous Improvement, a coordinated path across strategy, architecture, agents, workflows, deployment, and governance. Every step carries its honesty status."
       />
 
-      {/* The Journey */}
+      {/* How it works */}
       <section aria-labelledby="journey-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'}`}>
         <SectionHeading
           theme={theme}
@@ -82,7 +82,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
           theme={theme}
           eyebrow="PRINCIPLES"
           title="How We Build"
-          lead="Ten principles guide every decision — from agent configuration to governance design."
+          lead="Ten principles guide every decision, from agent configuration to governance design."
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {PRINCIPLES.map((principle, idx) => (

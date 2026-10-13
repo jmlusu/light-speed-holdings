@@ -42,13 +42,13 @@ export const company = {
   northStar: 'We build AI-native companies.',
   heroHeadline: 'Build the intelligent enterprise.',
   heroSubline:
-    'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems — in Malawi, across Africa and beyond.',
+    'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems, in Malawi, across Africa and beyond.',
   valueCycle: capabilityTitles,
   thesis: 'Aspire. Act. Achieve.',
 };
 
 /* ── Insights ─────────────────────────────────────────── */
-/* MASTER_SPEC §13 content categories — one canonical list (§15),
+/* MASTER_SPEC §13 content categories - one canonical list (§15),
    consumed by InsightsPage. */
 export const insightCategories: string[] = [
   'Agentic AI',
@@ -114,7 +114,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
   {
     slug: 'digital-presence',
     title: 'Digital Presence',
-    description: 'Mobile-first websites, e-commerce stores, and brand identities built for African operating realities — with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.',
+    description: 'Mobile-first websites, e-commerce stores, and brand identities built for African operating realities, with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.',
     eyebrow: 'MOBILE-FIRST DESIGN',
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
@@ -133,7 +133,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
     ],
     spec: {
       problem:
-        'Selling online in African markets requires mobile-first sites and mobile-money checkout — not foreign-card-only stores.',
+        'Selling online in African markets requires mobile-first sites and mobile-money checkout, not foreign-card-only stores.',
       audience: 'Malawian and African SMEs, retailers, and brands serving mobile-first customers.',
       changes:
         'Customers browse and pay with Airtel Money, TNM Mpamba, or PayChangu from day one.',
@@ -169,7 +169,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
       audience:
         'Operations teams in NGOs, SMEs, and public institutions that already live in WhatsApp.',
       changes:
-        'Assistants, documents, and forms move through WhatsApp-native workflows — no app downloads.',
+        'Assistants, documents, and forms move through WhatsApp-native workflows, with no app downloads.',
       builds: 'WhatsApp-native assistants, automated document pipelines, and intelligent form workflows.',
       evidence:
         'WhatsApp integration proven in-house; document automation in pilot; form workflows fieldable in 2026.',
@@ -271,7 +271,7 @@ export const GOVERNANCE_SOLUTION = {
     problem:
       'Client-facing work can ship without human sign-off, compliance gates, or an audit trail.',
     audience:
-      'Every LightSpeed engagement — and any organisation deploying agents under our governance model.',
+      'Every LightSpeed engagement, and any organisation deploying agents under our governance model.',
     changes:
       'Four mandatory gates (Contract, DPA, Compliance, Security) run before work starts; every action is SHA-256 sealed.',
     builds: '5-tier approval matrix, append-only audit trails, and expiry sweeps for pending approvals.',
@@ -348,7 +348,7 @@ export const proofPolicy = [
 
 /* ── Proof: outcomes + trust (spec §11 Evidence Tiers, §15 Proof Throughout) ──
    Every claim reuses wording already published on the site or in the claims
-   ledger — nothing invented here. `proof` drives the honesty badge at render. */
+   ledger - nothing invented here. `proof` drives the honesty badge at render. */
 export const outcomeCategories = [
   {
     id: 'oc-01',
@@ -381,7 +381,7 @@ export const trustEvidence = [
     id: 'te-01',
     title: '5-Tier Approval Matrix',
     description:
-      'Risk-tiered human approval gates govern every agent action — from fully autonomous operations through to decisions requiring named executive sign-off.',
+      'Risk-tiered human approval gates govern every agent action, from fully autonomous operations through to decisions requiring named executive sign-off.',
     proof: 'Proven in-house',
   },
   {
@@ -409,14 +409,14 @@ export const trustEvidence = [
     id: 'te-05',
     title: 'Canonical Registry Numbers',
     description:
-      'Every platform figure — 90 agents, 20 departments, the regression-test count — is read from company-registry.yaml and the test suite, never from marketing copy.',
+      'Every platform figure (90 agents, 20 departments, the regression-test count) is read from company-registry.yaml and the test suite, never from marketing copy.',
     proof: 'Proven in-house',
   },
   {
     id: 'te-06',
     title: 'Sovereign, Offline-First Operation',
     description:
-      'Local-first execution with a Zero-Cloud Boundary option for state, health and financial data — engineered for low-bandwidth environments.',
+      'Local-first execution with a Zero-Cloud Boundary option for state, health and financial data, engineered for low-bandwidth environments.',
     proof: 'Proven in-house',
   },
 ];

@@ -20,13 +20,11 @@ const COLUMNS: FooterColumn[] = [
       { name: 'What We Do', to: '/what-we-do' },
       { name: 'AI Company Builder', to: '/ai-company-builder' },
       { name: 'Solutions', to: '/solutions' },
-      { name: 'Sectors', to: '/sectors' },
     ],
   },
   {
-    heading: 'USE CASES & INSIGHTS',
+    heading: 'INSIGHTS & ABOUT',
     links: [
-      { name: 'Use Cases', to: '/use-cases' },
       { name: 'Insights', to: '/insights' },
       { name: 'About', to: '/about' },
       { name: 'FAQ', to: '/#faq' },
@@ -79,7 +77,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
             </div>
           </div>
           <p className={`mt-4 max-w-sm text-xs leading-relaxed ${textCls}`}>
-            LightSpeed Holdings Limited builds and governs agentic AI systems for organizations — AI-native companies that ship.
+            LightSpeed Holdings Limited builds and governs agentic AI systems for organizations. AI-native companies that ship.
           </p>
         </div>
 

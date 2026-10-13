@@ -89,7 +89,7 @@ export const PublicAgentRegistry: React.FC<PublicAgentRegistryProps> = ({ theme 
               Public Agent Registry
             </h2>
             <p className="mt-1 text-sm opacity-70">
-              {totalVisible} of 90 agents — governed, auditable, human-led
+              {totalVisible} of 90 agents, governed, auditable, human-led
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">

@@ -1,12 +1,12 @@
 {
   "version": "1.0",
-  "description": "Canonical CTA registry per Directive §34. Single primary CTA, secondary, and contextual CTAs — no random alternation.",
+  "description": "Canonical CTA registry per Directive §34. Single primary CTA, secondary, and contextual CTAs, no random alternation.",
   "lastUpdated": "2026-10-05",
   "ctas": {
     "primary": {
       "label": "START A CONVERSATION",
       "to": "/contact",
-      "description": "Primary conversion CTA — every high-intent button funnels here",
+      "description": "Primary conversion CTA: every high-intent button funnels here",
       "variant": "primary",
       "usage": "Hero sections, final CTA bars, high-intent conversion points"
     },
@@ -59,9 +59,9 @@
     "rules": [
       "Primary CTA (START A CONVERSATION) must be visually dominant on every high-intent conversion point",
       "Secondary CTA (REQUEST AN AI READINESS ASSESSMENT) used for assessment-focused entry points",
-      "Contextual CTAs used only in their designated contexts — never as generic replacements",
-      "Retired phrasing must not return — enforce via lint/check",
-      "CTA labels are canonical — do not vary capitalization, wording, or punctuation",
+      "Contextual CTAs used only in their designated contexts, never as generic replacements",
+      "Retired phrasing must not return; enforce via lint/check",
+      "CTA labels are canonical; do not vary capitalization, wording, or punctuation",
       "All CTAs route to /contact except contextual exploration CTAs which route to their respective sections"
     ]
   }
