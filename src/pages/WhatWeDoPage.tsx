@@ -92,7 +92,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                 <span className="font-body text-xs font-black tracking-widest text-ls-red uppercase">02 // INTEGRATION GAPS</span>
                 <h3 className="mt-3 text-lg font-bold font-display tracking-tight">Disconnected from Local Rails</h3>
                 <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  Generic software assumes credit cards and gigabit fiber. Regional workflows depend on Airtel Money, TNM Mpamba, PayChangu, and offline-tolerant network resilience.
+                  Generic software assumes credit cards and gigabit fiber. Regional workflows depend on Airtel Money, TNM Mpamba, PayChangu, and apps that keep working when the network drops.
                 </p>
               </div>
             </div>
@@ -125,7 +125,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
           theme={theme}
           eyebrow="LIGHTSPEED'S APPROACH"
           title="The Governed Agentic Workforce"
-          lead="We combine radical unit economics with executive accountability. Work is executed across 20 specialized AI agent departments, governed by strict human approval gates."
+          lead="Work is priced in MWK and USD with published rates, then executed across 20 specialized AI agent departments. Every high-impact decision waits for human approval before it ships."
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           <div
@@ -158,7 +158,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
             <CheckCircle2 className="w-6 h-6 text-ls-red mb-3" />
             <h4 className="font-bold text-base font-display">Transparent Fixed Pricing</h4>
             <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Published unit economics in both MWK and USD with clear turnaround SLAs and zero hidden consultancies markups.
+              Published unit economics in both MWK and USD, with clear turnaround SLAs and every markup disclosed before you sign.
             </p>
           </div>
         </div>
@@ -384,7 +384,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
             <span className="text-2xl font-black font-body text-ls-red">G1</span>
             <h4 className="mt-2 text-base font-bold font-display">Discovery &amp; Contract</h4>
             <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Governed executive alignment on goals, deliverables, and unit pricing. Zero ambiguity before signing.
+              Agree on goals, deliverables, and unit pricing with your executives before anything is signed.
             </p>
           </div>
           <div
@@ -406,7 +406,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
             <span className="text-2xl font-black font-body text-ls-red">G3</span>
             <h4 className="mt-2 text-base font-bold font-display">Build &amp; Pilot Sprint</h4>
             <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Rapid execution through agentic workforce, gated by regression tests and human approval checkpoints.
+              Agents build in parallel under regression tests, with a human approving each checkpoint before work moves on.
             </p>
           </div>
           <div

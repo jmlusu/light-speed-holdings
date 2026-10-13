@@ -22,7 +22,7 @@ const JOURNEY_STEPS = [
   { num: '06', title: 'Deployment', desc: 'Ship working systems with append-only audit trails, circuit breakers, and 30 days of included support.' },
   { num: '07', title: 'Governance', desc: 'Establish the five-tier approval matrix, risk classification, and expiry sweeps that make autonomy safe.' },
   { num: '08', title: 'Measurement', desc: 'Track outcomes, cost, and quality. Every metric traces to a canonical source, never invented.' },
-  { num: '09', title: 'Continuous Improvement', desc: 'Scale what works, retire what does not. The system learns, adapts, and improves under human oversight.' },
+  { num: '09', title: 'Continuous Improvement', desc: 'Scale what works, retire what does not. A human CEO reviews the results each cycle and decides what changes.' },
 ];
 
 const PRINCIPLES = [
@@ -57,7 +57,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
           theme={theme}
           eyebrow="THE PATH"
           title="Opportunity to Continuous Improvement"
-          lead="From initial diagnosis to scaled deployment and beyond, nine connected phases ensure every step is governed, measured, and progressive."
+          lead="Nine connected phases take you from diagnosis through scaled deployment. Every step is governed, measured, and carries its honesty status."
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {JOURNEY_STEPS.map((step, idx) => (
@@ -106,7 +106,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
           theme={theme}
           eyebrow="OPERATING MODEL"
           title="90 Agents, 1 Human CEO"
-          lead="The canonical LightSpeed operating model uses 90 AI agents across 20 departments. Each agent has explicit role definitions, approval thresholds, and five-tier human oversight. High-impact decisions require human sign-off."
+          lead="The canonical LightSpeed operating model uses 90 AI agents across 20 departments. Each agent has explicit role definitions, approval thresholds, and five-tier human approval. High-impact decisions require human sign-off."
         />
         <div className={`rounded-3xl p-8 sm:p-10 border shadow-xl ${
           isLight ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy' : 'bg-ls-navy border-ls-white/15 text-ls-white'

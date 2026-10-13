@@ -85,7 +85,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
      eyebrow: 'AI OPERATING MODEL',
      proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
      honestyBadge: 'Fieldable in 2026' as const,
-     oneLiner: '90 AI agents, 1 human CEO, zero excuses.',
+      oneLiner: '90 AI agents. One human CEO. Every action signed off before it ships.',
      nav: 'AI Company Builder',
      lead: 'Build governed AI companies with 90 agents and 1 human CEO.',
     capabilities: [
@@ -118,7 +118,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
     eyebrow: 'MOBILE-FIRST DESIGN',
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
-    oneLiner: 'African operating realities-first digital presence.',
+      oneLiner: 'Websites and stores that work on African networks and payment rails.',
     nav: 'Digital Presence',
     lead: 'Mobile-first websites and e-commerce built for African operating realities.',
     capabilities: [
@@ -183,7 +183,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
     eyebrow: 'SCALED DEPLOYMENT',
     proof: { label: 'In pilot', tone: 'pilot' as const },
     honestyBadge: 'In pilot' as const,
-    oneLiner: 'Enterprise-grade agent deployment.',
+      oneLiner: 'Agents across every department, gated by RBAC and human approval.',
     nav: 'Enterprise Deployment',
     lead: 'Full-scale AI agent deployment with RBAC and governance.',
     capabilities: [
@@ -244,7 +244,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
 export const GOVERNANCE_SOLUTION = {
   title: 'The Governance Solution',
   description: 'LightSpeed Holdings implements a 5-tier human-in-the-loop approval system where no client-facing deliverable ships without human sign-off. The platform enforces 4 mandatory governance gates (Contract, DPA, Compliance, Security) before any engagement begins. Every action is recorded on an append-only audit trail with SHA-256 seals.',
-  lead: 'The governance layer that makes deployment safe',
+  lead: 'The human sign-off layer that makes agent deployment safe',
   proof: { label: 'Proven in-house', tone: 'proven' as const },
   keyPrinciples: [
     'Agents execute; human CEO owns outcome',
