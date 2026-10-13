@@ -86,11 +86,11 @@ Four self-selection cards. Labels are the visitor's own words, not ours.
 | O | ORCHESTRATION | Deterministic routing of data, tasks and decisions across workflows. |
 | M | MEMORY | Persistent contextual data storage across long-running tasks. |
 | T | TOOLS | Isolated execution environments for API integrations and actions. |
-| G | GOVERNANCE | Five-tier approval controls and immutable logging. |
+| G | GOVERNANCE | Five-tier approval controls and append-only sealed logging. |
 | V | VALUE | Measurable reductions in cost and operational latency. |
 
 **Caption:** Status: PROVEN IN-HOUSE - this is LightSpeed's own architecture, running LightSpeed.
-<!-- src: claims-registry claim.agent-count, claim.five-tier-approval, claim.immutable-audit-trails (all PROVEN_IN_HOUSE) -->
+<!-- src: claims-registry claim.agent-count, claim.five-tier-approval, claim.append-only-audit-trails (all PROVEN_IN_HOUSE) -->
 
 ---
 
@@ -102,11 +102,11 @@ Four self-selection cards. Labels are the visitor's own words, not ours.
 
 **Headline:** Build. Govern. Scale.
 
-**Body:** A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable - no client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and immutable SHA-256 sealed audit trails for every action.
+**Body:** A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable - no client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and append-only SHA-256 sealed audit trails for every action.
 <!-- src: faq-registry faq-02 -->
 
 **Status:** FIELDABLE - governance layers (5-tier approval, 4 gates, SHA-256 audit trails) PROVEN IN-HOUSE.
-<!-- src: siteContent.ts solutions[0].proof "Fieldable in 2026"; claims-registry claim.five-tier-approval / claim.four-governance-gates / claim.immutable-audit-trails (PROVEN_IN_HOUSE) -->
+<!-- src: siteContent.ts solutions[0].proof "Fieldable in 2026"; claims-registry claim.five-tier-approval / claim.four-governance-gates / claim.append-only-audit-trails (PROVEN_IN_HOUSE) -->
 
 **CTA:** EXPLORE AI COMPANY BUILDER -> `/ai-company-builder`
 <!-- src: cta-registry contextual; Directive §34 -->
@@ -271,7 +271,7 @@ A sector exists here because it is a strategic target. Each carries an explicit 
 - **5-Tier Approval Matrix** - Risk-tiered human approval on every agent action: Auto -> Lead -> Executive -> CEO -> Board, with expiry sweeps so stale approvals never queue forever. [PROVEN IN-HOUSE]
 <!-- src: claims-registry claim.five-tier-approval; siteContent.ts trustEvidence te-01 -->
 - **SHA-256 Sealed Audit Trails** - Append-only JSONL records of prompts, tool invocations, outputs, approval decisions and escalations. Tamper-evident, never overwritten. [PROVEN IN-HOUSE]
-<!-- src: claims-registry claim.immutable-audit-trails; siteContent.ts trustEvidence te-02 -->
+<!-- src: claims-registry claim.append-only-audit-trails; siteContent.ts trustEvidence te-02 -->
 - **Four Mandatory Governance Gates** - Contract, DPA, Compliance and Security reviews run before work begins. [PROVEN IN-HOUSE]
 <!-- src: claims-registry claim.four-governance-gates; siteContent.ts trustEvidence te-03 -->
 - **RBAC With 90-Day Key Rotation** - Admin, approve and run roles separated; API keys rotate every 90 days and on suspected compromise. [PROVEN IN-HOUSE]

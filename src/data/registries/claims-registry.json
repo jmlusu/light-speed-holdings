@@ -59,7 +59,7 @@
       "expiryDate": "2026-12-28"
     },
     {
-      "id": "claim.immutable-audit-trails",
+      "id": "claim.append-only-audit-trails",
       "text": "Every agent action generates an append-only SHA-256 sealed JSONL audit trail.",
       "classification": "PROVEN_IN_HOUSE",
       "evidenceRef": "company-registry.yaml (audit trail references); src/data/siteContent.ts (trustEvidence te-02); src/data/governance.ts",
@@ -132,7 +132,7 @@
     },
     {
       "id": "claim.university-malawi-student-management",
-      "text": "Agent-driven student management at University of Malawi — 3 departments onboarded, 5,000 records processed with immutable audit trails under GDPR-level protection.",
+      "text": "Agent-driven student management at University of Malawi — 3 departments onboarded, 5,000 records processed with append-only SHA-256 sealed audit trails under GDPR-level protection.",
       "classification": "PILOT",
       "evidenceRef": "src/data/siteContent.ts (useCaseStudies ws-03, outcomeCategories oc-03); src/data/sectors.ts (government-public-sector evidence)",
       "owner": "consulting-lead",
