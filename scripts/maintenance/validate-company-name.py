@@ -13,9 +13,9 @@ This script is designed to be called from a pre-commit hook or CI/CD pipeline.
 It exits with code 1 if old name patterns are found, code 0 if the check passes.
 """
 
+import os
 import re
 import sys
-import os
 from pathlib import Path
 
 # Configuration ────────────────────────────────────────────────────────
@@ -101,11 +101,7 @@ def main() -> int:
 
         for dirpath, dirnames, filenames in os.walk(scan_dir):
             # Apply exempt directory filtering
-            dirnames[:] = [
-                d
-                for d in dirnames
-                if d not in EXEMPT_DIRS
-            ]
+            dirnames[:] = [d for d in dirnames if d not in EXEMPT_DIRS]
 
             for filename in filenames:
                 filepath = Path(dirpath) / filename
@@ -148,7 +144,9 @@ def main() -> int:
             for v in violations:
                 # Sanitize matched text for ASCII-safe display (PowerShell 5.1 compat)
                 matched_safe = v["matched"].encode("ascii", errors="replace").decode("ascii")
-                matched_short = matched_safe[:95] + "..." if len(matched_safe) > 95 else matched_safe
+                matched_short = (
+                    matched_safe[:95] + "..." if len(matched_safe) > 95 else matched_safe
+                )
                 print(f"      Line {v['line']}: {matched_short}")
                 print(f"            Pattern: {v['pattern']}")
 
