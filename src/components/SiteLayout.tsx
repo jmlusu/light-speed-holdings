@@ -6,6 +6,8 @@ import { ExecutiveBriefingModal } from './ExecutiveBriefingModal';
 import { useSite } from '../site-context';
 import { trackJourneyEvent, stageForRoute } from '../hooks/useJourneyEvents';
 import { scrollToHash } from '../hooks/useSmoothScroll';
+import { getInsightArticle } from '../data/insights';
+import { applyPageMeta } from '../lib/seo';
 
 export const SiteLayout: React.FC = () => {
   const { pathname, hash } = useLocation();
@@ -22,7 +24,19 @@ export const SiteLayout: React.FC = () => {
   }, [pathname]);
 
   useEffect(() => {
-    document.title = `LIGHTSPEED HOLDINGS | ${pathname === '/' ? 'AI-Native Company Builder' : pathname.replace('/', '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`;
+    const articleMatch = pathname.match(/^\/insights\/([^/]+)\/?$/);
+    const article = articleMatch ? getInsightArticle(articleMatch[1]) : undefined;
+
+    if (article?.seo) {
+      applyPageMeta({
+        title: article.seo.title,
+        description: article.seo.description,
+        type: 'article',
+        url: window.location.origin + pathname,
+      });
+    } else {
+      document.title = `LIGHTSPEED HOLDINGS | ${pathname === '/' ? 'AI-Native Company Builder' : pathname.replace('/', '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`;
+    }
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (hash) {
