@@ -18,7 +18,7 @@ LightSpeed Holdings Limited combines human leadership, intelligent agents, gover
 
 ## 2. What is the AI Company Builder?
 
-A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable — no client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and immutable SHA-256 sealed audit trails for every action.
+A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable — no client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and append-only SHA-256 sealed audit trails for every action.
 
 <!-- src: faq-registry#faq-02, Directive section 18, Q2 -->
 
@@ -42,7 +42,7 @@ No. Agents execute tasks; people own outcomes. Every engagement runs through 5-t
 
 ## 6. What is H-A-O-M-T-G-V?
 
-H-A-O-M-T-G-V is LightSpeed's core intellectual and architectural framework: H — HUMAN (operational intent and final decision authority); A — AGENTS (90 specialized operating roles: 89 AI agents + 1 Human CEO); O — ORCHESTRATION (deterministic routing of data, tasks, and decisions across workflows); M — MEMORY (persistent contextual data storage across long-running tasks); T — TOOLS (isolated execution environments for API integrations and actions); G — GOVERNANCE (five-tier approval controls and immutable logging); V — VALUE (measurable reductions in cost and operational latency). The Human layer remains above the system; Value is the business outcome.
+H-A-O-M-T-G-V is LightSpeed's core intellectual and architectural framework: H — HUMAN (operational intent and final decision authority); A — AGENTS (90 specialized operating roles: 89 AI agents + 1 Human CEO); O — ORCHESTRATION (deterministic routing of data, tasks, and decisions across workflows); M — MEMORY (persistent contextual data storage across long-running tasks); T — TOOLS (isolated execution environments for API integrations and actions); G — GOVERNANCE (five-tier approval controls and append-only sealed logging); V — VALUE (measurable reductions in cost and operational latency). The Human layer remains above the system; Value is the business outcome.
 
 <!-- src: faq-registry#faq-06, Directive section 18, Q6 -->
 
@@ -54,7 +54,7 @@ Every agent action is risk-classified and routed through a 5-tier approval matri
 
 ## 8. What does five-tier governance mean?
 
-Five-tier governance means every consequential action passes through a risk-classified approval chain with five levels of human oversight (Auto → Lead → Executive → CEO → Board), four mandatory governance gates (Contract, Data Processing Agreement, Compliance Review, Security Assessment) before work begins, immutable audit trails for every action, and expiry sweeps that prevent stale approvals from blocking work indefinitely. It ensures accountability at every level.
+Five-tier governance means every consequential action passes through a risk-classified approval chain with five levels of human oversight (Auto → Lead → Executive → CEO → Board), four mandatory governance gates (Contract, Data Processing Agreement, Compliance Review, Security Assessment) before work begins, append-only SHA-256 sealed audit trails for every action, and expiry sweeps that prevent stale approvals from blocking work indefinitely. It ensures accountability at every level.
 
 <!-- src: faq-registry#faq-08, Directive section 18, Q8 -->
 

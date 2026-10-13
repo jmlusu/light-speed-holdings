@@ -14,16 +14,16 @@
 
 **Eyebrow:** AI OPERATING MODEL
 **Status:** PROVEN IN-HOUSE
-<!-- src: claims-registry claim.agent-count, claim.five-tier-approval, claim.immutable-audit-trails (PROVEN_IN_HOUSE); use-case-registry uc-meta, fow-01 (PROVEN IN-HOUSE) -->
+<!-- src: claims-registry claim.agent-count, claim.five-tier-approval, claim.append-only-audit-trails (PROVEN_IN_HOUSE); use-case-registry uc-meta, fow-01 (PROVEN IN-HOUSE) -->
 
-**Description:** Build governed multi-agent orchestration platforms where AI agents execute specialized roles across departments, with human CEO oversight, immutable audit trails, and deterministic routing.
+**Description:** Build governed multi-agent orchestration platforms where AI agents execute specialized roles across departments, with human CEO oversight, append-only SHA-256 sealed audit trails, and deterministic routing.
 <!-- src: solution-registry.json description (verbatim) -->
 
 **Capabilities:**
 
 - Multi-Agent Orchestration (90 agents, 20 departments)
 - 5-Tier Human-in-the-Loop Approval Matrix
-- Immutable SHA-256 Sealed Audit Trails
+- Append-Only SHA-256 Sealed Audit Trails
 - Agent Registry & Role Definitions
 - Model Routing (Local/Open-Weight -> Premium)
 - Memory & Context Persistence
@@ -173,7 +173,7 @@
 
 **Eyebrow:** GOVERNANCE & POLICY
 **Status:** PROVEN IN-HOUSE
-<!-- src: claims-registry claim.five-tier-approval, claim.four-governance-gates, claim.immutable-audit-trails, claim.rbac-key-rotation, claim.ai-ethics-board-review (all PROVEN_IN_HOUSE) -->
+<!-- src: claims-registry claim.five-tier-approval, claim.four-governance-gates, claim.append-only-audit-trails, claim.rbac-key-rotation, claim.ai-ethics-board-review (all PROVEN_IN_HOUSE) -->
 
 **Description:** Establish controls, architecture, policies, standards, risk management, and decision rights for responsible AI adoption - aligned with Malawi DPA, SADC frameworks, and AU Continental AI Strategy.
 <!-- src: solution-registry.json description (verbatim) -->
@@ -182,7 +182,7 @@
 
 - 5-Tier Risk-Classified Approval Matrix
 - 4 Governance Gates (Contract, DPA, Compliance, Security)
-- Immutable Audit Trails with Expiry Sweeps
+- Append-Only Audit Trails with Expiry Sweeps
 - RBAC with 90-Day Key Rotation
 - AI Ethics Board Review (Tier 3+)
 - SADC/AU Policy Framework Alignment

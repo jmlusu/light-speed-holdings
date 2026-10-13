@@ -51,7 +51,7 @@ MEASURE
 | GOVERN | Five-tier approval, four governance gates, SHA-256 audit trails, RBAC - governance from day one, not bolted on. | [PROVEN IN-HOUSE] controls that make deployment safe. |
 | MEASURE | Outcomes measured against the assessment baseline and reported - never asserted in marketing copy. | Evidence: what changed, what it cost, what to do next. |
 
-<!-- src: faq-registry faq-18 (stage duration + governance from day one), faq-28 (research and policy built into engagements), faq-19 (honest "no" on engagement), claims-registry claim.five-tier-approval / claim.four-governance-gates / claim.immutable-audit-trails (PROVEN_IN_HOUSE) -->
+<!-- src: faq-registry faq-18 (stage duration + governance from day one), faq-28 (research and policy built into engagements), faq-19 (honest "no" on engagement), claims-registry claim.five-tier-approval / claim.four-governance-gates / claim.append-only-audit-trails (PROVEN_IN_HOUSE) -->
 <!-- §23 note: stage durations are commitments from faq-registry, not invented ranges. Measurement values are TBD until Phase 0 validation - see value-metric TODO below. -->
 
 ---
@@ -82,7 +82,7 @@ Establish controls, architecture, policies, standards, risk management, security
 <!-- src: capabilities.ts title/description verbatim -->
 
 **Covers:** governance - policy - AI governance & policy solution family - five-tier approval, four governance gates, SHA-256 audit trails as the reference implementation. [PROVEN IN-HOUSE]
-<!-- src: Directive §15 "Include" list; claims-registry claim.five-tier-approval, claim.four-governance-gates, claim.immutable-audit-trails (PROVEN_IN_HOUSE) -->
+<!-- src: Directive §15 "Include" list; claims-registry claim.five-tier-approval, claim.four-governance-gates, claim.append-only-audit-trails (PROVEN_IN_HOUSE) -->
 
 ### 4. RESEARCH & POLICY
 

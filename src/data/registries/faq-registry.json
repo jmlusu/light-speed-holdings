@@ -11,7 +11,7 @@
     {
       "id": "faq-02",
       "question": "What is the AI Company Builder?",
-      "answer": "A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable — no client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and immutable SHA-256 sealed audit trails for every action."
+      "answer": "A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable — no client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and append-only SHA-256 sealed audit trails for every action."
     },
     {
       "id": "faq-03",
@@ -31,7 +31,7 @@
     {
       "id": "faq-06",
       "question": "What is H-A-O-M-T-G-V?",
-      "answer": "H-A-O-M-T-G-V is LightSpeed's core intellectual and architectural framework: H — HUMAN (operational intent and final decision authority); A — AGENTS (90 specialized operating roles: 89 AI agents + 1 Human CEO); O — ORCHESTRATION (deterministic routing of data, tasks, and decisions across workflows); M — MEMORY (persistent contextual data storage across long-running tasks); T — TOOLS (isolated execution environments for API integrations and actions); G — GOVERNANCE (five-tier approval controls and immutable logging); V — VALUE (measurable reductions in cost and operational latency). The Human layer remains above the system; Value is the business outcome."
+      "answer": "H-A-O-M-T-G-V is LightSpeed's core intellectual and architectural framework: H — HUMAN (operational intent and final decision authority); A — AGENTS (90 specialized operating roles: 89 AI agents + 1 Human CEO); O — ORCHESTRATION (deterministic routing of data, tasks, and decisions across workflows); M — MEMORY (persistent contextual data storage across long-running tasks); T — TOOLS (isolated execution environments for API integrations and actions); G — GOVERNANCE (five-tier approval controls and append-only sealed logging); V — VALUE (measurable reductions in cost and operational latency). The Human layer remains above the system; Value is the business outcome."
     },
     {
       "id": "faq-07",
@@ -41,7 +41,7 @@
     {
       "id": "faq-08",
       "question": "What does five-tier governance mean?",
-      "answer": "Five-tier governance means every consequential action passes through a risk-classified approval chain with five levels of human oversight (Auto → Lead → Executive → CEO → Board), four mandatory governance gates (Contract, Data Processing Agreement, Compliance Review, Security Assessment) before work begins, immutable audit trails for every action, and expiry sweeps that prevent stale approvals from blocking work indefinitely. It ensures accountability at every level."
+      "answer": "Five-tier governance means every consequential action passes through a risk-classified approval chain with five levels of human oversight (Auto → Lead → Executive → CEO → Board), four mandatory governance gates (Contract, Data Processing Agreement, Compliance Review, Security Assessment) before work begins, append-only SHA-256 sealed audit trails for every action, and expiry sweeps that prevent stale approvals from blocking work indefinitely. It ensures accountability at every level."
     },
     {
       "id": "faq-09",
