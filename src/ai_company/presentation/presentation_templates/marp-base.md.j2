@@ -1,0 +1,42 @@
+---
+marp: true
+paginate: true
+theme: default
+_class: lead
+---
+
+# {{ thesis }}
+
+{{ narrative }}
+
+---
+# Deck Type: {{ deck_type }}
+## {{ generated }}
+
+{% for slide in slides %}
+---
+# Slide {{ slide.slide_number }}: {{ slide.title }}
+
+{% if slide.bullets %}
+## Bullets
+{% for bullet in slide.bullets %}
+- {{ bullet }}
+{% endfor %}
+{% endif %}
+
+{% if slide.speaker_notes %}
+## Speaker Notes
+> {{ slide.speaker_notes | replace('\n', '\n> ') }}
+{% endif %}
+
+{% if slide.kpi_cards %}
+## KPI Cards
+{% for card in slide.kpi_cards %}
+- **{{ card.value }}** {{ card.label }} ({{ card.unit }})
+{% endfor %}
+{% endif %}
+
+---
+{% endfor %}
+
+{{ slide_count }} slides generated on {{ generated }}.

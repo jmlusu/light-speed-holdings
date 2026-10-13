@@ -1,7 +1,6 @@
 import React from 'react';
 import { HeroSection } from '../components/HeroSection';
 import {
-  ChapterRail,
   HAOMTGVSection,
   AICompanyBuilderSection,
   WorkforceSection,
@@ -24,8 +23,6 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
     {/* MASTER_SPEC §19 static fallback: mist/slate backdrop in a zero-z layer;
         content uses z-10 so it stacks above the fixed bg. */}
     <div className="fixed inset-0 z-0 pointer-events-none bg-[#F7F8F9] dark:bg-[#121518]" aria-hidden="true" />
-
-    <ChapterRail theme={theme} />
 
     <div className="relative z-10 lg:pl-16">
       {/* 1. Orientation + 2. Core Proposition */}
