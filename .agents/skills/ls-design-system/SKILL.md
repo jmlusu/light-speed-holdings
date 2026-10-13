@@ -24,8 +24,8 @@ pick it up.
 
 | Asset | Canonical path | Mirror copy |
 |-------|----------------|-------------|
-| Brand tokens (JSON) | `brand/tokens/brand-tokens.json` | `static/brand/tokens/brand-tokens.json` |
-| Brand tokens (CSS) | `brand/tokens/brand-tokens.css` | `static/brand/tokens/brand-tokens.css` |
+| Brand tokens (JSON) | `brand/tokens/brand-tokens.json` | **canonical-only — not mirrored** (deleted 2026-10-13; loaded once via `src/index.css`) |
+| Brand tokens (CSS) | `brand/tokens/brand-tokens.css` | **canonical-only — not mirrored** (deleted 2026-10-13; loaded once via `src/index.css`) |
 | Brand guidelines (this system) | `brand/guidelines/brand-guidelines.md` | `static/brand/guidelines/brand-guidelines.md` |
 | Quick reference | `brand/CANONICAL_SOURCES.md` | `static/brand/BRAND_GUIDELINES.md` |
 | Logo suite | `brand/logos/**` | `static/brand/logos/**` |
