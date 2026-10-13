@@ -3,7 +3,7 @@
  *
  * Route: /use-cases/:slug  (Directive §9 / §11)
  * Renders a single use case from the canonical registry.
- * Data source matches UseCasesPage (@lightspeed/data/use-cases).
+ * Data source matches UseCasesPage (../data/use-cases/registry).
  */
 
 import React from 'react';
@@ -12,10 +12,10 @@ import { ArrowLeft } from 'lucide-react';
 import { PageContainer } from '../layouts/PageContainer';
 import { Section, Heading, Text, Badge, Stack, Button, tokens } from '@lightspeed/design-system';
 import type { BadgeVariant } from '@lightspeed/design-system';
-import { useCasesRegistry } from '@lightspeed/data/use-cases';
-import type { UseCaseStatus } from '@lightspeed/data/use-cases';
-import { sectorsRegistry } from '@lightspeed/data/sectors';
-import { solutionsRegistry } from '@lightspeed/data/solutions';
+import { useCasesRegistry } from '../data/use-cases/registry';
+import type { UseCaseStatus } from '../data/use-cases/registry';
+import { sectorsRegistry } from '../data/sectors/registry';
+import { solutionsRegistry } from '../data/solutions/registry';
 type AnyUseCase = {
   slug: string;
   title: string;
@@ -45,6 +45,10 @@ const STATUS_BADGE_VARIANTS: Record<UseCaseStatus, BadgeVariant> = {
   FIELDABLE: 'fieldable',
   FUTURE: 'neutral',
 };
+
+// JSON stores "PROVEN IN-HOUSE" (spaces); badge map keys use underscores.
+const normalizeStatus = (status: string): UseCaseStatus =>
+  status.replace(/ /g, '_') as UseCaseStatus;
 
 const statusLabel = (status: UseCaseStatus): string =>
   status.replace(/_/g, ' ');
@@ -130,8 +134,8 @@ export const UseCaseDetailPage: React.FC = () => {
           </Link>
 
           <Stack direction="horizontal" gap={2} wrap style={{ marginBottom: tokens.spacing[4] }}>
-            <Badge variant={STATUS_BADGE_VARIANTS[useCase.status]}>
-              {statusLabel(useCase.status)}
+            <Badge variant={STATUS_BADGE_VARIANTS[normalizeStatus(useCase.status)]}>
+              {statusLabel(normalizeStatus(useCase.status))}
             </Badge>
             {toStringArray(useCase.sector).map((id) => (
               <Badge key={id} variant="neutral">{sectorTitle(id)}</Badge>
