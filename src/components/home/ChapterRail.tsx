@@ -7,7 +7,7 @@ interface ChapterRailProps {
 }
 
 /**
- * Fixed left chapter rail (01–07). Tracks the active chapter with a scroll
+ * Fixed left chapter rail (01–06). Tracks the active chapter with a scroll
  * spy: the active chapter is the last one whose top has crossed 40% of the
  * viewport — robust for short sections and the un-tracked About band (which
  * keeps the previous chapter lit). A brief click-lock (500ms) holds the

@@ -427,7 +427,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/proof', label: 'Proof' },
+          { to: '/use-cases', label: 'Use Cases' },
           { to: '/solutions', label: 'Solutions' },
           { to: '/sectors', label: 'Sectors' },
         ]}

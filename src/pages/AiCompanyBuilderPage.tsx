@@ -19,7 +19,7 @@ export const AiCompanyBuilderPage: React.FC<AiCompanyBuilderPageProps> = ({ them
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/proof#metrics', label: 'Proof' },
+          { to: '/use-cases', label: 'Use Cases' },
           { to: '/insights', label: 'Insights' },
           { to: '/solutions', label: 'Solutions' },
         ]}

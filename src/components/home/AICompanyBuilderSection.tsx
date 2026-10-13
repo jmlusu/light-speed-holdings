@@ -36,7 +36,7 @@ const JOURNEY_STEPS = [
     id: 'govern',
     num: '05',
     title: 'Govern',
-    description: 'Operate under five-tier human approval, immutable audit trails, and continuous compliance monitoring.',
+    description: 'Operate under five-tier human approval, append-only audit trails, and ongoing compliance monitoring.',
   },
   {
     id: 'measure',
@@ -66,13 +66,13 @@ export const AICompanyBuilderSection: React.FC<AICompanyBuilderSectionProps> = (
       <SectionHeading
         theme={theme}
         eyebrow="AI COMPANY BUILDER"
-        title="From Opportunity to Governed AI Workforce"
-        lead="LightSpeed helps organizations move from strategy to a shipped, auditable AI operating model — not a prototype, not a pilot, but a governed system that runs on your infrastructure."
+        title="From AI Opportunity to Governed Implementation"
+        lead="LightSpeed helps organizations move from AI opportunity to a governed operating model — not a prototype, not a pilot, but a system that runs on your infrastructure with human decision points, auditable execution, and room to grow."
       />
       <div className="space-y-12">
         {/* Journey Steps */}
         <div>
-          <h3 className={`font-body text-[10px] font-bold tracking-widest text-ls-red mb-6 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
+          <h3 className={`font-body text-[10px] font-bold tracking-widest mb-6 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
             THE TRANSFORMATION JOURNEY
           </h3>
           <div className="relative">
@@ -101,7 +101,7 @@ export const AICompanyBuilderSection: React.FC<AICompanyBuilderSectionProps> = (
 
         {/* Principles */}
         <div className="pt-4">
-          <h3 className={`font-body text-[10px] font-bold tracking-widest text-ls-red mb-6 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
+          <h3 className={`font-body text-[10px] font-bold tracking-widest mb-6 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
             GOVERNING PRINCIPLES
           </h3>
           <div className="flex flex-wrap gap-2">

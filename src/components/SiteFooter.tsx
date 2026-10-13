@@ -24,9 +24,9 @@ const COLUMNS: FooterColumn[] = [
     ],
   },
   {
-    heading: 'PROOF & INSIGHTS',
+    heading: 'USE CASES & INSIGHTS',
     links: [
-      { name: 'Proof', to: '/proof' },
+      { name: 'Use Cases', to: '/use-cases' },
       { name: 'Insights', to: '/insights' },
       { name: 'About', to: '/about' },
       { name: 'FAQ', to: '/#faq' },

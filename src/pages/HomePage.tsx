@@ -2,12 +2,11 @@ import React from 'react';
 import { HeroSection } from '../components/HeroSection';
 import {
   ChapterRail,
-  OperatingModelSection,
+  HAOMTGVSection,
   AICompanyBuilderSection,
   WorkforceSection,
   SolutionsSection,
-  SectorsSection,
-  ProofSection,
+  UseCasesSection,
   InsightsSection,
   AboutSection,
   BriefingSection,
@@ -22,9 +21,9 @@ interface HomePageProps {
 
 export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) => (
   <div className="relative">
-    {/* MASTER_SPEC §19 static fallback: mist/slate backdrop occupies the same
-        fixed negative-z layer the WebGL stage used to paint. */}
-    <div className="fixed inset-0 z-[-1] pointer-events-none bg-[#F7F8F9] dark:bg-[#121518]" aria-hidden="true" />
+    {/* MASTER_SPEC §19 static fallback: mist/slate backdrop in a zero-z layer;
+        content uses z-10 so it stacks above the fixed bg. */}
+    <div className="fixed inset-0 z-0 pointer-events-none bg-[#F7F8F9] dark:bg-[#121518]" aria-hidden="true" />
 
     <ChapterRail theme={theme} />
 
@@ -33,23 +32,21 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       <HeroSection theme={theme} onRequestBriefing={onRequestBriefing} />
       {/* §8 Routing: three major visitor pathways */}
       <VisitorPathsSection theme={theme} />
-      {/* 3. Operating Model: Strategy → Build → Govern → Research & Policy */}
-      <OperatingModelSection theme={theme} />
-      {/* 4. AI Company Builder: Opportunity → Design → Build → Deploy → Govern → Measure */}
-      <AICompanyBuilderSection theme={theme} />
-      {/* 5. 90-Agent Workforce */}
-      <WorkforceSection theme={theme} />
-      {/* 6. Solutions: Practical Business Outcomes */}
+      {/* 3. H-A-O-M-T-G-V operating philosophy */}
+      <HAOMTGVSection theme={theme} />
+      {/* 4. Solutions: Practical Business Outcomes */}
       <SolutionsSection theme={theme} />
-      {/* 7. Sectors: Where We Apply It */}
-      <SectorsSection theme={theme} />
-      {/* 8. Proof: Verified Operating Metrics */}
-      <ProofSection theme={theme} />
-      {/* 9. Insights: Pharos Thought Leadership */}
+      {/* 5. AI Company Builder: Opportunity → Design → Build → Deploy → Govern → Measure */}
+      <AICompanyBuilderSection theme={theme} />
+      {/* 6. 90-Agent Workforce */}
+      <WorkforceSection theme={theme} />
+      {/* 7. Sectors + Use Cases (combined, evidence-status vocabulary) */}
+      <UseCasesSection theme={theme} />
+      {/* 8. Insights: Pharos thought leadership */}
       <InsightsSection theme={theme} />
-      {/* 10. About: Mission, Values, What We Promise Whom */}
+      {/* 9. About: Mission, Values, What We Promise Whom */}
       <AboutSection theme={theme} />
-      {/* 11. FAQ: Straight answers (footer link target /#faq) */}
+      {/* 10. FAQ: Straight answers (footer link target /#faq) */}
       <FaqSection theme={theme} id="faq" />
       {/* CTA: Start a Conversation */}
       <BriefingSection theme={theme} />

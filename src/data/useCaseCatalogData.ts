@@ -30,7 +30,7 @@ export const CATALOG_METHOD = {
       description: "Every engagement must clear Contract (G1), Data Processing Agreement (G2), Compliance Review (G3), and Security Assessment (G4) before work begins."
     },
     {
-      title: "Immutable Audit Trails",
+      title: "Append-Only Audit Trails",
       description: "Every action generates an append-only JSONL audit event — correlated, queryable, and never overwritten. Every approval is gated; every escalation documented."
     },
     {
@@ -416,7 +416,7 @@ export const PLATFORM_SCENARIOS: CatalogPlatformScenario[] = [
     code: "FOW-04",
     title: "Non-Profit Operations",
     subtitle: "Full Capability with Minimal Staff",
-    description: "A small non-profit gets coverage across finance, HR, compliance, M&E, and donor communications. Immutable audit trails provide the exact documentation grantmakers require. Supports local Ollama models for zero-API-cost deployment.",
+    description: "A small non-profit gets coverage across finance, HR, compliance, M&E, and donor communications. Append-only audit trails provide the exact documentation grantmakers require. Supports local Ollama models for zero-API-cost deployment.",
     honestyBadge: "In active development",
     targetAudience: "Local NGOs, community cooperatives, and international grant recipients."
   },
@@ -476,7 +476,7 @@ export const CATALOG_PROOF_POINTS: CatalogProofPoint[] = [
     honestyBadge: "Proven in-house",
     badgeType: "proven",
     description: "LightSpeed Holdings Limited is its own first customer. The company runs on the same 90-agent, 20-department orchestration platform offered to clients. CEO directs strategy; 90 AI agents handle operations.",
-    whatItMonitorsOrProves: "Proves 5-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls operate daily in production.",
+    whatItMonitorsOrProves: "Proves 5-tier HITL approvals, append-only audit trails, RACI matrices, and governance controls operate daily in production.",
     whyItMatters: "Not a prototype or slide deck — an operating company that builds and relies on the exact software it licenses."
   },
   {

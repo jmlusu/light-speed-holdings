@@ -44,7 +44,7 @@ export const sectors: Sector[] = [
       'Digital services, compliance automation, and data-driven policy for ministries and agencies.',
     status: SECTOR_TIERS.current,
     evidence:
-      'Agent-driven student management at the University of Malawi — 3 departments onboarded, 5,000 records processed with immutable audit trails. Advisory work on Malawi\u2019s National AI Strategy consultation.',
+      'Agent-driven student management at the University of Malawi — 3 departments onboarded, 5,000 records processed with append-only audit trails. Advisory work on Malawi\u2019s National AI Strategy consultation.',
     region: ['Malawi', 'Africa'],
   },
   {
@@ -123,7 +123,7 @@ export const sectors: Sector[] = [
     description:
       'AI-native operating models, agentic workflows, and governance frameworks for tech firms.',
     status: SECTOR_TIERS.proven,
-    evidence: `The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and immutable audit trails verified by ${liveTestCount.toLocaleString('en-US')} automated regression tests.`,
+    evidence: `The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and append-only audit trails verified by ${liveTestCount.toLocaleString('en-US')} automated regression tests.`,
     region: ['Malawi', 'Africa', 'Global'],
   },
 ];

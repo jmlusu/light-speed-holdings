@@ -467,14 +467,14 @@ export const AskLightSpeed: React.FC = () => {
                   Explore All Solutions
                 </Link>
                 <Link
-                  to="/proof"
+                  to="/use-cases"
                   className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all cursor-pointer ${
                     isLight
                       ? 'border-ls-grey-dark text-ls-navy hover:bg-ls-grey-light'
                       : 'border-ls-white/25 text-ls-white hover:bg-ls-white/5'
                   }`}
                 >
-                  Verify Our Proof
+                  View Use Cases
                 </Link>
               </div>
             </div>
@@ -530,14 +530,14 @@ export const AskLightSpeed: React.FC = () => {
                   Explore Solutions
                 </Link>
                 <Link
-                  to="/proof"
+                  to="/use-cases"
                   className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all cursor-pointer ${
                     isLight
                       ? 'border-ls-grey-dark text-ls-navy hover:bg-ls-grey-light'
                       : 'border-ls-white/25 text-ls-white hover:bg-ls-white/5'
                   }`}
                 >
-                  Verify Our Proof
+                  View Use Cases
                 </Link>
               </div>
             </div>
