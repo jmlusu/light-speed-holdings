@@ -1000,57 +1000,21 @@ def reassign_agent_reports_to(
         raise HTTPException(status_code=400, detail="reports_to is too long")
     new_manager = stripped_manager
 
-    # Load registry through StateStore (same path as _load_registry)
-    registry = _load_json("company/agent-registry.json")
-    if not registry:
-        raise HTTPException(status_code=404, detail="Agent registry not found")
+    # Route the mutation through the registry write seam (registry/writer.py):
+    # it validates against the YAML source of truth, updates the YAML, then
+    # regenerates agent files and syncs company/agent-registry.json. Never
+    # write company/agent-registry.json directly — it is derived output.
+    from ai_company.registry.writer import set_reports_to
 
-    # Validate target manager exists (skip self-assignment check for virtual root)
-    agent_names = {a.get("name") for a in registry}
-    if new_manager != "__root__" and new_manager not in agent_names:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Manager '{new_manager}' not found in registry",
-        )
-
-    # Prevent self-assignment
-    if agent_name == new_manager:
-        raise HTTPException(status_code=400, detail="Agent cannot report to itself")
-
-    # Detect cycles: walk up from new_manager via reportsTo; if we reach agent_name, it's a cycle
-    manager_map = {a.get("name"): a.get("reportsTo", "") for a in registry}
-    visited: set[str] = set()
-    cursor = new_manager
-    while cursor and cursor not in visited:
-        if cursor == agent_name:
-            raise HTTPException(status_code=400, detail="Reassignment would create a cycle")
-        visited.add(cursor)
-        cursor = manager_map.get(cursor, "")
-
-    # Find and update agent
-    # Registry uses camelCase keys (reportsTo), so update that field
-    updated = False
-    for agent in registry:
-        if agent.get("name") == agent_name:
-            agent["reportsTo"] = new_manager
-            updated = True
-            break
-
-    if not updated:
-        raise HTTPException(status_code=404, detail=f"Agent '{agent_name}' not found")
-
-    # Save registry through StateStore
-    _save_json("company/agent-registry.json", registry)
-
-    # Regenerate agents
     try:
-        from ai_company.generator import AgentGenerator
-
-        AgentGenerator().generate_all()
-    except Exception as e:  # noqa: BLE001 - regeneration is best-effort
-        logger.warning("Agent regeneration failed: %s", e)
-
-    return {"ok": True, "agent": agent_name, "reports_to": new_manager}
+        return set_reports_to(agent_name, new_manager)
+    except ValueError as e:
+        detail = str(e)
+        if "not found" in detail:
+            raise HTTPException(status_code=404, detail=detail) from e
+        raise HTTPException(status_code=400, detail=detail) from e
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e)) from e
 
 
 # ── Tasks ───────────────────────────────────────────────────────────

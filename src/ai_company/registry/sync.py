@@ -136,6 +136,11 @@ def verify_sync(
 ) -> list[str]:
     """Verify YAML and JSON registries are in sync.
 
+    Fast path: compares agent name sets. If the name sets match, a deep
+    field-by-field compare runs: every JSON agent must equal the output of
+    _agent_yaml_to_json() for its YAML source. This catches drift the name-set
+    check alone misses (e.g. a directly-edited reportsTo).
+
     Returns a list of error strings. Empty list means they are in sync.
     """
     errors: list[str] = []
@@ -151,9 +156,12 @@ def verify_sync(
     yaml_agents = data.get("company", {}).get("agents", []) if isinstance(data, dict) else data
     if not isinstance(yaml_agents, list):
         yaml_agents = []
+    yaml_agents = [a for a in yaml_agents if isinstance(a, dict)]
 
     with open(json_path, "r", encoding="utf-8") as f:
         json_agents = json.load(f)
+    if not isinstance(json_agents, list):
+        json_agents = []
 
     yaml_ids = set(a.get("id", "").replace("_", "-") for a in yaml_agents)
     json_names = set(a.get("name", "") for a in json_agents)
@@ -165,6 +173,27 @@ def verify_sync(
         errors.append(f"Agents in YAML but not in JSON ({len(missing)}): {sorted(missing)}")
     if extra:
         errors.append(f"Agents in JSON but not in YAML ({len(extra)}): {sorted(extra)}")
+        # Name sets differ — a field-level diff would just restate the same
+        # add/remove facts. Stop here; the next verify after re-sync will deep-compare.
+        return errors
+
+    # Deep compare: every JSON agent must match its transformed YAML source.
+    expected_by_name = {j.get("name", ""): j for j in (_agent_yaml_to_json(a) for a in yaml_agents)}
+    actual_by_name = {a.get("name", ""): a for a in json_agents}
+
+    for name in sorted(expected_by_name):
+        expected = expected_by_name[name]
+        actual = actual_by_name.get(name)
+        if actual is None:
+            continue  # already reported by the name-set check
+        for field in sorted(set(expected) | set(actual)):
+            exp_val = expected.get(field)
+            act_val = actual.get(field)
+            if exp_val != act_val:
+                errors.append(
+                    f"Agent '{name}' field '{field}' drift: "
+                    f"YAML expects {exp_val!r}, JSON has {act_val!r}"
+                )
 
     return errors
 

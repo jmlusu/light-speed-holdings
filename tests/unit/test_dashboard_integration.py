@@ -52,15 +52,82 @@ def setup_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     Rebinds the dashboard ``StateStore`` singleton to ``tmp_path`` so all
     state I/O is rooted at the isolated workspace — independent of the
     current working directory (fixes the ``relative_to`` path bug).
+
+    Also writes a minimal ``company-registry.yaml`` (the source of truth for
+    the registry write seam) matching the JSON agents, and stubs
+    ``AgentGenerator.generate_all`` so the write pipeline does not require
+    Jinja templates under ``tmp_path``.
+
+    The ``lru_cache`` in ``ai_company.registry.loader`` caches YAML loads
+    by Path, so we clear it after changing CWD to avoid stale cache hits.
     """
+
+    import yaml as _yaml
+
     from ai_company.dashboard.repository import get_state_store, reset_state_store
+    from ai_company.registry.loader import _parse_yaml_cached
 
     monkeypatch.chdir(tmp_path)
     reset_state_store()
     get_state_store(tmp_path)
+    _parse_yaml_cached.cache_clear()
 
     # Company directory
     (tmp_path / "company").mkdir()
+
+    # YAML source-of-truth registry (underscored ids, snake_case fields).
+    # Mirrors the JSON agents below so set_reports_to() validation succeeds.
+    yaml_registry = {
+        "company": {
+            "agents": [
+                {
+                    "id": "human_ceo",
+                    "name": "Human CEO",
+                    "role": "Human CEO",
+                    "type": "human",
+                    "department": "Executive",
+                    "reports_to": "board",
+                    "description": "Sets vision and culture",
+                },
+                {
+                    "id": "chief_of_staff",
+                    "name": "Chief of Staff",
+                    "role": "Chief of Staff",
+                    "type": "executive",
+                    "department": "Executive",
+                    "reports_to": "human_ceo",
+                    "direct_reports": ["lead_engineering", "lead_marketing"],
+                    "description": "Coordinates all departments",
+                },
+                {
+                    "id": "lead_engineering",
+                    "name": "Lead Engineer",
+                    "role": "Lead Engineer",
+                    "type": "specialist",
+                    "department": "Engineering",
+                    "reports_to": "chief_of_staff",
+                    "direct_reports": [],
+                    "description": "Leads engineering efforts",
+                },
+                {
+                    "id": "lead_marketing",
+                    "name": "Marketing Lead",
+                    "role": "Marketing Lead",
+                    "type": "specialist",
+                    "department": "Marketing",
+                    "reports_to": "chief_of_staff",
+                    "direct_reports": [],
+                    "description": "Leads marketing efforts",
+                },
+            ]
+        }
+    }
+    (tmp_path / "company-registry.yaml").write_text(
+        _yaml.dump(yaml_registry, default_flow_style=False, sort_keys=False),
+        encoding="utf-8",
+    )
+
+    # JSON derived registry (camelCase) — read by GET endpoints via StateStore.
     registry = [
         {
             "name": "chief-of-staff",
@@ -93,6 +160,12 @@ def setup_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     (tmp_path / "company" / "agent-registry.json").write_text(
         json.dumps(registry), encoding="utf-8"
     )
+
+    # Stub AgentGenerator.generate_all — templates/output dirs live under the
+    # real repo, not tmp_path; the writer calls it after every successful write.
+    from ai_company.generator import AgentGenerator
+
+    monkeypatch.setattr(AgentGenerator, "generate_all", lambda self, **kw: [])
 
     # Departments
     departments = {
