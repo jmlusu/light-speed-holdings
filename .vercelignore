@@ -45,10 +45,15 @@ uv.lock
 /knowledge/
 /prompts/
 /proposal-deliverables/
-/scripts/
-# vercel.json ignoreCommand runs `bash scripts/deploy/vercel-ignore-build.sh`
-# in the .vercelignore-filtered context — the script MUST be re-included or
-# every deployment fails at the ignore step with ENOENT (exit 127).
+# scripts/ is excluded as a tree, but the ignoreCommand filter script MUST
+# survive (vercel.json -> bash scripts/deploy/vercel-ignore-build.sh).
+# gitignore cannot re-include a file under an EXCLUDED directory, so the
+# parent chain is un-excluded one level at a time and only the single file
+# is let back in. Deleting this pattern regresses every deploy to ENOENT
+# exit 127 at the ignore step (incident 2026-10-12, c9cecc05 + 2927304d).
+/scripts/*
+!/scripts/deploy/
+/scripts/deploy/*
 !/scripts/deploy/vercel-ignore-build.sh
 /survey/
 /tasks/
