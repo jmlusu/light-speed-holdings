@@ -41,7 +41,7 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
   {
     heading: '6. Confidentiality & Security',
     paragraphs: [
-      'We apply a strict non-disclosure posture to client information by default. Our systems enforce least-privilege access, immutable audit trails, and human approval on consequential actions. We treat client data as if it were our own, and we are transparent the moment something goes wrong.',
+      'We apply a strict non-disclosure posture to client information by default. Our systems enforce least-privilege access, append-only SHA-256 sealed audit trails, and human approval on consequential actions. We treat client data as if it were our own, and we are transparent the moment something goes wrong.',
     ],
   },
   {
