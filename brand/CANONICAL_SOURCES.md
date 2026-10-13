@@ -1,7 +1,7 @@
 # LightSpeed Brand — Canonical Sources Registry
 
 **Owner:** Brand Strategist | **Maintainer:** Chief of Staff
-**Last updated:** 2026-10-05 (Ticket #309 / Website Transformation Directive, Phase 2)
+**Last updated:** 2026-10-13 (cleanup-plan §6: token mirrors deleted; tokens are canonical-only)
 
 ## The Rule
 
@@ -26,7 +26,6 @@ digital masters.
 | `static/brand/logos/**` | Runtime builds, image imports (legacy) | `brand/logos/**` |
 | `static/brand/print/**` | Print asset copies | `brand/print/**` |
 | `static/brand/guidelines/**` | Guideline copies | `brand/guidelines/**` |
-| `static/brand/tokens/**` | Token copies | `brand/tokens/**` |
 | `static/brand/digital/**` | Digital asset copies | `brand/digital/**` |
 | `public/brand/**` | Website media root (`/brand/...`) | `brand/**` (mirror of root) |
 
@@ -41,8 +40,8 @@ Mirror-only content that has no canonical source (kept in mirrors):
 | Asset | Canonical path | Notes |
 |-------|----------------|-------|
 | **New logo system (Directive §6)** | `brand/logo/**` | 8 variants (`logo-full`, `logo-dark-bg`, `logo-light-bg`, `logo-mark`, `logo-mark-mono`, `logo-favicon`, `logo-avatar`, `logo-og`) in SVG + PNG. Canonical public brand mark. |
-| Design tokens (JSON) | `brand/tokens/brand-tokens.json` | Full palette, type scale, spacing, logo specs |
-| Design tokens (CSS) | `brand/tokens/brand-tokens.css` | Web/runtime variables |
+| Design tokens (JSON) | `brand/tokens/brand-tokens.json` | Full palette, type scale, spacing, logo specs. Canonical-only — **not mirrored** (loaded once via `src/index.css`). |
+| Design tokens (CSS) | `brand/tokens/brand-tokens.css` | Web/runtime variables. Canonical-only — **not mirrored**. |
 | Brand guidelines | `brand/guidelines/brand-guidelines.md` | Human-readable system |
 | Logo suite (legacy, deprecated) | `brand/logos/fulllogo/**`, `brand/logos/icononly/**`, `brand/logos/grayscale/**`, `brand/logos/textonly/**` | Official legacy files only; kept until site references migrate to `brand/logo/`. Never recreate. |
 | Archived logo explorations | `.archive/brand/logos/**` | Style explorations (Glassmorphism, Skeuomorphism, Analog Nostalgia, icononly experiments) removed from `brand/logos/` + mirrors on 2026-10-05. Historical only. |
@@ -60,7 +59,8 @@ pwsh scripts/build/sync-brand.ps1 -Prune   # delete mirror-only files in sync di
 pwsh scripts/build/sync-brand.ps1 -Verify  # hash-compare mirrors vs canonical (exit 1 on drift)
 ```
 
-Sync dirs: `logo`, `tokens`, `guidelines`, `logos`, `print`, `digital`.
+Sync dirs: `logo`, `guidelines`, `logos`, `print`, `digital`.
+(`tokens` removed from sync dirs 2026-10-13 — do not re-create `public|static/brand/tokens/`.)
 
 Run after adding/changing any canonical asset, then verify with
 `git status` that the mirrors picked up the change.

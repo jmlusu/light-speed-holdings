@@ -82,10 +82,10 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     id: 'registry.services',
     state: 'published',
     owner: 'consulting-lead',
-    source: 'src/data/useCaseCatalogData.ts (OFFER_FAMILIES)',
+    source: 'src/data/offerFamilies.ts (OFFER_FAMILIES)',
     category: 'outcome',
     evidence:
-      'CATALOG_POSITIONING.honestyClassification: nothing delivered to paying clients; offers carry honesty-ladder badges.',
+      'Honesty classification (CATALOG_POSITIONING, retired with useCaseCatalogData.ts 2026-10-13): nothing delivered to paying clients; offers carry honesty-ladder badges — see siteContent.ts trustEvidence and faqs.proven-clients.',
     lastReviewed: '2026-09-28',
   },
   {
@@ -111,7 +111,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     source: 'src/data/siteContent.ts (proofCaseStudies, proofPolicy)',
     category: 'outcome',
     evidence:
-      'CATALOG_POSITIONING.honestyClassification: case studies are fieldable/pilot work, not delivered client outcomes.',
+      'Honesty classification (CATALOG_POSITIONING, retired 2026-10-13): case studies are fieldable/pilot work, not delivered client outcomes — see siteContent.ts proofCaseStudies honesty badges.',
     lastReviewed: '2026-09-28',
   },
   {
@@ -128,7 +128,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     owner: 'cto',
     source: 'src/data/metrics.ts',
     category: 'scale',
-    evidence: 'liveTestCount verified by uv run pytest; legacyPytestCount is an intentional audit trail.',
+    evidence: 'liveTestCount verified by uv run pytest --collect-only -q (2026-10-13).',
     lastReviewed: '2026-09-28',
   },
   {
@@ -196,7 +196,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     id: 'claim.payment-rails',
     state: 'published',
     owner: 'coo',
-    source: 'src/data/useCaseCatalogData.ts (CATALOG_METHOD.sovereignty)',
+    source: 'src/data/siteContent.ts (solutions digital-presence capabilities); src/data/governance.ts (claim.payment-rails)',
     category: 'partnership',
     evidence: 'Airtel Money, TNM Mpamba, and PayChangu integration described as platform capability, not a client win.',
     lastReviewed: '2026-09-28',
@@ -205,7 +205,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     id: 'claim.no-paying-clients',
     state: 'published',
     owner: 'ceo',
-    source: 'src/data/useCaseCatalogData.ts (CATALOG_POSITIONING.honestyClassification)',
+    source: 'src/data/siteContent.ts (faqs proven-clients, trustEvidence); src/data/faqs.ts',
     category: 'client',
     evidence: 'Honesty statement: no work delivered to paying clients; all offers fieldable, piloting, or in development.',
     lastReviewed: '2026-09-28',

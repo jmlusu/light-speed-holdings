@@ -30,10 +30,8 @@ export const metrics = {
   caseStudyMeta: 3,
 };
 
-/* Legacy 2,557 pytest count — retained for audit trail; see LEGACY_INVENTORY.md:51. */
-export const legacyPytestCount = 2557;
-
-/* The "2,566" live count verified after Step 1 strip (HeroSection, UseCasesSection,
-   SectorsPage).  All new display code must use `metrics.testCount`
-   (17) or `metrics.agentCount` (90) rather than hard‑coded numbers. */
-export const liveTestCount = 2566;
+/* Live pytest collection count (uv run pytest --collect-only -q, 2026-10-13).
+   Display code must use `metrics.testCount` (vitest, 17) or `metrics.agentCount`
+   (90) rather than this number; this is the Python suite size for the hero
+   "passing tests" figure. */
+export const liveTestCount = 2586;

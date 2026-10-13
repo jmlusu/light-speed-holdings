@@ -33,11 +33,11 @@
     },
     {
       "id": "claim.test-count",
-      "text": "The platform is verified by 2,566 automated regression tests.",
+      "text": "The platform is verified by 2,586 automated regression tests.",
       "classification": "PROVEN_IN_HOUSE",
-      "evidenceRef": "src/data/metrics.ts (liveTestCount: 2566); uv run pytest output",
+      "evidenceRef": "src/data/metrics.ts (liveTestCount: 2586); uv run pytest --collect-only -q (2026-10-13)",
       "owner": "cto",
-      "lastVerified": "2026-09-28",
+      "lastVerified": "2026-10-13",
       "expiryDate": "2026-12-28"
     },
     {
@@ -53,7 +53,7 @@
       "id": "claim.four-governance-gates",
       "text": "Four mandatory governance gates (Contract, DPA, Compliance, Security) run before any engagement begins.",
       "classification": "PROVEN_IN_HOUSE",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_METHOD.governancePillars); src/data/siteContent.ts (trustEvidence te-03); src/data/governance.ts",
+      "evidenceRef": "src/data/siteContent.ts (trustEvidence te-03); src/data/governance.ts",
       "owner": "clo",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -89,7 +89,7 @@
       "id": "claim.sovereign-offline-first",
       "text": "Local-first execution with Zero-Cloud Boundary option for state, health, and financial data — engineered for low-bandwidth environments.",
       "classification": "PROVEN_IN_HOUSE",
-      "evidenceRef": "src/data/siteContent.ts (trustEvidence te-06); src/data/useCaseCatalogData.ts (CATALOG_METHOD.sovereignty); company-registry.yaml (model_tier, local infra)",
+      "evidenceRef": "src/data/siteContent.ts (trustEvidence te-06); company-registry.yaml (model_tier, local infra)",
       "owner": "caio",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -98,7 +98,7 @@
       "id": "claim.mobile-money-integration",
       "text": "Platform integrates with Malawi payment rails: Airtel Money, TNM Mpamba, and PayChangu.",
       "classification": "FIELDABLE",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_METHOD.sovereignty); src/data/siteContent.ts (solutions digital-presence capabilities); src/data/governance.ts (claim.payment-rails)",
+      "evidenceRef": "src/data/siteContent.ts (solutions digital-presence capabilities); src/data/governance.ts (claim.payment-rails)",
       "owner": "coo",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -107,7 +107,7 @@
       "id": "claim.no-paying-clients",
       "text": "No work has been delivered to paying clients; all offers are fieldable in 2026, in pilot, or in active development.",
       "classification": "VERIFIED",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_POSITIONING.honestyClassification); src/data/governance.ts (claim.no-paying-clients); src/data/siteContent.ts (faqs proven-clients)",
+      "evidenceRef": "src/data/governance.ts (claim.no-paying-clients); src/data/siteContent.ts (faqs proven-clients); src/data/faqs.ts",
       "owner": "ceo",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -125,7 +125,7 @@
       "id": "claim.agricultural-cooperative-pilot",
       "text": "WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique serving 1,200 members in pilot with mobile-money payments and supply chain tracking.",
       "classification": "PILOT",
-      "evidenceRef": "src/data/siteContent.ts (useCaseStudies ws-02, outcomeCategories oc-02); src/data/sectors.ts (agriculture evidence); src/data/useCaseCatalogData.ts (CATALOG_INDUSTRIES agri)",
+      "evidenceRef": "src/data/siteContent.ts (useCaseStudies ws-02, outcomeCategories oc-02); src/data/sectors.ts (agriculture evidence)",
       "owner": "consulting-lead",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -143,7 +143,7 @@
       "id": "claim.js-stopover-bar-live",
       "text": "J&S StopOver Bar — a real, non-tech SME in Malawi running agentic decision support for inventory, sales, cash reconciliation, procurement, and profitability.",
       "classification": "LIVE",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_USE_CASES uc-js-bar); src/data/siteContent.ts (SME sector honestyNote)",
+      "evidenceRef": "src/data/registries/use-case-registry.json (uc-js-bar); src/data/siteContent.ts (SME sector honestyNote)",
       "owner": "consulting-lead",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -152,7 +152,7 @@
       "id": "claim.chichewa-ai-piloting",
       "text": "Chichewa-language foundation for farmer advisory, citizen-query, and public-service agents being built via piloting initiative with Ministry of Agriculture.",
       "classification": "PILOT",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_INDUSTRIES agri keyUseCases, CATALOG_USE_CASES uc-chichewa-pilot); src/data/sectors.ts (agriculture honestyNote)",
+      "evidenceRef": "src/data/registries/use-case-registry.json (uc-chichewa-pilot); src/data/sectors.ts (agriculture honestyNote)",
       "owner": "caio",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -161,7 +161,7 @@
       "id": "claim.sadc-governance-framework",
       "text": "SADC Agentic AI Governance Framework authored by CEO Jack Mlusu and submitted to digital ministers, MACRA, CRASA, central banks, and regional development banks — aligned with AU Continental AI Strategy.",
       "classification": "DEMONSTRATION",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_POLICIES policy-sadc-framework); src/data/sectors.ts (government-public-sector honestyNote)",
+      "evidenceRef": "src/data/sectors.ts (government-public-sector honestyNote); retired CATALOG_POLICIES policy-sadc-framework (useCaseCatalogData.ts, see git history)",
       "owner": "ceo",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -170,7 +170,7 @@
       "id": "claim.national-ai-strategy-submission",
       "text": "Formal stakeholder submission to Malawi Dept of E-Government / UNDP Inclusive Digital Transformation project advocating for governing agentic AI alongside generative AI.",
       "classification": "VERIFIED",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_POLICIES policy-national-ai)",
+      "evidenceRef": "retired CATALOG_POLICIES policy-national-ai (useCaseCatalogData.ts, see git history)",
       "owner": "ceo",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -179,7 +179,7 @@
       "id": "claim.university-capacity-building",
       "text": "Training and certification programs in partnership with Malawian universities (MUBAS, UNIMA) to build sovereign agentic-AI talent pipeline.",
       "classification": "DEMONSTRATION",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_POLICIES policy-capacity-building); src/data/sectors.ts (education honestyNote)",
+      "evidenceRef": "src/data/sectors.ts (education honestyNote); retired CATALOG_POLICIES policy-capacity-building (useCaseCatalogData.ts, see git history)",
       "owner": "thought-leadership-lead",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -188,7 +188,7 @@
       "id": "claim.9-llm-providers",
       "text": "9 LLM providers configured including free local Ollama models for budget-constrained deployments.",
       "classification": "PROVEN_IN_HOUSE",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_METHOD.sovereignty); company-registry.yaml (llm_platform_owner, model_tier fields)",
+      "evidenceRef": "company-registry.yaml (llm_platform_owner, model_tier fields); src/data/siteContent.ts (trustEvidence te-06)",
       "owner": "caio",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -197,7 +197,7 @@
       "id": "claim.ai-ethics-board-review",
       "text": "Tier 3+ deliverables require AI Ethics Board review before delivery.",
       "classification": "PROVEN_IN_HOUSE",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_METHOD.governancePillars[5]); company-registry.yaml (ai_ethics_board_chair)",
+      "evidenceRef": "src/data/siteContent.ts (trustEvidence te-03 governance gates); company-registry.yaml (ai_ethics_board_chair)",
       "owner": "ai-ethics-board-chair",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -206,7 +206,7 @@
       "id": "claim.board-governance-cadence",
       "text": "Governance cadence: Weekly standup → bi-weekly product review → monthly management board review → quarterly strategy session → annual refresh.",
       "classification": "PROVEN_IN_HOUSE",
-      "evidenceRef": "src/data/useCaseCatalogData.ts (CATALOG_METHOD.governancePillars[4]); src/data/siteContent.ts (useCasePolicy wp-04)",
+      "evidenceRef": "src/data/siteContent.ts (useCasePolicy wp-04)",
       "owner": "chief-of-staff",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
@@ -215,7 +215,7 @@
       "id": "claim.data-protection-act-compliance",
       "text": "Malawi Data Protection Act 2017/2024 compliance is the default posture for all engagements; GDPR-level handling applies for donor and UN data flows.",
       "classification": "PROVEN_IN_HOUSE",
-      "evidenceRef": "src/data/siteContent.ts (useCasePolicy wp-01); src/data/useCaseCatalogData.ts (CATALOG_METHOD.sovereignty)",
+      "evidenceRef": "src/data/siteContent.ts (useCasePolicy wp-01); company-registry.yaml (data-protection fields)",
       "owner": "clo",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"

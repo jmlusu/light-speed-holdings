@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "Canonical use case registry per Directive §11. Consolidated from siteContent.ts (outcomeCategories, trustEvidence, useCaseStudies) and useCaseCatalogData.ts (CATALOG_USE_CASES, PLATFORM_SCENARIOS, CATALOG_INDUSTRIES).",
+  "description": "Canonical use case registry per Directive §11. Consolidated from siteContent.ts (outcomeCategories, trustEvidence, useCaseStudies) and the retired useCaseCatalogData.ts (CATALOG_USE_CASES, PLATFORM_SCENARIOS, CATALOG_INDUSTRIES — see git history).",
   "lastUpdated": "2026-10-05",
   "useCases": [
     {
