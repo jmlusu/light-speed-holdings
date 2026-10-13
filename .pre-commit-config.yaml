@@ -116,14 +116,14 @@ repos:
         pass_filenames: false
         files: '^(\.vercelignore|vite\.config\.ts|scripts/test/check-vercelignore\.py|data/[^/]+/registry\.ts)$'
         stages: [pre-commit]
-# Ruf: lint templates â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ â ¬ 
+ # Ruff: lint templates
   # Catches logic errors in generator scripts (like the tuple-vs-string bug
   # that surfaced in generate-pitch-deck.py). Runs on every commit.
   - repo: local
     hooks:
       - id: ruff-templates
         name: ruff check on generator scripts
-        entry: ruff --fix --exit-non-zero-on-fix static/brand/templates/
+        entry: ruff check --fix --exit-non-zero-on-fix static/brand/templates/
         language: system
         pass_filenames: false
         always_run: true
