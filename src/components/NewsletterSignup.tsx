@@ -99,7 +99,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
             </p>
             <p className={`mt-2 text-xs font-medium ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               One confirmation step remains: we verify your email address before the first issue goes
-              out — double opt-in, nothing arrives unconfirmed. Unsubscribe anytime.
+              out. Double opt-in, nothing arrives unconfirmed. Unsubscribe anytime.
             </p>
           </div>
         </div>
@@ -125,7 +125,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
             Stay Ahead of the Canon
           </h2>
           <p className="text-sm sm:text-base leading-relaxed text-ls-grey-light-text">
-            Research notes, governance frameworks, and operating updates — written for boards, not engineers.
+            Research notes, governance frameworks, and operating updates, written for boards, not engineers.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-left max-w-lg mx-auto">

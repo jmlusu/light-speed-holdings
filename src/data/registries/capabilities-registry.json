@@ -73,7 +73,7 @@
       {
         "id": "whatsapp-native",
         "title": "WhatsApp-Native Conversational Agents",
-        "description": "Assistants your team already uses — no app downloads required."
+        "description": "Assistants your team already uses; no app downloads required."
       },
       {
         "id": "document-pipelines",
@@ -206,12 +206,12 @@
       {
         "id": "governance-gates",
         "title": "4 Governance Gates (G1–G4)",
-        "description": "Contract, DPA, Compliance Review, Security Assessment — mandatory before work begins."
+        "description": "Contract, DPA, Compliance Review, Security Assessment: mandatory before work begins."
       },
       {
         "id": "audit-trails-governance",
         "title": "Append-Only Audit Trails",
-        "description": "Append-only JSONL audit events — correlated, queryable, never overwritten."
+        "description": "Append-only JSONL audit events: correlated, queryable, never overwritten."
       },
       {
         "id": "rbac-key-rotation-governance",
@@ -290,7 +290,7 @@
       {
         "id": "extensible-configuration",
         "title": "Extensible Agent & Workflow Configuration",
-        "description": "YAML-based agent registry, workflow definitions, department structures — fully configurable."
+        "description": "YAML-based agent registry, workflow definitions, department structures, fully configurable."
       }
     ],
     "enterprise-deployment": [
@@ -312,7 +312,7 @@
       {
         "id": "managed-deployment",
         "title": "Managed Deployment with RBAC + Client Portals",
-        "description": "Platform Licensing (Managed) — full deployment with client portals."
+        "description": "Platform Licensing (Managed): full deployment with client portals."
       },
       {
         "id": "industry-accelerators",
@@ -330,7 +330,7 @@
     {
       "id": "registry-loader",
       "title": "Registry Loader, Parser, Resolver, Validator",
-      "description": "YAML parsing, schema validation, reference resolution across 19 configs — catches dangling refs and circular deps at load time."
+        "description": "YAML parsing, schema validation, reference resolution across 19 configs: catches dangling refs and circular deps at load time."
     },
     {
       "id": "memory-engine",

@@ -20,7 +20,7 @@ const steps: ContactStep[] = [
   { id: 2, key: 'DIAGNOSE', name: 'Diagnose', description: 'Share the engagement model and the bottlenecks you want us to examine.' },
   { id: 3, key: 'DESIGN', name: 'Design', description: 'Set the timeline so we can shape a realistic starting point.' },
   { id: 4, key: 'BUILD', name: 'Build', description: 'Review everything you have entered before we prepare your brief.' },
-  { id: 5, key: 'GOVERN', name: 'Govern', description: 'Submit securely — a human reviews every enquiry under our governance standard.' }
+  { id: 5, key: 'GOVERN', name: 'Govern', description: 'Submit securely. A human reviews every enquiry under our governance standard.' }
 ];
 
 export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
@@ -147,7 +147,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
             isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
-            We will be honest about whether we can help — and exactly what it takes to start. A human reviews every submission and responds within two business days.
+            We will be honest about whether we can help, and exactly what it takes to start. A human reviews every submission and responds within two business days.
           </p>
 
           <div className={`space-y-4 pt-4 border-t ${isLight ? 'border-ls-grey-dark' : 'border-ls-white/15'}`}>
@@ -246,7 +246,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
 
                 <div className="mb-5">
                   <p className={`text-[11px] font-body font-bold tracking-widest uppercase ${isLight ? 'text-ls-red' : 'text-ls-red'}`}>
-                    Step {activeStep.id} of 5 — {activeStep.key}
+                    Step {activeStep.id} of 5: {activeStep.key}
                   </p>
                   <p className={`text-sm font-medium mt-1 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                     {activeStep.description}
@@ -265,7 +265,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     className="absolute left-[-9999px] w-px h-px opacity-0"
                   />
 
-                  {/* Step 1 — DISCOVER */}
+                  {/* Step 1: DISCOVER */}
                   {currentStep === 1 && (
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -323,7 +323,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     </div>
                   )}
 
-                  {/* Step 2 — DIAGNOSE */}
+                  {/* Step 2: DIAGNOSE */}
                   {currentStep === 2 && (
                     <div className="space-y-4">
                       <div>
@@ -355,7 +355,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     </div>
                   )}
 
-                  {/* Step 3 — DESIGN */}
+                  {/* Step 3: DESIGN */}
                   {currentStep === 3 && (
                     <div>
                       <label htmlFor="ct-timeline" className={labelClass}>Preferred Timeline</label>
@@ -373,7 +373,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     </div>
                   )}
 
-                  {/* Step 4 — BUILD (review) */}
+                  {/* Step 4: BUILD (review) */}
                   {currentStep === 4 && (
                     <dl className={`space-y-3 text-xs rounded-xl border p-4 ${
                       isLight ? 'border-ls-grey-dark/50 bg-ls-grey-light/50' : 'border-ls-white/10 bg-ls-navy/60'
@@ -389,13 +389,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                       ].map(([label, value]) => (
                         <div key={label} className="flex flex-col sm:flex-row sm:gap-3">
                           <dt className={`font-bold tracking-wider uppercase shrink-0 sm:w-32 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>{label}</dt>
-                          <dd className={`${isLight ? 'text-ls-navy' : 'text-ls-white'} break-words`}>{value || '—'}</dd>
+                          <dd className={`${isLight ? 'text-ls-navy' : 'text-ls-white'} break-words`}>{value || '–'}</dd>
                         </div>
                       ))}
                     </dl>
                   )}
 
-                  {/* Step 5 — GOVERN (submit) */}
+                  {/* Step 5: GOVERN (submit) */}
                   {currentStep === 5 && (
                     <div className="space-y-3">
                       <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
@@ -435,12 +435,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                       >
                         {currentStep < 5 ? (
                           <>
-                            <span>Continue — {steps[currentStep].name}</span>
+                            <span>Continue: {steps[currentStep].name}</span>
                             <ChevronRight className="w-3.5 h-3.5" />
                           </>
                         ) : (
                           <>
-                            <span>{submitting ? 'Sending…' : 'Send — Start the Conversation'}</span>
+                            <span>{submitting ? 'Sending…' : 'Send: Start the Conversation'}</span>
                             <Send className="w-3.5 h-3.5" />
                           </>
                         )}

@@ -20,7 +20,7 @@ interface VisitorPathCard {
   accent: 'red' | 'cyan' | 'navy';
 }
 
-/** §8 Homepage Routing Principle — the three major visitor pathways. */
+/** §8 Homepage Routing Principle - the three major visitor pathways. */
 const VISITOR_PATHS: VisitorPathCard[] = [
   {
     id: 'business-problem',
@@ -31,7 +31,6 @@ const VISITOR_PATHS: VisitorPathCard[] = [
     primary: { label: 'Explore Solutions', to: '/solutions' },
     secondary: [
       { label: 'How we work', to: '/what-we-do' },
-      { label: 'Browse sectors', to: '/sectors' },
     ],
     accent: 'red',
   },
@@ -43,7 +42,7 @@ const VISITOR_PATHS: VisitorPathCard[] = [
     Icon: Layers,
     primary: { label: 'Explore the AI Company Builder', to: '/ai-company-builder' },
     secondary: [
-      { label: 'Operating model', to: '#operating-model' },
+      { label: 'Operating model', to: '#haomtgv' },
       { label: '90-agent workforce', to: '#workforce' },
     ],
     accent: 'cyan',
@@ -52,10 +51,13 @@ const VISITOR_PATHS: VisitorPathCard[] = [
     id: 'work-with-us',
     stage: 'INTENT',
     intent: 'I want to work with LightSpeed',
-    body: 'Review the use cases and evidence status first, then start a conversation — an executive briefing, an AI readiness assessment, or a direct enquiry.',
+    body: 'Review the use cases and evidence status first, then start a conversation: an executive briefing, an AI readiness assessment, or a direct enquiry.',
     Icon: ShieldCheck,
-    primary: { label: 'View Use Cases', to: '/use-cases' },
-    secondary: [{ label: 'Start a conversation', to: '/contact' }],
+    primary: { label: 'View Solutions', to: '/solutions' },
+    secondary: [
+      { label: 'Start a conversation', to: '/contact' },
+      { label: 'Browse solutions', to: '/solutions' },
+    ],
     accent: 'navy',
   },
 ];
@@ -73,9 +75,9 @@ const ACCENT_ICON: Record<VisitorPathCard['accent'], string> = {
 };
 
 /**
- * Chapter-adjacent routing band (§8): three visually obvious pathways —
+ * Chapter-adjacent routing band (§8): three visually obvious pathways -
  * business problem → Solutions, understand → Builder/Model/Workforce,
- * work with us → Proof → Contact. Every card branches deeper; no dead ends.
+ * work with us → Solutions/Contact. Every card branches deeper; no dead ends.
  */
 export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
@@ -85,7 +87,7 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
         theme={theme}
         eyebrow="START HERE"
         title="Where Do You Want to Begin?"
-        lead="Three ways in — pick the one that matches why you are here. Each path branches into deeper content; none of them dead-end."
+        lead="Three ways in. Pick the one that matches why you are here. Each path branches into deeper content; none of them dead-end."
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {VISITOR_PATHS.map((path, idx) => (

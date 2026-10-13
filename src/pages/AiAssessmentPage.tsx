@@ -2,7 +2,7 @@
  * AI Assessment Page
  *
  * Route: /ai-assessment  (Directive §9 / §34)
- * Thin entry that reuses ExecutiveBriefingModal — no new assessment UI.
+ * Thin entry that reuses ExecutiveBriefingModal - no new assessment UI.
  * Opening the nav "AI ASSESSMENT" action or hitting this URL directly
  * both surface the same briefing modal.
  */
@@ -33,7 +33,7 @@ export const AiAssessmentPage: React.FC<AiAssessmentPageProps> = ({
         theme={theme}
         eyebrow="AI READINESS"
         title="Request an AI Readiness Assessment"
-        lead="A structured read of where your organisation stands across data, infrastructure, talent, and governance — and a prioritised roadmap to an AI-native operating model. Opening the assessment form now."
+        lead="A structured read of where your organisation stands across data, infrastructure, talent, and governance, and a prioritised roadmap to an AI-native operating model. Opening the assessment form now."
       />
 
       <section className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-6 pb-20">

@@ -24,7 +24,7 @@ interface CtaBandProps {
 export const CtaBand: React.FC<CtaBandProps> = ({
   theme,
   title = CTAS.primary.label,
-  text = 'Tell us where your organisation is today — we will be honest about whether we can help, and exactly what it takes to start.',
+  text = 'Tell us where your organisation is today. We will be honest about whether we can help, and exactly what it takes to start.',
   ctaLabel = CTAS.primary.label,
   ctaTo = CTAS.primary.to,
   id,

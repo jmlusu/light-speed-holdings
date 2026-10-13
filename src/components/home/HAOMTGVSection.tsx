@@ -17,7 +17,7 @@ interface Pillar {
 }
 
 /**
- * H-A-O-M-T-G-V operating philosophy. Not a linear pipeline — a control model
+ * H-A-O-M-T-G-V operating philosophy. Not a linear pipeline - a control model
  * where human authority runs through every layer and governance is an
  * integral control layer (G), not a final checkpoint.
  */
@@ -33,7 +33,7 @@ const PILLARS: Pillar[] = [
     id: 'agents',
     letter: 'A',
     title: 'Agents',
-    description: 'Specialized AI roles with explicit scopes, tools, and approval thresholds — not a single general-purpose bot.',
+    description: 'Specialized AI roles with explicit scopes, tools, and approval thresholds. Not a single general-purpose bot.',
     Icon: Bot,
   },
   {
@@ -47,14 +47,14 @@ const PILLARS: Pillar[] = [
     id: 'memory',
     letter: 'M',
     title: 'Memory',
-    description: 'Persistent contextual state across long-running work — so agents recall before they act, not from a blank slate.',
+    description: 'Persistent contextual state across long-running work, so agents recall before they act, not from a blank slate.',
     Icon: HardDrive,
   },
   {
     id: 'tools',
     letter: 'T',
     title: 'Tools',
-    description: 'Isolated execution environments for APIs, data, and actions — the only way agents touch the outside world.',
+    description: 'Isolated execution environments for APIs, data, and actions: the only way agents touch the outside world.',
     Icon: Wrench,
   },
   {
@@ -68,12 +68,12 @@ const PILLARS: Pillar[] = [
     id: 'value',
     letter: 'V',
     title: 'Value',
-    description: 'Measured business outcomes — cost, latency, quality, and adoption — fed back into strategy, not vanity metrics.',
+    description: 'Measured business outcomes (cost, latency, quality, and adoption) fed back into strategy, not vanity metrics.',
     Icon: TrendingUp,
   },
 ];
 
-/** Chapter 01 — the H-A-O-M-T-G-V operating philosophy. */
+/** Chapter 01 - the H-A-O-M-T-G-V operating philosophy. */
 export const HAOMTGVSection: React.FC<HAOMTGVSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
   return (
@@ -82,7 +82,7 @@ export const HAOMTGVSection: React.FC<HAOMTGVSectionProps> = ({ theme }) => {
         theme={theme}
         eyebrow="OPERATING PHILOSOPHY"
         title="H-A-O-M-T-G-V"
-        lead="How LightSpeed thinks about AI-native operations: Human authority through Agents, Orchestration, Memory, and Tools — with Governance as an integral control layer and Value as the only score that counts. Not a linear pipeline; a working model."
+        lead="How LightSpeed thinks about AI-native operations: Human authority through Agents, Orchestration, Memory, and Tools, with Governance as an integral control layer and Value as the only score that counts. Not a linear pipeline; a working model."
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {PILLARS.map((pillar, idx) => (
@@ -114,7 +114,7 @@ export const HAOMTGVSection: React.FC<HAOMTGVSectionProps> = ({ theme }) => {
         ))}
       </div>
       <p className={`mt-6 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-        Human direction is not a checkpoint at the end — it is present at every layer. Governance (G) is how that authority stays enforceable when agents act at scale.
+        Human direction is not a checkpoint at the end. It is present at every layer. Governance (G) is how that authority stays enforceable when agents act at scale.
       </p>
     </HomeSection>
   );

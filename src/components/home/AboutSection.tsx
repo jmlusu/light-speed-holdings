@@ -12,7 +12,7 @@ interface AboutSectionProps {
 const VALUES = [
   {
     title: 'AI-Native First',
-    description: 'We build AI-native companies where constraints are real — infrastructure gaps, talent development, regulatory evolution — then scale.',
+    description: 'We build AI-native companies where constraints are real (infrastructure gaps, talent development, regulatory evolution), then scale.',
   },
   {
     title: 'Evidence Over Claims',
@@ -24,7 +24,7 @@ const VALUES = [
   },
   {
     title: 'African Intelligence',
-    description: 'Pharos turns our engineering into public intellectual work — SADC governance frameworks, Malawi AI Strategy engagement, regional policy.',
+    description: 'Pharos turns our engineering into public intellectual work: SADC governance frameworks, Malawi AI Strategy engagement, regional policy.',
   },
 ];
 
@@ -36,7 +36,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ theme }) => {
         theme={theme}
         eyebrow="ABOUT LIGHTSPEED"
         title="Human Direction. Intelligent Execution. Measurable Value."
-        lead="We are the AI-native company we sell — a human-led, agent-powered operating model built where constraints are real, governed by design, and measured against outcomes that matter."
+        lead="We are the AI-native company we sell: a human-led, agent-powered operating model built where constraints are real, governed by design, and measured against outcomes that matter."
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {VALUES.map((val, idx) => (

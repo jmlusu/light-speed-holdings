@@ -28,7 +28,7 @@
     {
       "slug": "intelligent-automation",
       "title": "Intelligent Automation",
-      "description": "WhatsApp-native assistants, automated document pipelines, and intelligent form workflows that connect teams to tools without app downloads — running on infrastructure people already use.",
+      "description": "WhatsApp-native assistants, automated document pipelines, and intelligent form workflows that connect teams to tools without app downloads; running on infrastructure people already use.",
       "eyebrow": "WORKFLOW AUTOMATION",
       "capabilities": [
         "WhatsApp-Native Conversational Agents",
@@ -74,7 +74,7 @@
     {
       "slug": "digital-transformation",
       "title": "Digital Transformation",
-      "description": "Mobile-first websites, e-commerce stores, and brand identities built for African operating realities — with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.",
+      "description": "Mobile-first websites, e-commerce stores, and brand identities built for African operating realities: with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.",
       "eyebrow": "MOBILE-FIRST DESIGN",
       "capabilities": [
         "Mobile-First Responsive Web Development",
@@ -98,7 +98,7 @@
     {
       "slug": "strategy-executive-advisory",
       "title": "Strategy & Executive Advisory",
-      "description": "Structured discovery, AI readiness assessments, boardroom briefings, and roadmap generation — helping leadership teams move from problem to governed AI deployment with clarity.",
+      "description": "Structured discovery, AI readiness assessments, boardroom briefings, and roadmap generation, helping leadership teams move from problem to governed AI deployment with clarity.",
       "eyebrow": "EXECUTIVE ADVISORY",
       "capabilities": [
         "AI Strategy & Roadmap Generation",
@@ -121,7 +121,7 @@
     {
       "slug": "ai-governance-policy",
       "title": "AI Governance & Policy",
-      "description": "Establish controls, architecture, policies, standards, risk management, and decision rights for responsible AI adoption — aligned with Malawi DPA, SADC frameworks, and AU Continental AI Strategy.",
+      "description": "Establish controls, architecture, policies, standards, risk management, and decision rights for responsible AI adoption, aligned with Malawi DPA, SADC frameworks, and AU Continental AI Strategy.",
       "eyebrow": "GOVERNANCE & POLICY",
       "capabilities": [
         "5-Tier Risk-Classified Approval Matrix",
@@ -144,7 +144,7 @@
     {
       "slug": "research-applied-ai",
       "title": "Research & Applied AI",
-      "description": "Develop evidence, research, market intelligence, policy analysis, and practical guidance for AI adoption in Malawi and Africa — turning engineering observations into public intellectual work via Pharos.",
+      "description": "Develop evidence, research, market intelligence, policy analysis, and practical guidance for AI adoption in Malawi and Africa, turning engineering observations into public intellectual work via Pharos.",
       "eyebrow": "RESEARCH & POLICY",
       "capabilities": [
         "Applied AI Research & Experimentation",
@@ -167,11 +167,11 @@
     {
       "slug": "ai-company-builder-deployment",
       "title": "AI Company Builder Deployment",
-      "description": "License and deploy the same 90-agent orchestration engine that runs LightSpeed Holdings on your infrastructure — self-hosted, provider-agnostic, with one-on-one onboarding and support.",
+      "description": "License and deploy the same 90-agent orchestration engine that runs LightSpeed Holdings on your infrastructure: self-hosted, provider-agnostic, with one-on-one onboarding and support.",
       "eyebrow": "PLATFORM LICENSING",
       "capabilities": [
-        "AI Company Builder License (E1) — Self-Hosted on Your Laptop/VPS",
-        "Agent Setup for Agencies (E2) — White-Label",
+        "AI Company Builder License (E1): Self-Hosted on Your Laptop/VPS",
+        "Agent Setup for Agencies (E2): White-Label",
         "Provider-Agnostic Model Routing (9 LLM Providers + Ollama)",
         "RBAC & Client Portal Access",
         "Support Retainer (MWK 350,000/mo)",

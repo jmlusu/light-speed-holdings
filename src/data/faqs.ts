@@ -1,4 +1,4 @@
-/* FAQ registry — MASTER_SPEC §15.
+/* FAQ registry - MASTER_SPEC §15.
  * Every answer is grounded in a canonical source file; no invented numbers,
  * clients, prices, or outcomes (MASTER_SPEC §17 evidence rules). */
 
@@ -13,7 +13,7 @@ export const faqs: readonly Faq[] = [
     id: 'what-is-acb',
     question: 'What is the AI Company Builder?',
     answer:
-      'A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable — no client-facing deliverable ships without human sign-off.',
+      'A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable; no client-facing deliverable ships without human sign-off.',
   },
   {
     id: 'human-in-the-loop',
@@ -31,13 +31,13 @@ export const faqs: readonly Faq[] = [
     id: 'proven-clients',
     question: 'Is this proven with paying clients?',
     answer:
-      'Honestly: not yet. Nothing has been delivered to paying clients — all offers are fieldable in 2026, in pilot, or in active development, and every proof point on this site carries an explicit honesty badge. We would rather show you exactly where we are than invent a track record.',
+      'Honestly: not yet. Nothing has been delivered to paying clients. All offers are fieldable in 2026, in pilot, or in active development, and every proof point on this site carries an explicit honesty badge. We would rather show you exactly where we are than invent a track record.',
   },
   {
     id: 'pricing',
     question: 'What does it cost?',
     answer:
-      'Engagements are scoped per brief and priced for regional markets — accessible pricing in local currency rather than foreign-currency consultancy rates. There is no public rate card yet; start a conversation and we will tell you plainly what your project takes.',
+      'Engagements are scoped per brief and priced for regional markets: accessible pricing in local currency rather than foreign-currency consultancy rates. There is no public rate card yet; start a conversation and we will tell you plainly what your project takes.',
   },
   {
     id: 'how-to-start',

@@ -27,7 +27,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ theme, id }) => {
           theme={theme}
           eyebrow="HONEST ANSWERS"
           title="Frequently Asked Questions"
-          lead="Straight answers grounded in how the platform actually works — including what we have not proven yet."
+          lead="Straight answers grounded in how the platform actually works, including what we have not proven yet."
         />
         <div className="max-w-3xl mx-auto space-y-3">
           {faqs.map((faq) => (

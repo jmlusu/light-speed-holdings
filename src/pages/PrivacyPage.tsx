@@ -12,7 +12,7 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
     heading: '1. What We Collect',
     paragraphs: [
       'When you use the contact form or ask us questions, we collect the information you provide: your name, title, organisation, email address, and the context of your inquiry.',
-      'We do not collect payment card details on this site. Payment, when it happens, is agreed separately on the rails you specify — Airtel Money, TNM Mpamba, bank transfer, or international transfer for USD invoices.',
+      'We do not collect payment card details on this site. Payment, when it happens, is agreed separately on the rails you specify: Airtel Money, TNM Mpamba, bank transfer, or international transfer for USD invoices.',
     ],
   },
   {
@@ -44,7 +44,7 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
 ];
 
 /**
- * /legal/privacy — data protection notice. Aligned to the Malawi Data
+ * /legal/privacy - data protection notice. Aligned to the Malawi Data
  * Protection Act 2017 and our GDPR-comparable posture for donor data.
  */
 export const PrivacyPage: React.FC<PrivacyPageProps> = ({ theme }) => {
@@ -56,7 +56,7 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ theme }) => {
         theme={theme}
         eyebrow="LEGAL // PRIVACY"
         title="Privacy Policy"
-        lead="Last updated: September 2026. This page explains what we collect, why, and the rights you hold over your data. It is written to be read — not to be indexed."
+        lead="Last updated: September 2026. This page explains what we collect, why, and the rights you hold over your data. It is written to be read, not to be indexed."
       />
 
       <section className={`px-4 sm:px-8 max-w-3xl mx-auto w-full pt-12 pb-4 ${

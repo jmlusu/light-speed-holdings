@@ -9,7 +9,7 @@ interface InsightsSectionProps {
   theme: 'light' | 'dark';
 }
 
-/** Chapter 06 — Pharos insight teasers. */
+/** Chapter 06 - Pharos insight teasers. */
 export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
   return (
@@ -18,7 +18,7 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
         theme={theme}
         eyebrow="PERSPECTIVES"
         title="Perspectives on Agentic AI and Its Practical Application"
-        lead="Pharos is LightSpeed's thought-leadership practice: long-form writing, research briefs, and policy commentary on how agentic AI is built, governed, and applied in African operating environments — from Malawi outward."
+        lead="Pharos is LightSpeed's thought-leadership practice: long-form writing, research briefs, and policy commentary on how agentic AI is built, governed, and applied in African operating environments, from Malawi outward."
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {insightTeasers.map((post, idx) => (

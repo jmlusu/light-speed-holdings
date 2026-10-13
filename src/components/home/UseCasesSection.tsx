@@ -26,7 +26,7 @@ function statusToHonesty(status: string): HonestyLabel {
 
 const FEATURED_USE_CASE_IDS = ['uc-js-bar', 'uc-meta', 'ws-01', 'ws-02'];
 
-/** Chapter 05 — sectors + use cases combined (replaces Proof). */
+/** Chapter 05 - sectors + use cases combined (replaces Proof). */
 export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
   const featured = FEATURED_USE_CASE_IDS
@@ -39,7 +39,7 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
         theme={theme}
         eyebrow="APPLICATIONS & OPPORTUNITIES"
         title="Where Practical AI Can Make a Difference"
-        lead="Agentic systems matter when they solve real operational problems — compliance, coordination, reporting, and the daily work that keeps institutions running. We work across sectors where African organisations face concrete constraints, from regulated financial services to rural cooperatives operating on WhatsApp and mobile money."
+        lead="Agentic systems matter when they solve real operational problems: compliance, coordination, reporting, and the daily work that keeps institutions running. We work across sectors where African organisations face concrete constraints, from regulated financial services to rural cooperatives operating on WhatsApp and mobile money."
       />
 
       {/* Featured use cases with evidence status */}
@@ -128,7 +128,7 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
       </div>
 
       <p className={`mt-8 text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-        Across every engagement, we focus on the same outcome: useful intelligence, clear accountability, and systems people can actually operate. Not AI for its own sake — AI for work that matters.
+        Across every engagement, we focus on the same outcome: useful intelligence, clear accountability, and systems people can actually operate. Not AI for its own sake. AI for work that matters.
       </p>
     </HomeSection>
   );

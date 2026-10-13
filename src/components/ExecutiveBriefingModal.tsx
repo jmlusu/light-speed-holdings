@@ -67,7 +67,7 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
               organization: formData.organization,
               email: formData.email,
               enquiryType: 'Executive boardroom briefing',
-              message: formData.notes || `${formData.scope} — ${formData.timeframe}`,
+              message: formData.notes || `${formData.scope}: ${formData.timeframe}`,
               phone: formData.phone
             },
             turnstileToken,

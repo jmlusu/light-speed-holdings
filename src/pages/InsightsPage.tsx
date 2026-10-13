@@ -53,7 +53,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
             }`}
           >
             Original research and executive briefings on AI strategy, data residency, and
-            governance — written for boards, not engineers, and grounded in production systems.
+            governance, written for boards, not engineers, and grounded in production systems.
           </p>
         </div>
       </section>
@@ -64,7 +64,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
           theme={theme}
           eyebrow="TOPICS"
           title="What We Write About"
-          lead="Short posts and deeper reports across the full agentic AI canon — from operating models to SADC policy."
+          lead="Short posts and deeper reports across the full agentic AI canon, from operating models to SADC policy."
         />
         <Reveal>
           <ul className="flex flex-wrap gap-2.5">
@@ -84,13 +84,13 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
         </Reveal>
       </section>
 
-      {/* §16 insight journey: topic → insight */}
+      {/* §16 insight flow: topic → insight */}
       <section aria-label="Featured insights" className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-14 pb-4">
         <SectionHeading
           theme={theme}
           eyebrow="LATEST"
           title="Featured Insights"
-          lead="Grounded, first-party analysis — each piece cites its sources and links onward to the solutions and sectors it touches."
+          lead="Grounded, first-party analysis. Each piece cites its sources and links onward to the solutions and sectors it touches."
         />
         <div className="grid md:grid-cols-3 gap-5">
           {insightArticles.map((article) => (
@@ -142,9 +142,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/use-cases', label: 'Use Cases' },
           { to: '/what-we-do', label: 'What We Do' },
-          { to: '/sectors', label: 'Sectors' },
           { to: '/ask', label: 'Ask LightSpeed' },
         ]}
       />

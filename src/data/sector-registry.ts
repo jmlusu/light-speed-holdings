@@ -1,6 +1,6 @@
-/* LightSpeed Holdings — Canonical Sector Registry (CUSTOMER_JOURNEY_CONVERSION_ARCHITECTURE §12)
+/* LightSpeed Holdings - Canonical Sector Registry (CUSTOMER_JOURNEY_CONVERSION_ARCHITECTURE §12)
    Six canonical sectors: the five per MASTER_SPEC and TARGET_ARCHITECTURE, plus
-   Academia and Research (CEO direction, 2026-10-12 — homepage sector cards).
+   Academia and Research (CEO direction, 2026-10-12 - homepage sector cards).
    Evidence tiers: PROVEN / CURRENT / DEMO / FUTURE (mapped from SECTOR_TIERS).
    One canonical source per sector fact. Only claim sector experience where evidence exists.
    Source: sectors.ts (evidence) + MASTER_SPEC §11 (canonical 5 slugs). */
@@ -20,7 +20,7 @@ export interface Sector {
   relevantSolutions?: string[]; // Solution slugs that apply to this sector
 }
 
-/* MASTER_SPEC §11 four evidence tiers — mapped from SECTOR_TIERS */
+/* MASTER_SPEC §11 four evidence tiers - mapped from SECTOR_TIERS */
 export const SECTOR_TIERS_CANONICAL: Record<
   'proven' | 'current' | 'demonstration' | 'future',
   HonestyLabel
@@ -35,7 +35,7 @@ export const sectorTierLegend: { tier: HonestyLabel; desc: string }[] = [
   { tier: SECTOR_TIERS_CANONICAL.proven, desc: 'Delivered engagements with named, measurable outcomes.' },
   { tier: SECTOR_TIERS_CANONICAL.current, desc: 'Running pilots or capability we can deploy now.' },
   { tier: SECTOR_TIERS_CANONICAL.demonstration, desc: 'Working demonstration without a live client engagement.' },
-  { tier: SECTOR_TIERS_CANONICAL.future, desc: 'Roadmap target — no evidence yet, and we say so.' },
+  { tier: SECTOR_TIERS_CANONICAL.future, desc: 'Roadmap target: no evidence yet, and we say so.' },
 ];
 
 /* Helper to find legacy sector by partial ID match */
@@ -43,7 +43,7 @@ function findLegacySector(ids: string[]): typeof legacySectors[0] | undefined {
   return legacySectors.find(s => ids.some(id => s.id.includes(id) || id.includes(s.id)));
 }
 
-/* Six canonical sectors — mapped from legacy sectors where evidence exists */
+/* Six canonical sectors - mapped from legacy sectors where evidence exists */
 export const sectors: Sector[] = [
   {
     id: 'financial-services',
@@ -61,7 +61,7 @@ export const sectors: Sector[] = [
     description: 'Data pipelines, reporting automation, and decision support for clinics and health systems.',
     status: SECTOR_TIERS_CANONICAL.future,
     evidence:
-      'Offline-first, sovereignty-first architecture is designed for clinical data — but LightSpeed has no healthcare deployment yet. Listed honestly as a roadmap target.',
+      'Offline-first, sovereignty-first architecture is designed for clinical data, but LightSpeed has no healthcare deployment yet. Listed honestly as a roadmap target.',
     region: ['Malawi', 'SADC'],
     relevantSolutions: ['enterprise-deployment', 'business-automation'],
   },
@@ -71,7 +71,7 @@ export const sectors: Sector[] = [
     description: 'Supply-chain intelligence, mobile-money coordination, and climate-data pipelines for rural economies.',
     status: SECTOR_TIERS_CANONICAL.current,
     evidence:
-      'WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, with mobile-money payments and supply chain tracking — serving 1,200 members in pilot.',
+      'WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, with mobile-money payments and supply chain tracking, serving 1,200 members in pilot.',
     region: ['Malawi', 'Mozambique', 'SADC'],
     relevantSolutions: ['digital-presence', 'business-automation', 'enterprise-deployment'],
   },
@@ -81,7 +81,7 @@ export const sectors: Sector[] = [
     description: 'Student management, credential verification, and data-driven policy for schools and universities.',
     status: SECTOR_TIERS_CANONICAL.current,
     evidence:
-      'Agent-driven student management at the University of Malawi — 3 departments onboarded, 5,000 records processed with append-only audit trails.',
+      'Agent-driven student management at the University of Malawi: 3 departments onboarded, 5,000 records processed with append-only audit trails.',
     region: ['Malawi', 'SADC'],
     relevantSolutions: ['ai-company-builder', 'enterprise-deployment', 'business-automation'],
   },
@@ -91,7 +91,7 @@ export const sectors: Sector[] = [
     description: 'Digital services, compliance automation, and data-driven policy for ministries and agencies.',
     status: SECTOR_TIERS_CANONICAL.current,
     evidence:
-      "Advisory work on Malawi's National AI Strategy consultation. Policy-level engagement so far — no ministerial production deployment claimed.",
+      "Advisory work on Malawi's National AI Strategy consultation. Policy-level engagement so far; no ministerial production deployment claimed.",
     region: ['Malawi', 'SADC'],
     relevantSolutions: ['ai-company-builder', 'enterprise-deployment', 'boardroom-briefing'],
   },
