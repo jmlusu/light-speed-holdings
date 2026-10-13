@@ -158,7 +158,7 @@
 
 <!-- src: solution-registry.json capabilities (verbatim) -->
 
-**Use cases:** Board Presentation & Platform Deep-Dive; Governance Model Deep-Dive; Engagement Roadmap Planning; AI Readiness Assessment; SADC AI Governance Framework Advisory; National AI Strategy Consultation.
+**Use cases:** Board Presentation & Platform Walkthrough; Governance Model Walkthrough; Engagement Roadmap Planning; AI Readiness Assessment; SADC AI Governance Framework Advisory; National AI Strategy Consultation.
 <!-- src: solution-registry.json useCases (verbatim) -->
 
 **Links:** Use Cases `/use-cases` | Sectors `/sectors` | Insights `/insights`

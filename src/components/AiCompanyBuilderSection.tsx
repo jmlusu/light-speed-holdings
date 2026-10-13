@@ -14,28 +14,28 @@ interface AiCompanyBuilderSectionProps {
 }
 
 const JOURNEY_STEPS = [
-  { num: '01', title: 'Opportunity', desc: 'Identify where AI creates leverage — diagnose the gap between current state and AI-native potential.' },
+  { num: '01', title: 'Opportunity', desc: 'Identify where AI creates value. Diagnose the gap between current state and AI-native potential.' },
   { num: '02', title: 'Strategy', desc: 'Define the operating model, governance framework, and measurable outcomes for transformation.' },
   { num: '03', title: 'Architecture', desc: 'Design the modular agent topology, data pipelines, and integration points for your stack.' },
-  { num: '04', title: 'Agents', desc: 'Configure role-scoped agents from the 90-agent registry — each with explicit permissions and approval thresholds.' },
-  { num: '05', title: 'Workflows', desc: 'Orchestrate agent coordination with human-in-the-loop gates — automated where safe, gated where consequential.' },
+  { num: '04', title: 'Agents', desc: 'Configure role-scoped agents from the 90-agent registry, each with explicit permissions and approval thresholds.' },
+  { num: '05', title: 'Workflows', desc: 'Orchestrate agent coordination with human-in-the-loop gates, automated where safe and gated where consequential.' },
   { num: '06', title: 'Deployment', desc: 'Ship working systems with append-only audit trails, circuit breakers, and 30 days of included support.' },
   { num: '07', title: 'Governance', desc: 'Establish the five-tier approval matrix, risk classification, and expiry sweeps that make autonomy safe.' },
-  { num: '08', title: 'Measurement', desc: 'Track outcomes, cost, and quality — every metric traces to a canonical source, never invented.' },
-  { num: '09', title: 'Continuous Improvement', desc: 'Scale what works, retire what does not — the system learns, adapts, and improves under human oversight.' },
+  { num: '08', title: 'Measurement', desc: 'Track outcomes, cost, and quality. Every metric traces to a canonical source, never invented.' },
+  { num: '09', title: 'Continuous Improvement', desc: 'Scale what works, retire what does not. The system learns, adapts, and improves under human oversight.' },
 ];
 
 const PRINCIPLES = [
   { title: 'Human-led', desc: 'Every decision has a clear owner. AI augments judgment; it does not replace it.' },
-  { title: 'AI-native', desc: 'Systems designed as agentic operating layers from day one — not AI bolted onto legacy software.' },
+  { title: 'AI-native', desc: 'Systems designed as agentic operating layers from day one, not AI bolted onto legacy software.' },
   { title: 'Agentic', desc: '90 specialized agents coordinate across 20 departments, each with explicit role definitions.' },
   { title: 'Governed', desc: 'Five-tier human approval, append-only audit trails, and regional compliance are the architecture.' },
   { title: 'Data-informed', desc: 'Every claim carries its honesty status. We never blur proven vs. planned.' },
-  { title: 'Modular', desc: 'Role-scoped agents configured in a registry — each component can be replaced independently.' },
+  { title: 'Modular', desc: 'Role-scoped agents configured in a registry, each component can be replaced independently.' },
   { title: 'Measurable', desc: 'Time saved, processes automated, decision cycles reduced. We report on what changed.' },
-  { title: 'Progressive', desc: 'Start with a pilot, scale to production — with honest-status gates at every phase.' },
+  { title: 'Progressive', desc: 'Start with a pilot, scale to production, with honest-status gates at every phase.' },
   { title: 'Secure', desc: 'Least-privilege permissions, Bandit + pre-commit gates, SHA-256 audit trails.' },
-  { title: 'Practical adoption', desc: 'Designed for real constraints — mobile-first, local payment rails, intermittent connectivity.' },
+  { title: 'Practical adoption', desc: 'Designed for real constraints: mobile-first, local payment rails, intermittent connectivity.' },
 ];
 
 export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = ({ theme, onRequestBriefing }) => {
@@ -48,16 +48,16 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
         level="h1"
         eyebrow="AI COMPANY BUILDER"
         title="Build Governed AI Companies"
-        lead="LightSpeed helps organisations move from Opportunity to Continuous Improvement — a coordinated journey across strategy, architecture, agents, workflows, deployment, and governance. Every step carries its honesty status."
+        lead="LightSpeed helps organisations move from Opportunity to Continuous Improvement, a coordinated path across strategy, architecture, agents, workflows, deployment, and governance. Every step carries its honesty status."
       />
 
       {/* The Journey */}
       <section aria-labelledby="journey-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'}`}>
         <SectionHeading
           theme={theme}
-          eyebrow="THE JOURNEY"
+          eyebrow="THE PATH"
           title="Opportunity to Continuous Improvement"
-          lead="From initial diagnosis to scaled deployment and beyond — nine connected phases ensure every step is governed, measured, and progressive."
+          lead="From initial diagnosis to scaled deployment and beyond, nine connected phases ensure every step is governed, measured, and progressive."
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {JOURNEY_STEPS.map((step, idx) => (
@@ -115,19 +115,19 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
             <div className="space-y-4">
               <h4 className="font-display font-bold text-lg">Human Direction</h4>
               <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                One human CEO provides strategic direction. Every consequential decision passes through five tiers of human approval — machines execute, humans approve.
+                One human CEO provides strategic direction. Every consequential decision passes through five tiers of human approval. Machines execute, humans approve.
               </p>
             </div>
             <div className="space-y-4">
               <h4 className="font-display font-bold text-lg">Agent Workforce</h4>
               <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                90 specialized agents across strategy, research, product, operations, governance, content, and finance — each configured with explicit permissions and audit trails.
+                90 specialized agents across strategy, research, product, operations, governance, content, and finance, each configured with explicit permissions and audit trails.
               </p>
             </div>
             <div className="space-y-4">
               <h4 className="font-display font-bold text-lg">Governed Execution</h4>
               <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                Append-only SHA-256 audit trails, risk-classified agent tiers, expiry sweeps on stale approvals, and circuit breakers on errors — governance is the architecture.
+                Append-only SHA-256 audit trails, risk-classified agent tiers, expiry sweeps on stale approvals, and circuit breakers on errors. Governance is the architecture.
               </p>
             </div>
           </div>
@@ -141,9 +141,9 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
         }`}>
           <div className="flex-1 space-y-3">
             <span className="font-body text-[10px] font-bold tracking-widest text-ls-red">NEXT STEP</span>
-            <h3 className="text-xl sm:text-2xl font-black tracking-tight font-display">Start Your AI Company Builder Journey</h3>
+            <h3 className="text-xl sm:text-2xl font-black tracking-tight font-display">Start Your AI Company Builder Engagement</h3>
             <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Begin with a governed discovery conversation — not a product demo. We will evaluate your readiness honestly and define exactly which phase fits your goals.
+              Begin with a governed discovery conversation, not a product demo. We will evaluate your readiness honestly and define exactly which phase fits your goals.
             </p>
           </div>
             <Link

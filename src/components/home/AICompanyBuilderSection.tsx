@@ -18,7 +18,7 @@ const JOURNEY_STEPS = [
     id: 'design',
     num: '02',
     title: 'Design',
-    description: 'Architect the agentic system — agents, workflows, data flows, governance gates, and human decision points.',
+    description: 'Architect the agentic system: agents, workflows, data flows, governance gates, and human decision points.',
   },
   {
     id: 'build',
@@ -42,7 +42,7 @@ const JOURNEY_STEPS = [
     id: 'measure',
     num: '06',
     title: 'Measure',
-    description: 'Track cost, quality, adoption, and impact — feed insights back into the strategy layer for continuous improvement.',
+    description: 'Track cost, quality, adoption, and impact. Feed insights back into the strategy layer for continuous improvement.',
   },
 ];
 
@@ -67,13 +67,13 @@ export const AICompanyBuilderSection: React.FC<AICompanyBuilderSectionProps> = (
         theme={theme}
         eyebrow="AI COMPANY BUILDER"
         title="From AI Opportunity to Governed Implementation"
-        lead="LightSpeed helps organizations move from AI opportunity to a governed operating model — not a prototype, not a pilot, but a system that runs on your infrastructure with human decision points, auditable execution, and room to grow."
+        lead="LightSpeed helps organizations move from AI opportunity to a governed operating model, not a prototype or a pilot. A system that runs on your infrastructure with human decision points, auditable execution, and room to grow."
       />
       <div className="space-y-12">
         {/* Journey Steps */}
         <div>
           <h3 className={`font-body text-[10px] font-bold tracking-widest mb-6 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-            THE TRANSFORMATION JOURNEY
+            THE TRANSFORMATION PATH
           </h3>
           <div className="relative">
             <div className={`hidden lg:block absolute left-1/2 top-0 bottom-0 w-[2px] -translate-x-1/2 ${isLight ? 'bg-ls-grey-dark/30' : 'bg-ls-white/10'}`} aria-hidden="true" />
