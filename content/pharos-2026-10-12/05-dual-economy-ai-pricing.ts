@@ -4,7 +4,7 @@ export const article: InsightArticle = {
   slug: 'dual-economy-ai-pricing',
   title: 'Pricing Agentic AI in a Dual Economy: Kwacha Ladders, Dollar Retainers, and Paying for What You Run',
   topic: 'AI PRICING',
-  dek: 'Take a US list price, divide by the exchange rate, hope. That method died on the night the kwacha devalued 44%. Malawi’s market pays in kwacha; its NGO and regional work is quoted in dollars — so we run two rails: a published MWK ladder, USD-denominated retainers, and mobile-money collection built in from day one. Here is the ladder, the reasoning, and an honest account of what has actually been sold.',
+  dek: 'Take a US list price, divide by the exchange rate, hope. That method died on the night the kwacha devalued 44%. Malawi’s market pays in kwacha; its NGO and regional work is quoted in dollars. So we run two rails: a published MWK ladder, USD-denominated retainers, and mobile-money collection built in from day one. Here is the ladder, the reasoning, and an honest account of what has actually been sold.',
   category: 'Market intelligence',
   readMins: 7,
   publishedAt: '2026-10-12',
