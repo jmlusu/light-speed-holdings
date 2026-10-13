@@ -169,3 +169,5 @@ without re-reading this section and the script header.
 from the Vercel dashboard (Redeploy), or push a trivial site-file touch (e.g. a comment
 in `vite.config.ts`). The retry workflow (§5) is unaffected — it only re-runs
 deployments whose `readyState` is `ERROR`, and skipped builds never reach that state.
+
+<!-- skip-filter verification marker 2026-10-13 -->
