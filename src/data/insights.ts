@@ -389,7 +389,7 @@ export const insightArticles: InsightArticle[] = [
       { kind: 'h', text: 'Proof before promise' },
       {
         kind: 'p',
-        text: 'Two proofs sit under this architecture. The first is the company itself: a running registry, a locked message bus, a five-tier gate, and immutable audit trails exercised daily — not a lab toy, and not a client deployment claimed where none exists. The second is deliberately small. J&S StopOver Bar — a real, non-tech SME in Malawi already using agentic decision support for pricing through an LLM-council methodology, with a documented arc from finance and inventory agents through procurement and operations to a human owner’s dashboard. If the stack only works inside an engineering department, it is not a company model; it is a specialist tool. The SME is the test that it is neither.',
+        text: 'Two proofs sit under this architecture. The first is the company itself: a running registry, a locked message bus, a five-tier gate, and append-only SHA-256 sealed audit trails exercised daily — not a lab toy, and not a client deployment claimed where none exists. The second is deliberately small. J&S StopOver Bar — a real, non-tech SME in Malawi already using agentic decision support for pricing through an LLM-council methodology, with a documented arc from finance and inventory agents through procurement and operations to a human owner’s dashboard. If the stack only works inside an engineering department, it is not a company model; it is a specialist tool. The SME is the test that it is neither.',
       },
       { kind: 'h', text: 'Starting from the registry' },
       {
