@@ -18,7 +18,7 @@
 <!-- src: Directive §14 HERO (verbatim) -->
 
 **Subheadline:** The governed multi-agent orchestration platform that runs LightSpeed Holdings - 90 roles, 20 departments, five-tier human approval, SHA-256 sealed audit trails. AI executes. Humans decide.
-<!-- src: faq-registry faq-02, faq-05; claims-registry claim.agent-count, claim.five-tier-approval, claim.immutable-audit-trails (PROVEN_IN_HOUSE) -->
+<!-- src: faq-registry faq-02, faq-05; claims-registry claim.agent-count, claim.five-tier-approval, claim.append-only-audit-trails (PROVEN_IN_HOUSE) -->
 
 **Primary CTA:** START A CONVERSATION -> `/contact`
 **Contextual CTA:** EXPLORE USE CASES -> `/use-cases`
@@ -72,8 +72,8 @@ The platform's seven architectural layers. **Status: PROVEN IN-HOUSE.**
 <!-- src: faq-registry faq-10 -->
 - **T - TOOLS:** Isolated execution environments - a canonical 7-tool vocabulary, validated on every call.
 <!-- src: faq-registry faq-11 -->
-- **G - GOVERNANCE:** Five-tier approval controls, four mandatory gates, immutable logging.
-<!-- src: claims-registry claim.five-tier-approval, claim.four-governance-gates, claim.immutable-audit-trails (PROVEN_IN_HOUSE) -->
+- **G - GOVERNANCE:** Five-tier approval controls, four mandatory gates, append-only sealed logging.
+<!-- src: claims-registry claim.five-tier-approval, claim.four-governance-gates, claim.append-only-audit-trails (PROVEN_IN_HOUSE) -->
 - **V - VALUE:** Measurable reductions in cost and operational latency.
 <!-- src: faq-registry faq-06 -->
 
@@ -204,7 +204,7 @@ Legacy aliases (write -> edit, execute -> bash, delegate -> task, web_search -> 
 **Status: PROVEN IN-HOUSE.**
 
 Every agent action generates an append-only JSONL audit event - correlated, queryable and never overwritten. Each event is cryptographically sealed with SHA-256, making the trail tamper-evident. The log captures prompts, tool invocations, outputs, approval decisions and escalation events. This is not optional logging - it is the platform's operating substrate.
-<!-- src: faq-registry faq-09; claims-registry claim.immutable-audit-trails (PROVEN_IN_HOUSE) -->
+<!-- src: faq-registry faq-09; claims-registry claim.append-only-audit-trails (PROVEN_IN_HOUSE) -->
 
 ---
 

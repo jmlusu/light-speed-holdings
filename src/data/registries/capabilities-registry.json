@@ -49,8 +49,8 @@
         "description": "Auto through CEO sign-off with configurable thresholds and expiration sweeps."
       },
       {
-        "id": "immutable-audit-trails",
-        "title": "Immutable Audit Trails",
+        "id": "append-only-audit-trails",
+        "title": "Append-Only Audit Trails",
         "description": "SHA-256 sealed, append-only JSONL event logs for every agent action."
       },
       {
@@ -210,7 +210,7 @@
       },
       {
         "id": "audit-trails-governance",
-        "title": "Immutable Audit Trails",
+        "title": "Append-Only Audit Trails",
         "description": "Append-only JSONL audit events — correlated, queryable, never overwritten."
       },
       {
