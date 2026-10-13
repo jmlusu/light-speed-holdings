@@ -119,7 +119,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             The Lightspeed Leapfrog Thesis
           </h2>
           <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>
-            LightSpeed Holdings Limited was established on a single core principle: the African enterprise landscape does not need to passively consume legacy Western SaaS or wait through years of incremental chat copilots. By skipping the copilot era, African enterprises have an unprecedented leapfrogging opportunity to construct fully <strong>autonomous, agentic AI operating systems</strong>.
+            LightSpeed Holdings Limited was established on a single core principle: the African enterprise market does not need to passively consume legacy Western SaaS or wait through years of incremental chat copilots. By skipping the copilot era, African enterprises have a once-in-a-generation leapfrogging opportunity to construct fully <strong>autonomous, agentic AI operating systems</strong>.
           </p>
           <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>
             Operating across Malawi and African markets, and Pan-African trade corridors, LightSpeed Holdings Limited merges deep AI architecture, sovereign policy governance, and fiduciary advisory into deployable operational machinery.
@@ -143,7 +143,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             <h3 className={`text-base font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Institutional Mission</h3>
           </div>
           <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-            To empower enterprises, public institutions, and growth companies across Malawi and African markets to design, build, and govern sovereign AI operating models that eliminate workflow latency and multiply human capability.
+            To enable enterprises, public institutions, and growth companies across Malawi and African markets to design, build, and govern sovereign AI operating models that eliminate workflow latency and multiply human capability.
           </p>
         </div>
 
@@ -160,7 +160,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             <h3 className={`text-base font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Strategic Vision</h3>
           </div>
           <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-            To establish LightSpeed Holdings Limited as the premier AI-Native Operator and Partner—recognized across the globe for sovereign agentic systems, regional model laws, operational execution, and category-defining AI enterprise building.
+            To establish LightSpeed Holdings Limited as the premier AI-Native Operator and Partner, recognized across the globe for sovereign agentic systems, regional model laws, operational execution, and category-defining AI enterprise building.
           </p>
         </div>
 

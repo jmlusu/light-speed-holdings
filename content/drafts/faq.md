@@ -18,7 +18,7 @@ LightSpeed Holdings Limited combines human leadership, intelligent agents, gover
 
 ## 2. What is the AI Company Builder?
 
-A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable — no client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and append-only SHA-256 sealed audit trails for every action.
+A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable. No client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and append-only SHA-256 sealed audit trails for every action.
 
 <!-- src: faq-registry#faq-02, Directive section 18, Q2 -->
 
@@ -30,13 +30,13 @@ LightSpeed's operating model contains 90 roles: 89 AI agents plus one Human CEO.
 
 ## 4. What does the Human CEO do?
 
-The Human CEO sets company vision, mission, and long-term strategy; makes final decisions on high-stakes matters; represents the company externally to stakeholders and media; hires, manages, and evaluates the executive team; communicates with the Board of Directors; approves major budgets and investments; establishes and maintains company culture and values; resolves executive-level conflicts; authorizes production deployments and critical releases; and drives organizational growth and market expansion. The Human CEO has final authority — AI executes, humans decide.
+The Human CEO sets company vision, mission, and long-term strategy; makes final decisions on high-stakes matters; represents the company externally to stakeholders and media; hires, manages, and evaluates the executive team; communicates with the Board of Directors; approves major budgets and investments; establishes and maintains company culture and values; resolves executive-level conflicts; authorizes production deployments and critical releases; and drives organizational growth and market expansion. The Human CEO has final authority. AI executes, humans decide.
 
 <!-- src: faq-registry#faq-04, Directive section 18, Q4 -->
 
 ## 5. Does LightSpeed replace employees?
 
-No. Agents execute tasks; people own outcomes. Every engagement runs through 5-tier human-in-the-loop approvals, so your team keeps decision authority while the platform carries the workload. The principle is: "Agents execute. The Human CEO owns operational intent and final decision authority." LightSpeed augments teams — it does not replace human judgment or accountability.
+No. Agents execute tasks; people own outcomes. Every engagement runs through 5-tier human-in-the-loop approvals, so your team keeps decision authority while the platform carries the workload. The principle is: "Agents execute. The Human CEO owns operational intent and final decision authority." LightSpeed augments teams; it does not replace human judgment or accountability.
 
 <!-- src: faq-registry#faq-05, Directive section 18, Q5 -->
 
@@ -60,7 +60,7 @@ Five-tier governance means every consequential action passes through a risk-clas
 
 ## 9. How are actions audited?
 
-Every agent action generates an append-only JSONL audit event — correlated, queryable, and never overwritten. Each event is cryptographically sealed with SHA-256, making the trail tamper-evident. The audit log captures prompts, tool invocations, outputs, approval decisions, and escalation events. This is not optional logging — it is the platform's operating substrate.
+Every agent action generates an append-only JSONL audit event, correlated, queryable, and never overwritten. Each event is cryptographically sealed with SHA-256, making the trail tamper-evident. The audit log captures prompts, tool invocations, outputs, approval decisions, and escalation events. This is not optional logging; it is the platform's operating substrate.
 
 <!-- src: faq-registry#faq-09, Directive section 18, Q9 -->
 

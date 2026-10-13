@@ -220,12 +220,12 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
     lead: 'A focused session where LightSpeed presents the AI Company Builder platform.',
     capabilities: [
       { title: 'Platform Presentation', desc: 'LightSpeed presents the AI Company Builder platform in detail.' },
-      { title: 'Governance Model', desc: 'Deep dive into the 5-tier approval matrix and governance framework.' },
+      { title: 'Governance Model', desc: 'A close look at the 5-tier approval matrix and governance framework.' },
       { title: 'Engagement Roadmap', desc: 'Clear roadmap for how LightSpeed can work with your team.' },
     ],
     useCases: [
       { title: 'Board Presentation', lead: 'Focused session for leadership teams', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
-      { title: 'Governance Deep-Dive', lead: 'Understanding the approval matrix', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+      { title: 'Governance Walkthrough', lead: 'Understanding the approval matrix', proof: { label: 'Proven in-house', tone: 'proven' as const } },
       { title: 'Roadmap Planning', lead: 'Engagement roadmap for your organisation', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
     ],
     spec: {
@@ -233,9 +233,9 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
         'Boards and leadership teams need a clear, honest view of the AI Company Builder platform and its governance model.',
       audience: 'Boards, executive teams, and leadership committees.',
       changes: 'Leaders leave aligned on governance, scope, and a concrete engagement roadmap.',
-      builds: 'A focused session: platform presentation, governance deep-dive, and engagement roadmap.',
+      builds: 'A focused session: platform presentation, governance walkthrough, and engagement roadmap.',
       evidence:
-        'Governance deep-dive proven in-house; sessions and roadmap planning fieldable in 2026.',
+        'Governance walkthrough proven in-house; sessions and roadmap planning fieldable in 2026.',
     },
     cta: { label: 'Request a Boardroom Briefing', to: '/what-we-do' },
   },

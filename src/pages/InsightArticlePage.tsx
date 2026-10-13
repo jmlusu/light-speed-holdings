@@ -166,7 +166,7 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
       </section>
 
       {/* §16 journey CTAs: primary "Explore Related Thinking" + secondary actions */}
-      <section aria-label="Continue the journey" className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-4">
+      <section aria-label="Related thinking" className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-4">
         <Reveal>
           <div
             className={`rounded-3xl border p-8 sm:p-10 text-center space-y-5 ${
