@@ -71,7 +71,7 @@ export const insightTeasers: { title: string; topic: string; to: string }[] = [
   { title: 'The Five-Tier Approval Matrix: How Friction Scales With Risk in a 90-Agent Company', topic: 'AI GOVERNANCE', to: '/insights/five-tier-approval-matrix' },
   { title: 'Inside a 90-Agent Company: What the Registry, the Queue, and the Approval Gate Actually Do', topic: 'AI COMPANY BUILDING', to: '/insights/inside-a-90-agent-company' },
   { title: 'Offline-First AI for Africa: Designing for Bandwidth, Sovereignty, and Mobile-Money Reality', topic: 'AI IN AFRICA', to: '/insights/offline-first-ai-for-africa' },
-  { title: 'The Evidence Ladder: How Every Public Claim Gets a Class — and What Buyers Should Demand', topic: 'EVIDENCE & PROOF', to: '/insights/evidence-ladder-honest-claims' },
+  { title: 'The Evidence Ladder: How Every Public Claim Gets a Class, and What Buyers Should Demand', topic: 'EVIDENCE & PROOF', to: '/insights/evidence-ladder-honest-claims' },
   { title: 'The AI Opportunity in Africa', topic: 'AI IN AFRICA', to: '/insights/sadc-ai-opportunity' },
   { title: 'What Agentic AI Means for African Governments', topic: 'AGENTIC AI', to: '/insights/agentic-ai-african-governments' },
   { title: 'From Digital Transformation to AI-Native Transformation', topic: 'DIGITAL TRANSFORMATION', to: '/insights/digital-to-ai-native-transformation' },
