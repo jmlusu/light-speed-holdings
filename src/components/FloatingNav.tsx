@@ -14,8 +14,6 @@ const NAV_LINKS = [
   { name: 'Home', href: '/' },
   { name: 'AI Company Builder', href: '/ai-company-builder' },
   { name: 'Solutions', href: '/solutions' },
-  { name: 'Use Cases', href: '/use-cases' },
-  { name: 'Sectors', href: '/sectors' },
   { name: 'Insights', href: '/insights' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },
@@ -129,37 +127,37 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
               <div>
                 <h3 className="text-ls-white">H - Human CEOs</h3>
                 <p className="text-ls-white/60 text-sm">Human-led strategy and oversight</p>
-                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: Who owns the final decision for each agent action? Proof: 5-tier HITL approval matrix with SHA-256 audit trails (CLAIM: registry.metrics)</p>
+                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: Who owns the final decision for each agent action? Evidence: 5-tier HITL approval matrix with SHA-256 audit trails (CLAIM: registry.metrics)</p>
               </div>
               <div>
                 <h3 className="text-ls-white">A - Agents</h3>
                 <p className="text-ls-white/60 text-sm">90 specialized AI agents</p>
-                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: What canonical tools can each agent use? Proof: 7-tool vocabulary (read only: read, edit, bash, task, webfetch, code-structure, jq)</p>
+                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: What canonical tools can each agent use? Evidence: 7-tool vocabulary (read only: read, edit, bash, task, webfetch, code-structure, jq)</p>
               </div>
               <div>
                 <h3 className="text-ls-white">O - Operating Model</h3>
                 <p className="text-ls-white/60 text-sm">5-tier HITL approval matrix</p>
-                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: How are the 4 governance gates (G1–G4) enforced? Proof: Every engagement clears Contract, DPA, Compliance, Security before work begins (CLAIM: registry.solutions)</p>
+                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: How are the 4 governance gates (G1–G4) enforced? Evidence: Every engagement clears Contract, DPA, Compliance, Security before work begins (CLAIM: registry.solutions)</p>
               </div>
               <div>
                 <h3 className="text-ls-white">M - Memory</h3>
                 <p className="text-ls-white/60 text-sm">Shared semantic memory system</p>
-                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: How is cross-agent memory persisted and queried? Proof: SQLite trajectory database with structured evidence logs</p>
+                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: How is cross-agent memory persisted and queried? Evidence: SQLite trajectory database with structured evidence logs</p>
               </div>
               <div>
                 <h3 className="text-ls-white">T - Tools</h3>
                 <p className="text-ls-white/60 text-sm">Canonical 7-tool vocabulary</p>
-                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: Which of the 7 canonical tools are permitted per agent tier? Proof: AgentRegistry validates only approved tools; code-structure and jq for JSON filtering</p>
+                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: Which of the 7 canonical tools are permitted per agent tier? Evidence: AgentRegistry validates only approved tools; code-structure and jq for JSON filtering</p>
               </div>
               <div>
                 <h3 className="text-ls-white">G - Governance</h3>
                 <p className="text-ls-white/60 text-sm">5-tier HITL + RBAC dashboard</p>
-                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: What are the 5 HITL gates and 4 governance gates (G1–G4)? Proof: ApprovalGate runs expiry sweep, transitions expired PENDING to EXPIRED (CLAIM: registry.agents)</p>
+                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: What are the 5 HITL gates and 4 governance gates (G1–G4)? Evidence: ApprovalGate runs expiry sweep, transitions expired PENDING to EXPIRED (CLAIM: registry.agents)</p>
               </div>
               <div>
                 <h3 className="text-ls-white">V - Visuals</h3>
                 <p className="text-ls-white/60 text-sm">Micro-illustrations & Type K glyphs</p>
-                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: How are brand tokens (navy #070A40, red #DC3641, cyan #00BFFF) enforced? Proof: ls-artifact-qa visual QA + brand guidelines compliance</p>
+                <p className="text-ls-xs text-ls-white/40 mt-2">Design Q: How are brand tokens (navy #070A40, red #DC3641, cyan #00BFFF) enforced? Evidence: ls-artifact-qa visual QA + brand guidelines compliance</p>
               </div>
             </div>
             <button

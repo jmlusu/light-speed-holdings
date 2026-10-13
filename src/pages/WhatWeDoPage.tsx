@@ -7,7 +7,7 @@ import { CtaBand } from '../components/site/CtaBand';
 import { RelatedLinks } from '../components/site/RelatedLinks';
 import { HonestyBadge } from '../components/site/HonestyBadge';
 import { Reveal } from '../components/Reveal';
-import { OFFER_FAMILIES } from '../data/useCaseCatalogData';
+import { OFFER_FAMILIES } from '../data/offerFamilies';
 import { solutions, GOVERNANCE_SOLUTION, honestyLabel } from '../data/siteContent';
 import { getSectorsBySolution } from '../data/sector-registry';
 import { CTAS } from '../data/ctas';
@@ -164,7 +164,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         </div>
       </section>
 
-      {/* 4. PROOF & EVIDENCE: INTERACTIVE CATALOG (PACKAGES / SOLUTIONS / INDUSTRIES) */}
+      {/* 4. COMMERCIAL CATALOG: INTERACTIVE (PACKAGES / SOLUTIONS / INDUSTRIES) */}
       <section
         id="catalog"
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-16 border-t ${
@@ -174,7 +174,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div>
             <span className="text-xs font-body font-bold tracking-widest text-ls-red uppercase">
-              PROOF &amp; EVIDENCE // COMMERCIAL CATALOG
+              COMMERCIAL CATALOG // OFFERS &amp; SOLUTIONS
             </span>
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight font-display mt-2">
               Explore Our Capabilities
@@ -310,12 +310,11 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                       {getSectorsBySolution(sol.slug).map((s, i) => (
                         <React.Fragment key={s.id}>
                           {i > 0 && ' · '}
-                          <Link
-                            to={`/sectors#${s.id}`}
-                            className={`font-medium hover:text-ls-red hover:underline ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}
+                          <span
+                            className={`font-medium ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}
                           >
                             {s.title}
-                          </Link>
+                          </span>
                         </React.Fragment>
                       ))}
                     </p>
@@ -427,9 +426,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/use-cases', label: 'Use Cases' },
           { to: '/solutions', label: 'Solutions' },
-          { to: '/sectors', label: 'Sectors' },
         ]}
       />
 
@@ -437,7 +434,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
       <CtaBand
         theme={theme}
         title={CTAS.assessment.label}
-        text="Speak with our executive team. We will evaluate your data and workflow readiness honestly — and determine exactly which service tier fits your goals."
+        text="Speak with our executive team. We will evaluate your data and workflow readiness honestly, and determine exactly which service tier fits your goals."
         ctaLabel={CTAS.assessment.label}
         ctaTo={CTAS.assessment.to}
       />

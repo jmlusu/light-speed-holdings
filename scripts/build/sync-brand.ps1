@@ -8,10 +8,11 @@
 
 .DESCRIPTION
     brand/ at the repo root is the single source of truth. This script copies
-    the canonical subdirectories (logo, tokens, guidelines, logos, print, digital)
-    into the two deployment mirrors. Mirror-only content (static/brand/templates,
-    static/brand/social, static/brand/BRAND_GUIDELINES.md, public/brand/... )
-    is preserved.
+    the canonical subdirectories (logo, guidelines, logos, print, digital)
+    into the two deployment mirrors. Tokens live only under brand/tokens/
+    (canonical-only; no mirrors since 2026-10-13 cleanup). Mirror-only content
+    (static/brand/templates, static/brand/social, static/brand/BRAND_GUIDELINES.md,
+    public/brand/... ) is preserved.
 
 .PARAMETER DryRun
     Preview prune/copy without writing anything.
@@ -40,7 +41,8 @@ $mirrors = @(
 
 # Subdirectories that have a canonical source and should exist in every mirror.
 # "logo" = new canonical logo system (Directive §6); "logos" = legacy suite.
-$syncDirs = @("logo", "tokens", "guidelines", "logos", "print", "digital")
+# Tokens are canonical-only (brand/tokens/) — not mirrored since cleanup 2026-10-13.
+$syncDirs = @("logo", "guidelines", "logos", "print", "digital")
 
 # Mirror-only content that prune must never delete.
 $mirrorOnly = @("templates", "social")
@@ -159,3 +161,6 @@ foreach ($mirror in $mirrors) {
 Write-Host ""
 Write-Host ("Sync complete. files copied: {0}  pruned: {1}  ({2})" -f `
     $applied, $pruned, $(if ($DryRun) { 'nothing written' } else { 'mirrors updated' }))
+
+# Note: brand/tokens/ is intentionally NOT in $syncDirs — tokens are canonical-only
+# (loaded once via src/index.css); mirrors must not re-create public|static/brand/tokens/.

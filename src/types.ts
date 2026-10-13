@@ -171,51 +171,6 @@ export interface CatalogOfferFamily {
   deliverables: CatalogOfferDeliverable[];
 }
 
-export interface EnterpriseCapability {
-  name: string;
-  description: string;
-  status: string;
-}
-
-export interface CatalogIndustryVertical {
-  id: string;
-  title: string;
-  description: string;
-  keyUseCases: string[];
-  honestyBadge: HonestyBadge;
-  honestyNote: string;
-  iconName: string;
-}
-
-export interface CatalogPlatformScenario {
-  id: string; // FOW-01..FOW-08
-  code: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  honestyBadge: HonestyBadge;
-  targetAudience: string;
-}
-
-export interface CatalogProofPoint {
-  id: string;
-  title: string;
-  category: 'SME Proof' | 'Meta Case Study' | 'Pilot in Development' | 'Policy Reference';
-  honestyBadge: HonestyBadge;
-  badgeType: 'live' | 'proven' | 'pilot' | 'policy';
-  description: string;
-  whatItMonitorsOrProves: string;
-  whyItMatters: string;
-}
-
-export interface CatalogPolicyItem {
-  id: string;
-  title: string;
-  honestyBadge: HonestyBadge;
-  summary: string;
-  description: string;
-}
-
 export type ContentMediaType = 'screenshot' | 'brand-mark' | 'diagram' | 'metrics' | 'illustration';
 
 export interface ScreenshotMedia {

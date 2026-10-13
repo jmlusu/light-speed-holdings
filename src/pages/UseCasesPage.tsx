@@ -1,7 +1,7 @@
 /**
  * Use Cases Page
  *
- * Replaces ProofPage per Directive §10
+ * Use Case explorer page (Directive §10, §11).
  * Interactive Use Case explorer with filters
  * Directive §11
  */
@@ -94,7 +94,7 @@ export const UseCasesPage: React.FC = () => {
             What Can LightSpeed Actually Do?
           </Heading>
           <Text variant="lead" style={{ marginBottom: tokens.spacing[8], maxWidth: '700px', margin: '0 auto' }}>
-            Explore verified use cases across sectors, problems, and solutions. Every case carries an evidence status — from proven in-house to future roadmap targets. No fabricated client evidence.
+            Explore verified use cases across sectors, problems, and solutions. Every case carries an evidence status, from proven in-house to future roadmap targets. No fabricated client evidence.
           </Text>
         </div>
       </Section>

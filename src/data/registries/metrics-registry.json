@@ -44,16 +44,16 @@
       "value": 4,
       "label": "Governance Gates",
       "breakdown": "Contract, DPA, Compliance, Security",
-      "source": "src/data/useCaseCatalogData.ts (CATALOG_METHOD.governancePillars)",
+      "source": "src/data/siteContent.ts (trustEvidence te-03); company-registry.yaml; src/data/governance.ts",
       "classification": "PROVEN_IN_HOUSE",
       "description": "Mandatory gates before any engagement begins"
     },
     "testCount": {
-      "value": 2566,
+      "value": 2586,
       "label": "Regression Tests",
-      "source": "src/data/metrics.ts (liveTestCount); uv run pytest",
+      "source": "src/data/metrics.ts (liveTestCount); uv run pytest --collect-only -q (2026-10-13)",
       "classification": "PROVEN_IN_HOUSE",
-      "description": "Verified automated regression test count (post-Step 1 strip). Legacy pytest count: 2,557 (retained for audit trail)."
+      "description": "Verified automated regression test count. Legacy pytest count: 2,557 (retained for audit trail)."
     },
     "sectorCount": {
       "value": 10,
@@ -142,35 +142,35 @@
     "offerFamilyCount": {
       "value": 5,
       "label": "Offer Families (Catalog)",
-      "source": "src/data/useCaseCatalogData.ts (OFFER_FAMILIES array)",
+      "source": "src/data/offerFamilies.ts (OFFER_FAMILIES array)",
       "classification": "FIELDABLE",
       "description": "A: Digital Presence, B: Business Process Automation, C: Data/Analytics/Donor Reporting, D: Digital Marketing, E: Platform Licensing"
     },
     "enterpriseCapabilityCount": {
       "value": 7,
       "label": "Enterprise Capabilities",
-      "source": "src/data/useCaseCatalogData.ts (ENTERPRISE_CAPABILITIES array)",
+      "source": "retired with src/data/useCaseCatalogData.ts (2026-10-13); see git history / cleanup-plan §7",
       "classification": "DEMONSTRATION",
       "description": "Strategy & Roadmap, AI Design Sprint, Forward-Deployed Engineers, Venture Co-Build, Platform Licensing (Managed), Industry Accelerators, Client Portal"
     },
     "platformScenarioCount": {
       "value": 8,
       "label": "Platform Scenarios (FOW)",
-      "source": "src/data/useCaseCatalogData.ts (PLATFORM_SCENARIOS array)",
+      "source": "retired with src/data/useCaseCatalogData.ts (2026-10-13); see git history / cleanup-plan §7",
       "classification": "MIXED",
       "description": "FOW-01 through FOW-08 (Proven In-House, Demonstration mix)"
     },
     "industryVerticalCount": {
       "value": 6,
       "label": "Industry Verticals (Catalog)",
-      "source": "src/data/useCaseCatalogData.ts (CATALOG_INDUSTRIES array)",
+      "source": "src/data/sectors.ts / sector-registry.json; catalog count retired with useCaseCatalogData.ts (2026-10-13)",
       "classification": "MIXED",
       "description": "Agriculture, Health, FinTech, SME, Government, plus Education/Research"
     },
     "policyCount": {
       "value": 3,
       "label": "Policy Initiatives",
-      "source": "src/data/useCaseCatalogData.ts (CATALOG_POLICIES array)",
+      "source": "retired with src/data/useCaseCatalogData.ts (2026-10-13); see git history / cleanup-plan §7",
       "classification": "MIXED",
       "description": "National AI Strategy, SADC Framework, University Capacity Building"
     }
@@ -184,8 +184,7 @@
     "useCasesPerSector": "2.0"
   },
   "auditTrail": {
-    "legacyPytestCount": 2557,
     "legacyAgentCounts": [89, 90, 127, 143, 144, 152],
-    "note": "Legacy values retained for audit trail only. See LEGACY_INVENTORY.md and Directive §2 Absolute Business Facts."
+    "note": "Legacy values retained for audit trail only. See LEGACY_INVENTORY.md and Directive §2 Absolute Business Facts. legacyPytestCount removed from src/data/metrics.ts (2026-10-13); live suite is liveTestCount."
   }
 }
