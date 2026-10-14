@@ -312,6 +312,12 @@ class BenchmarkRunner:
             state = sample["input"]
             expected = sample["expected"]
 
+            # Snapshot real usage counters before the call so we can take a
+            # per-sample delta instead of a word-count approximation.
+            usage_before = None
+            if hasattr(provider, "usage") and isinstance(provider.usage, dict):
+                usage_before = dict(provider.usage)
+
             start = time.perf_counter()
             try:
                 predictions = await provider.ask_batch(workflow.questions, state)
@@ -322,10 +328,15 @@ class BenchmarkRunner:
 
             latencies.append(latency_ms)
 
-            # Extract input tokens from provider if available (Jev real usage)
+            # Prefer the real input_tokens the provider reported; fall back to
+            # the word-count estimate only when usage is unavailable (LLM).
             input_tokens = 0
-            if hasattr(provider, "usage") and isinstance(provider.usage, dict):
-                # Use call-delta if last usage was captured; approximate from state size
+            if usage_before is not None:
+                usage_after = getattr(provider, "usage", {})
+                delta = usage_after.get("input_tokens", 0) - usage_before.get("input_tokens", 0)
+                if delta > 0:
+                    input_tokens = delta
+            if input_tokens <= 0:
                 input_tokens = max(len(str(state).split()) // 4, 1)
 
             # Jev cost @ $0.042/M input tokens (, local free output)
