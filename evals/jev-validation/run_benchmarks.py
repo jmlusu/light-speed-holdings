@@ -4,14 +4,27 @@ Jev Validation Framework
 Run benchmarks comparing Jev vs LLM vs Deterministic baselines.
 """
 
-import json
 import asyncio
-import time
-from dataclasses import dataclass, asdict
-from typing import Dict, List, Any, Optional
-from abc import ABC, abstractmethod
-from pathlib import Path
+import json
+import os
 import statistics
+import time
+from abc import ABC, abstractmethod
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Dict, List
+
+try:
+    import httpx
+except ImportError:
+    httpx = None
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except ImportError:
+    pass
 
 # ============================================================================
 # Data Models
@@ -85,45 +98,71 @@ class DecisionProvider(ABC):
 
 
 class JevProvider(DecisionProvider):
-    """TypeSafe Jev provider (to be implemented when SDK available)."""
+    """Real Jev System One provider (HTTP POST /v1/systemone on localhost:8017)."""
 
-    def __init__(self, api_key: str, model: str = "jev-1.13.0"):
-        self.api_key = api_key
+    def __init__(self, base_url: str = "http://127.0.0.1:8017", model: str = "jev-latest"):
+        self.base_url = base_url.rstrip("/")
         self._model_id = model
-        # TODO: Initialize TypeSafe SDK client
+        self.usage = {"input_tokens": 0, "output_tokens": 0, "calls": 0}
 
     async def ask_batch(
         self, questions: Dict[str, Any], state: Dict[str, Any]
     ) -> Dict[str, DecisionResult]:
-        # TODO: Implement via TypeSafe SDK
-        # For now, return mock results for framework testing
-        results = {}
-        for q_name, q_spec in questions.items():
-            q_type = q_spec.get("type", "choice")
+        if httpx is None:
+            raise RuntimeError("httpx is required for JevProvider (pip install httpx)")
+
+        payload = {"model": self._model_id, "state": state, "questions": questions}
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.post(f"{self.base_url}/v1/systemone", json=payload)
+            resp.raise_for_status()
+            data = resp.json()
+
+        usage = data.get("usage", {})
+        self.usage["input_tokens"] += usage.get("input_tokens", 0)
+        self.usage["output_tokens"] += usage.get("output_tokens", 0)
+        self.usage["calls"] += 1
+
+        results: Dict[str, DecisionResult] = {}
+        for q_name, answer in data.get("answers", {}).items():
+            q_type = answer.get("type", "choice")
             if q_type == "choice":
-                criteria = q_spec.get("criteria", {})
+                probs_map = answer.get("probabilities", {})
+                ordered = [probs_map.get(k, 0.0) for k in probs_map]
                 results[q_name] = DecisionResult(
-                    value=list(criteria.keys())[0],
-                    probabilities=[0.9, 0.1],
-                    confidence=0.9,
+                    value=answer.get("choice"),
+                    probabilities=ordered,
+                    confidence=answer.get("confidence", 0.0),
                     question_type="choice",
                 )
             elif q_type == "score":
-                criteria = q_spec.get("criteria", [])
+                probs_map = answer.get("probabilities", {})
+                ordered = [probs_map.get(str(i), 0.0) for i in sorted(int(k) for k in probs_map)]
                 results[q_name] = DecisionResult(
-                    value=criteria[1] if len(criteria) > 1 else criteria[0],
-                    probabilities=[0.1, 0.7, 0.2],
-                    confidence=0.7,
+                    value=answer.get("score"),
+                    probabilities=ordered,
+                    confidence=answer.get("confidence", 0.0),
                     question_type="score",
                 )
             elif q_type == "noul":
+                noul = answer.get("noul", 0.5)
                 results[q_name] = DecisionResult(
-                    value=0.85, probabilities=[0.85, 0.15], confidence=0.85, question_type="noul"
+                    value=noul,
+                    probabilities=[noul, 1.0 - noul],
+                    confidence=abs(noul - 0.5) * 2,
+                    question_type="noul",
                 )
         return results
 
     async def health_check(self) -> bool:
-        return True
+        if httpx is None:
+            return False
+        try:
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                resp = await client.get(f"{self.base_url}/health")
+                return resp.status_code == 200 and resp.json().get("status") == "ready"
+        except (httpx.HTTPError, OSError, ValueError):
+            return False
 
     @property
     def model_id(self) -> str:
@@ -133,41 +172,19 @@ class JevProvider(DecisionProvider):
 class LLMProvider(DecisionProvider):
     """LLM-based decision provider using structured output (fallback)."""
 
-    def __init__(self, model: str = "gpt-5.6-terra"):
-        self._model_id = model
-        # TODO: Initialize LLM client with Instructor
+    def __init__(self, model: str | None = None):
+        self._model_id = model or os.getenv("EVAL_LLM_MODEL", "gemini-3.5-flash")
+        self._api_key = os.getenv("GEMINI_API_KEY") or os.getenv("OPENAI_API_KEY")
 
     async def ask_batch(
         self, questions: Dict[str, Any], state: Dict[str, Any]
     ) -> Dict[str, DecisionResult]:
-        # TODO: Implement via LLM with structured output
-        results = {}
-        for q_name, q_spec in questions.items():
-            q_type = q_spec.get("type", "choice")
-            if q_type == "choice":
-                criteria = q_spec.get("criteria", {})
-                results[q_name] = DecisionResult(
-                    value=list(criteria.keys())[0],
-                    probabilities=[0.85, 0.15],
-                    confidence=0.85,
-                    question_type="choice",
-                )
-            elif q_type == "score":
-                criteria = q_spec.get("criteria", [])
-                results[q_name] = DecisionResult(
-                    value=criteria[1] if len(criteria) > 1 else criteria[0],
-                    probabilities=[0.15, 0.7, 0.15],
-                    confidence=0.7,
-                    question_type="score",
-                )
-            elif q_type == "noul":
-                results[q_name] = DecisionResult(
-                    value=0.8, probabilities=[0.8, 0.2], confidence=0.8, question_type="noul"
-                )
-        return results
+        raise NotImplementedError(
+            "LLMProvider not implemented yet; use DeterministicProvider or wire LLMClient"
+        )
 
     async def health_check(self) -> bool:
-        return True
+        return bool(self._api_key)
 
     @property
     def model_id(self) -> str:
@@ -234,7 +251,7 @@ def expected_calibration_error(
     bin_uppers = bin_boundaries[1:]
 
     ece = 0.0
-    for bin_lower, bin_upper in zip(bin_lowers, bin_uppers):
+    for bin_lower, bin_upper in zip(bin_lowers, bin_uppers, strict=True):
         in_bin = [i for i, p in enumerate(predictions) if bin_lower <= p < bin_upper]
         if not in_bin:
             continue
@@ -250,14 +267,16 @@ def brier_score(predictions: List[float], labels: List[int]) -> float:
     """Calculate Brier Score for probabilistic predictions."""
     if len(predictions) != len(labels):
         raise ValueError("Predictions and labels must have same length")
-    return sum((p - l) ** 2 for p, l in zip(predictions, labels)) / len(predictions)
+    return sum((p - lab) ** 2 for p, lab in zip(predictions, labels, strict=True)) / len(
+        predictions
+    )
 
 
 def calculate_agreement(pred_values: List[Any], true_values: List[Any]) -> float:
     """Calculate agreement rate between predictions and ground truth."""
     if len(pred_values) != len(true_values):
         raise ValueError("Lengths must match")
-    matches = sum(1 for p, t in zip(pred_values, true_values) if p == t)
+    matches = sum(1 for p, t in zip(pred_values, true_values, strict=True) if p == t)
     return matches / len(pred_values) if pred_values else 0.0
 
 
@@ -297,12 +316,27 @@ class BenchmarkRunner:
             try:
                 predictions = await provider.ask_batch(workflow.questions, state)
                 latency_ms = (time.perf_counter() - start) * 1000
-            except Exception as e:
+            except (RuntimeError, ValueError, OSError) as e:
                 print(f"Error on sample {i}: {e}")
                 continue
 
             latencies.append(latency_ms)
-            costs.append(0.0004)  # Jev estimated cost
+
+            # Extract input tokens from provider if available (Jev real usage)
+            input_tokens = 0
+            if hasattr(provider, "usage") and isinstance(provider.usage, dict):
+                # Use call-delta if last usage was captured; approximate from state size
+                input_tokens = max(len(str(state).split()) // 4, 1)
+
+            # Jev cost @ $0.042/M input tokens (jevos-v4, local free output)
+            # LLM cost via MODEL_COSTS if available
+            if provider_name == "jev":
+                costs.append(input_tokens * 0.042 / 1_000_000)
+            elif provider_name == "llm":
+                # placeholder until LLMProvider wired; uses _default rate
+                costs.append(input_tokens * 1.00 / 1_000_000)
+            else:
+                costs.append(0.0)
 
             # Extract predictions for comparison
             pred_values = {}
@@ -332,7 +366,9 @@ class BenchmarkRunner:
         # Calibration metrics (for primary question)
         confidences = [r["confidences"].get(primary_q, 0.5) for r in results]
         # Convert to binary for ECE (correct/incorrect)
-        binary_labels = [1 if p == t else 0 for p, t in zip(pred_primary, true_primary)]
+        binary_labels = [
+            1 if p == t else 0 for p, t in zip(pred_primary, true_primary, strict=True)
+        ]
 
         ece = expected_calibration_error(confidences, binary_labels)
         brier = brier_score(confidences, binary_labels)
@@ -349,18 +385,26 @@ class BenchmarkRunner:
         fp_rate = 0.0
         fn_rate = 0.0
         if len(set(true_primary)) == 2:  # Binary classification
-            tp = sum(1 for p, t in zip(pred_primary, true_primary) if p == t == true_primary[0])
+            tp = sum(
+                1
+                for p, t in zip(pred_primary, true_primary, strict=True)
+                if p == t == true_primary[0]
+            )
             fp = sum(
                 1
-                for p, t in zip(pred_primary, true_primary)
+                for p, t in zip(pred_primary, true_primary, strict=True)
                 if p == true_primary[0] and t != true_primary[0]
             )
             fn = sum(
                 1
-                for p, t in zip(pred_primary, true_primary)
+                for p, t in zip(pred_primary, true_primary, strict=True)
                 if p != true_primary[0] and t == true_primary[0]
             )
-            tn = sum(1 for p, t in zip(pred_primary, true_primary) if p == t != true_primary[0])
+            tn = sum(
+                1
+                for p, t in zip(pred_primary, true_primary, strict=True)
+                if p == t != true_primary[0]
+            )
 
             fp_rate = fp / (fp + tn) if (fp + tn) > 0 else 0.0
             fn_rate = fn / (fn + tp) if (fn + tp) > 0 else 0.0
@@ -426,19 +470,6 @@ class BenchmarkRunner:
         ]
 
         for workflow_name, workflow_results in results.items():
-            jev = next(
-                (r for r in workflow_results if r.workflow == workflow_name and "jev" in str(r)),
-                None,
-            )
-            llm = next(
-                (r for r in workflow_results if r.workflow == workflow_name and "llm" in str(r)),
-                None,
-            )
-            det = next(
-                (r for r in workflow_results if r.workflow == workflow_name and "det" in str(r)),
-                None,
-            )
-
             # Find by provider name in details or re-run logic
             jev_r = next((r for r in workflow_results if "jev" in str(r.__dict__).lower()), None)
             llm_r = next((r for r in workflow_results if "llm" in str(r.__dict__).lower()), None)
@@ -478,10 +509,9 @@ class BenchmarkRunner:
         for workflow_name, workflow_results in results.items():
             jev_r = workflow_results[0] if workflow_results else None
             if jev_r:
-                goes = (
-                    "[PASS]" if (jev_r.jev_agreement_pct >= 0.9 and jev_r.ece < 0.1) else "[FAIL]"
-                )
-                if goes == "✅":
+                agrees = jev_r.jev_agreement_pct >= 0.9 and jev_r.ece < 0.1
+                goes = "[PASS]" if agrees else "[FAIL]"
+                if agrees:
                     pass_count += 1
                 lines.append(
                     f"| {workflow_name} | {jev_r.jev_agreement_pct:.1%} | {jev_r.ece:.4f} | {goes} |"
@@ -688,12 +718,26 @@ def load_workflows() -> List[WorkflowSpec]:
 async def main():
     runner = BenchmarkRunner()
 
-    # Register providers
-    runner.register_provider("jev", JevProvider(api_key="test-key"))
-    runner.register_provider("llm", LLMProvider())
+    # Real Jev against local server on 8017
+    jev_provider = JevProvider(base_url=os.getenv("JEV_BASE_URL", "http://127.0.0.1:8017"))
+    if await jev_provider.health_check():
+        runner.register_provider("jev", jev_provider)
+        print("Jev health: OK (localhost:8017)")
+    else:
+        print("WARNING: Jev not reachable on :8017; skipping Jev benchmarks")
+
+    # Deterministic baseline always available
     runner.register_provider("deterministic", DeterministicProvider())
 
-    # Load workflows
+    # Optional LLM if key present
+    llm_provider = LLMProvider()
+    if await llm_provider.health_check():
+        runner.register_provider("llm", llm_provider)
+
+    if "jev" not in runner.providers:
+        print("Cannot run Jev gate: server not reachable.")
+        return
+
     workflows = load_workflows()
 
     # Create ground truth directories
