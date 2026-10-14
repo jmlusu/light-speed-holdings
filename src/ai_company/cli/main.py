@@ -397,6 +397,67 @@ def generate(
     typer.echo(f"Done: {len(results)} agent files generated.")
 
 
+@app.command(name="create-deck")
+def create_deck(
+    topic: str = typer.Argument(..., help="Presentation topic/theme"),
+    audience: str = typer.Argument(..., help="Target audience"),
+    objective: str = typer.Argument(..., help="Desired outcome/ask"),
+    deck_type: str = typer.Option(
+        "investor_pitch",
+        help="Deck type: investor_pitch, board_meeting, keynote, training",
+    ),
+    narrative: str = typer.Option(
+        "",
+        help="Optional full narrative text (generated if omitted)",
+    ),
+    output_dir: str = typer.Option(
+        ".opencode/agents",
+        help="Output directory for generated files",
+    ),
+) -> None:
+    """Generate an executive-ready slide deck.
+
+    Produces three output files:
+    1. Marp Markdown (``.md``) — for visual verification/PNG export
+    2. PptxGenJS JSON (``.json``) — deterministic PPTX rendering spec
+    3. PPTX (``.pptx``) — final brand-token-enforced PowerPoint
+
+    The deck content is generated in Phase 1 (intellectual labor: narrative,
+    slide sequence, bullet points, speaker notes) and rendered in Phase 2
+    (layout engine with strict brand token enforcement).
+
+    Args:
+        topic: Presentation topic/theme
+        audience: Target audience
+        objective: Desired outcome/ask
+        deck_type: One of "investor_pitch", "board_meeting", "keynote", "training"
+        narrative: Optional full narrative text (generated if omitted)
+        output_dir: Output directory for generated files
+    """
+    from ai_company.generator import AgentGenerator
+
+    gen = AgentGenerator()
+
+    brief = {
+        "topic": topic,
+        "audience": audience,
+        "objective": objective,
+        "narrative": narrative,
+        "deck_type": deck_type,
+    }
+
+    output_files = gen.create_deck(
+        brief=brief,
+        output_dir=output_dir,
+        deck_type=deck_type,
+    )
+
+    typer.echo("Presentation deck generated successfully!")
+    typer.echo(f"  Marp Markdown: {output_files[0]}")
+    typer.echo(f"  PptxGenJS JSON: {output_files[1]}")
+    typer.echo(f"  PPTX: {output_files[2]}")
+
+
 @app.command()
 def status() -> None:
     """Show current company status."""

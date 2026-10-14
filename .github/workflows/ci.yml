@@ -228,6 +228,17 @@ jobs:
         run: uv sync --extra dev --frozen
       - name: Regenerate agents from registry
         run: uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+      - name: Verify YAML and JSON registries are in sync
+        run: |
+          uv run python -c "
+          from ai_company.registry.sync import verify_sync
+          errors = verify_sync()
+          if errors:
+              for e in errors:
+                  print(f'::error::{e}')
+              raise SystemExit(1)
+          print('YAML and JSON registries are in sync.')
+          "
       - name: Verify no drift
         run: |
           # Exclude the generated-date line in AGENT-REGISTRY-TABLE.md (changes daily).

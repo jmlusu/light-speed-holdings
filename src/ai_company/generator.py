@@ -19,6 +19,11 @@ from ai_company.executor.context import (
     Severity,
     parse_agent_spec_content,
 )
+from ai_company.presentation.pipeline import (
+    PresentationSpec,
+    create_deck_from_brief,
+    generate_content_from_brief,
+)
 from ai_company.registry import load_registry
 from ai_company.registry.loader import load_yaml_cached
 from ai_company.store import repo_write
@@ -644,3 +649,51 @@ class AgentGenerator:
             logger.info("No PowerShell anti-patterns detected in generated content.")
 
         return generated
+
+    def generate_presentation_phases(
+        self,
+        brief: dict[str, Any],
+        deck_type: str | None = None,
+        registry_path: str = "company-registry.yaml",
+    ) -> PresentationSpec:
+        """Phase 1 only: Generate PresentationSpec from a brief dict.
+
+        Separates intellectual labor from visual rendering. The returned
+        spec contains slide titles, bullet points, speaker notes, and KPI cards
+        ready for Phase 2 rendering (Marp Markdown or PptxGenJS JSON).
+
+        Args:
+            brief: Dict with keys: topic, audience, objective, narrative,
+                source_data (optional).
+            deck_type: One of "investor_pitch", "board_meeting", "keynote",
+                "training". Defaults to "investor_pitch".
+            registry_path: Path to company-registry.yaml for real metrics.
+
+        Returns:
+            PresentationSpec with all content generated in Phase 1.
+        """
+        return generate_content_from_brief(
+            brief, deck_type=deck_type or "investor_pitch", registry_path=registry_path
+        )
+
+    def create_deck(
+        self,
+        brief: dict[str, Any],
+        output_dir: str = ".opencode/agents",
+        deck_type: str | None = None,
+        registry_path: str = "company-registry.yaml",
+    ) -> list[str]:
+        """Full pipeline: Phase 1 + Phase 2.
+
+        1. Phase 1: Generate PresentationSpec from brief (content & structure)
+        2. Phase 2: Render to Marp Markdown (for visual verification/PNG export)
+        3. Phase 2: Also render PptxGenJS JSON and actual PPTX with brand tokens
+
+        Returns list of output file paths: [marp_md_path, pptxgen_json_path, pptx_path].
+        """
+        return create_deck_from_brief(
+            brief,
+            output_dir=output_dir,
+            deck_type=deck_type or "investor_pitch",
+            registry_path=registry_path,
+        )
