@@ -19,15 +19,14 @@ from ai_company.executor.context import (
     Severity,
     parse_agent_spec_content,
 )
+from ai_company.presentation.pipeline import (
+    PresentationSpec,
+    create_deck_from_brief,
+    generate_content_from_brief,
+)
 from ai_company.registry import load_registry
 from ai_company.registry.loader import load_yaml_cached
 from ai_company.store import repo_write
-from ai_company.presentation.pipeline import (
-    generate_content_from_brief,
-    create_deck_from_brief,
-    PresentationSpec,
-    SlideSpec,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -673,7 +672,9 @@ class AgentGenerator:
         Returns:
             PresentationSpec with all content generated in Phase 1.
         """
-        return generate_content_from_brief(brief, deck_type=deck_type, registry_path=registry_path)
+        return generate_content_from_brief(
+            brief, deck_type=deck_type or "investor_pitch", registry_path=registry_path
+        )
 
     def create_deck(
         self,
@@ -693,6 +694,6 @@ class AgentGenerator:
         return create_deck_from_brief(
             brief,
             output_dir=output_dir,
-            deck_type=deck_type,
+            deck_type=deck_type or "investor_pitch",
             registry_path=registry_path,
         )

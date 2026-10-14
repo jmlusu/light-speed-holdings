@@ -399,15 +399,9 @@ def generate(
 
 @app.command(name="create-deck")
 def create_deck(
-    topic: str = typer.Argument(
-        ..., help="Presentation topic/theme"
-    ),
-    audience: str = typer.Argument(
-        ..., help="Target audience"
-    ),
-    objective: str = typer.Argument(
-        ..., help="Desired outcome/ask"
-    ),
+    topic: str = typer.Argument(..., help="Presentation topic/theme"),
+    audience: str = typer.Argument(..., help="Target audience"),
+    objective: str = typer.Argument(..., help="Desired outcome/ask"),
     deck_type: str = typer.Option(
         "investor_pitch",
         help="Deck type: investor_pitch, board_meeting, keynote, training",
@@ -441,7 +435,6 @@ def create_deck(
         output_dir: Output directory for generated files
     """
     from ai_company.generator import AgentGenerator
-    from ai_company.presentation.pipeline import PresentationSpec
 
     gen = AgentGenerator()
 
@@ -459,7 +452,7 @@ def create_deck(
         deck_type=deck_type,
     )
 
-    typer.echo(f"Presentation deck generated successfully!")
+    typer.echo("Presentation deck generated successfully!")
     typer.echo(f"  Marp Markdown: {output_files[0]}")
     typer.echo(f"  PptxGenJS JSON: {output_files[1]}")
     typer.echo(f"  PPTX: {output_files[2]}")

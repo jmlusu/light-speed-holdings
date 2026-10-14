@@ -19,11 +19,11 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
 
 # Brand Colors (80/10/10 rule)
-NAVY = RGBColor(0x07, 0x0A, 0x40)   # 80% — primary, left rail, main text
-RED = RGBColor(0xE6, 0x39, 0x46)    # 10% — highlights, key decisions, calls to action
-CYAN = RGBColor(0x00, 0xBF, 0xFF)   # 10% — secondary highlights, tech emphasis
+NAVY = RGBColor(0x07, 0x0A, 0x40)  # 80% — primary, left rail, main text
+RED = RGBColor(0xE6, 0x39, 0x46)  # 10% — highlights, key decisions, calls to action
+CYAN = RGBColor(0x00, 0xBF, 0xFF)  # 10% — secondary highlights, tech emphasis
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)  # Content backgrounds
-GREY = RGBColor(0xF2, 0xF2, 0xF2)   # Non-brand backgrounds, KPI boxes
+GREY = RGBColor(0xF2, 0xF2, 0xF2)  # Non-brand backgrounds, KPI boxes
 DARK_GREY = RGBColor(0x6B, 0x72, 0x80)  # Secondary text
 
 
@@ -314,7 +314,9 @@ def create_our_solution_slide(prs):
         "✓  MessageBus task queue for cross-agent coordination",
         "✓  Local-first option (Ollama) for zero-cost inference",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(3.5), Inches(8.5), Inches(3), features, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(3.5), Inches(8.5), Inches(3), features, font_size=13, color=NAVY
+    )
 
     # Cyan accent for key differentiator
     add_text_box(
@@ -363,7 +365,9 @@ def create_customer_success_slide(prs):
         "•  SMB SaaS: 1× Offer B integration, 25% faster onboarding",
         "•  Enterprise: 1× Offer C fleet management, 70% automation rate",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(3), cases, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(3), cases, font_size=13, color=NAVY
+    )
 
     # Red callout for impact
     add_shape(
@@ -426,7 +430,16 @@ def create_competitive_differentiation_slide(prs):
         "Enterprise ML platforms (overkill for most orgs)",
         "ChatGPT/Claude for single tasks (no orchestration)",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(2.2), Inches(8.5), Inches(4), competitors, font_size=12, color=NAVY)
+    add_bullet_list(
+        slide,
+        Inches(0.8),
+        Inches(2.2),
+        Inches(8.5),
+        Inches(4),
+        competitors,
+        font_size=12,
+        color=NAVY,
+    )
 
     # Cyan for our differentiation
     differentiation = [
@@ -437,7 +450,16 @@ def create_competitive_differentiation_slide(prs):
         "  ✓  Multi-provider with automatic fallback",
         "  ✓  Local-first option (Ollama) for zero-cost inference",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(5.5), Inches(8.5), Inches(2), differentiation, font_size=12, color=CYAN)
+    add_bullet_list(
+        slide,
+        Inches(0.8),
+        Inches(5.5),
+        Inches(8.5),
+        Inches(2),
+        differentiation,
+        font_size=12,
+        color=CYAN,
+    )
 
 
 def create_technology_innovation_slide(prs):
@@ -486,7 +508,16 @@ def create_technology_innovation_slide(prs):
         "  •  Principle-of-least-privilege agent permissions",
         "  •  Encrypted credential storage",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.8), Inches(8.5), Inches(5), tech_items, font_size=12, color=NAVY)
+    add_bullet_list(
+        slide,
+        Inches(0.8),
+        Inches(1.8),
+        Inches(8.5),
+        Inches(5),
+        tech_items,
+        font_size=12,
+        color=NAVY,
+    )
 
     # Cyan for core component
     add_text_box(
@@ -538,7 +569,16 @@ def create_roadmap_slide(prs):
         "•  Q2 2027 — Multi-region deployment; local-first (Ollama) support",
         "•  Q3 2027 — Autonomous mode live — self-governing AI company",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(3.5), milestones, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide,
+        Inches(0.8),
+        Inches(2.3),
+        Inches(8.5),
+        Inches(3.5),
+        milestones,
+        font_size=13,
+        color=NAVY,
+    )
 
     # Grey for roadmap planning
     add_text_box(
@@ -589,7 +629,9 @@ def create_key_decisions_slide(prs):
         "•  Hire Platform Licensing Sales Lead (Offer E) — Priority 1",
         "•  Approve BPA/Chatbot Delivery Lead (Offer B) for NGO USD revenue",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(4), decisions, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(4), decisions, font_size=13, color=NAVY
+    )
 
     # Red for approval items
     add_text_box(
@@ -731,7 +773,9 @@ def create_team_execution_slide(prs):
         "  •  BPA/Chatbot Delivery Lead (Offer B) — NGO USD revenue",
         "  •  Compliance Officer + DevRel Engineer — unblock Offer B/C & developer adoption",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(4), team, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(4), team, font_size=13, color=NAVY
+    )
 
     # Cyan for developer adoption
     add_text_box(
@@ -782,7 +826,9 @@ def create_future_outlook_slide(prs):
         "•  2028 — Phase 5: fully autonomous AI company operation",
         "•  Ongoing — 80/10/10 brand rule enforced across all artifacts",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(3.5), outlook, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(3.5), outlook, font_size=13, color=NAVY
+    )
 
 
 def create_call_to_action_slide(prs):
@@ -831,7 +877,9 @@ def create_call_to_action_slide(prs):
         "•  Green-light compliance sign-off: DPA, GDPR, SOC 2 Type II",
         "•  Kick-off hardware lab for offline-first proof of concept",
     ]
-    add_bullet_list(slide, Inches(2), Inches(4.0), Inches(9.5), Inches(3), cta_items, font_size=15, color=WHITE)
+    add_bullet_list(
+        slide, Inches(2), Inches(4.0), Inches(9.5), Inches(3), cta_items, font_size=15, color=WHITE
+    )
 
     # CTA emphasis
     add_text_box(
@@ -915,19 +963,19 @@ def main():
     prs.slide_height = Inches(7.5)
 
     # Build deck (13 slides)
-    create_opening_slide(prs)          # Slide 1
+    create_opening_slide(prs)  # Slide 1
     create_market_opportunity_slide(prs)  # Slide 2
-    create_our_solution_slide(prs)      # Slide 3
+    create_our_solution_slide(prs)  # Slide 3
     create_customer_success_slide(prs)  # Slide 4
     create_competitive_differentiation_slide(prs)  # Slide 5
     create_technology_innovation_slide(prs)  # Slide 6
-    create_roadmap_slide(prs)           # Slide 7
-    create_key_decisions_slide(prs)    # Slide 8
+    create_roadmap_slide(prs)  # Slide 7
+    create_key_decisions_slide(prs)  # Slide 8
     create_financial_overview_slide(prs)  # Slide 9
-    create_team_execution_slide(prs)    # Slide 10
-    create_future_outlook_slide(prs)    # Slide 11
-    create_call_to_action_slide(prs)    # Slide 12
-    create_closing_thesis_slide(prs)    # Slide 13
+    create_team_execution_slide(prs)  # Slide 10
+    create_future_outlook_slide(prs)  # Slide 11
+    create_call_to_action_slide(prs)  # Slide 12
+    create_closing_thesis_slide(prs)  # Slide 13
 
     # Save
     output_path = os.path.join(os.path.dirname(__file__), "..", "templates", "keynote-deck.pptx")
