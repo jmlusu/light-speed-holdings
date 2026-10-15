@@ -10,11 +10,6 @@ integrations:
     requiresRegistrySync: false
     note: "All ecosystem agents already exist in the company registry; this package only wires them together."
 
-  jev:
-    reference: "docs/adr/023-jev-system-one-integration.md"
-    owner: "head-of-business-development"
-    purpose: "Decision engine for high-stakes internal decisions"
-
   open-design:
     reference: ".opencode/integrations/open-design/config.json"
     owner: "head-of-business-development"

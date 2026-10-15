@@ -61,10 +61,6 @@ MODEL_COSTS: dict[str, dict[str, float]] = {
     # MiMo (Xiaomi) models — list price per 1M tokens, cache-miss input
     "mimo-v2.5-pro": {"input": 0.435, "output": 0.87},
     "mimo-v2.5": {"input": 0.14, "output": 0.28},
-    # Jev / jevos (local OpenVINO, CPU, free output) — $0.042/M input, output free
-    "jev-latest": {"input": 0.042, "output": 0.0},
-    "jevos-v4": {"input": 0.042, "output": 0.0},
-    "jev-1.13.0": {"input": 0.042, "output": 0.0},
     # Ollama / local models — effectively free
     "llama3.1:70b": {"input": 0.0, "output": 0.0},
     "llama3.1-8b-32k": {"input": 0.0, "output": 0.0},

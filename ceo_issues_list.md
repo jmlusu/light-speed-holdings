@@ -83,37 +83,7 @@
 
 ## Research & Analysis
 
-76. JEV-FB-04 Fallback Schedule Jev re-evaluation 90 days — Plan periodic re-evaluation of the Jev system.
-77. JEV-FB-03 Fallback LLM-based guardrails constrained decoding — Develop guardrails that constrain LLM output.
-78. JEV-FB-02 Fallback Calibration layer temperature scaling — Add temperature-based output calibration fallback.
-79. JEV-FB-01 Fallback Structured-output LLM routing — Route LLM outputs into structured formats fallback option.
-80. JEV-026 Retrospective lessons learned — Document what was learned from a completed project phase.
-81. JEV-025 Finalize ADR-023 as Accepted — Formally accept or reject Architecture Decision Record 023.
-82. JEV-024 Negotiate enterprise terms — Discuss and finalize terms for enterprise customers.
-83. JEV-023 Gradual rollout guardrail traffic — Phase in guardrail protections gradually across traffic.
-84. JEV-022 Gradual rollout routing traffic — Phase in new routing rules gradually across the system.
-85. JEV-021 Shadow mode 100% traffic — Run new routing in shadow mode (observ only) with full traffic enabled.
-86. JEV-020 Calibration monitoring dashboard — Create a dashboard for monitoring system calibration status.
-87. JEV-019 Document integration patterns ADR update — Update architecture documentation for integration patterns.
-88. JEV-018 Load test 1,000 concurrent tasks — Test system capacity with 1,000 simultaneous tasks.
-89. JEV-017 Instrument executor Jev guardrails — Add guardrail checking to the task executor component.
-90. JEV-016 Extend generator decision_agent template — Update the decision agent generation template.
-91. JEV-015 Add DecisionAgent type registry schema — Add the DecisionAgent type to the agent registry definition.
-92. JEV-014 Build JevRouter replace LLM router — Replace the current LLM routing system with JevRouter.
-93. JEV-013 Implement DecisionProvider factory fallback — Create a factory pattern for DecisionProvider with fallback.
-94. JEV-012 Implement JevProvider TypeSafe SDK wrapper — Wrap the TypeSafe SDK for consistent usage.
-95. JEV-011 Design DecisionProvider interface — Define the interface for DecisionProvider components.
-96. JEV-010 Decision Gate Go/No-Go Phase 2 — Make a go/no-go decision point for Phase 2 development.
-97. JEV-009 Comparison analysis Jev vs LLM deterministic — Compare different AI approach types effectiveness.
-98. JEV-008 Benchmark Policy Compliance Check — Benchmark policy compliance across different approaches.
-99. JEV-007 Benchmark Customer Triage — Benchmark customer triage effectiveness across scenarios.
-100. JEV-006 Benchmark Trace Anomaly Scoring — Benchmark anomaly detection in task traces and logs.
-101. JEV-005 Benchmark Tool Call Verification — Benchmark verification of tool calls made by AI agents.
-102. JEV-004 Benchmark Agent Intent Routing — Benchmark how well agents route intents to appropriate handlers.
-103. JEV-003 Define 5 LightSpeed validation workflows — Define the validation workflows used by the system.
-104. JEV-002 Set up daf-jev toolkit locally — Set up the development toolkit locally for local development.
-105. JEV-001 Request TypeSafe early access — Request early access to the TypeSafe library for evaluation.
-106. content_creator cannot execute asset generators — Fix the content creator tool's inability to run asset generation.
+76. content_creator cannot execute asset generators — Fix the content creator tool's inability to run asset generation.
 107. Infographic brand-token enforcement — Ensure brand tokens are correctly used in infographic generation.
 
 ## Additional Notes

@@ -10,8 +10,7 @@ the company registry.
 The Ecosystems team is the umbrella owning:
 
 - **Strategic integrations** — LLM provider partnerships, cloud platform alliances,
-  operations deals (Jev / TypeSafe AI decision engine, Open Design creative stack,
-  ComfyUI media pipeline).
+  operations deals (Open Design creative stack, ComfyUI media pipeline).
 - **Client system integrations (Offer B / Offer C)** — WhatsApp Business API, CRM sync,
   payment gateways (Airtel Money, TNM Mpamba, PayChangu), and NGO data sources
   (Kobo, DHIS2, Google Sheets).
@@ -32,8 +31,8 @@ The Ecosystems team is the umbrella owning:
 ┌─────────────────────────────────────────────────────────────────┐
 │                 Third-Party Integration Catalog                  │
 ├─────────────────────────────────────────────────────────────────┤
-│  Jev/TypeSafe │ Open Design │ ComfyUI │ LLM Providers │ Client  │
-│  (decision)    (creative)    (media)   (multi-route)   (B/C)    │
+│  Open Design   │ ComfyUI     │ LLM Providers │ Client System      │
+│  (creative)    │ (media)     │ (multi-route) │ connectors (B/C)   │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -73,7 +72,6 @@ The Ecosystems team is the umbrella owning:
 
 | Integration | Type | Owner | Status | Reference |
 |-------------|------|-------|--------|-----------|
-| Jev / TypeSafe AI | Decision engine | Head of Business Development | Active | `docs/adr/023-jev-system-one-integration.md` |
 | Open Design | Creative production | Head of Business Development | Active | `.opencode/integrations/open-design/` |
 | ComfyUI | Media generation | Media Generation Owner | Active | `docs/adr/018-comfyui-media-generation.md` |
 | LLM providers (multi-route) | Model routing | LLM Platform Owner | Active | `docs/adr/004-llm-router.md` |
@@ -157,8 +155,6 @@ escalation paths before beginning work.
 ## References
 
 - Agent Registry: `company-registry.yaml`
-- Jev Integration ADR: `docs/adr/023-jev-system-one-integration.md`
-- Jev Brief: `JEV_INTEGRATION_BRIEF.md`
 - Open Design Package: `.opencode/integrations/open-design/`
 - ComfyUI ADR: `docs/adr/018-comfyui-media-generation.md`
 - Org Chart: `company/org-chart.md`

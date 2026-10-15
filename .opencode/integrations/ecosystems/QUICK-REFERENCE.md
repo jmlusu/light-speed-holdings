@@ -27,7 +27,6 @@
 
 | Integration | Type | Owner | Governance Gate |
 |-------------|------|-------|-----------------|
-| Jev / TypeSafe AI | Decision engine | Head of Business Development | Security + Continuity |
 | Open Design | Creative production | Head of Business Development | Brand (ls-design-system) |
 | ComfyUI | Media generation | Media Generation Owner | Security |
 | LLM providers (multi-route) | Model routing | LLM Platform Owner | Privacy (DPAs) |

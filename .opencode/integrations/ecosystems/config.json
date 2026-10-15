@@ -3,7 +3,7 @@
   "version": "0.9.0",
   "integration": {
     "name": "LightSpeed Holdings Limited Ecosystems",
-    "description": "Third-party integration ecosystem for LightSpeed Holdings: Jev/TypeSafe, Open Design, ComfyUI, LLM providers, and client-facing connectors (WhatsApp, CRM, payments, NGO data).",
+    "description": "Third-party integration ecosystem for LightSpeed Holdings: Open Design, ComfyUI, LLM providers, and client-facing connectors (WhatsApp, CRM, payments, NGO data).",
     "enabled": true
   },
   "connection": {
@@ -37,12 +37,6 @@
     "Integration failures escalate to HITL before client impact."
   ],
   "catalog": {
-    "jev": {
-      "type": "decision-engine",
-      "owner": "head-of-business-development",
-      "reference": "docs/adr/023-jev-system-one-integration.md",
-      "enabled": true
-    },
     "open-design": {
       "type": "creative-production",
       "owner": "head-of-business-development",
