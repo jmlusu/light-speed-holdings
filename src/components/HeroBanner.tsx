@@ -17,10 +17,10 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ theme, onOpenContactModa
           INSTITUTIONAL CHARTER // SOVEREIGN MISSION
         </span>
       </div>
-      <h1 className={isLight ? 'text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-display mb-4 leading-normal sm:leading-tight break-words text-ls-navy' : 'text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-display mb-4 leading-normal sm:leading-tight break-words text-ls-white'>
+      <h1 className={isLight ? 'text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-display mb-4 leading-normal sm:leading-tight break-words text-ls-navy' : 'text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-display mb-4 leading-normal sm:leading-tight break-words text-ls-white'}>
         About <span className="inline-block pb-1.5 text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-red/40 to-ls-red/85">LightSpeed</span>
       </h1>
-      <p className={isLight ? 'text-base sm:text-lg leading-relaxed font-sans italic text-ls-grey-dark' : 'text-base sm:text-lg leading-relaxed font-sans italic text-ls-grey-light-text'>
+      <p className={isLight ? 'text-base sm:text-lg leading-relaxed font-sans italic text-ls-grey-dark' : 'text-base sm:text-lg leading-relaxed font-sans italic text-ls-grey-light-text'}>
         "Africa does not need to wait for the future of enterprise. It can build it."
       </p>
     </div>

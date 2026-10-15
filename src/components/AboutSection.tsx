@@ -19,7 +19,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
   const isLight = theme === 'light';
 
   return (
-    <section id="about" className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 font-sans">
+    <section id="about" className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans">
 
       {/* Header Banner */}
       <HeroBanner theme={theme} onOpenContactModal={onOpenContactModal} />
@@ -31,11 +31,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       <OperatingModelGrid theme={theme} />
 
       {/* Our Story & Thesis Chassis */}
-      <div className={`p-8 sm:p-12 rounded-3xl border relative overflow-hidden transition-all ${
-        isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
-      }`}
+      <div className={`p-8 sm:p-12 rounded-3xl border relative overflow-hidden transition-all ${isLight ? 'chassis-milled-light' : 'chassis-milled-dark'}`}>
 
-        <div className="max-w-3xl mx-auto space-y-6 text-sm leading-relaxed">
+        <div className="max-w-3xl mx-auto my-12 text-sm">
           <div className="flex items-center justify-between border-b border-ls-grey-dark/80 pb-4">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-ls-emerald" />
@@ -60,9 +58,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       <MissionVisionValuesGrid theme={theme} />
 
       {/* Executive Leadership Chassis */}
-      <div className={`p-8 sm:p-10 rounded-3xl border relative overflow-hidden space-y-6 transition-all ${
-        isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
-      }`}
+      <div className={`p-8 sm:p-10 rounded-3xl border relative overflow-hidden my-6 transition-all ${isLight ? 'chassis-milled-light' : 'chassis-milled-dark'}`}>
 
         <div className="flex items-center justify-between border-b border-ls-grey-dark pb-3">
           <div className="flex items-center gap-2">
@@ -84,7 +80,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-ls-red to-ls-red/85 text-ls-navy font-extrabold text-xl font-body flex items-center justify-center shrink-0 shadow-lg shadow-ls-red/20 border border-ls-red/40">
               {leader.initials}
             </div>
-            <div className="space-y-2">
+            <div className="p-6 rounded-2xl border my-4">
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className={`text-lg font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>{leader.name}</h3>
