@@ -9,6 +9,8 @@ export interface EnquiryFields {
   enquiryType: string;
   message?: string;
   phone?: string;
+  title?: string;
+  timeline?: string;
 }
 
 export function newReferenceKey(): string {
@@ -31,6 +33,8 @@ export function enquiryPayload(
     enquiryType: fields.enquiryType,
     message: fields.message ?? '',
     phone: fields.phone ?? '',
+    title: fields.title ?? '',
+    timeline: fields.timeline ?? '',
     hp_website: honeypotValue,
     turnstileToken: turnstileToken ?? '',
     idempotencyKey: newReferenceKey()
