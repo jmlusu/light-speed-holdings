@@ -32,6 +32,8 @@ interface EnquiryFields {
   enquiryType?: string;
   message?: string;
   phone?: string;
+  title?: string;
+  timeline?: string;
   turnstileToken?: string;
 }
 
@@ -103,6 +105,8 @@ function pickStrings(body: Record<string, unknown>): EnquiryFields {
     'enquiryType',
     'message',
     'phone',
+    'title',
+    'timeline',
     'turnstileToken'
   ] as const;
   const out: EnquiryFields = {};
@@ -194,9 +198,11 @@ function buildEmailHtml(fields: EnquiryFields): string {
   const rows = [
     ['Form', escape(fields.form)],
     ['Name', escape(fields.name)],
+    ['Title', escape(fields.title)],
     ['Organization', escape(fields.organization)],
     ['Work email', escape(fields.email)],
     ['Enquiry type', escape(fields.enquiryType)],
+    ['Timeline', escape(fields.timeline)],
     ['Phone', escape(fields.phone)],
     ['Message', escape(fields.message)]
   ];

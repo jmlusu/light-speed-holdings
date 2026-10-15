@@ -96,7 +96,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
               organization: contactFormData.organization,
               email: contactFormData.email,
               enquiryType: contactFormData.scope,
-              message: contactFormData.objective
+              message: contactFormData.objective,
+              title: contactFormData.title,
+              timeline: contactFormData.timeline
             },
             turnstileToken,
             honeypot
