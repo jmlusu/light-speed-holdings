@@ -1,0 +1,44 @@
+flowchart TB
+    subgraph Registry["Registry Layer"]
+        YAML["company-registry.yaml\n(Source of Truth)"]
+    end
+
+    subgraph Generator["Generator Layer"]
+        GEN["AgentGenerator\nReads YAML → Renders agent.md.j2"]
+    end
+
+    subgraph Output["Output Layer"]
+        MD[".opencode/agents/*.md\nOpenCode-native"]
+        YAML_OUT["company/*.yaml\nDeployed config"]
+    end
+
+    subgraph Runtime["Runtime Layer"]
+        BUS["MessageBus\n.opencode/inbox.json"]
+        EXEC["Executor Loop\nTask → Agent → Result"]
+    end
+
+    subgraph Governance["Governance Layer"]
+        GATE["ApprovalGate\nHITL + Expiry Sweep"]
+        AUDIT["AuditLog\nEscalation Events"]
+        DLQ["Dead Letter Queue"]
+    end
+
+    YAML --> GEN
+    GEN --> MD
+    GEN --> YAML_OUT
+    MD --> BUS
+    YAML_OUT --> BUS
+    BUS --> EXEC
+    EXEC --> GATE
+    GATE --> AUDIT
+    EXEC -.-> DLQ
+
+    style GATE fill:#E63946,color:#fff
+    style YAML fill:#070A40,color:#fff
+    style GEN fill:#00BFFF,color:#070A40
+    style BUS fill:#F2F2F2,color:#070A40
+    style MD fill:#FFFFFF,color:#070A40
+    style YAML_OUT fill:#FFFFFF,color:#070A40
+    style EXEC fill:#F2F2F2,color:#070A40
+    style AUDIT fill:#F2F2F2,color:#070A40
+    style DLQ fill:#F2F2F2,color:#E63946

@@ -1,0 +1,14 @@
+# Person Entity Definition
+
+key: jmlus_ceo
+name: J. M. L.
+role: ceo
+industries:
+  - african_ai
+  - digital_transformation
+  - ai_governance
+expertise_areas:
+  - AI strategy
+  - company building
+  - emerging markets
+is_active: true

@@ -1,0 +1,26 @@
+# Caddy reverse proxy — AI Company Builder dashboard
+#
+# Placeholder __SITE_DOMAIN__ is replaced by setup-vm.sh with either:
+#   - your domain (e.g. dashboard.example.com)  => automatic HTTPS (Let's Encrypt)
+#   - :80                                        => plain HTTP (no domain assigned yet)
+#
+# The dashboard runs inside Docker and is published on the host at
+# 127.0.0.1:8421 (docker-compose.staging.yml maps container 8420 -> host 8421).
+# This proxy keeps that port off the public internet entirely.
+
+__SITE_DOMAIN__ {
+	encode zstd gzip
+
+	# dashboard API + WebSocket (SSE /wsv1 background tasks)
+	reverse_proxy 127.0.0.1:8421 {
+		# pass the original Host through so the app can build correct URLs
+		header_up Host {host}
+	}
+
+	log {
+		output file /var/log/caddy/ai-company.log {
+			roll_size 10MiB
+			roll_keep 5
+		}
+	}
+}

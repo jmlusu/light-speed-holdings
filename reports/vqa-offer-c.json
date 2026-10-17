@@ -1,0 +1,45 @@
+{
+  "target": "http://localhost:4173/offer-c",
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scrollWidth": 1280,
+      "scrollHeight": 2896,
+      "horizontalOverflowPx": 0,
+      "imgCount": 15,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 11,
+      "emptyHeadingCount": 0,
+      "screenshot": null
+    },
+    {
+      "viewport": {
+        "width": 375,
+        "height": 667
+      },
+      "scrollWidth": 375,
+      "scrollHeight": 4773,
+      "horizontalOverflowPx": 0,
+      "imgCount": 15,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 11,
+      "emptyHeadingCount": 0,
+      "screenshot": null
+    }
+  ]
+}

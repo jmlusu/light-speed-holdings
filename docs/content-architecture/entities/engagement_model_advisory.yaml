@@ -1,0 +1,11 @@
+# Engagement Model Entity Definition
+
+key: advisory
+title: "Advisory"
+description: "Strategic advisory engagement for AI direction, governance, and risk guidance"
+category: advisory
+duration_weeks: 4
+capability: ai_strategy
+price_tier: professional
+proof_required: false
+associated_use_cases: []

@@ -1,0 +1,3 @@
+[submodule "open-design"]
+	path = open-design
+	url = https://github.com/nexu-io/open-design.git

@@ -1,0 +1,16 @@
+# CODEOWNERS - Only @jmlusu auto-assigned as reviewer
+# This file replaces any default GitHub team-based assignments.
+# Patterns use glob syntax; order matters (first match wins).
+
+# Review all markdown files
+*.md @jmlusu
+
+# Review the Agents registry
+AGENTS.md @jmlusu
+
+# Review open-design templates
+open-design/** @jmlusu
+
+# Review root config files
+.gitignore @jmlusu
+pyproject.toml @jmlusu

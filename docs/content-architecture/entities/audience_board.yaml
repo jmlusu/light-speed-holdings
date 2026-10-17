@@ -1,0 +1,18 @@
+# Audience Entity Definition
+
+key: board
+name: Board of Directors
+role: board
+industry: null
+seniority: board
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_governance_policy
+preferred_engagement:
+  - assessment
+  - advisory
+content_types:
+  - page
+  - policy
+  - case_study

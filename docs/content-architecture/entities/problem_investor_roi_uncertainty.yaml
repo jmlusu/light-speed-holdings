@@ -1,0 +1,11 @@
+# Problem Entity Definition
+
+key: investor_roi_uncertainty
+title: "Investor ROI Uncertainty"
+description: "Uncertainty around AI investment returns and portfolio impact"
+industry: null
+severity: high
+related_problems:
+  - low_ai_adoption
+affected_geographies:
+  - global

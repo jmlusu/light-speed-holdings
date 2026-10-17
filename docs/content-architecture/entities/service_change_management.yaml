@@ -1,0 +1,18 @@
+# Service Entity Definition
+
+key: change_management_service
+title: "Change Management"
+description: "Guiding organizations through AI adoption change across culture, process, and people"
+capability: change_management
+engagement_models:
+  - advisory
+  - workshop
+proof: []
+audience:
+  - ceo
+  - hr
+duration_weeks: 6
+price_tier: professional
+evidence_references:
+  - claim:012
+  - claim:066

@@ -1,0 +1,193 @@
+# Development — AI Company Builder
+
+> Local development, testing, and contribution guide for the AI Company Builder.
+> For the change lifecycle see [ECL](ECL.md); for deployment see [DEPLOYMENT-GUIDE.md](DEPLOYMENT-GUIDE.md).
+
+## 1 Repository Layout
+
+The active project lives at the repository root
+(`C:\Users\jmlus\light-speed-holdings` on this machine — never `/workspace/...`).
+
+| Path | Purpose |
+|------|---------|
+| `src/ai_company/` | Package source (CLI, executor, orchestrator, memory, dashboard, ...) |
+| `tests/` | Unit, integration, e2e, and performance tests |
+| `company-registry.yaml` | Single source of truth for agents (90 agents, 20 departments) |
+| `templates/` | Jinja2 templates used by the generator |
+| `docs/` | Architecture, status, ECL, and planning documents |
+| `scripts/` | Purpose dirs: `dev/`, `build/`, `test/`, `deploy/`, `maintenance/`, `research/` + canonical `scripts/health_check.py` |
+| `.opencode/` | Runtime data: `agents/*.md`, `inbox.json`, `dead_letter.json` |
+| `harness/` | ECL change tracking (see `harness/changes/active/` for current work) |
+
+The core workflow is: `company-registry.yaml → Jinja2 template → .opencode/agents/*.md + company/*.yaml`.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full module hierarchy and data flow.
+
+## 2 Prerequisites
+
+- Python 3.12+ (uv can manage a 3.12 interpreter via `.python-version`)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) package manager
+- Git
+- At least one LLM provider API key (`OPENCODE`, `DEEPSEEK`, `OPENAI`, `ANTHROPIC`, `GEMINI`, or `KIMI`).
+  Ollama works locally without a key (`http://localhost:11434`).
+
+## 3 Quick Start
+
+PowerShell (recommended on Windows):
+
+```powershell
+.\scripts\dev\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
+.\scripts\dev\dev.ps1 setup     # venv + deps + pre-commit + agent generation
+.\scripts\dev\dev.ps1 test      # Run test suite (with coverage)
+.\scripts\dev\dev.ps1 lint      # ruff check + format check + mypy
+.\scripts\dev\dev.ps1 status    # Show project status
+.\scripts\dev\dev.ps1 generate  # Regenerate agents from company-registry.yaml
+.\scripts\dev\dev.ps1 clean     # Remove build/cache artifacts
+```
+
+Manual setup (bash):
+
+```bash
+uv sync --extra dev            # install project + dev deps (respects uv.lock)
+pre-commit install             # enable git hooks (ruff, mypy, bandit, ...)
+uv run ai-company --help       # CLI entry point
+```
+
+## 4 Common Commands
+
+```bash
+uv run pytest                                  # Full test suite (1856 tests collected, 53 deselected)
+uv run pytest tests/unit/test_models.py        # Single test file
+uv run pytest -k "postmortem"                  # Pattern match
+uv run ruff check src/ tests/                  # Lint
+uv run ruff format src/ tests/                 # Format (check with --check)
+uv run mypy src/ --ignore-missing-imports      # Type check (181 source files)
+uv run pre-commit run --all-files              # Run all pre-commit hooks
+
+# Regenerate agent markdown files from the registry
+uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+
+# CLI
+uv run ai-company --help
+uv run ai-company doctor run           # System diagnostics
+uv run ai-company agents list          # List generated agents
+uv run ai-company company run          # Bootstrap the full company
+uv run ai-company executor start       # Start the autonomous executor
+uv run ai-company dashboard kpi list   # View KPIs
+```
+
+## 5 Verification Gates
+
+| Change Type | Minimum Verification |
+|-------------|----------------------|
+| Generator / template | `python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"` |
+| CLI commands | `ai-company --help` + `ai-company <command> --help` |
+| Models / orchestrator | `pytest` |
+| Any source change | `ruff check src/ && mypy src/ && pytest` |
+| Harness / docs | `pwsh scripts/maintenance/lint-ecl.ps1` |
+
+## 6 ECL Change Lifecycle
+
+Changes that span more than two files, touch APIs/data models/architecture, need user confirmation, or are likely to exceed 20 minutes should be tracked as an ECL change. Small local fixes can skip it.
+
+```text
+new -> active/in_progress
+active -> close completed|abandoned|blocked -> archive/YYYY-MM-DD-slug
+active -> park -> parking/YYYY-MM-DD-slug -> resume -> active
+```
+
+```powershell
+.\scripts\maintenance\harness-change.ps1 new "Title"     # Create a change
+.\scripts\maintenance\harness-change.ps1 status          # Show active change
+.\scripts\maintenance\harness-change.ps1 close completed # Archive + rebuild INDEX
+.\scripts\maintenance\harness-change.ps1 park            # Park active change
+.\scripts\maintenance\harness-evolve.ps1 check           # Check auto-evolve threshold
+.\scripts\maintenance\lint-ecl.ps1                       # Validate ECL structure
+```
+
+Rules: only one active change at a time; never hand-edit `harness/changes/INDEX.json`; active change files override `docs/STATUS.md` for the current task. See [ECL.md](ECL.md) for the full manual.
+
+## 7 Documentation Map
+
+| Document | Purpose |
+|----------|---------|
+| `docs/ARCHITECTURE.md` | Module hierarchy, naming conventions, data flow |
+| `docs/ARCHITECTURE-GAPS.md` | 20-gap register with per-gap status and evidence |
+| `docs/STATUS.md` | Current state and recent work |
+| `docs/DEVICE-SETUP.md` | Fresh-machine setup via bootstrap commands |
+| `docs/ECL.md` | Change lifecycle manual |
+| `docs/DEPLOYMENT-GUIDE.md` | Docker, production, CI/CD, security |
+| `docs/DEVELOPER-GUIDE.md` | Additional onboarding notes |
+| `docs/PRODUCT-ROADMAP.md` | Phase and sprint roadmap |
+| `docs/BACKLOG.md` | Backlog (48 items, MoSCoW) |
+| `docs/API-REFERENCE.md` | API reference |
+
+## 8 Backups
+
+```powershell
+.\scripts\deploy\backup.ps1                    # Backup .opencode/, company/, results/ (to ~/.lightspeed/backups)
+.\scripts\deploy\backup.ps1 -RetentionDays 14  # Keep 14 days of backups
+```
+
+## 9 Staging
+
+```bash
+docker compose -f docker-compose.staging.yml up --build              # Staging dashboard
+docker compose -f docker-compose.staging.yml --profile worker up     # + worker
+docker compose -f docker-compose.staging.yml --profile monitoring up # + Prometheus
+```
+
+Staging dashboard: host port **8421** → container **8420** (production: 8420). See [DEPLOYMENT-GUIDE.md](DEPLOYMENT-GUIDE.md) for the full deployment reference.
+
+## 10 Notes
+
+- Registry IDs use underscores (`financial_analyst`); generated filenames and config references use hyphens (`financial-analyst`). Run `ai-company validate` to check config references resolve to generated agent files.
+- `.opencode/inbox.json` is the task queue. Test runs may inject synthetic tasks — treat `marketing-service`-style entries as pollution when inspecting the queue.
+- Do not hand-edit generated files in `.opencode/agents/`; regenerate from `company-registry.yaml`.
+- `harness/changes/INDEX.json` is script-generated only.
+
+## 11 Release Process (Trusted Publishing)
+
+This project uses **PyPI trusted publishing** (OIDC) — no API tokens stored in GitHub.
+
+### Prerequisites (one-time setup)
+
+1. **Create a PyPI project** at https://pypi.org/manage/projects/ (if not already)
+2. **Configure trusted publisher** on PyPI:
+   - Owner: your GitHub org/user (e.g., `your-org`)
+   - Repository: `light-speed-holdings`
+   - Workflow name: `Release` (matches `.github/workflows/release.yml`)
+   - Environment: `pypi` (matches `environment: pypi` in workflow)
+3. **Create GitHub Environment** named `pypi`:
+   - Settings → Environments → New environment → `pypi`
+   - No protection rules required (OIDC handles trust)
+
+### Cutting a release
+
+```bash
+# 1. Update version in pyproject.toml
+# 2. Update CHANGELOG.md (add entry under ## [0.x.y])
+# 3. Commit and tag
+git commit -am "chore: release v0.x.y"
+git tag v0.x.y
+git push origin main --tags
+```
+
+The `Release` workflow (`.github/workflows/release.yml`) will:
+1. Validate version matches between tag and `pyproject.toml`
+2. Verify CHANGELOG has an entry for the version
+3. Run Trivy container scan (security)
+4. Build package with `uv build`
+5. **Publish to PyPI via trusted OIDC** (no tokens)
+6. Build and push Docker image to GHCR
+7. Run canary deployment (simulated)
+8. Create GitHub Release with artifacts
+
+### Manual workflow dispatch
+
+You can also trigger a release manually:
+
+```bash
+gh workflow run Release -f version=0.x.y
+```
+
+This skips the git tag requirement but still validates `pyproject.toml` version and CHANGELOG.

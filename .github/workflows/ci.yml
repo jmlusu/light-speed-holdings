@@ -1,0 +1,316 @@
+name: CI
+
+# Authoritative merge gate. All jobs must pass before a PR can merge to main.
+# Local pre-commit hooks can be bypassed with --no-verify, so this
+# server-side gate is the enforced source of truth for ruff + mypy + pytest.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      - name: Ruff lint
+        run: uv run ruff check src/ tests/
+
+  typecheck:
+    name: Type check (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      - name: Mypy
+        run: uv run mypy src/
+
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      # Default suite = unit + integration. E2E is excluded explicitly with
+      # `-m "not e2e"` (also enforced via addopts in pyproject.toml) so Playwright
+      # tests never share the pytest-asyncio session with async tests (which caused
+      # 52 failed / 53 errored cascade failures). A distinct basetemp isolates this
+      # run from the fixed .pytest_tmp used by local/daemon runs.
+      # coverage gate (TD-7): fail if src/ai_company coverage drops below 72%.
+      # CLI entry points are excluded via [tool.coverage.run].omit in pyproject.toml.
+      - name: Pytest with coverage gate
+        run: uv run pytest -q -m "not e2e" --basetemp=.pytest_tmp_ci --cov=src/ai_company --cov-report=term-missing --cov-fail-under=72
+
+  # D6: Version synchronization check - pyproject.toml must match CHANGELOG,
+  # and (when a semver tag exists) the latest v* tag. The recovery tag
+  # recovery-2026-07-26 is explicitly ignored because it is not semver.
+  version-check:
+    name: Version Sync Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      # NOTE: no astral-sh/setup-uv step here. This job only runs git/grep/sed
+      # and installs nothing, so setup-uv's post-run cache save would fail with
+      # "Cache path does not exist on disk" (enable-cache has nothing to store).
+      - name: Get version from pyproject.toml
+        id: pyproject_version
+        run: |
+          VERSION=$(grep '^version = ' pyproject.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Get latest version from CHANGELOG.md
+        id: changelog_version
+        run: |
+          VERSION=$(grep -E '^## \[([0-9]+\.)+[0-9]+\]' .ai-company/state/CHANGELOG.md | head -1 | sed -E 's/## \[([0-9]+\.[0-9]+\.[0-9]+)\].*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Verify pyproject.toml == CHANGELOG
+        run: |
+          PY_VERSION="${{ steps.pyproject_version.outputs.version }}"
+          CHANGELOG_VERSION="${{ steps.changelog_version.outputs.version }}"
+          echo "pyproject.toml version: $PY_VERSION"
+          echo "CHANGELOG version: $CHANGELOG_VERSION"
+          if [[ "$PY_VERSION" != "$CHANGELOG_VERSION" ]]; then
+            echo "::error::Version mismatch: pyproject.toml ($PY_VERSION) != CHANGELOG ($CHANGELOG_VERSION)"
+            exit 1
+          fi
+      - name: Verify pyproject.toml == latest semver git tag (if any)
+        run: |
+          PY_VERSION="${{ steps.pyproject_version.outputs.version }}"
+          # Only consider vX.Y.Z tags; the recovery-* tag is not a release.
+          TAG_VERSION=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1 | sed 's/^v//')
+          if [ -z "$TAG_VERSION" ]; then
+            echo "No semver tag found - skipping tag comparison."
+            exit 0
+          fi
+          echo "pyproject.toml version: $PY_VERSION"
+          echo "Latest semver tag: v$TAG_VERSION"
+          if [[ "$PY_VERSION" != "$TAG_VERSION" ]]; then
+            echo "::error::Version mismatch: pyproject.toml ($PY_VERSION) != latest tag (v$TAG_VERSION)"
+            exit 1
+          fi
+
+  # E2E (Playwright) suite — SEPARATE, NON-BLOCKING job.
+  # Runs `pytest -m e2e` against a dashboard started in-job. Deliberately NOT part
+  # of the merge `gate` (see needs: below): e2e requires a live dashboard + browser
+  # and is historically flaky, so it must not block merges on environmental noise.
+  # A red result here is still a real signal — promote it into `gate.needs` once the
+  # suite is stable.
+  e2e:
+    name: E2E (Playwright, non-blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies (incl. e2e extra)
+        run: uv sync --extra dev --extra e2e --frozen
+      - name: Install Playwright browser (chromium)
+        run: uv run playwright install --with-deps chromium
+      - name: Start dashboard and run E2E tests
+        run: |
+          # Open auth for the test dashboard: since the auth hardening, the
+          # default fail-closed `api_key` mode rejects every request (health
+          # probes and browser page loads alike) unless an X-API-Key is sent,
+          # which Playwright navigation cannot do. `open` is the documented
+          # opt-in for localhost-only dev/test instances.
+          # Raise the per-IP rate limit for the test dashboard: the E2E suite
+          # drives many rapid browser requests (page loads + KPI/tasks fetches)
+          # and would otherwise trip the production 100 req/min guard.
+          DASHBOARD_AUTH_MODE=open DASHBOARD_RATE_LIMIT=10000 uv run python -m ai_company.cli.main dashboard \
+            --host 127.0.0.1 --port 8421 --no-open > dashboard-e2e.log 2>&1 &
+          DASH_PID=$!
+          # Clean up the dashboard when this step exits.
+          trap 'kill "$DASH_PID" 2>/dev/null || true' EXIT
+          # Wait for the health endpoint (max ~60s).
+          READY=0
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:8421/health >/dev/null 2>&1; then
+              echo "Dashboard ready after ${i}s"
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$READY" -ne 1 ]; then
+            echo "::error::Dashboard did not become healthy on :8421"
+            tail -50 dashboard-e2e.log
+            exit 1
+          fi
+          # Distinct basetemp keeps this job isolated (collision-proof by default).
+          uv run pytest -m e2e --tb=short -q --basetemp=.pytest_tmp_e2e \
+            --dashboard-url=http://127.0.0.1:8421
+
+  harness:
+    name: ECL Harness Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: pwsh -NoProfile -File scripts/maintenance/lint-ecl.ps1
+
+  security:
+    name: Security (bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      - name: Bandit
+        run: uv run bandit -r src/ -c pyproject.toml
+
+  dependencies:
+    name: Dependency Audit (uv-audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: uv-audit
+        # uv-audit is not a project dependency; run it via an ephemeral env against
+        # uv.lock. scripts/ci/uv-audit-shim.py works around a package-schemes bug:
+        # dep.startswith(name) prefix matching resolves transitive "httpx" to the
+        # direct "httpx2" entry, and PackageMeta.merge() then crashes on the name
+        # mismatch (all package-schemes 0.1.x affected; no version pin avoids it).
+        # Revert to plain `uvx uv-audit` once upstream compares parsed names.
+        run: uv run --no-project --with uv-audit python scripts/ci/uv-audit-shim.py
+
+  generated-check:
+    name: Generated Files Drift Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      - name: Regenerate agents from registry
+        run: uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+      - name: Verify YAML and JSON registries are in sync
+        run: |
+          uv run python -c "
+          from ai_company.registry.sync import verify_sync
+          errors = verify_sync()
+          if errors:
+              for e in errors:
+                  print(f'::error::{e}')
+              raise SystemExit(1)
+          print('YAML and JSON registries are in sync.')
+          "
+      - name: Verify no drift
+        run: |
+          # Exclude the generated-date line in AGENT-REGISTRY-TABLE.md (changes daily).
+          # Exclude uv.lock: `uv run` legitimately re-locks it when pyproject.toml
+          # changes (e.g. dependabot bumps); that diff is not agent-file drift.
+          git diff --exit-code -- . ':!docs/AGENT-REGISTRY-TABLE.md' ':!uv.lock' || { echo "::error::Generated agent files drifted from the committed state. Run 'uv run python -c \"from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()\"' and commit the regenerated output."; exit 1; }
+          # Also check that AGENT-REGISTRY-TABLE.md only differs by the date line
+          if ! git diff --exit-code docs/AGENT-REGISTRY-TABLE.md; then
+            DIFF_LINES=$(git diff docs/AGENT-REGISTRY-TABLE.md | grep '^[+-]' | grep -v '^[+-][+-][+-]' | grep -v 'Generated' | wc -l)
+            if [ "$DIFF_LINES" -gt 0 ]; then
+              echo "::error::AGENT-REGISTRY-TABLE.md has non-date drift. Regenerate and commit."
+              git diff docs/AGENT-REGISTRY-TABLE.md
+              exit 1
+            fi
+          fi
+          echo "Generated agents are in sync with the registry."
+
+  # Regenerate Archify diagrams from the registry and validate each source at its
+  # authored quality profile. Requires Node.js (>=18) for the Archify renderer.
+  archify-check:
+    name: Archify Diagram Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      - name: Regenerate diagrams from registry
+        run: uv run python -c "from ai_company.registry import load_registry; from ai_company.archify.converter import generate_specs; import json, pathlib; out=pathlib.Path('docs/diagrams'); out.mkdir(parents=True, exist_ok=True); [ (out / s.json_name).write_text(json.dumps(s.data, indent=2) + '\n', encoding='utf-8') for s in generate_specs(load_registry()) ];"
+      - name: Verify no drift
+        run: |
+          git diff --exit-code -- docs/diagrams || { echo "::error::Committed Archify diagrams drifted from the registry. Run 'uv run ai-company archify generate' and commit the regenerated output."; exit 1; }
+      - name: Validate all four diagrams
+        run: |
+          uv run python -c "
+          from ai_company.archify import validate
+          cases = [
+            ('architecture', 'docs/diagrams/architecture.json', 'standard'),
+            ('workflow', 'docs/diagrams/hiring.workflow.json', 'showcase'),
+            ('sequence', 'docs/diagrams/hiring.sequence.json', 'showcase'),
+            ('dataflow', 'docs/diagrams/hiring.dataflow.json', 'showcase'),
+          ]
+          for kind, path, quality in cases:
+              print(f'validating {path} @ {quality}')
+              r = validate(kind, path, quality=quality)
+              assert r.get('ok'), f'{path} failed validation: {r}'
+          print('All Archify diagrams validated OK')
+          "
+
+  # INDEX.json byte-freshness: regenerate under Windows PowerShell 5.1 (the
+  # canonical ConvertTo-Json dialect) and fail on any byte drift. Complements
+  # the harness job's lint-ecl.ps1 semantic check, which is blind to EOL/indent/
+  # escaping drift (retro finding 2026-10-12; see scripts/maintenance/check-index-freshness.ps1).
+  index-freshness:
+    name: INDEX.json Freshness Check
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      # Explicit shell: the default shell on Windows runners is pwsh (7), whose
+      # ConvertTo-Json emits a different dialect than the committed bytes.
+      - name: Reindex under Windows PowerShell 5.1 and diff
+        shell: powershell
+        run: .\scripts\maintenance\check-index-freshness.ps1
+
+  # All required checks must succeed for the gate to pass.
+  gate:
+    name: CI Gate
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, archify-check, version-check, index-freshness]
+    steps:
+      - uses: actions/checkout@v7
+      - run: echo "All required checks passed (ruff + mypy + pytest + coverage + harness + bandit + uv-audit + generated-files + archify)."

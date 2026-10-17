@@ -1,0 +1,83 @@
+{% set brief = data %}
+{% set deck_type = deck_type | default('investor_pitch') %}
+
+## Phase 1: Content & Structure Generator
+
+**Input brief variables:**
+- `topic`: Presentation topic/theme
+- `audience`: Target audience
+- `objective`: Desired outcome/ask
+- `narrative`: Optional full narrative text
+- `source_data`: Optional dict of metrics/facts to embed (real only, no invention)
+
+### Thesis Resolution
+{% if narrative %}
+The thesis is: {{ narrative.split('.')[0] }}.
+{% else %}
+The thesis is derived from the brief: {{ topic }} for {{ audience }} to {{ objective }}.
+{% endif %}
+
+### Slide Sequence Generation
+The slide sequence is determined by the deck type:
+
+**investor_pitch** (12 slides):
+1. Cover — thesis statement
+2. The Problem — pain points organizations face
+3. Our Solution — AI Company Builder platform
+4. Market Opportunity — TAM/SAM/SOM figures
+5. Product & Technology — architecture overview
+6. Business Model — revenue streams and pricing
+7. Traction & Metrics — agents, departments, offers
+8. Competitive Landscape — differentiation
+9. Team — leadership and structure
+10. Financials — projections and use of funds
+11. The Ask — funding requirement and milestones
+12. Thank You — brand thesis reinforcement
+
+**board_meeting** (10 slides):
+1. Cover — date, confidentiality
+2. Agenda — items for review
+3. CEO Report — strategic priorities and risks
+4. Financial Summary — KPI targets
+5. Product & Engineering Update — shipped and in-progress
+6. Sales & Marketing Update — pipeline and initiatives
+7. Customer Success Report — health metrics
+8. Key Decisions Required — board actions needed
+9. Closing — next meeting date
+10. Closing — brand thesis
+
+**keynote** (8 slides):
+1. The Big Idea — one-sentence thesis
+2. Problem & Context — what, why, stakes
+3. Solution — what and how
+4. Proof & Evidence — data and case studies
+5. Implications — ripple effect of success
+6. Call to Action — specific next steps
+7. Visual Metaphor — metaphor capturing the essence
+8. Q&A Prep — likely questions and answers
+
+**training** (4 slides):
+1. Orientation — welcome, objectives, materials
+2. Foundation — key concepts and connections
+3. Application — hands-on exercise, outcomes, pitfalls
+4. Next Steps — continued learning, feedback, Q&A
+
+### Brand Token Constraints (must be enforced in Phase 2)
+- Color palette: navy `#070A40`, red `#E63946`, cyan `#00BFFF`, grey `#F2F2F2`
+- Typography: Arial type scale; section titles 28pt bold navy; body 12-14pt navy
+- 80/10/10 Rule: 80% dominant background (navy), 10% secondary tones (red), <10% accent colors (cyan)
+- Max 6 bullets per slide, max 12 words per bullet
+- One idea per slide
+- KPI cards: navy label, dark-grey value, rounded rectangles
+- Left rail: 0.15in navy on content slides
+- Logo = official asset; `™` on first mention of company name
+- Real facts/figures only — pull from `company/`, `results/`, docs, or the brief
+- Speaker notes written for every slide
+- Slide count matches deck type convention
+
+### Anti-Patterns to Avoid
+- Do not invent statistics or market size figures
+- Do not use vendor chart themes (enforce brand palette only)
+- Do not exceed 6 bullets/12 words per bullet limit
+- Do not omit speaker notes
+- Do not use non-brand colors without documented decision

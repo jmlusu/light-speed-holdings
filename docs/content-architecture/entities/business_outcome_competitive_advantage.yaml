@@ -1,0 +1,11 @@
+# Business Outcome Entity Definition
+
+key: competitive_advantage
+title: "Competitive Advantage"
+description: "Sustainable market advantage from AI differentiation and innovation"
+metric: "time-to-market-reduction"
+target: "SMEs in emerging markets"
+related_problems:
+  - low_ai_adoption
+enabled_by:
+  - ai_ethics

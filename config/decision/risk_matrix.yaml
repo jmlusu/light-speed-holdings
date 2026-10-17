@@ -1,0 +1,50 @@
+risk_matrix:
+  dimensions:
+    - name: "likelihood"
+      levels: ["rare", "unlikely", "possible", "likely", "almost_certain"]
+      scores: [1, 2, 3, 4, 5]
+    - name: "impact"
+      levels: ["negligible", "minor", "moderate", "major", "catastrophic"]
+      scores: [1, 2, 3, 4, 5]
+
+  risk_levels:
+    - min_score: 1
+      max_score: 4
+      level: "low"
+      action: "accept"
+      review_frequency: "quarterly"
+    - min_score: 5
+      max_score: 9
+      level: "medium"
+      action: "mitigate"
+      review_frequency: "monthly"
+    - min_score: 10
+      max_score: 16
+      level: "high"
+      action: "mitigate"
+      review_frequency: "weekly"
+    - min_score: 17
+      max_score: 25
+      level: "critical"
+      action: "eliminate"
+      review_frequency: "daily"
+
+  categories:
+    - name: "technical"
+      description: "Technology and engineering risks"
+      owner: "cto"
+    - name: "financial"
+      description: "Financial and budget risks"
+      owner: "cfo"
+    - name: "operational"
+      description: "Process and operational risks"
+      owner: "coo"
+    - name: "security"
+      description: "Security and compliance risks"
+      owner: "ciso"
+    - name: "strategic"
+      description: "Market and competitive risks"
+      owner: "cso"
+    - name: "people"
+      description: "Talent and culture risks"
+      owner: "chro"

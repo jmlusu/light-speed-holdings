@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /inbox/
+Disallow: /debug/
+Disallow: /.well-known/private/
+
+# Allow main sections
+Allow: /what-we-do
+Allow: /ai-company-builder
+Allow: /solutions
+Allow: /use-cases
+Allow: /sectors
+Allow: /insights
+Allow: /about
+Allow: /contact
+Allow: /ai-assessment
+Allow: /legal/
+Allow: /og-default.png
+Allow: /favicon.svg
+Allow: /favicon.ico
+
+# Sitemap
+Sitemap: https://lightspeedholdings.vercel.app/sitemap.xml

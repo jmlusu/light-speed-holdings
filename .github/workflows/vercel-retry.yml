@@ -1,0 +1,108 @@
+name: Vercel Preview Retry
+
+on:
+  status:
+
+permissions:
+  statuses: write
+
+concurrency:
+  group: vercel-retry-${{ github.event.sha }}
+  cancel-in-progress: false
+
+jobs:
+  retry:
+    name: Retry failed preview deployment
+    if: >-
+      github.event.state == 'failure' &&
+      github.event.context == 'Vercel' &&
+      github.event.repository.full_name == 'jmlusu/light-speed-holdings' &&
+      github.event.target_url != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check whether this commit was already retried
+        id: marker
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const statuses = await github.paginate(
+              github.rest.repos.listCommitStatusesForRef,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: context.payload.sha,
+                per_page: 100,
+              },
+            );
+            const retried = statuses.some((s) => s.context === 'vercel-retry');
+            core.info(`retried=${retried}`);
+            core.setOutput('retried', String(retried));
+
+      - name: Redeploy the failed deployment once
+        if: steps.marker.outputs.retried == 'false'
+        id: redeploy
+        env:
+          GH_TARGET_URL: ${{ github.event.target_url }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_API_KEY }}
+          VERCEL_TEAM_ID: team_ktnrLZHZZA1CPEC8XTRYNXt1
+        run: |
+          set -euo pipefail
+          if [ -z "${VERCEL_TOKEN}" ]; then
+            echo "::error::VERCEL_API_KEY secret is not set"
+            exit 1
+          fi
+
+          # target_url: https://vercel.com/<team-slug>/<project>/<short-id>
+          url="${GH_TARGET_URL%%[\#?]*}"
+          path="${url#*://vercel.com/}"
+          if [ "$path" = "$url" ] || [ -z "$path" ]; then
+            echo "::error::Unexpected Vercel target_url: ${GH_TARGET_URL}"
+            exit 1
+          fi
+          short_id="${path##*/}"
+          rest="${path%/*}"
+          project="${rest##*/}"
+          if ! printf '%s' "$short_id" | grep -Eq '^[A-Za-z0-9]{16,64}$'; then
+            echo "::error::Bad deployment id '${short_id}' from ${GH_TARGET_URL}"
+            exit 1
+          fi
+          deploy_id="dpl_${short_id}"
+
+          # Confirm the deployment actually failed before retrying.
+          current=$(curl -sS -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            "https://api.vercel.com/v6/deployments/${deploy_id}?teamId=${VERCEL_TEAM_ID}" || true)
+          ready=$(printf '%s' "$current" | jq -r '.readyState // empty' 2>/dev/null || true)
+          error_code=$(printf '%s' "$current" | jq -r '.errorCode // "unknown"' 2>/dev/null || true)
+          if [ "$ready" != "ERROR" ]; then
+            echo "Deployment ${deploy_id} readyState=${ready:-unavailable}; nothing to retry."
+            exit 0
+          fi
+          echo "Retrying ${deploy_id} (errorCode=${error_code}, project=${project})"
+
+          # Payload is exactly deploymentId + name; target/forceNew are rejected (400).
+          # Runbook: docs/DEPLOYMENT.md §5 Vercel Preview Failure Runbook
+          response=$(curl -sS -X POST \
+            -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"deploymentId\":\"${deploy_id}\",\"name\":\"${project}\"}" \
+            "https://api.vercel.com/v13/deployments?teamId=${VERCEL_TEAM_ID}")
+          new_id=$(printf '%s' "$response" | jq -r '.id // empty' 2>/dev/null || true)
+          if [ -z "$new_id" ]; then
+            echo "::error::Redeploy failed: ${response}"
+            exit 1
+          fi
+          echo "Redeployed ${deploy_id} as ${new_id}"
+
+      - name: Mark this commit as retried
+        if: steps.marker.outputs.retried == 'false' && success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.payload.sha,
+              state: 'success',
+              context: 'vercel-retry',
+              description: 'Preview auto-retried once; see docs/DEPLOYMENT.md §5',
+            });

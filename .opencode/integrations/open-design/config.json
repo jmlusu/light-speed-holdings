@@ -1,0 +1,49 @@
+{
+  "$schema": "https://open-design.ai/schemas/config.json",
+  "version": "0.9.0",
+  "integration": {
+    "name": "LightSpeed Holdings Design Integration",
+    "description": "Open Design integration for LightSpeed Holdings creative production stack",
+    "enabled": true
+  },
+  "connection": {
+    "method": "cli",
+    "cliPath": "open-design",
+    "autoUpdate": true,
+    "fallbackToDesktop": true
+  },
+  "auth": {
+    "method": "amr",
+    "signInOnce": true,
+    "note": "Open Design AMR - no API key required. Sign in once, pick a model, go."
+  },
+  "models": {
+    "default": "claude-sonnet-4.5",
+    "available": [
+      "claude-sonnet-4.5",
+      "claude-opus-4",
+      "gpt-5.1",
+      "gpt-4.1",
+      "gemini-2.5-pro",
+      "deepseek-r1"
+    ]
+  },
+  "brand": {
+    "designSystem": "ls-design-system",
+    "tokensPath": "brand/tokens/brand-tokens.json",
+    "guidelinesPath": "brand/guidelines/brand-guidelines.md",
+    "enforceBrand": true
+  },
+  "output": {
+    "baseDir": "output/design",
+    "formats": ["html", "svg", "png", "pdf", "pptx"],
+    "quality": "high"
+  },
+  "plugins": {
+    "enabled": [
+      "ls-design-system",
+      "gsap-animation",
+      "research-decision-room"
+    ]
+  }
+}

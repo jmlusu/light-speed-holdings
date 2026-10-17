@@ -1,0 +1,33 @@
+{
+  "target": "http://localhost:3001/solutions",
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scrollWidth": 1280,
+      "scrollHeight": 3795,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 13,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\solutions-probe-1280x800.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "scrollHeight": 6208,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 13,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\solutions-probe-390x844.png"
+    }
+  ]
+}

@@ -1,0 +1,456 @@
+# Autonomous Development Loop — GitHub Actions Workflow
+# 
+# This workflow executes agent development tasks in isolated self-hosted runners
+# with full quality gates, security scanning, and mandatory human approval.
+#
+# Trigger: repository_dispatch (from Control Plane) or workflow_dispatch (manual)
+# Runner: self-hosted (GitHub Actions Runner Controller / ARC)
+# Timeout: 7200 minutes (5 days — self-hosted limit)
+#
+# Place at: .github/workflows/autonomous-development.yml
+
+name: Autonomous Development Loop
+
+on:
+  repository_dispatch:
+    types: [dev-task]
+  workflow_dispatch:
+    inputs:
+      task_id:
+        description: "Task ID from control plane"
+        required: true
+        type: string
+      agent_id:
+        description: "Target agent registry ID"
+        required: true
+        type: string
+      priority:
+        description: "Task priority"
+        required: false
+        default: "medium"
+        type: choice
+        options: ["low", "medium", "high", "critical"]
+
+permissions:
+  contents: write
+  pull_requests: write
+  issues: write
+  id-token: write
+  actions: read
+  checks: write
+
+env:
+  # Provider API keys (from GitHub Secrets)
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+  OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+  LITELLM_BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
+  LITELLM_API_KEY: ${{ secrets.LITELLM_API_KEY }}
+  
+  # Control plane
+  CONTROL_PLANE_URL: ${{ secrets.CONTROL_PLANE_URL }}
+  CONTROL_PLANE_TOKEN: ${{ secrets.CONTROL_PLANE_TOKEN }}
+  
+  # Git config
+  GIT_AUTHOR_NAME: "lightspeed-bot"
+  GIT_AUTHOR_EMAIL: "bot@lightspeed.holdings"
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────
+  # PRE-FLIGHT: Validate task payload and prepare environment
+  # ─────────────────────────────────────────────────────────────────
+  preflight:
+    name: Pre-flight Checks
+    runs-on: [self-hosted, linux, lightspeed-preflight]
+    timeout-minutes: 10
+    outputs:
+      task_json: ${{ steps.load-task.outputs.task_json }}
+      branch_name: ${{ steps.branch-name.outputs.branch_name }}
+      reviewer: ${{ steps.get-reviewer.outputs.reviewer }}
+    steps:
+      - name: Download task payload from artifact
+        id: download-task
+        uses: actions/download-artifact@v4
+        with:
+          name: task-${{ github.event.client_payload.task_id || github.event.inputs.task_id }}
+          path: /tmp/task
+      
+      - name: Load and validate task
+        id: load-task
+        run: |
+          TASK_FILE="/tmp/task/task.json"
+          if [ ! -f "$TASK_FILE" ]; then
+            echo "::error::Task file not found at $TASK_FILE"
+            exit 1
+          fi
+          # Validate required fields
+          jq -e '.agent_id and .task_type and .input.instruction' "$TASK_FILE" > /dev/null || {
+            echo "::error::Task missing required fields"
+            exit 1
+          }
+          cat "$TASK_FILE"
+          echo "task_json=$(cat "$TASK_FILE" | jq -c .)" >> $GITHUB_OUTPUT
+      
+      - name: Generate branch name
+        id: branch-name
+        run: |
+          AGENT_ID="${{ github.event.client_payload.agent_id || github.event.inputs.agent_id }}"
+          TASK_ID="${{ github.event.client_payload.task_id || github.event.inputs.task_id }}"
+          BRANCH="agent/${AGENT_ID}/${TASK_ID}"
+          echo "branch_name=$BRANCH" >> $GITHUB_OUTPUT
+      
+      - name: Determine reviewer from registry
+        id: get-reviewer
+        run: |
+          # In production, query agent registry for responsible executive
+          # For now, map based on agent type
+          AGENT_ID="${{ github.event.client_payload.agent_id || github.event.inputs.agent_id }}"
+          case "$AGENT_ID" in
+            chief_of_staff|cto|coo|caio|cfo|cpo|cmo|hr|ciso|cio|cdo|clo|cso|ceo_advisor|customer_success|sales|consulting_lead|thought_leadership_lead)
+              REVIEWER="human-ceo" ;;
+            *_lead|*_owner|*_engineer|*_architect|*_manager|*_analyst|*_specialist)
+              # Map to department executive
+              REVIEWER="chief_of_staff" ;;
+            board_*)
+              REVIEWER="board_chair" ;;
+            *)
+              REVIEWER="chief_of_staff" ;;
+          esac
+          echo "reviewer=$REVIEWER" >> $GITHUB_OUTPUT
+
+  # ─────────────────────────────────────────────────────────────────
+  # EXECUTE: Run the agent task in isolated environment
+  # ─────────────────────────────────────────────────────────────────
+  execute:
+    name: Execute Agent Task
+    needs: preflight
+    runs-on: [self-hosted, linux, lightspeed-dev]
+    timeout-minutes: 7200  # 5 days max for self-hosted
+    env:
+      TASK_JSON: ${{ needs.preflight.outputs.task_json }}
+      BRANCH_NAME: ${{ needs.preflight.outputs.branch_name }}
+      REVIEWER: ${{ needs.preflight.outputs.reviewer }}
+    steps:
+      - name: Checkout repository with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Configure Git identity
+        run: |
+          git config user.name "${GIT_AUTHOR_NAME}"
+          git config user.email "${GIT_AUTHOR_EMAIL}"
+      
+      - name: Create feature branch
+        run: |
+          git fetch origin main
+          git checkout -b "${BRANCH_NAME}" origin/main
+      
+      - name: Setup Python environment
+        uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      
+      - name: Install dependencies
+        run: |
+          uv sync --frozen --extra dev
+      
+      - name: Regenerate agent files
+        run: |
+          uv run python -m ai_company.generator AgentGenerator().generate_all()
+      
+      - name: Write task file
+        run: |
+          echo "${TASK_JSON}" > /tmp/current_task.json
+      
+      - name: Execute agent task
+        id: execute-agent
+        run: |
+          set -euo pipefail
+          
+          # Extract task details
+          AGENT_ID=$(echo "${TASK_JSON}" | jq -r '.agent_id')
+          TASK_ID=$(echo "${TASK_JSON}" | jq -r '.task_id // .id')
+          
+          # Create output directory
+          mkdir -p ./artifacts/${TASK_ID}
+          
+          # Execute via orchestrator
+          uv run python -m ai_company.orchestrator.execute \
+            --agent "${AGENT_ID}" \
+            --task-file /tmp/current_task.json \
+            --output ./artifacts/${TASK_ID} \
+            --branch "${BRANCH_NAME}" \
+            --model-router-url "${LITELLM_BASE_URL}" \
+            --model-router-key "${LITELLM_API_KEY}" 2>&1 | tee ./artifacts/${TASK_ID}/execution.log
+          
+          # Capture exit code
+          EXIT_CODE=${PIPESTATUS[0]}
+          
+          # Extract metrics from execution log
+          MODEL_USED=$(grep -oP 'model[=:]\s*\K\S+' ./artifacts/${TASK_ID}/execution.log | tail -1 || echo "unknown")
+          TOKENS_USED=$(grep -oP 'tokens[=:]\s*\K\d+' ./artifacts/${TASK_ID}/execution.log | tail -1 || echo "0")
+          COST_USD=$(grep -oP 'cost[=:]\s*\K[\d.]+' ./artifacts/${TASK_ID}/execution.log | tail -1 || echo "0.00")
+          
+          # Generate changes summary
+          CHANGES_SUMMARY=$(git diff --stat HEAD 2>/dev/null || echo "No changes")
+          
+          # Output for next steps
+          echo "exit_code=${EXIT_CODE}" >> $GITHUB_OUTPUT
+          echo "model_used=${MODEL_USED}" >> $GITHUB_OUTPUT
+          echo "tokens_used=${TOKENS_USED}" >> $GITHUB_OUTPUT
+          echo "cost_usd=${COST_USD}" >> $GITHUB_OUTPUT
+          echo "changes_summary=${CHANGES_SUMMARY}" >> $GITHUB_OUTPUT
+          echo "task_id=${TASK_ID}" >> $GITHUB_OUTPUT
+          echo "agent_id=${AGENT_ID}" >> $GITHUB_OUTPUT
+      
+      - name: Upload execution artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: execution-${{ steps.execute-agent.outputs.task_id }}
+          path: |
+            artifacts/${{ steps.execute-agent.outputs.task_id }}/
+          retention-days: 30
+
+  # ─────────────────────────────────────────────────────────────────
+  # QUALITY GATES: Run all checks (non-blocking for evidence collection)
+  # ─────────────────────────────────────────────────────────────────
+  quality-gates:
+    name: Quality Gates
+    needs: execute
+    runs-on: [self-hosted, linux, lightspeed-qa]
+    timeout-minutes: 60
+    if: always()
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.execute.outputs.branch_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Python
+        uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev
+      
+      - name: Run Ruff (lint + format)
+        id: ruff
+        continue-on-error: true
+        run: |
+          uv run ruff check src/ --output-format=github > ruff-report.txt 2>&1 || true
+          uv run ruff format --check src/ >> ruff-report.txt 2>&1 || true
+          cat ruff-report.txt
+          echo "ruff_passed=$([ $? -eq 0 ] && echo true || echo false)" >> $GITHUB_OUTPUT
+      
+      - name: Run MyPy (type check)
+        id: mypy
+        continue-on-error: true
+        run: |
+          uv run mypy src/ --strict > mypy-report.txt 2>&1 || true
+          cat mypy-report.txt
+          echo "mypy_passed=$([ $? -eq 0 ] && echo true || echo false)" >> $GITHUB_OUTPUT
+      
+      - name: Run Pytest
+        id: pytest
+        continue-on-error: true
+        run: |
+          uv run pytest --tb=short -q > pytest-report.txt 2>&1 || true
+          cat pytest-report.txt
+          echo "pytest_passed=$([ $? -eq 0 ] && echo true || echo false)" >> $GITHUB_OUTPUT
+      
+      - name: Run Bandit (security)
+        id: bandit
+        continue-on-error: true
+        run: |
+          uv run bandit -r src/ -f json -o bandit-report.json 2>&1 || true
+          uv run bandit -r src/ -f txt -o bandit-report.txt 2>&1 || true
+          cat bandit-report.txt
+          echo "bandit_passed=$([ $? -eq 0 ] && echo true || echo false)" >> $GITHUB_OUTPUT
+      
+      - name: Run Pip-audit (dependency vulnerabilities)
+        id: pip-audit
+        continue-on-error: true
+        run: |
+          uv run pip-audit --format=json --output=pip-audit.json 2>&1 || true
+          uv run pip-audit --format=txt --output=pip-audit.txt 2>&1 || true
+          cat pip-audit.txt
+          echo "pip_audit_passed=$([ $? -eq 0 ] && echo true || echo false)" >> $GITHUB_OUTPUT
+      
+      - name: Upload quality reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-reports-${{ needs.execute.outputs.task_id }}
+          path: |
+            ruff-report.txt
+            mypy-report.txt
+            pytest-report.txt
+            bandit-report.txt
+            bandit-report.json
+            pip-audit.txt
+            pip-audit.json
+          retention-days: 30
+
+  # ─────────────────────────────────────────────────────────────────
+  # PR CREATION: Create pull request with evidence
+  # ─────────────────────────────────────────────────────────────────
+  create-pr:
+    name: Create Pull Request
+    needs: [execute, quality-gates]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: needs.execute.outputs.exit_code == '0'
+    steps:
+      - name: Create Pull Request
+        id: create-pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ needs.execute.outputs.branch_name }}
+          title: "[Agent] ${{ needs.execute.outputs.agent_id }}: ${{ needs.execute.outputs.task_id }}"
+          body: |
+            ## Autonomous Agent Task
+            
+            ### Task Details
+            - **Agent**: `${{ needs.execute.outputs.agent_id }}`
+            - **Task ID**: `${{ needs.execute.outputs.task_id }}`
+            - **Model Used**: `${{ needs.execute.outputs.model_used }}`
+            - **Tokens Consumed**: `${{ needs.execute.outputs.tokens_used }}`
+            - **Estimated Cost**: `$${{ needs.execute.outputs.cost_usd }}`
+            
+            ### Changes Summary
+            ```
+            ${{ needs.execute.outputs.changes_summary }}
+            ```
+            
+            ### Quality Gates Results
+            | Check | Status |
+            |-------|--------|
+            | Ruff (lint/format) | ${{ needs.quality-gates.outputs.ruff_passed == 'true' && '✅ Passed' || '❌ Failed' }} |
+            | MyPy (type check) | ${{ needs.quality-gates.outputs.mypy_passed == 'true' && '✅ Passed' || '❌ Failed' }} |
+            | Pytest (unit/integration) | ${{ needs.quality-gates.outputs.pytest_passed == 'true' && '✅ Passed' || '❌ Failed' }} |
+            | Bandit (security) | ${{ needs.quality-gates.outputs.bandit_passed == 'true' && '✅ Passed' || '❌ Failed' }} |
+            | Pip-audit (deps) | ${{ needs.quality-gates.outputs.pip_audit_passed == 'true' && '✅ Passed' || '❌ Failed' }} |
+            
+            ### Required Reviews
+            - [ ] **Code Review** by `${{ needs.preflight.outputs.reviewer }}` (responsible executive)
+            - [ ] **Security Review** by `security_compliance_lead` (if approval tier ≥ 3)
+            - [ ] **Architecture Review** by `solution_architect` (if cross-cutting changes)
+            
+            ### Approval Requirements
+            - All quality gates must pass (✅)
+            - All required reviewers must approve
+            - No unresolved conversations
+            - CI must be green on target branch
+            
+            ### Evidence
+            - Execution logs: `execution-${{ needs.execute.outputs.task_id }}` artifact
+            - Quality reports: `quality-reports-${{ needs.execute.outputs.task_id }}` artifact
+            - Control plane: [Task Details](${{ env.CONTROL_PLANE_URL }}/tasks/${{ needs.execute.outputs.task_id }})
+            
+            ---
+            *This PR was created automatically by the LightSpeed Autonomous Development Loop.*
+          labels: |
+            autonomous
+            agent-${{ needs.execute.outputs.agent_id }}
+            needs-review
+          draft: false
+      
+      - name: Request reviews
+        run: |
+          PR_NUMBER=${{ steps.create-pr.outputs.pull-request-number }}
+          REVIEWER="${{ needs.preflight.outputs.reviewer }}"
+          
+          # Request primary reviewer
+          gh pr edit "$PR_NUMBER" --add-reviewer "$REVIEWER"
+          
+          # Determine if security review needed
+          APPROVAL_TIER=$(echo "${{ needs.execute.outputs.task_json }}" | jq -r '.approval_tier // 1')
+          if [ "$APPROVAL_TIER" -ge 3 ]; then
+            gh pr edit "$PR_NUMBER" --add-reviewer "security_compliance_lead"
+          fi
+          
+          # Determine if architecture review needed
+          # Check if changes touch multiple packages or core modules
+          CHANGED_FILES=$(gh pr diff "$PR_NUMBER" --name-only)
+          if echo "$CHANGED_FILES" | grep -qE "(src/ai_company/(orchestrator|executor|llm|memory|registry)|pyproject.toml|company/)"; then
+            gh pr edit "$PR_NUMBER" --add-reviewer "solution_architect"
+          fi
+      
+      - name: Report PR to control plane
+        run: |
+          curl -X POST "${CONTROL_PLANE_URL}/api/tasks/pr-created" \
+            -H "Authorization: Bearer ${CONTROL_PLANE_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "task_id": "${{ needs.execute.outputs.task_id }}",
+              "pr_number": ${{ steps.create-pr.outputs.pull-request-number }},
+              "pr_url": "${{ steps.create-pr.outputs.pull-request-url }}",
+              "branch": "${{ needs.execute.outputs.branch_name }}",
+              "reviewer": "${{ needs.preflight.outputs.reviewer }}",
+              "quality_gates": {
+                "ruff": ${{ needs.quality-gates.outputs.ruff_passed }},
+                "mypy": ${{ needs.quality-gates.outputs.mypy_passed }},
+                "pytest": ${{ needs.quality-gates.outputs.pytest_passed }},
+                "bandit": ${{ needs.quality-gates.outputs.bandit_passed }},
+                "pip_audit": ${{ needs.quality-gates.outputs.pip_audit_passed }}
+              }
+            }'
+
+  # ─────────────────────────────────────────────────────────────────
+  # COMPLETION: Report final status to control plane
+  # ─────────────────────────────────────────────────────────────────
+  completion:
+    name: Report Completion
+    needs: [execute, quality-gates, create-pr]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+    steps:
+      - name: Determine final status
+        id: status
+        run: |
+          EXEC_EXIT="${{ needs.execute.outputs.exit_code }}"
+          RUFF="${{ needs.quality-gates.outputs.ruff_passed }}"
+          MYPY="${{ needs.quality-gates.outputs.mypy_passed }}"
+          PYTEST="${{ needs.quality-gates.outputs.pytest_passed }}"
+          BANDIT="${{ needs.quality-gates.outputs.bandit_passed }}"
+          PIP_AUDIT="${{ needs.quality-gates.outputs.pip_audit_passed }}"
+          
+          if [ "$EXEC_EXIT" = "0" ] && [ "$RUFF" = "true" ] && [ "$MYPY" = "true" ] && [ "$PYTEST" = "true" ] && [ "$BANDIT" = "true" ] && [ "$PIP_AUDIT" = "true" ]; then
+            echo "status=completed" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Report to control plane
+        run: |
+          curl -X POST "${CONTROL_PLANE_URL}/api/tasks/complete" \
+            -H "Authorization: Bearer ${CONTROL_PLANE_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "task_id": "${{ needs.execute.outputs.task_id }}",
+              "status": "${{ steps.status.outputs.status }}",
+              "pr_number": ${{ needs.create-pr.outputs.pull-request-number || 'null' }},
+              "pr_url": "${{ needs.create-pr.outputs.pull-request-url || '' }}",
+              "branch": "${{ needs.execute.outputs.branch_name }}",
+              "model_used": "${{ needs.execute.outputs.model_used }}",
+              "tokens_used": ${{ needs.execute.outputs.tokens_used || 0 }},
+              "cost_usd": ${{ needs.execute.outputs.cost_usd || 0 }},
+              "quality_gates": {
+                "ruff": ${{ needs.quality-gates.outputs.ruff_passed }},
+                "mypy": ${{ needs.quality-gates.outputs.mypy_passed }},
+                "pytest": ${{ needs.quality-gates.outputs.pytest_passed }},
+                "bandit": ${{ needs.quality-gates.outputs.bandit_passed }},
+                "pip_audit": ${{ needs.quality-gates.outputs.pip_audit_passed }}
+              },
+              "execution_log_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }'

@@ -1,0 +1,88 @@
+# Operating guardrails for the autonomous executor.
+#
+# This is the runtime configuration surface for LLM spend caps and
+# autonomy-tier policy (see tickets #15 / map Q4c + Q9a). It complements:
+#   - config/decision/approval_matrix.yaml  (Tier 0-4 approvers + SLAs)
+#   - config/decision/risk_matrix.yaml       (5x5 likelihood x impact)
+#   - config/company/budget.yaml            (annual corporate budget, FY2026)
+#
+# The concrete values below were chosen conservatively: the production stack
+# routes primarily to ollama/llama3.1-8b-32k (effectively $0/call), so these caps
+# act as protective ceilings that never trip on local models but hard-stop a
+# runaway paid-provider session. They are consumed by the Executor via
+# CostTracker.check_budget() and the auto-suspend guard in Executor.tick().
+guardrails:
+  llm_budgets:
+    currency: "USD"
+    daily_budget_usd: 2.00
+    task_budget_usd: 0.50
+    auto_suspend_on_overspend: true
+    # "suspend_daily"  = stop tick() processing for the rest of the day
+    # "suspend_forever" = halt the daemon until manually reset
+    overspend_action: "suspend_daily"
+  # Image-generation spend caps (Gemini visuals). Mirrors llm_budgets so the
+  # same overrun path applies: breaches ride escalation_slas.budget_overrun ->
+  # auto_suspend_and_notify -> human-ceo. Values chosen with ~10x headroom over
+  # expected social usage (~40-80 images/mo): the base model runs ~$3/mo and
+  # Nano Banana Pro ~$5-11/mo, so these never trip normally. The per-image
+  # ceiling blocks accidental 4K/Pro spam; batch_required_for_bulk halves cost
+  # for queued generation. Enforced by the media path once wired (Visual engine
+  # approval, ticket #191).
+  media_budgets:
+    currency: "USD"
+    monthly_budget_usd: 50.00
+    daily_budget_usd: 5.00
+    per_image_ceiling_usd: 0.50
+    batch_required_for_bulk: true
+    auto_suspend_on_overspend: true
+    overspend_action: "suspend_daily"
+  autonomy_tiers:
+    # Tiers are defined in code (orchestrator/tier_rules.py) and surfaced
+    # through the approval/risk matrices; this block binds concrete tier
+    # policy to the budget engine.
+    #   Tier 0 (auto-approve) -> notify only, full base caps
+    #   Tier 1 (notify)         -> full base caps
+    #   Tier 2 (single)         -> full base caps
+    #   Tier 3 (two-person)     -> tighter per-task guard
+    #   Tier 4 (ceo-only)       -> tightest per-task guard
+    tier_policy_source: "orchestrator/tier_rules.py"
+    seniority_levels:
+      - { level: "junior", auto_approve_tier: 0 }
+      - { level: "mid",    auto_approve_tier: 1 }
+      - { level: "lead",   auto_approve_tier: 2 }
+      - { level: "executive", auto_approve_tier: 2 }
+    tier_budget_overrides:
+      "3": { task_budget_usd: 0.25, daily_budget_usd: 2.00 }
+      "4": { task_budget_usd: 0.10, daily_budget_usd: 2.00 }
+    # When a task is classified at or above a tier that requires an approver,
+    # the executor MUST park it behind HITL instead of running autonomously.
+    hitl_gates:
+      require_approval_from_tier: 2
+      non_blocking: true
+  escalation_slas:
+    # SLA enforcement: breached SLAs escalate to the listed contact.
+    security_incident:
+      sla_hours: 0  # immediate
+      escalate_to: ["ciso", "human-ceo"]
+      action: "page"
+    customer_facing:
+      sla_hours: 1
+      escalate_to: ["human-ceo"]
+      action: "escalate"
+    budget_overrun:
+      sla_hours: 0  # immediate
+      escalate_to: ["human-ceo"]
+      action: "auto_suspend_and_notify"
+    hitl_approval_pending:
+      sla_hours: 24
+      escalate_to: ["human-ceo"]
+      action: "escalate"
+    cross_department_conflict:
+      sla_hours: 4
+      escalate_to: ["chief-of-staff"]
+      action: "escalate"
+  weekly_report:
+    enabled: true
+    day: "sunday"
+    time_utc: "18:00"
+    include: ["cost_summary", "task_completion", "escalations", "budget_remaining"]

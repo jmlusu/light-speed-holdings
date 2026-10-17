@@ -1,0 +1,17 @@
+# Capability Entity Definition
+
+key: machine_learning_operations
+title: "Machine Learning Operations (MLOps)"
+description: "Operationalizing ML models into production environments with monitoring, retraining, and lifecycle management"
+category: technical
+maturity_model_level: 2
+related_problems:
+  - low_ai_adoption
+enables:
+  - reduced_operational_costs
+implemented_by:
+  - model_deployment_service
+evidence_references:
+  - claim:014
+  - claim:015
+  - claim:022

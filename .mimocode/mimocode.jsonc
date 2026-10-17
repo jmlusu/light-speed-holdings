@@ -1,0 +1,23 @@
+﻿{
+  "$schema": "https://mimo.xiaomi.com/mimocode/config.json",
+  // Track B credential path (CEO, 2026-09-25): Xiaomi MiMo API key read from
+  // the environment. Requires MIMO_API_KEY to be set in the MiMo Code process
+  // environment; while unset this resolves to an empty key and requests fail
+  // at authentication (config still parses).
+  "model": "custom/mimo-v2.5",
+  "provider": {
+    "custom": {
+      "name": "Xiaomi MiMo",
+      "npm": "@ai-sdk/openai-compatible",
+      "only_configured_models": true,
+      "models": {
+        "mimo-v2.5": { "name": "MiMo v2.5" },
+        "mimo-v2.5-pro": { "name": "MiMo v2.5 Pro" }
+      },
+      "options": {
+        "baseURL": "https://api.xiaomimimo.com/v1",
+        "apiKey": "{env:MIMO_API_KEY}"
+      }
+    }
+  }
+}

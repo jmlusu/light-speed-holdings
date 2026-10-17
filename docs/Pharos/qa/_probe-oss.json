@@ -1,0 +1,45 @@
+{
+  "target": "public\\infographics\\open-source-stack.html",
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scrollWidth": 1280,
+      "scrollHeight": 5994,
+      "horizontalOverflowPx": 0,
+      "imgCount": 1,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 13,
+      "emptyHeadingCount": 0,
+      "screenshot": "docs/Pharos/qa/_probe-oss-1280x800.png"
+    },
+    {
+      "viewport": {
+        "width": 375,
+        "height": 667
+      },
+      "scrollWidth": 769,
+      "scrollHeight": 14261,
+      "horizontalOverflowPx": 394,
+      "imgCount": 1,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 13,
+      "emptyHeadingCount": 0,
+      "screenshot": "docs/Pharos/qa/_probe-oss-375x667.png"
+    }
+  ]
+}

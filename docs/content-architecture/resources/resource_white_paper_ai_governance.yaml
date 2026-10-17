@@ -1,0 +1,19 @@
+# Resource Entity Definition - White Paper
+
+key: white_paper_ai_governance
+title: "AI Governance White Paper"
+description: "Comprehensive guide to AI governance for emerging markets"
+type: white_paper
+industry: ai_governance
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_governance_policy
+related_use_cases:
+  - predictive_maintenance
+content_format: pdf
+published_date: "2024-05-20"
+tags:
+  - governance
+  - compliance
+  - emerging_markets

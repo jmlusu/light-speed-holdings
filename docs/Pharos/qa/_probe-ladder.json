@@ -1,0 +1,45 @@
+{
+  "target": "public\\visuals\\graduated-autonomy-ladder.html",
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scrollWidth": 1280,
+      "scrollHeight": 4386,
+      "horizontalOverflowPx": 0,
+      "imgCount": 1,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 15,
+      "emptyHeadingCount": 0,
+      "screenshot": "docs/Pharos/qa/_probe-ladder-1280x800.png"
+    },
+    {
+      "viewport": {
+        "width": 375,
+        "height": 667
+      },
+      "scrollWidth": 375,
+      "scrollHeight": 8616,
+      "horizontalOverflowPx": 0,
+      "imgCount": 1,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 15,
+      "emptyHeadingCount": 0,
+      "screenshot": "docs/Pharos/qa/_probe-ladder-375x667.png"
+    }
+  ]
+}

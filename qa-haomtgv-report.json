@@ -1,0 +1,45 @@
+{
+  "target": "http://localhost:1441/haomtgv",
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scrollWidth": 1280,
+      "scrollHeight": 2164,
+      "horizontalOverflowPx": 0,
+      "imgCount": 2,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 14,
+      "emptyHeadingCount": 0,
+      "screenshot": "qa-haomtgv-1280x800.png"
+    },
+    {
+      "viewport": {
+        "width": 375,
+        "height": 667
+      },
+      "scrollWidth": 375,
+      "scrollHeight": 3242,
+      "horizontalOverflowPx": 0,
+      "imgCount": 2,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 14,
+      "emptyHeadingCount": 0,
+      "screenshot": "qa-haomtgv-375x667.png"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+# Business Outcome Entity Definition
+
+key: accelerated_time_to_market
+title: "Accelerated Time-to-Market"
+description: "Faster product and service launch enabled by AI development acceleration"
+metric: "weeks-reduced"
+target: "SMEs in emerging markets"
+related_problems:
+  - low_ai_adoption
+enabled_by:
+  - machine_learning_operations

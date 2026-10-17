@@ -1,0 +1,11 @@
+# Business Outcome Entity Definition
+
+key: reduced_operational_costs
+title: "Reduced Operational Costs"
+description: "Cost savings from AI-optimized processes and automated operations"
+metric: "cost-reduction-percent"
+target: "SMEs in emerging markets"
+related_problems:
+  - low_ai_adoption
+enabled_by:
+  - machine_learning_operations

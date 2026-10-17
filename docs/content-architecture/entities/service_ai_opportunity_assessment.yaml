@@ -1,0 +1,19 @@
+# Service Entity Definition
+
+key: ai_opportunity_assessment
+title: "AI Opportunity Assessment"
+description: "Evaluating AI readiness, identifying high-impact use cases, and building a business case for AI investment"
+capability: ai_strategy
+engagement_models:
+  - assessment
+  - workshop
+proof:
+  - live_ai_assessment_demo
+audience:
+  - ceo
+  - cto
+duration_weeks: 4
+price_tier: professional
+evidence_references:
+  - claim:023
+  - claim:027

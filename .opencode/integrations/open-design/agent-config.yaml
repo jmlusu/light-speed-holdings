@@ -1,0 +1,147 @@
+# Open Design Integration - Agent Configuration
+# This file defines how agents interact with Open Design
+
+integrations:
+  open-design:
+    enabled: true
+    version: "0.9.0"
+    
+    # Connection settings
+    connection:
+      method: cli  # cli or desktop
+      cliPath: "open-design"
+      autoUpdate: true
+      
+    # Authentication (AMR - no API key needed)
+    auth:
+      method: amr
+      signInOnce: true
+      
+    # Default model
+    models:
+      default: "claude-sonnet-4.5"
+      
+    # Brand enforcement
+    brand:
+      enforceBrand: true
+      tokensPath: "brand/tokens/brand-tokens.json"
+      guidelinesPath: "brand/guidelines/brand-guidelines.md"
+      
+    # Output settings
+    output:
+      baseDir: "output/design"
+      formats:
+        - html
+        - svg
+        - png
+        - pdf
+        - pptx
+
+# Agent-specific Open Design configurations
+agents:
+  creative-director:
+    role: orchestrator
+    openDesignMode: brief-intake
+    responsibilities:
+      - Load brand system
+      - Ask 5 intake questions
+      - Route to production skill
+      - Enforce brand compliance
+      
+  product-designer:
+    role: production
+    openDesignMode: ai-ui-generator
+    skills:
+      - ls-frontend-design
+      - ls-design-system
+      - ls-artifact-qa
+    outputFormats:
+      - html
+      - svg
+      - png
+      
+  presentation-designer:
+    role: production
+    openDesignMode: slides
+    skills:
+      - ls-presentation-design
+      - ls-design-system
+      - ls-diagramming
+    outputFormats:
+      - pptx
+      - pdf
+      - html
+      
+  document-designer:
+    role: production
+    openDesignMode: document
+    skills:
+      - ls-document-design
+      - ls-design-system
+      - ls-artifact-qa
+    outputFormats:
+      - pdf
+      - html
+      - docx
+      
+  diagram-designer:
+    role: production
+    openDesignMode: diagram
+    skills:
+      - ls-diagramming
+      - ls-design-system
+    outputFormats:
+      - svg
+      - png
+      - html
+      
+  visual-storyteller:
+    role: production
+    openDesignMode: infographic
+    skills:
+      - ls-visual-storytelling
+      - ls-design-system
+      - ls-diagramming
+    outputFormats:
+      - png
+      - svg
+      - html
+      - pdf
+      
+  brand-advertising-designer:
+    role: production
+    openDesignMode: image
+    skills:
+      - ls-brand-advertising
+      - ls-design-system
+      - ls-artifact-qa
+    outputFormats:
+      - png
+      - jpg
+      - svg
+      - html
+
+# Workflow definitions
+workflows:
+  creative-brief:
+    description: "End-to-end creative production workflow"
+    steps:
+      - name: intake
+        agent: creative-director
+        action: "Load brand system and ask 5 intake questions"
+        
+      - name: route
+        agent: creative-director
+        action: "Route to appropriate production skill based on artifact type"
+        
+      - name: produce
+        agent: "[production-agent]"
+        action: "Create artifact using Open Design with brand constraints"
+        
+      - name: qa
+        agent: artifact-qa-reviewer
+        action: "Run visual, brand, UX, accessibility, and content QA"
+        
+      - name: deliver
+        agent: creative-director
+        action: "Deliver approved artifact to user"

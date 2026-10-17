@@ -1,0 +1,188 @@
+# LightSpeed Content Architecture Relationships
+
+# Problem → Capability
+- type: enables
+  from: problem
+  to: capability
+  strength:
+    - weak
+    - moderate
+    - strong
+    - critical
+  evidence_level:
+    - anecdotal
+    - qualified
+    - evidenced
+
+# Capability → Service
+- type: realizes
+  from: capability
+  to: service
+  cardinality: one-to-many
+
+# Capability → Business Outcome
+- type: enables
+  from: capability
+  to: business_outcome
+  strength:
+    - weak
+    - moderate
+    - strong
+    - critical
+
+# AI Use Case → Problem
+- type: addresses
+  from: use_case
+  to: problem
+  evidence_level:
+    - anecdotal
+    - qualified
+    - evidenced
+
+# AI Use Case → Capability
+- type: requires
+  from: use_case
+  to: capability
+  evidence_level:
+    - anecdotal
+    - qualified
+    - evidenced
+
+# AI Use Case → Business Outcome
+- type: delivers
+  from: use_case
+  to: business_outcome
+  strength:
+    - weak
+    - moderate
+    - strong
+    - critical
+
+# AI Use Case → Technology
+- type: uses
+  from: use_case
+  to: technology
+  evidence_level:
+    - anecdotal
+    - qualified
+    - evidenced
+
+# Insight → Problem
+- type: illuminates
+  from: insight
+  to: problem
+
+# Insight → Capability
+- type: informs
+  from: insight
+  to: capability
+
+# Insight → AI Use Case
+- type: triggers
+  from: insight
+  to: use_case
+
+# Research → Problem
+- type: investigates
+  from: research
+  to: problem
+
+# Research → Capability
+- type: develops
+  from: research
+  to: capability
+
+# Research → AI Use Case
+- type: generates
+  from: research
+  to: use_case
+
+# Policy → AI Use Case
+- type: constrains
+  from: policy
+  to: use_case
+
+# Policy → Industry
+- type: applies_to
+  from: policy
+  to: industry
+
+# Case Study → Capability
+- type: validates
+  from: case_study
+  to: capability
+
+# Case Study → Problem
+- type: addresses
+  from: case_study
+  to: problem
+
+# Case Study → Business Outcome
+- type: delivers
+  from: case_study
+  to: business_outcome
+
+# Demonstration → Capability
+- type: demonstrates
+  from: demonstration
+  to: capability
+
+# Experience → Capability
+- type: develops
+  from: experience
+  to: capability
+
+# Experience → Industry
+- type: applies_to
+  from: experience
+  to: industry
+
+# Resource → Problem
+- type: addresses
+  from: resource
+  to: problem
+
+# Resource → Capability
+- type: supports
+  from: resource
+  to: capability
+
+# Resource → AI Use Case
+- type: references
+  from: resource
+  to: use_case
+
+# Event → Capability
+- type: introduces
+  from: event
+  to: capability
+
+# Event → Industry
+- type: applies_to
+  from: event
+  to: industry
+
+# Engagement Model → Capability
+- type: requires
+  from: engagement_model
+  to: capability
+
+# Engagement Model → AI Use Case
+- type: applies_to
+  from: engagement_model
+  to: use_case
+
+# Audience → Problem
+- type: faces
+  from: audience
+  to: problem
+
+# Audience → Capability
+- type: seeks
+  from: audience
+  to: capability
+
+# Content Type → Content Variable
+- type: provides
+  from: content_type
+  to: content_variable

@@ -1,0 +1,552 @@
+/* ═══════════════════════════════════════════════════════════════
+   Light Speed Holdings — CEO Dashboard
+   J.A.R.V.I.S. theme layer + dark responsive design
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Reset & Base ───────────────────────────────────────────── */
+[x-cloak] { display: none !important; }
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/*
+ * FIX #1 (AUTO-SCROLL ROOT CAUSE): scroll-behavior: smooth on <html>
+ * causes the browser to animate-scroll on every DOM reflow. With
+ * 10-second polling + Alpine.js reactive updates, this creates
+ * the persistent auto-scrolling bug. Changed to "auto" (instant).
+ * Only anchor-link navigation benefits from smooth scrolling, and
+ * those are handled by the tab nav (no anchors used).
+ */
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  min-height: 100vh;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* ── Layout Containment (FIX #5) ───────────────────────────── */
+/*
+ * CSS containment isolates layout/paint/reflow to specific subtrees.
+ * This prevents data updates in KPI cards or task lists from
+ * triggering reflow recalculation up to the viewport root,
+ * which was a major contributor to scroll position instability.
+ */
+.kpi-card,
+.chart-container,
+.table-wrap {
+  contain: layout style;
+}
+
+/* ── Scroll Lock Utility ───────────────────────────────────── */
+/*
+ * Applied to <body> during data updates to prevent scroll shifts.
+ * The app.js saveScrollPosition/restoreScrollPosition methods
+ * coordinate with this class.
+ */
+body.scroll-locked {
+  overflow: hidden !important;
+}
+
+/* ── Loading Skeleton Animation ────────────────────────────── */
+/*
+ * Skeleton placeholders shown during initial data load to prevent
+ * the zero-to-real-value layout jump that causes viewport shifts.
+ */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 41, 59, 0.5) 0px,
+    rgba(51, 65, 85, 0.5) 40px,
+    rgba(30, 41, 59, 0.5) 80px
+  );
+  background-size: 200px 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 0.375rem;
+  color: transparent !important;
+  pointer-events: none;
+  user-select: none;
+}
+
+.skeleton-number {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2rem;
+}
+
+.skeleton-text {
+  display: inline-block;
+  width: 6rem;
+  height: 0.875rem;
+}
+
+.skeleton-row {
+  height: 3rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+/* ── KPI Card Hover ─────────────────────────────────────────── */
+.kpi-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 12px var(--jarvis-shadow-glow);
+  border-color: var(--jarvis-border-glow);
+}
+
+/* ── Chart Containers (FIX #3) ─────────────────────────────── */
+/*
+ * Chart.js with responsive:true + maintainAspectRatio:false requires
+ * a container with explicit height. Without this, charts collapse to
+ * 0px on destroy/recreate, causing the page height shift that triggers
+ * auto-scroll. The container provides a stable sizing context.
+ */
+.chart-container {
+  position: relative;
+  width: 100%;
+}
+
+.chartjs-tooltip {
+  pointer-events: none;
+  position: absolute;
+  z-index: 50;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: var(--jarvis-font-display, 'Rajdhani', 'Inter', system-ui, sans-serif);
+  font-size: 12px;
+  color: var(--jarvis-text, #e2e8f0);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.chartjs-tooltip .tt-title {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: var(--jarvis-cyan, #22d3ee);
+}
+
+.chartjs-tooltip .tt-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.chartjs-tooltip .tt-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chartjs-tooltip .tt-label {
+  color: var(--jarvis-text-muted, #94a3b8);
+}
+
+.chartjs-tooltip .tt-value {
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.chartjs-tooltip .tt-pct {
+  color: var(--jarvis-cyan, #22d3ee);
+  font-size: 11px;
+  min-width: 36px;
+  text-align: right;
+}
+
+.chart-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-container-sm { height: 200px; }
+.chart-container-md { height: 250px; }
+.chart-container-lg { height: 320px; }
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* ── Line clamp ─────────────────────────────────────────────── */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Drag & Drop ────────────────────────────────────────────── */
+.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+.drag-over {
+  background: rgba(34, 211, 238, 0.05);
+  border-color: rgba(34, 211, 238, 0.3) !important;
+}
+
+/* ── Chart.js canvas sizing ─────────────────────────────────── */
+canvas {
+  max-width: 100%;
+}
+
+/* ── Pulse animation for live indicator ─────────────────────── */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.pulse-ring {
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* ── Toast animation ────────────────────────────────────────── */
+.toast-enter {
+  animation: toast-in 0.3s ease-out;
+}
+
+@keyframes toast-in {
+  from { transform: translateY(1rem); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ── Kanban column drop zones ───────────────────────────────── */
+.kanban-drop-zone {
+  min-height: 200px;
+  transition: background-color 0.2s ease;
+}
+
+.kanban-drop-zone.drag-over {
+  background-color: rgba(34, 211, 238, 0.05);
+}
+
+/* ── Task Detail Slide-out Panel ────────────────────────────── */
+.task-detail-panel {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.3) transparent;
+}
+
+.task-detail-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.task-detail-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.task-detail-panel::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 116, 139, 0.3);
+  border-radius: 3px;
+}
+
+.task-detail-panel::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 116, 139, 0.5);
+}
+
+/* ── Kanban columns: scroll isolation ──────────────────────── */
+/*
+ * Each Kanban column scrolls independently within its own container.
+ * This prevents column content changes from affecting the page-level
+ * scroll position — a key contributor to the auto-scroll bug.
+ */
+.kanban-column {
+  contain: layout style;
+  overflow: hidden;
+}
+
+/* ── Table row hover ────────────────────────────────────────── */
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+/* ── Focus styles ───────────────────────────────────────────── */
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.5);
+}
+
+/* ── Native <select> dark mode ─────────────────────────────── */
+html {
+  color-scheme: dark;
+}
+select {
+  color-scheme: dark;
+}
+select option {
+  background-color: #0c1420 !important;
+  color: #e2e8f0 !important;
+}
+
+/* ── Table wrapper: horizontal scroll containment ───────────── */
+.table-wrap {
+  overflow-x: auto;
+}
+
+/* ── WS status indicator: prevent reflow on reconnect ─────── */
+/*
+ * The WS status badge uses animate-ping which restarts on
+ * reconnection, causing a brief layout flash. Containing it
+ * and giving it fixed dimensions prevents the reflow.
+ */
+.ws-status {
+  contain: layout style;
+  min-width: 3rem;
+}
+
+/* ── Navigation tabs ────────────────────────────────────────── */
+.nav-tabs {
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Responsive breakpoints ─────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Stack KPI cards to 1 column on mobile */
+  .kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Reduce padding on mobile */
+  .main-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  /* Kanban: always single column on mobile */
+  .kanban-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  /* 2 columns on small tablets */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* 3 columns on tablets */
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Org Tree Layout ────────────────────────────────────────── */
+.org-tree-container {
+  position: relative;
+}
+
+.org-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  min-width: max-content;
+}
+
+.org-tree-children {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+}
+
+.org-tree-subtree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.org-tree-node {
+  position: relative;
+}
+
+.org-tree-node.selected .node-card {
+  border-color: var(--jarvis-cyan);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.3);
+}
+
+.org-tree-connector {
+  width: 2px;
+  height: 1rem;
+  background: var(--jarvis-border-glow);
+  margin: 0 auto;
+}
+
+/* Node cards */
+.node-card {
+  transition: all 0.2s ease;
+}
+
+.node-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Drag and drop */
+.org-tree-node[draggable="true"] {
+  cursor: grab;
+}
+
+.org-tree-node[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* ── Print styles ───────────────────────────────────────────── */
+@media print {
+  header, nav, footer, .toast { display: none !important; }
+  body { background: white; color: black; }
+  .jarvis-glass { background: #f8fafc; border-color: #e2e8f0; }
+}
+
+/* ── Health Monitor ─────────────────────────────────────────── */
+.health-metric-card {
+  transition: all 0.2s ease;
+}
+
+.health-metric-card:hover {
+  border-color: var(--jarvis-cyan);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.1);
+}
+
+.anomaly-item {
+  transition: all 0.2s ease;
+}
+
+.anomaly-item:hover {
+  transform: translateX(2px);
+}
+
+/* Anomaly severity border accents */
+.anomaly-critical { border-left: 3px solid #ef4444; }
+.anomaly-warning { border-left: 3px solid #f59e0b; }
+.anomaly-info { border-left: 3px solid #3b82f6; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CEO Dashboard Hero Section
+   ═══════════════════════════════════════════════════════════════ */
+
+.hero-section {
+  background: rgba(7, 11, 20, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--jarvis-border-glow);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 12px var(--jarvis-shadow-glow);
+}
+
+.hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* ── Hero Loading State ─────────────────────────────────────── */
+.hero-loading {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+/* ── Hero Error State ───────────────────────────────────────── */
+.hero-error {
+  text-align: center;
+  padding: 2rem;
+}
+
+/* ── Hero Alerts Bar ────────────────────────────────────────── */
+.hero-alerts {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.875rem;
+}
+
+.alert-item {
+  color: var(--jarvis-text-muted);
+}
+
+/* ── Hero Responsive ────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero-kpi-cards {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-alerts {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 1rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Org Health Metric Cards
+   ═══════════════════════════════════════════════════════════════ */
+
+.metric-card {
+  transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.metric-card:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .metric-card .text-xl,
+  .metric-card .text-2xl {
+    font-size: 1.125rem;
+  }
+}

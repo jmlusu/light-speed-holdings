@@ -1,0 +1,13 @@
+# Problem Entity Definition
+
+key: change_resistance
+title: "Organizational Change Resistance"
+description: "Organizational resistance to AI cultural and process change across leadership and staff"
+industry: african_ai
+severity: medium
+related_problems:
+  - low_ai_adoption
+affected_geographies:
+  - malawi
+  - sADC
+  - africa

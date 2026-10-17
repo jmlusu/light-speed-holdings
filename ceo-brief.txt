@@ -1,0 +1,34 @@
+# CEO Brief: Competitive Landscape Refresh (T4 #420)
+
+## What Changed Since Sept 2026
+
+**Policy deltas (since 2026-09-16):**
+- Malawi AI Bill: still stalled in pre-tabling drafting stage; no parliament progress verified; COMESA stakeholder consultation 19–22 Aug 2026 shaped regional model policies.
+- National Digital Transformation Strategy + National AI Strategy: still "drafted, under consultation," not finalized/published; PS Mopiwa quoted 2026-08-06 still current.
+- SADC Regional AI Strategy + Regulatory Framework: no new draft, meeting, or approval since 2026-09-16; 46th Summit 17 Aug 2026 communiqué had no AI Strategy approval.
+- MACRA / DPA: 4-day Capacity Building Programme on Data Protection Training of Trainers, 22 Sept 2026; no fines/orders/breach decisions found 2026-09-17→2026-10-07.
+- UNDP IDT4M Oct 2026 quarterly: NOT YET PUBLISHED (publications hub lists only Jul–Sept 2025); Nzika Digital ID Wallet launched 16 Sept 2026 (NRB + UNDP IDT4M with EU/Ireland/Norway; 22,000+ onboarded day one).
+
+**Local competitive moves (10 players, 4 verified since Sept):**
+1. TNM acquires OCL Tier-3 data centre, Kanengo, Lilongwe, 11 Sept 2026 — unifies with Limbe DC, offers Data-Centre-as-a-Service.
+2. TNM + Huawei announce 2027 plan for digital services + AI + connectivity expansion, 24 Sept 2026.
+3. Seed Co Malawi upgrades Seedney app with AI-powered crop diagnosis/weather/variety advice, reported 29 Sept 2026.
+4. SpaceAI (Blantyre, est. 2024) — NEW entrant: public MWK 750,000 AI-training package, Junior AI Bootcamp, Chichewa data work via AfriLabs AI Bridge.
+
+**International competitive moves (7 players, 4 verified since Sept):**
+1. BCG Applied AI Index 2026 (30 Sept 2026): ~50% of firms generate AI value; agentic share 22%→~39% by 2030.
+2. Deloitte Africa: Connected Agentic Intelligence inside Omnia audit platform + Tech Trends 2026 (only 11% have agents in production).
+3. Accenture: Advanced Intelligence Group launched 5 Oct 2026; Gemini Enterprise Business Group with Google Cloud 8 Sept 2026.
+4. Polsia: pricing hybrid model May–Sept 2026: $49/mo + 20% revenue share (not just 3%); $30M Series A at ~$250M (May 2026).
+
+## So What
+
+- **Wedge-table verdicts: NO flips.** Category "empty locally" holds — nobody in Malawi/SADC sells a governed, human-led agentic organization with local-first operations and transparent MWK pricing.
+- **Updated wedge watches:** TNM as host/enabler (Data-Centre-as-a-Service), SpaceAI as training-price transparency watch.
+- **Key competitive pressures:** (1) Polsia's autonomy narrative in global tech press, (2) Qhala's consulting presence in Malawi, (3) Deloitte's agentic-AI messaging at enterprise level, (4) development-funded government delivery (UNDP/World Bank).
+- **Honesty tags** (VERIFIED / VENDOR CLAIM / UNCONFIRMED) applied per ADR-020/033; no fabricated metrics/dates/quotes.
+
+## Now What
+
+- Position LightSpeed as the **only** governed, human-led agentic organization with Malawi-first ops, transparent MWK pricing, HITL audit trails, and RBAC — beat Polsia on trust, beat Qhala on product depth, beat Deloitte on MWK price, beat UNDP on commercial delivery.
+- **Monitor list** (re-check next monthly cycle on 2026-11-16): Ajuta AI offering/team/traction; SpaceAI ICTAM 2026 award + counts; Rexplore Luso8 Cloud live status/customers/pricing; Polsia $10M ARR / 7,600 businesses / 2.1 Trustpilot claims; Qhala Sept–Oct Malawi moves; Malawi AI Bill tabling date; National AI Strategy final text; SADC AI Model Strategy draft; COMESA Lilongwe action-plan outputs; UNDP IDT4M Oct quarterly report; TNM–Huawei MoU terms.

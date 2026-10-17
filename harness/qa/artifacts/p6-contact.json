@@ -1,0 +1,19 @@
+{
+  "target": "http://localhost:3001/contact",
+  "checks": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "scrollHeight": 2915,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 6,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\artifacts\\p6-contact-390x844.png"
+    }
+  ]
+}

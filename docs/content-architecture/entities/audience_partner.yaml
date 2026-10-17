@@ -1,0 +1,19 @@
+# Audience Entity Definition
+
+key: partner
+name: Strategic Partner
+role: partner
+industry: african_ai
+seniority: mid
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_strategy
+  - ai_governance_policy
+preferred_engagement:
+  - workshop
+  - implementation
+content_types:
+  - case_study
+  - service
+  - use_case

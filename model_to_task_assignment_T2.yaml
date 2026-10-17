@@ -1,0 +1,213 @@
+model_to_task_assignment_T2:
+  # Creative Production Stack Specialties
+  - specialty: ls-creative-director
+    model_tier: premium
+    expected_speed: slow
+    expected_quality: high
+    expected_cost: high
+    rationale: Orchestrates the full creative stack; requires maximum reasoning for brief intake, skill routing, and critical decision-making. Premium tier ensures best-quality outputs for high-stakes artifacts.
+
+  - specialty: ls-frontend-design
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Builds on-brand websites and landing pages using the repo's Vite React SPA. Standard tier provides balanced capability for UI implementation, responsive design, and the "no AI slop" checklist.
+
+  - specialty: ls-presentation-design
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Generates board presentations, investor decks, and keynotes. Standard tier is sufficient for chart creation, speaker notes, and branded layout rendering via python-pptx.
+
+  - specialty: ls-document-design
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Produces whitepapers, strategy reports, and policy papers. Standard tier handles typography, chart generation, and document architecture reliably.
+
+  - specialty: ls-social-media-design
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Creates multi-channel campaigns (LinkedIn, X, Instagram, Facebook). Standard tier balances cost with the need for platform-specific dimensions and on-brand visuals.
+
+  - specialty: ls-brand-advertising
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Generates digital ads, display ads, billboards, and promotional graphics. Standard tier suffices for ad dimension enforcement and brand palette adherence.
+
+  - specialty: ls-diagramming
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Creates architecture, process, and strategy diagrams (Mermaid, SVG, Kroki). Standard tier handles the full diagram type palette with brand-palette restyling.
+
+  - specialty: ls-visual-storytelling
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Turns information into infographics, timelines, and visual abstracts. Standard tier supports Nano Banana Pro refinement and Gemini quality review.
+
+  - specialty: ls-documentation-engineering
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Builds READMEs, API docs, developer portals, and knowledge bases. Standard tier handles Diátaxis-classified content (tutorial, how-to, reference) consistently.
+
+  # Registry-Based Agent Specialties
+  - specialty: chief_of_staff
+    model_tier: premium
+    expected_speed: slow
+    expected_quality: high
+    expected_cost: high
+    rationale: Executive orchestrator with strategic oversight decisions. Premium tier critical for company OKR alignment, bottleneck monitoring, and board reporting.
+
+  - specialty: financial_analyst
+    model_tier: premium
+    expected_speed: slow
+    expected_quality: high
+    expected_cost: high
+    rationale: Performs ROI calculations, cost modeling, budget forecasting. Premium tier required for strict financial discipline and traceable figures.
+
+  - specialty: cto
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Oversees technological infrastructure and software development. Standard tier suffices for code review, scalability, and security monitoring (balanced capability).
+
+  - specialty: cpo
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Defines product vision and roadmap. Standard tier supports evidence-based product decisions and incremental shipping.
+
+  - specialty: cmo
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Drives brand awareness and demand generation. Standard tier supports campaign management and content quality scoring.
+
+  - specialty: hr
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Manages agent onboarding and workforce planning. Standard tier covers culture initiatives and performance review processes.
+
+  - specialty: ciso
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Protects company assets and ensures compliance. Standard tier handles security strategy, incident response, and SOC2/GDPR compliance.
+
+  - specialty: cio
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Manages IT infrastructure and internal tools. Standard tier covers cloud environments, system integration, and IT support.
+
+  - specialty: cdo
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Manages data strategy and analytics. Standard tier oversees BI, data quality, and governance frameworks.
+
+  - specialty: clo
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Manages legal affairs and contracts. Standard tier supports regulatory compliance and IP protection.
+
+  - specialty: cso
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Drives corporate strategy and market expansion. Standard tier supports competitive intelligence and initiative milestone tracking.
+
+  - specialty: lead_backend
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Leads backend engineering team. Standard tier covers API standards, database schemas, and code review enforcement.
+
+  - specialty: lead_frontend
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Leads frontend engineering team. Standard tier handles UI architecture, component standards, and accessibility compliance.
+
+  - specialty: product_designer
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Owns interaction design and visual systems. Standard tier supports design systems, wireframes, and accessibility compliance.
+
+  - specialty: solution_architect
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Designs end-to-end solutions for customer engagements. Standard tier supports technology stack evaluation and reference architecture creation.
+
+  - specialty: ai_safety_lead
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Owns safety policies and alignment guardrails. Standard tier suffices for monitoring and review (balanced capability for policy maintenance).
+
+  - specialty: prompt_engineer
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Owns prompt template library and system prompt architecture. Standard tier supports CoT, few-shot, and ReAct pattern optimization.
+
+  # QA and Specialist Roles
+  - specialty: ls-artifact-qa
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Design critic and gatekeeper that runs last on every artifact. Standard tier provides sufficient QA capability for visual, brand, UX, accessibility, and content checks.
+
+  - specialty: qa_lead
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Owns QA strategy and release gating. Standard tier covers test strategy, defect triage, and baseline maintenance.
+
+  - specialty: devops_lead
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Manages CI/CD pipelines and cloud infrastructure. Standard tier covers pipeline design, deployment automation, and system health monitoring.
+
+  - specialty: platform_reliability_engineer
+    model_tier: standard
+    expected_speed: medium
+    expected_quality: medium
+    expected_cost: medium
+    rationale: Owns concurrency safety, dead-letter queue hardening, and circuit-breaker robustness. Standard tier handles shared state locking and reliability patterns.

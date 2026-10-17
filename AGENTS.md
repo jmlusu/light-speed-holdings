@@ -1,0 +1,383 @@
+# AI Company Builder — Agent Guide
+
+## Project Location
+
+This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, NOT `/workspace/...` or any other container-style path. Always use this Windows path.
+
+**Governance docs:** `.ai-company\` holds the constitution and governing documents. Read only the file relevant to the current task (e.g. `.ai-company\constitution\11-GIT-STANDARDS.md` before any git work) — do not load the directory wholesale.
+
+**Git: `main` is protected** (GitHub ruleset, 6 required checks) — work on a branch, open a PR, merge only when checks are green; see §5 and `.ai-company\constitution\11-GIT-STANDARDS.md`.
+
+## 1 Project Snapshot
+
+- **What it is**: Python CLI tool for creating and orchestrating AI agent hierarchies. Agents are defined in `company-registry.yaml` and generated into OpenCode-compatible markdown files.
+- **Core workflow**: Registry YAML → Jinja2 template → `.opencode/agents/*.md` + `company/*.yaml`
+- **Runtime shape**: Python 3.12+ CLI (Typer), no web server. Packages via setuptools, environments managed with uv.
+- **Start here**: [Architecture](docs/ARCHITECTURE.md), [Development](docs/DEVELOPMENT.md), [ECL](docs/ECL.md)
+
+## 2 Core Workflow / Domain Model
+
+| Concept | Source | What Agents Need To Know |
+|---------|--------|--------------------------|
+| Agent Registry | `company-registry.yaml` | Single source of truth for all agents (id, name, tools, permissions) |
+| Generator | `src/ai_company/generator.py` | Reads registry, renders Jinja2 template, writes `.opencode/agents/*.md` |
+| Agent Template | `templates/agents/agent.md.j2` | OpenCode-native format with `mode: subagent` + `permission:` blocks |
+| CLI Entry | `src/ai_company/cli/main.py` | Typer app, 37 subcommands registered here |
+| Task System | `src/ai_company/orchestrator/message_bus.py` | JSON-based task queue at `.opencode/inbox.json` |
+| Domain Models | `src/ai_company/models/models.py` | Pydantic models: Executive, Specialist, Department, Company |
+
+## 3 Where To Work
+
+| Section | Document | Description |
+|---------|----------|-------------|
+| 3.1 | [System Architecture](docs/ARCHITECTURE.md) | Module hierarchy, data flow, key files |
+| 3.2 | [ECL](docs/ECL.md) | Change lifecycle, context loading, harness workflow |
+| 3.3 | [Status](docs/STATUS.md) | Recent handoff, current state |
+| 3.4 | [Deployment](docs/DEPLOYMENT.md) | Environments, ports, website deploy verification, Vercel failure runbook |
+
+## 4 Context Loading
+
+1. Read this file.
+2. Read [ECL](docs/ECL.md) for change lifecycle and context rules.
+3. If `harness/changes/active/summary.md` exists, read active change files before any task-specific docs.
+4. If no active change exists and `harness/evolution/pending.md` exists, read it before `docs/STATUS.md`.
+5. If no active change exists and no pending evolution exists, read [Status](docs/STATUS.md).
+6. Read the relevant source files for the task.
+7. Run `uv run graphify query "<task>"` to surface prior bug fixes and decisions relevant to the task; the knowledge graph is indexed on every commit by the post-commit `capture-fix` + `graphify-rebuild` hooks.
+
+## 5 Development Commands
+
+**Branch rule:** `main` is protected — branch + PR, 6 required checks must pass before merge (`.ai-company\constitution\11-GIT-STANDARDS.md`).
+
+### Quick Start (New Developers)
+
+```powershell
+.\scripts\dev\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
+.\scripts\dev\dev.ps1 status    # Show project status
+.\scripts\dev\dev.ps1 test      # Run test suite
+.\scripts\dev\dev.ps1 lint      # Run linter + type checker
+```
+
+### Manual Setup
+
+```bash
+uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
+pre-commit install --hook-type pre-commit --hook-type post-commit  # Enable git hooks (ruff, mypy, bandit, post-commit capture-fix)
+ai-company --help            # CLI entry point (uv run ai-company --help if venv not activated)
+uv run ruff check src/       # Lint
+uv run mypy src/             # Type check
+uv run pytest                # Tests
+uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # Regenerate agents
+```
+
+### Pre-commit Hooks
+
+Hooks run automatically on `git commit`. To run manually:
+
+```bash
+pre-commit run --all-files    # Run all hooks
+pre-commit run ruff           # Run just ruff
+pre-commit run mypy           # Run just mypy
+pre-commit run bandit         # Run just bandit
+```
+
+Installed hooks: trailing-whitespace, end-of-file-fixer, check-yaml, ruff (lint+format), mypy, bandit (security).
+
+### Disaster Recovery
+
+```powershell
+.\scripts\deploy\backup.ps1                    # Backup .opencode/, company/, results/ (to ~/.lightspeed/backups)
+.\scripts\deploy\backup.ps1 -RetentionDays 14  # Keep 14 days of backups
+```
+
+### Staging Environment
+
+```bash
+docker compose -f docker-compose.staging.yml up --build       # Start staging
+docker compose -f docker-compose.staging.yml --profile worker up   # With worker
+docker compose -f docker-compose.staging.yml --profile monitoring up  # With Prometheus
+```
+
+Staging dashboard runs on host port **8421** (maps to container 8420; production: 8420).
+
+## 6 Verification
+
+| Change Type | Minimum Verification |
+|-------------|----------------------|
+| Generator / template | `python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"` |
+| CLI commands | `ai-company --help` + `ai-company <command> --help` |
+| Models / orchestrator | `pytest` |
+| Any source change | `ruff check src/ && mypy src/ && pytest` |
+| Harness / docs | `pwsh scripts/maintenance/lint-ecl.ps1` |
+
+## 7 Safety Boundaries
+
+- Agents may modify business/application code when the user's task requires it.
+- Do not edit secrets, local env files, generated build outputs, dependency folders, or unrelated user changes.
+- Active ECL change constraints are the current task source of truth and override generic project guidance.
+- Do not overwrite active ECL change context; park or close it through the harness script first.
+- Do not hand-edit `harness/changes/INDEX.json`; it is generated by script only.
+- **Do not install or run skills that transmit local data** (code, docs, screenshots, prompts, memory) to third-party hosts unless the vendor is on [`docs/APPROVED-VENDORS.md`](docs/APPROVED-VENDORS.md) within the 90-day exception window. See §9.2. Retired: `claude-mem-*`, `scroll-craft`, `greploop*`.
+
+## 8 Tool Vocabulary (Canonical)
+
+The canonical runtime tool vocabulary for all agent cards (OpenCode v2 permission keys) is:
+
+| Tool | Purpose | Notes |
+|------|---------|-------|
+| `read` | Read file contents | |
+| `edit` | Exact string replacement in files | |
+| `grep` | Search file contents with regex | |
+| `list` | List directory entries | |
+| `bash` | Execute shell commands | |
+| `webfetch` | Fetch web content (HTTP/HTTPS) | |
+| `task` | Launch sub-agent for complex work | |
+
+**Alias policy (backward-compatible only):** The following legacy names are accepted as aliases but must not appear in newly generated cards:
+- `write` → `edit`
+- `execute` → `bash`
+- `delegate` → `task`
+- `web_search` / `websearch` → `webfetch`
+- `code_interpreter` → **removed** (not an alias; rejected at runtime)
+
+Agent generators must emit only the canonical 7 tools. ToolRunner validates against this list; unknown tools return an error.
+
+## 9 Governance Rules
+
+### 9.1 HITL Expiry Sweep
+
+The `ApprovalGate` runs a periodic sweep (wired into the daemon/governance cadence) that transitions expired `PENDING` approval requests to `EXPIRED`. This prevents stale approvals from blocking the inbox indefinitely. Agents and dashboards should treat `EXPIRED` as a terminal state requiring re-submission.
+
+### 9.2 Skill Third-Party Transmission Ban
+
+Skills must not send LightSpeed local data (code, diffs, docs, screenshots, prompts, session/memory payloads, PDFs, secrets) to third-party hosts unless the vendor is allow-listed in [`docs/APPROVED-VENDORS.md`](docs/APPROVED-VENDORS.md) and the exception is inside its **90-day** window (or re-signed by CEO/CISO). **CISO of record: Jack Mlusu (Human CEO).** On unexpected transmission: stop the skill, do not retry, report skill + host + payload class to the CEO. Full rule: [`docs/SKILL_CURATION_POLICY.md`](docs/SKILL_CURATION_POLICY.md) § Skill Third-Party Transmission Ban. Retired 2026-09-23: `claude-mem-*`, `scroll-craft`, `greploop`/`greploop-apps` (skills deleted; local `~/.claude-mem` purged).
+
+### 9.3 Audit Evidence Separation
+
+An agent performing an audit must treat its evidence set as read-only: **never write, move, rename, or delete any file inside the evidence directory it is auditing**, and never write its own audit output there. The auditor's read set and write set must be disjoint for the whole run, so findings stay re-derivable from an untouched evidence set and can be independently re-checked.
+
+- **Evidence directory** — any path consumed as evidence: `reports/evidence/`, `audit/*.jsonl`, `.opencode/audit/*`, `harness/changes/*/reviews/`, downloaded `audit-evidence` CI artifacts, `data/orchestrator/escalation_events.jsonl`, `data/orchestrator/dead_letter.jsonl`, `reports/evidence/audit-*.jsonl`.
+- **Where output goes** — a directory outside the evidence set (for the weekly audit: `reports/repo-audit-<AUDIT_DATE>.md`, with evidence at `reports/evidence/<AUDIT_DATE>.json`), or a path outside the repository.
+- **On violation** — discard the run, re-fetch evidence from a fresh clone or CI artifact, re-run, and report the incident alongside the findings.
+
+## 10 Verification
+
+See §6 Verification — the single source of the minimum-verification table.
+
+## 11 Security — Key Rotation Procedure
+
+See also: [docs/DASHBOARD_KEY_ROTATION.md](docs/DASHBOARD_KEY_ROTATION.md) for detailed dashboard RBAC key rotation procedures.
+
+**When to rotate:**
+- Every 90 days (scheduled)
+- Immediately on suspected compromise
+- When team members with access leave
+- After any security incident
+
+**Procedure:**
+1. **Generate new keys** for each provider/service (OpenCode, Gemini, Dashboard RBAC keys)
+2. **Update local `.env`** with new values — NEVER commit `.env` to git (it's gitignored)
+3. **Update deployed environments** (staging, production) via your secrets manager / platform:
+   - GitHub Actions secrets for CI/CD
+   - Docker / container platform secrets for runtime
+   - Cloud provider secret stores (AWS Secrets Manager, GCP Secret Manager, Azure Key Vault)
+4. **Verify health endpoints** respond with new keys:
+   - `curl http://<host>:8420/health` (production)
+   - `curl http://<host>:8421/health` (staging)
+5. **Revoke old keys** after confirming new ones work across all environments
+6. **Update `.env.example`** placeholders if key format/naming changed
+7. **Document rotation** in CHANGELOG.md with date and reason
+
+**Dashboard RBAC keys** (in priority order):
+- `DASHBOARD_ADMIN_KEY` — full access (also accepts `DASHBOARD_API_KEY` as alias)
+- `DASHBOARD_APPROVE_KEY` — approve/reject tasks
+- `DASHBOARD_RUN_KEY` — execute tasks, read KPIs
+- `DASHBOARD_API_KEY` — legacy single-key mode (admin alias)
+
+**LLM Provider keys:**
+- `OPENCODE_API_KEY` — primary (Big Pickle)
+- `GEMINI_API_KEY` — fallback (gemini-3.5-flash)
+- Optional: `DEEPSEEK_API_KEY`, `KIMI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `MIMO_API_KEY`
+
+**Verification commands:**
+```bash
+# Local verification
+uv run python -c "from dotenv import load_dotenv; load_dotenv(); from ai_company.security.rbac import verify_keys; verify_keys()"
+
+# Staging verification
+curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" http://localhost:8421/health
+
+# Production verification (adjust host/port)
+curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" https://api.example.com/health
+```
+
+## 12 Ports — Vite App and Server Monitoring
+
+**Assigned ports (2026-10-07):**
+- Development (`npm run dev`): **http://localhost:1441** — `vite.config.ts` → `server.port`
+- Production preview (`npm run preview`, serves `dist/`): **http://localhost:1440** — `vite.config.ts` → `preview.port`
+- Dashboard CORS allowlists include both origins (legacy `:3000` retained) in `src/ai_company/dashboard/app.py`, `docker-compose.yml`, `docker-compose.staging.yml`, `.env.staging.example`.
+- Updated references: `README.md` (scripts table), `check_server.py`, `docs/IMAGE_SPEC.md` (QA probe URL).
+
+**Operational rules** (session record: [docs/PORTS-MONITORING-2026-10-07.md](docs/PORTS-MONITORING-2026-10-07.md); issues tracked in §16):
+
+1. **Dev cold-start tolerance:** the first request after `npm run dev` exceeds the 15 s probe timeout while Vite optimizes the dependency graph — automated probes must retry once after the `VITE ready in ...` log line and allow ≥30 s.
+2. **Port conflicts:** kill lingering `node.exe` processes before restarting (`taskkill /F /IM node.exe`), verify ports are free (`netstat -an | findstr "1440 1441"`), then restart with `npm run dev` (1441) or `npm run preview` (1440).
+
+## 13 Application Boundary — CEO Dashboard vs Vite/React App
+
+The CEO Dashboard (internal) and the Vite/React app (external, §12) are **two independent applications**: different runtimes, servers, health checks, and deploy targets. Never serve one on the other's assigned port and never treat them as the same service.
+
+| | CEO Dashboard (internal) | Vite/React app (external) |
+|---|---|---|
+| Runtime | FastAPI/uvicorn via `ai-company dashboard` (`src/ai_company/dashboard/`) | Vite dev/preview (repo-root `src/`); static `dist/` on Vercel |
+| Production port | **8420** — `Dockerfile` (`EXPOSE 8420`, CMD `--port 8420`, healthcheck `:8420`), `docker-compose.yml` `8420:8420` | **443** at `lightspeedholdings.vercel.app` (Vercel) |
+| Development port | **8421** — `docker-compose.staging.yml` host `${STAGING_DASHBOARD_PORT:-8421}` → container 8420; local: `uv run ai-company dashboard --port 8421`; tests default `http://localhost:8421` | **1441** (dev) / **1440** (preview), §12 |
+| Health check | `GET /health` (JSON) | `GET /` (SPA) |
+
+**Rules:**
+
+1. **Port assignment is hard:** dashboard production = **8420**, dashboard development = **8421**. Do not repoint either.
+2. In Docker the dashboard container always listens on 8420; development/staging maps host 8421 → container 8420.
+3. The Vite/React app never occupies 8420/8421; the dashboard never occupies 1440/1441.
+4. CORS allowlist entries (incl. legacy `:3000`/`:5173`) are permitted browser origins, not port assignments.
+5. Bare `uv run ai-company dashboard` still defaults to 8420 (legacy local default); development launches must pass `--port 8421`.
+
+**Transient conflict (2026-10-07):** host 8421 is currently held by the unrelated `athena-frontend-staging` container (separate project), so the staging dashboard is temporarily published on 8422. The assigned development port remains 8421 — restore the default mapping when Athena no longer needs 8421.
+
+## 14 Agent skills
+
+### Dispatch guardrails (subagents vs. skills) — READ BEFORE DELEGATING
+
+`task`'s `subagent_type` and `skill`'s `name` are **separate namespaces** with separate
+allowed values. Passing a skill name (e.g. `ecl-harness-engineer`) as a `subagent_type`
+is rejected by the runtime. Never derive a `subagent_type` from a `.agents/skills/` path
+or a skill title. Validate against the system-prompt agent roster before calling `task`;
+if a name isn't a known `subagent_type`, pick a valid roster entry or do the work
+directly — and say honestly which you did. Full rules and the cross-reference table:
+`docs/agents/subagents-vs-skills.md`.
+
+### Skills CLI install hygiene
+
+Run `git status` after any `npx skills` (skills CLI) command, before continuing with the task.
+A single-skill install with `--skill` currently installs every skill in the registry (38 of 1 on
+2026-10-12); the extras show up as untracked `.agents/skills/` paths — revert the ones you did
+not ask for in the same session. Commit `skills-lock.json` only in its corrected state: it lists
+every installed skill, so `skills update` restores anything still listed in it.
+
+### Issue tracker
+
+GitHub issues, via the `gh` CLI. External PRs are not a triage surface. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Five canonical roles: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context repo (no `CONTEXT.md`/`CONTEXT-MAP.md` yet) — read `AGENTS.md`, `docs/`, and past decisions in `docs/adr/`. See `docs/agents/domain.md`.
+
+### Creative Production Stack (ls-* skills)
+
+Branded creative output routes through a layered skill stack. All `ls-*` skills live in `.agents/skills/`.
+
+**Layers (in order):**
+
+| Layer | Skill(s) | Role |
+|-------|----------|------|
+| Brand base | `ls-design-system` | ALWAYS loaded first by any creative skill; brand tokens live in `brand/tokens/` (canonical-only, not mirrored) + `brand/guidelines/`; `static/brand/` + `public/brand/` mirror other brand assets — see `brand/CANONICAL_SOURCES.md` |
+| Orchestrator | `ls-creative-director` | Brief intake (artifact/audience/objective/narrative/visual language) → routes to one production skill + support skills |
+| Production | `ls-frontend-design`, `ls-presentation-design`, `ls-document-design`, `ls-social-media-design`, `ls-brand-advertising` | Generate the artifact, delegating rendering to existing engines (python-pptx, Vite React SPA at repo-root `src/`, k-dense-*, Playwright) |
+| Support | `ls-diagramming`, `ls-documentation-engineering`, `ls-visual-storytelling` | Diagram/graphic/doc-IA assets used inside produced artifacts |
+| Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes Playwright visual checks via `ls-artifact-qa` skill (see `.agents/skills/ls-artifact-qa/`) |
+
+**Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.
+
+## 15 Evidence, Honesty and Execution Integrity Policy
+
+1. Never invent, infer as fact, or fabricate an explanation for an action, file modification, failure, decision, or historical event.
+
+2. Never claim that a file was read, modified, tested, committed, deployed, or verified unless the corresponding action and result are supported by available evidence.
+
+3. Distinguish explicitly between:
+   - What was requested
+   - What was attempted
+   - What actually happened
+   - What was independently verified
+   - What remains unknown
+
+4. Never invent the expansion of an acronym, the existence of a project, stakeholder approval, prior authorization, document contents, test results, performance metrics, or the contents of a previous investigation.
+
+5. When asked why an action occurred, consult available task instructions, tool logs, audit records, shell history where available, Git history, and relevant file diffs. State the limits of the evidence.
+
+6. If the cause cannot be established, say: "I cannot determine the cause from the available evidence." Do not substitute a plausible explanation.
+
+7. If challenged on a factual claim, recheck the underlying evidence. Do not defend the claim merely because it appeared in an earlier response.
+
+8. If an earlier statement is disproved, explicitly retract it, identify the unsupported claim, state what is actually known, and identify what remains unresolved.
+
+9. Never describe work as approved, pre-planned, harmless, necessary, or within scope unless the applicable evidence supports that description.
+
+10. Report unexpected modifications, failed actions, missing evidence, and scope violations immediately. Do not silently conceal, revert, or rewrite the history of an incident.
+
+11. Do not fabricate evidence, logs, citations, tool results, timestamps, or test outcomes.
+
+12. Compliance is determined by independent evidence and validation, not by the agent's assertion that it followed this policy.
+
+## 16 Known Issues Tracker (Permanent Record)
+
+**Purpose:** This section explicitly documents known issues and their fixes to prevent the recurring pattern of documentation being lost. Add new entries below; do not remove existing entries without a replacement fix.
+
+| Issue | Fix | Date Identified | Date Fixed | Status |
+|-------|-----|-----------------|------------|--------|
+| **Dev cold-start probe timeout** — First `npm run dev` request exceeds 15s timeout while Vite optimizes the dependency graph (~1676 modules). Cold start: port binds ~2.5s, first request ~6.3s. | Documented tolerance: automated health checks must retry once after `VITE ready in ...` log line, allow ≥30s timeout. No code change required. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **Port conflict / server startup failure** — Leftover `node.exe` processes bind ports 1440/1441, causing Vite to fall back or fail. | Always kill lingering `node.exe` processes (`taskkill /F /IM node.exe`) before restarting. Verify ports free with `netstat -an | findstr "1440 1441"`. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **Dashboard port conflict (staging)** — Host 8421 held by `athena-frontend-staging` (separate project), staging dashboard published on 8422. | Assigned development port remains 8421 — restore default mapping when Athena no longer needs 8421. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **CEO Dashboard vs Vite/React boundary** — Two independent applications with separate ports, runtimes, and health checks. | Hard port assignment: dashboard production=8420, development=8421. Vite/React uses 1440/1441. Never serve one on the other's port. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **Local/remote main divergence (squash-merge ancestry break)** — Local `main` diverged from `origin/main` after PR #433 squash-merge (`794e793b`): local main had 7 unmerged commits (junk files, ECL fixes, brand collage) whose content landed via squash but whose SHAs did not. `git pull`/`git merge` would have conflicted; `git reset --hard origin/main` required. Junk files (`tmp.txt`, `website-stabilization-mission.md`) landed on main via #430. | After squash-merge: `git fetch && git reset --hard origin/main`. Salvage PR `chore/post-reconciliation-cleanup` removes junk, salvages unique branch content (BUG-*.md, verify-port-bindings.ps1, test_scorers.py, ceo-memo, MISSION.md, Solutions PNG), deletes stale branches. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **Vercel ignoreCommand ENOENT (script stripped by `.vercelignore`)** — PR #449's skip-filter shipped `ignoreCommand: bash scripts/deploy/vercel-ignore-build.sh` but `.vercelignore` excluded the whole `scripts/` tree. Vercel runs `ignoreCommand` inside the filtered working copy → exit 127 ENOENT on every deploy. PR #450's bare `!/scripts/deploy/...` negation was inert (gitignore cannot re-include under an excluded parent dir). | Parent-chain pattern in `.vercelignore` (`/scripts/*`, `!/scripts/deploy/`, `/scripts/deploy/*`, `!/scripts/deploy/vercel-ignore-build.sh`). Guard extended in `scripts/test/check-vercelignore.py` (STATIC_REQUIRED / STATIC_EXCLUDED). Live-verified on `dpl_HxUdMUNLCpGsdSdD4Qv8LUoWVVGi` (#452 merge → BUILD → READY). | 2026-10-12 | 2026-10-13 | ✅ Fixed |
+| **Vercel ignoreCommand exit-code inversion** — Script used Unix intuition (exit 0=build, 1=skip); Vercel contract is **exit 0=skip (CANCELED), exit ≥1=build**. Masked by the ENOENT (exit 127 always builds) until #452's parent-chain fix let the script run; first live run `dpl_EzKiYqykZhC8dJSnc4T9DCgwq2ed` exited 0 with a "building." message and was CANCELED. Vercel KB + Academy call the inversion "the most common mistake." | Flipped all three exit points in `scripts/deploy/vercel-ignore-build.sh` (no-PREV→1, site-changed→1, no-changes→0); corrected `docs/DEPLOYMENT.md` §7. Local 3-path verification + live production proof: build on #452 merge, skip (CANCELED) on #453 docs-only merge (`2e7c9512`). Safe default under `set -euo pipefail` remains "build." | 2026-10-13 | 2026-10-13 | ✅ Fixed |
+
+**Rules for this section:**
+- Entries are tracked by date and status; do not delete without replacement
+- New issues must be added as new rows, not appended to existing entries
+- Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
+- Before removing any entry, a replacement fix must be documented
+
+## 17 Tool Usage Issues (Session Records)
+
+| Issue | Fix | Date Identified | Date Fixed | Status |
+|-------|-----|-----------------|------------|--------|
+| **PowerShell Select-Object validation** — `$input | Select-Object -First $n` fails with "Cannot validate argument on parameter 'First'. The -30 argument is less than the minimum allowed range 0". PowerShell 5.1 does not accept negative numbers for `-First`/`-Last` parameters. | Use positive numbers only, or avoid `-First`/`-Last` and pipe through other means. | 2026-10-11 | 🟡 In Progress |
+| **PowerShell `&&` token not valid separator** — `cd "path" && command` fails in PowerShell 5.1 with "The token '&&' is not a valid statement separator in this version". Known limitation, not a bug; this row merges the duplicate "(manual test)" entry, which listed the same issue with a contradictory status. | Run commands separately, or use `pwsh -Command "cd 'path'; & command"`. | 2026-10-11 | 2026-10-12 | ⚠️ Workaround |
+| **Git cherry-pick stuck in conflict state** — Cherry-pick of commit `3d37314c` (logo v2) got stuck showing "all conflicts fixed: run git cherry-pick --continue" but wouldn't complete. | Use `git cherry-pick --continue` after ensuring all conflict resolutions are staged, or abort and use merge instead. | 2026-10-11 | 🟡 In Progress |
+| **Git merge conflicts in FloatingNav.tsx** — PR #431 merge blocked due to FloatingNav.tsx TS1128 error from merge conflict resolution. The governance overlay section was placed outside the `return (` statement during conflict resolution. | Manually restructure JSX to put governance section inside return, then merge the fix branch into main. | 2026-10-11 | ✅ Fixed |
+| **TypeScript check failures after file edits** — After editing FloatingNav.tsx, `npx tsc --noEmit` kept failing on same lines due to duplicate governance sections (unused `governanceOverlay` variable + governance outside return). | Remove unused variables entirely, ensure single governance section inside return statement. | 2026-10-11 | ✅ Fixed |
+| **Bash/PowerShell command execution issues** — Multiple bash tool calls had syntax issues with PowerShell heredocs, line continuations, and string quoting due to different quoting rules between Windows PowerShell 5.1 and bash/cmd. | Use `pwsh -Command` with proper escaping, or break complex commands into simpler steps with careful quoting. | 2026-10-11 | ⚠️ Workaround |
+| **PowerShell `$(...)` expands inside double-quoted `--jq` arguments** — `gh pr view --jq "state=$(.state)"` fails with `(.state) was not recognized` because PowerShell evaluates `$(...)` before `gh` receives the string. Recurred in-session 2026-10-12, so the fix is now a standing directive, not a one-off note. Single-quoting is not sufficient by itself: PS 5.1 does not escape embedded double quotes when building native command lines, so a `--jq` expression containing string literals gets split into multiple arguments (`accepts at most 1 arg(s), received 2`). | **Directive:** write multi-statement PowerShell — or any one-liner containing `$(...)`, `$vars`, or nested quoting — to a temp `.ps1` file and run it with `powershell -File <path>.ps1`. When staying inline, single-quote `gh --jq` expressions (`gh pr view --jq '.state'`) so PowerShell never expands them; keep `--jq` expressions single-field with no string literals, and for expressions that need literals use a `.ps1` file. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **INDEX.json EOL-only phantom diff after reindex** — `harness-change.ps1` `Get-IndexJson` used PS 5.1 `ConvertTo-Json`, which emits CRLF, while `.gitattributes` forces `eol=lf` for `harness/changes/INDEX.json`. After every `reindex`, `git status` shows ` M harness/changes/INDEX.json` with an empty `git diff`. | Fixed at source: `Get-IndexJson` now normalizes `` `r`n `` → `` `n `` before `Write-Text`. `lint-ecl.ps1` unaffected (semantic compare). Until merged, restore with `git checkout -- harness/changes/INDEX.json`. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **Windows `Filename too long` deleting git worktrees** — `git worktree remove` fails (rc 255) on worktrees with deep `node_modules` paths exceeding MAX_PATH 260. | Set `git config --global core.longpaths true` (Git for Windows native fix, one-time). Non-git fallback: `cmd /c rmdir /S /Q "<path>"`. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **INDEX.json unsorted after reindex (sort no-op)** — `Sort-Object id` on the entry list does not sort `[ordered]` hashtables in Windows PowerShell 5.1 (keys resolve unordered), so reindex emitted parking→archive enumeration order while the committed index is globally id-sorted; every reindex produced a full-file diff. | Changed to `Sort-Object { $_.id }` (script-block form sorts OrderedDictionary correctly; verified side-by-side). Complements BUG-93e21736a (Get-ChildItem Name sort within each location). | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **`gh pr merge` run from a temp worktree** — branch cleanup (`--delete-branch`) is scoped to the checkout that runs the merge, so the main repo keeps a stale local branch while the worktree branch state diverges from origin after squash-merge. | **Directive:** run `gh pr merge` from the main repo directory (`C:\Users\jmlus\light-speed-holdings`), never from a temp worktree; then delete the remote branch explicitly with `git push origin --delete <branch>` and prune local leftovers with `git fetch --prune` from the main checkout. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+
+**Rules for this section:**
+- Entries are tracked by date and status; do not delete without replacement
+- New issues must be added as new rows, not appended to existing entries
+- Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
+- Before removing any entry, a replacement fix must be documented
+
+## Deck Generation Navigation
+
+Pointer: static/brand/templates/generate-pitch-deck.py --- Adapted script that converts ai_venture_studio_client_presentation.md (Part 5) into a 13-slide PPTX using brand tokens from brand/tokens/.
+
+Branches (trigger reaching):
+- ai_venture_studio_client_presentation.md is present and complete ---> run uv run python static/brand/templates/generate-pitch-deck.py
+- Presentation spec ai_venture_studio_client_presentation_deck_spec.md needs review first ---> read spec, verify slide count (13), then run script
+- Brand compliance check brand/guidelines/brand-guidelines.md Sec. 9 must pass ---> verify navy rail, color palette, type scale before delivery
+- CTO validation: PORTFOLIO D (Consumer Platforms) must appear in Slide 4 ---> confirmed via company-registry.yaml agent roles
+
+Leading word: generate --- when this word is invoked in a prompt, the agent reaches the pointer and the three resources above.
+
+One source of truth: company-registry.yaml --- agent roles and KPIs (ATC >90%, velocity <60d, correction ratio, 3x capital efficiency) are the single source of truth; the deck references these but the registry is authoritative.
+
+Cut identity: The brand tokens (navy #070A40, red #E63946, cyan #00BFFF) and compliance checklist (Sec. 9) are also defined in brand/tokens/brand-tokens.json and brand/guidelines/brand-guidelines.md; this pointer directs to the primary references only.

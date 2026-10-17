@@ -1,0 +1,12 @@
+# Problem Entity Definition
+
+key: developer_technical_debt
+title: "Developer Technical Debt"
+description: "Challenges in integrating AI solutions with existing technical infrastructure and codebases"
+industry: digital_transformation
+severity: medium
+related_problems:
+  - low_ai_adoption
+affected_geographies:
+  - malawi
+  - sADC

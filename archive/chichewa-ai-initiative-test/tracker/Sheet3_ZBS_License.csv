@@ -1,0 +1,9 @@
+Workstream,Deliverable,Owner,Target Date,Actual Date,Status,Blockers,Notes,Priority
+Legal,Mutual NDA executed,CLO,2026-09-02,,Not Started,,,Critical
+Technical,100hr stratified sample received,ML Eng,2026-09-16,,Not Started,,Dialect: 40%C/30%N/20%S/10%CS; Era: 20/40/40; Program: 30/30/20/20,Critical
+Technical,Quality audit complete (WER, diarization, metadata),ML Eng,2026-09-23,,Not Started,,Whisper WER<25%; ≥90% metadata completeness; DER<15%,Critical
+Legal,Evaluation report delivered to ZBS,CTO/BD,2026-09-23,,Not Started,,Quality scores, dialect coverage, WER benchmarks, recommendation,High
+Legal,Data License Agreement signed (GATE 1),CEO/BD,2026-09-30,,Not Started,,Gate 1 criteria: OI JDA + ZBS NDA + MinAg MoU,Critical
+Technical,Full archive delivery (7,000 hrs),ML Eng,2026-10-30,,Not Started,,Encrypted drives / secure transfer; manifest with checksums,High
+Technical,Ingestion pipeline complete,ML Eng,2026-11-13,,Not Started,,Dataset versioned on HuggingFace (private),High
+Product,Co-branded "ZBS AI" hotline specs,PM,2026-10-15,,Not Started,,IVR + WhatsApp; 60/40 rev split; ZBS brand + LS platform,Medium

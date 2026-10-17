@@ -1,0 +1,41 @@
+{
+  "illustrationId": "grav-governance",
+  "title": "Governance That Doesn't Slow You Down",
+  "dimensions": "1920x1080",
+  "aspectRatio": "16:9",
+  "skill": "article-illustrations",
+  "prompt": "Generate one standalone 16:9 horizontal article illustration.\n\nVisual DNA:\nPure white background. Minimalist black hand-drawn line art. Slightly wobbly pen lines. Lots of empty white space. Sparse red/orange/blue handwritten English annotations. Clean absurd product-sketch feeling. No gradients, no shadows, no paper texture, no complex background, no commercial vector style, no PPT infographic look, no cute mascot poster, no children's illustration, no realistic UI.\n\nRecurring IP character required:\nGrav, a small round floating figure with dot eyes, a single thin bent antenna with a tiny circle tip, thin dangling stick legs that never touch surfaces, and a slightly uneven hand-drawn body shape. Grav always hovers slightly above any surface — there is always a visible gap between Grav and the ground. Grav must perform the core conceptual action, not decorate the scene. Make Grav calm, deadpan, focused, and slightly bizarre — not cute.\n\nTheme:\nGovernance That Doesn't Slow You Down — built-in HITL gates, audit trails, expiry sweeps\n\nStructure type:\nBefore / After Contrast\n\nCore idea:\nChaos becomes order through LightSpeed's built-in governance layer — Grav operates the gate calmly\n\nComposition:\nLeft (Before): Chaotic pile of \"agent tickets\" — sticky notes, loose papers, Grav drowning in paper (red highlight: \"No audit trail\"). Orange arrow through center: \"LightSpeed Governance\". Right (After): Clean conveyor — each agent card passes through a \"Gate\" (Grav operating a lever while floating), stamped \"APPROVED\" (cyan), logged in \"Audit Ledger\" (blue). Grav calm, methodical.\n\nSuggested elements:\nchaotic paper pile / drowning Grav / orange arrow bridge / gate with lever / approved stamp / audit ledger book / calm Grav\n\nEnglish handwritten labels:\nChaos / Gate / Approved / Logged / Auditable\n\nColor use:\nBlack for main line art and Grav. Orange for main flow/path/arrows. Red only for key warnings/problems/results. Blue only for supplementary notes or feedback/system state.\n\nConstraints:\nOne image explains only one core structure. Keep the main subject around 40%-60% of the canvas. Preserve at least 35% white space. No title bar at the top. No border or frame. Maximum 5-8 annotation labels. Each label is 2-5 words. The style should feel like a senior engineer's casual whiteboard sketch — absurd, clean, memorable.",
+  "qaChecklist": [
+    "Image is 16:9 landscape format (1920x1080)",
+    "Background is clean white (#FFFFFF)",
+    "Grav is present",
+    "Grav is floating (visible gap between body and any surface) - both Grav instances",
+    "Grav performs the core action (not just decoration) - operates lever, not floating idle",
+    "Composition is an original metaphor for the current article",
+    "Scene is absurd, creative, and memorable",
+    "Clean and uncluttered — main subject doesn't exceed ~60% of canvas",
+    "One core structure per image (Before/After Contrast)",
+    "Annotations are sparse, short, and readable (max 8 labels, 2-5 words each)",
+    "Orange used only for main paths or arrows (bridge arrow)",
+    "Red used only for highlights, problems, warnings, or results (Chaos label, drowning highlight)",
+    "Blue used only for supplementary notes, feedback, or system state (Logged, Auditable)",
+    "At least 35% whitespace preserved",
+    "No title bar, no border, no frame"
+  ],
+  "postRender": {
+    "paletteCheck": true,
+    "checkCommand": "uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.py docs/assets/grav-governance.png --tolerance 3",
+    "expectedResult": "PASS",
+    "note": "Grav style is carve-out for visual style, but accent colors must map to LS tokens post-render. Run palette checker after generation. MANDATORY for both Grav illustrations."
+  },
+  "outputPath": "docs/assets/grav-governance.png",
+  "brandTokens": {
+    "navy": "#070A40",
+    "red": "#E63946",
+    "cyan": "#00BFFF",
+    "lightGrey": "#F2F2F2",
+    "white": "#FFFFFF",
+    "darkGrey": "#6B7280",
+    "lightTextGrey": "#9CA3AF"
+  }
+}

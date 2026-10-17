@@ -1,0 +1,29 @@
+# Todo — Brand Logo Migration + Red Standardization
+
+- [ ] **WS-A** Web + skill logo refs
+  - [ ] `src/pages/Index.tsx:36` → `/brand/logo/logo-full.png`
+  - [ ] `src/pages/Index.tsx:107` → `/brand/logo/logo-full.png`
+  - [ ] `src/components/site/Logo.tsx:19` → `logo-full.svg` / `logo-mark.svg`
+  - [ ] `.agents/skills/ls-design-system/SKILL.md` paths + red
+  - [ ] `.opencode/integrations/open-design/README.md` + `QUICK-REFERENCE.md`
+- [ ] **WS-B** Red `#E63946` → `#DC3641`
+  - [ ] `brand/tokens/brand-tokens.json:21`
+  - [ ] `brand/tokens/brand-tokens.css` (L8, L75, L146, L175)
+  - [ ] `brand/digital/social-card-spec.md`
+  - [ ] `brand/guidelines/brand-guidelines.md`
+  - [ ] `_carousel-concepts.txt`
+- [ ] **WS-C** Docs truth-up
+  - [ ] `brand/README.md` L18–71
+  - [ ] `brand/guidelines/brand-guidelines.md` §3 + L108
+  - [ ] `brand/digital/social-card-spec.md` icononly → logo-mark
+  - [ ] `reports/issue-381-amended-policy.md:111`
+  - [ ] `brand/CHANGELOG.md` entry
+- [ ] **WS-D** Archive + sync
+  - [ ] Move `brand/print/**` → `.archive/brand/print/**`
+  - [ ] Edit mirror-only `static/brand/templates/**`
+  - [ ] `pwsh scripts/build/sync-brand.ps1 -Prune`
+- [ ] **WS-E** Verify
+  - [ ] `sync-brand.ps1 -Verify` exit 0
+  - [ ] grep: zero legacy refs outside `.archive/`
+  - [ ] ruff / mypy / pytest (if Python touched)
+  - [ ] Playwright QA on `Index.tsx`
