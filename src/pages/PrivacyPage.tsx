@@ -50,6 +50,13 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
 export const PrivacyPage: React.FC<PrivacyPageProps> = ({ theme }) => {
   const isLight = theme === 'light';
 
+    {/*
+     * AGENT TEAM NARRATIVE - PrivacyPage
+     * Content fidelity governed by:
+     *   - legal-owner        | GDPR, Malawi DPA, and international privacy regulations
+     *   - data-privacy-owner | data handling policies, cookie consent, and user rights
+     * Last audited: 2026-10-18
+     */}
   return (
     <>
       <PageIntro

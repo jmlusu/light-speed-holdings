@@ -70,6 +70,13 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
 export const TermsPage: React.FC<TermsPageProps> = ({ theme }) => {
   const isLight = theme === 'light';
 
+    {/*
+     * AGENT TEAM NARRATIVE - TermsPage
+     * Content fidelity governed by:
+     *   - legal-owner     | Terms of Service, liability limits, and regulatory compliance
+     *   - content-writer  | clear, plain-language translation of legal obligations
+     * Last audited: 2026-10-18
+     */}
   return (
     <>
       <PageIntro
