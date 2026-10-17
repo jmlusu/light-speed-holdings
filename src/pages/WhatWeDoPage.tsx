@@ -23,6 +23,14 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
   const isLight = theme === 'light';
   const [activeTab, setActiveTab] = useState<CatalogTab>('packages');
 
+    {/*
+     * AGENT TEAM NARRATIVE - WhatWeDoPage
+     * Content fidelity governed by:
+     *   - registry-owner           | sector/solution evidence mapping
+     *   - decision-engine-owner    | G1-G4 gate logic, 5-tier approval matrix
+     *   - security-compliance-lead | tier_rules.py compliance, risk assessment
+     * Last audited: 2026-10-18
+     */}
   return (
     <>
       {/* 1. EXECUTIVE OUTCOME (Above the fold: what/who/why/next in 5s) */}

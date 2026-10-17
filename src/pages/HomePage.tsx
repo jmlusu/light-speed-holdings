@@ -20,6 +20,16 @@ interface HomePageProps {
 
 export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) => (
   <div className="relative">
+    {/*
+     * AGENT TEAM NARRATIVE - HomePage
+     * Content fidelity governed by:
+     *   - content-writer    | hero copy, visitor pathways, CTA messaging
+     *   - registry-owner    | sector/solution evidence, KPI metrics
+     *   - reviewer          | MASTER_SPEC compliance, honesty badges
+     *   - researcher        | evidence verification against source data
+     *   - dashboard-owner   | conversion metrics, engagement tracking
+     * Last audited: 2026-10-18
+     */}
     {/* MASTER_SPEC §19 static fallback: mist/slate backdrop in a zero-z layer;
         content uses z-10 so it stacks above the fixed bg. */}
     <div className="fixed inset-0 z-0 pointer-events-none bg-[#F7F8F9] dark:bg-[#121518]" aria-hidden="true" />

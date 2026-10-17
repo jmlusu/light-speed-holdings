@@ -10,6 +10,14 @@ interface AiCompanyBuilderPageProps {
 }
 
 export const AiCompanyBuilderPage: React.FC<AiCompanyBuilderPageProps> = ({ theme, onRequestBriefing }) => {
+    {/*
+     * AGENT TEAM NARRATIVE - AiCompanyBuilderPage
+     * Content fidelity governed by:
+     *   - registry-owner     | company-registry.yaml metrics, agent roster, departments
+     *   - creative-director  | orchestrates the creative production stack flow
+     *   - dashboard-owner    | KPI collectors, engagement metrics, conversion tracking
+     * Last audited: 2026-10-18
+     */}
   return (
     <>
       <AiCompanyBuilderSection

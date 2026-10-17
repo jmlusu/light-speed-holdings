@@ -40,6 +40,13 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
     });
   }, [hash]);
 
+    {/*
+     * AGENT TEAM NARRATIVE - SectorsPage
+     * Content fidelity governed by:
+     *   - registry-owner | canonical sector data, evidence tiers (Proven/Current/Future)
+     *   - researcher     | verification of sector evidence against source engagements
+     * Last audited: 2026-10-18
+     */}
   return (
     <>
       <PageIntro
