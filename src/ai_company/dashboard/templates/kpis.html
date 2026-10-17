@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+{% block title %}KPIs — CEO Dashboard{% endblock %}
+
+{% block content %}
+<!-- Health Monitor Section -->
+<div x-data="healthMonitor()" x-init="init()" class="mb-6">
+  <div class="bg-jarvis-surface border border-jarvis-border rounded-lg p-4">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-jarvis-primary font-display">System Health Monitor</h2>
+        <span x-show="autoRefresh && !loading" class="text-xs text-jarvis-text-muted flex items-center gap-1">
+          <svg class="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+          Live
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button @click="toggleAutoRefresh()" class="text-xs text-jarvis-text-muted hover:text-jarvis-text transition-colors">
+          Auto-refresh: <span x-text="autoRefresh ? 'ON' : 'OFF'" :class="autoRefresh ? 'text-emerald-400' : 'text-red-400'"></span>
+        </button>
+        <button @click="loadHealth(); loadTrend(); loadAnomalies()" class="text-jarvis-text-muted hover:text-jarvis-text transition-colors" title="Refresh">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div x-show="loading" class="grid grid-cols-4 gap-4 mb-4">
+      <template x-for="i in 4" :key="i">
+        <div class="bg-jarvis-bg border border-jarvis-border rounded-lg p-3">
+          <div class="skeleton skeleton-text mb-2"></div>
+          <div class="skeleton skeleton-number"></div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Live Metrics Cards -->
+    <div x-show="!loading" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <template x-for="comp in (orgHealth?.components || [])" :key="comp.name">
+        <div class="health-metric-card bg-jarvis-bg border border-jarvis-border rounded-lg p-3 transition-all">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-[10px] text-jarvis-muted uppercase tracking-wider" x-text="formatComponentName(comp.name)"></span>
+            <span :class="getChangeClass(comp)" class="text-[10px] font-medium" x-text="getChangeText(comp)"></span>
+          </div>
+          <div class="flex items-end gap-2">
+            <span class="text-2xl font-bold text-jarvis-text font-mono" x-text="(comp.value ?? 0).toFixed(0) + '%'"></span>
+          </div>
+          <div class="mt-2 h-1 bg-jarvis-raised rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500"
+                 :style="'width:' + Math.min(comp.value ?? 0, 100) + '%'"
+                 :class="{
+                   'bg-emerald-500': comp.value >= 80,
+                   'bg-amber-500': comp.value >= 50 && comp.value < 80,
+                   'bg-red-500': comp.value < 50
+                 }"></div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Composite Score Display -->
+    <div x-show="!loading && orgHealth" class="flex items-center gap-4 mb-4 p-3 bg-jarvis-bg border border-jarvis-border rounded-lg">
+      <div class="text-center">
+        <div class="text-3xl font-bold font-mono" :style="'color:' + getHealthScoreColor(orgHealth?.score ?? 0)"
+             x-text="(orgHealth?.score ?? 0)"></div>
+        <div class="text-[10px] text-jarvis-muted uppercase tracking-wider">Score</div>
+      </div>
+      <div class="h-8 w-px bg-jarvis-border"></div>
+      <div class="text-center">
+        <div class="text-lg font-semibold uppercase tracking-wider" :class="getHealthBandClass(orgHealth?.band)"
+             x-text="(orgHealth?.band ?? 'unknown')"></div>
+        <div class="text-[10px] text-jarvis-muted uppercase tracking-wider">Band</div>
+      </div>
+    </div>
+
+    <!-- Anomaly Detection -->
+    <div x-show="anomalies.length > 0" class="mb-4">
+      <h3 class="text-sm font-medium text-jarvis-text mb-2 font-display">Anomaly Detection</h3>
+      <div class="space-y-2">
+        <template x-for="(anomaly, idx) in anomalies" :key="anomaly.timestamp + anomaly.component + idx">
+          <div :class="getAnomalyClass(anomaly.severity)" class="anomaly-item flex items-center gap-2 p-2 rounded-lg text-sm">
+            <span x-text="getAnomalyIcon(anomaly.severity)"></span>
+            <span class="flex-1" x-text="anomaly.message"></span>
+            <span class="text-xs opacity-75 shrink-0" x-text="formatTime(anomaly.timestamp)"></span>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Trend Chart -->
+    <div class="bg-jarvis-bg border border-jarvis-border rounded-lg p-3">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-sm text-jarvis-muted font-display">Org Health Trend</span>
+        <div class="flex gap-1">
+          <button @click="trendRange = '6h'; loadTrend()"
+                  :class="trendRange === '6h' ? 'text-jarvis-cyan bg-jarvis-cyan/10' : 'text-jarvis-muted hover:text-jarvis-text'"
+                  class="text-xs px-2 py-1 rounded transition-colors">6h</button>
+          <button @click="trendRange = '24h'; loadTrend()"
+                  :class="trendRange === '24h' ? 'text-jarvis-cyan bg-jarvis-cyan/10' : 'text-jarvis-muted hover:text-jarvis-text'"
+                  class="text-xs px-2 py-1 rounded transition-colors">24h</button>
+          <button @click="trendRange = '7d'; loadTrend()"
+                  :class="trendRange === '7d' ? 'text-jarvis-cyan bg-jarvis-cyan/10' : 'text-jarvis-muted hover:text-jarvis-text'"
+                  class="text-xs px-2 py-1 rounded transition-colors">7d</button>
+        </div>
+      </div>
+      <div class="chart-container" style="height: 140px;">
+        <canvas id="health-trend-chart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DEPARTMENT KPIs HEADER ═══ -->
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h2 class="text-xl font-semibold text-jarvis-text font-display">Department KPIs</h2>
+    <p class="text-sm text-jarvis-muted mt-1">Real-time performance metrics across all departments</p>
+  </div>
+  <button @click="refreshKPIs()" class="bg-jarvis-raised text-jarvis-text px-3 py-2 rounded-lg text-sm hover:bg-jarvis-overlay transition-colors flex items-center gap-2 border border-jarvis-border-glow">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+    Refresh
+  </button>
+</div>
+
+<!-- ═══ COMPANY KPIs vs TARGETS ═══ -->
+<div x-show="companyKPIs.length > 0" class="mb-8">
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <h3 class="text-lg font-semibold text-jarvis-text font-display">Company KPIs vs Targets</h3>
+      <p class="text-sm text-jarvis-muted mt-1" x-show="companyKPISummaryText" x-text="companyKPISummaryText"></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <template x-for="kpi in companyKPIs" :key="kpi.id">
+      <div class="jarvis-glass rounded-xl p-4 cursor-pointer hover:border-jarvis-cyan/30 transition-colors" @click="openCompanyKPIDrillDown(kpi)">
+        <div class="flex items-start justify-between gap-2 mb-3">
+          <div class="min-w-0">
+            <span class="text-[10px] text-jarvis-muted uppercase tracking-wider" x-text="kpi.category || kpi.id"></span>
+            <h4 class="text-sm font-semibold text-jarvis-text mt-0.5 truncate font-display" x-text="kpi.name"></h4>
+          </div>
+          <span class="inline-flex shrink-0 items-center text-[10px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap"
+                :class="companyKPIStatusClass(kpi.status)">
+            <span x-text="(kpi.status || 'info').replace(/_/g, ' ')"></span>
+          </span>
+        </div>
+        <div class="flex items-end justify-between">
+          <div>
+            <div class="text-[10px] text-jarvis-muted uppercase tracking-wider">Current</div>
+            <div class="text-2xl font-bold text-jarvis-text mt-0.5 font-mono" x-text="formatKPIValue(kpi.current, kpi.unit)"></div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] text-jarvis-muted uppercase tracking-wider">Target</div>
+            <div class="text-lg font-semibold text-jarvis-text mt-0.5 font-mono" x-text="formatKPIValue(kpi.target, kpi.unit)"></div>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-jarvis-border-glow/20 flex items-center justify-between gap-2">
+          <span class="text-[10px] text-jarvis-muted" x-text="'gap: ' + formatKPIValue(kpi.gap, kpi.unit)"></span>
+          <span class="text-[10px] font-mono" :class="kpi.computed ? 'text-jarvis-cyan' : 'text-jarvis-muted'"
+                x-text="kpi.computed ? 'live' : (kpi.source || 'config')"></span>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <div class="jarvis-glass rounded-xl p-5 mt-4">
+    <h3 class="text-sm font-semibold text-jarvis-text mb-4 font-display">Company KPIs — Current vs Target</h3>
+    <div class="chart-container chart-container-md">
+      <canvas id="companyKPIChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DEPARTMENT TABS ═══ -->
+<div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+  <template x-for="dept in kpiDepartments" :key="dept.id">
+    <button @click="activeKPIDept = dept.id"
+            :class="activeKPIDept === dept.id ? 'bg-jarvis-cyan text-jarvis-base' : 'bg-jarvis-raised text-jarvis-muted border border-jarvis-border-glow hover:border-jarvis-cyan/20'"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2">
+      <span x-text="dept.name"></span>
+      <span class="text-[10px] font-mono opacity-60" x-text="dept.kpiCount + ' KPIs'"></span>
+    </button>
+  </template>
+</div>
+
+<!-- ═══ DRILL-DOWN PANEL ═══ -->
+<template x-if="drillDown">
+  <div class="jarvis-glass rounded-xl p-5 mb-6 border border-jarvis-cyan/30" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:leave="transition ease-in duration-150" x-transition:leave-end="opacity-0 transform translate-y-2">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold font-display text-jarvis-text" x-text="drillDown.title"></h3>
+      <button @click="closeDrillDown()" class="text-jarvis-muted hover:text-jarvis-text">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <template x-if="drillDown.loading">
+      <div class="space-y-2">
+        <div class="skeleton skeleton-row"></div>
+        <div class="skeleton skeleton-row"></div>
+      </div>
+    </template>
+    <template x-if="!drillDown.loading && drillDown.type === 'company-kpi'">
+      <div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Current</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="formatKPIValue(drillDown.data.current, drillDown.data.unit)"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Target</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="formatKPIValue(drillDown.data.target, drillDown.data.unit)"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Gap</p>
+            <p class="text-lg font-bold font-mono mt-1" :class="drillDown.data.status === 'on_track' ? 'text-emerald-400' : 'text-amber-400'" x-text="formatKPIValue(drillDown.data.gap, drillDown.data.unit)"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Frequency</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.frequency || '—'"></p>
+          </div>
+        </div>
+        <div class="bg-white/5 rounded-lg p-3 mb-3">
+          <p class="text-[10px] text-jarvis-muted uppercase tracking-wider mb-1">Formula</p>
+          <p class="text-xs text-jarvis-text" x-text="drillDown.data.formula || 'No formula defined'"></p>
+        </div>
+        <div class="bg-white/5 rounded-lg p-3">
+          <p class="text-[10px] text-jarvis-muted uppercase tracking-wider mb-1">Data Source</p>
+          <p class="text-xs text-jarvis-text" x-text="drillDown.data.source || 'No source defined'"></p>
+        </div>
+      </div>
+    </template>
+    <template x-if="!drillDown.loading && drillDown.type === 'dept-kpi'">
+      <div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Current</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.current ?? '—'"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Target</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.target ?? '—'"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Status</p>
+            <p class="text-lg font-bold font-mono mt-1" :class="{
+              'text-emerald-400': drillDown.data.status === 'on_track',
+              'text-amber-400': drillDown.data.status === 'below_target',
+              'text-red-400': drillDown.data.status === 'above_target',
+              'text-blue-400': drillDown.data.status === 'info'
+            }" x-text="(drillDown.data.status || 'info').replace(/_/g, ' ')"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Unit</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.unit || '—'"></p>
+          </div>
+        </div>
+        <template x-if="drillDown.history && drillDown.history.length > 0">
+          <div>
+            <p class="text-xs text-jarvis-muted mb-2 font-medium">History (last <span x-text="drillDown.history.length"></span> snapshots)</p>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-left text-xs text-jarvis-muted border-b border-white/[0.06]">
+                    <th class="pb-2 font-medium">Timestamp</th>
+                    <th class="pb-2 font-medium">Value</th>
+                    <th class="pb-2 font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="(entry, idx) in drillDown.history" :key="idx">
+                    <tr class="border-b border-white/[0.06]/30">
+                      <td class="py-1.5 text-xs text-jarvis-muted font-mono" x-text="entry.timestamp"></td>
+                      <td class="py-1.5 text-xs font-mono text-jarvis-text" x-text="entry.current ?? '—'"></td>
+                      <td class="py-1.5">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-medium" :class="{
+                          'bg-emerald-500/10 text-emerald-400': entry.status === 'on_track',
+                          'bg-amber-500/10 text-amber-400': entry.status === 'below_target',
+                          'bg-red-500/10 text-red-400': entry.status === 'above_target',
+                          'bg-blue-500/10 text-blue-400': entry.status === 'info'
+                        }" x-text="(entry.status || 'info').replace(/_/g, ' ')"></span>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </template>
+        <template x-if="!drillDown.history || drillDown.history.length === 0">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No history data available yet</p>
+        </template>
+      </div>
+    </template>
+  </div>
+</template>
+
+<!-- ═══ KPI SUMMARY CARDS ═══ -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" x-show="currentKPIDept">
+  <template x-for="(kpi, key) in (currentKPIDept?.kpis || {})" :key="key">
+    <div class="jarvis-glass rounded-xl p-4 cursor-pointer hover:border-jarvis-cyan/30 transition-colors" @click="openDeptKPIDrillDown(currentKPIDept.department, key, kpi)">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-xs text-jarvis-muted uppercase tracking-wider" x-text="key.replace(/_/g, ' ')"></span>
+        <span class="w-2 h-2 rounded-full" :class="{
+          'bg-emerald-400': kpi.status === 'on_track',
+          'bg-amber-400': kpi.status === 'below_target',
+          'bg-red-400': kpi.status === 'above_target',
+          'bg-blue-400': kpi.status === 'info'
+        }"></span>
+      </div>
+      <div class="flex items-end gap-2">
+        <span class="text-2xl font-bold font-mono" :class="{
+          'text-emerald-400': kpi.status === 'on_track',
+          'text-amber-400': kpi.status === 'below_target',
+          'text-red-400': kpi.status === 'above_target',
+          'text-blue-400': kpi.status === 'info'
+        }" x-text="kpi.current ?? '—'"></span>
+        <span class="text-sm text-jarvis-muted mb-0.5" x-text="kpi.unit"></span>
+      </div>
+      <div x-show="kpi.target !== null && kpi.target !== undefined" class="mt-2 flex items-center gap-2">
+        <div class="flex-1 h-1.5 bg-jarvis-raised rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-500" :class="{
+            'bg-emerald-500': kpi.status === 'on_track',
+            'bg-amber-500': kpi.status === 'below_target',
+            'bg-red-500': kpi.status === 'above_target',
+            'bg-blue-500': kpi.status === 'info'
+          }" :style="'width:' + Math.min(((kpi.current || 0) / (kpi.target || 1)) * 100, 100) + '%'"></div>
+        </div>
+        <span class="text-[10px] text-jarvis-muted font-mono" x-text="'target: ' + (kpi.target ?? '—')"></span>
+      </div>
+      <span class="inline-block mt-2 text-[10px] font-medium px-2 py-0.5 rounded-full" :class="{
+        'bg-emerald-500/10 text-emerald-400': kpi.status === 'on_track',
+        'bg-amber-500/10 text-amber-400': kpi.status === 'below_target',
+        'bg-red-500/10 text-red-400': kpi.status === 'above_target',
+        'bg-blue-500/10 text-blue-400': kpi.status === 'info'
+      }" x-text="(kpi.status || 'info').replace(/_/g, ' ')"></span>
+    </div>
+  </template>
+</div>
+
+<!-- ═══ KPI CHARTS ═══ -->
+<!--
+  FIX: Wrapped canvases in .chart-container with explicit height.
+  Removed inline height="250" from canvas (Chart.js uses the container).
+  This prevents layout shift during chart destroy/recreate cycles.
+-->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <div class="jarvis-glass rounded-xl p-5">
+    <h3 class="text-sm font-semibold text-jarvis-text mb-4 font-display">KPI Comparison</h3>
+    <div class="chart-container chart-container-md">
+      <canvas id="kpiComparisonChart"></canvas>
+    </div>
+  </div>
+  <div class="jarvis-glass rounded-xl p-5">
+    <h3 class="text-sm font-semibold text-jarvis-text mb-4 font-display">KPI Targets vs Current</h3>
+    <div class="chart-container chart-container-md">
+      <canvas id="kpiTargetChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ALL KPIs TABLE ═══ -->
+<div class="jarvis-glass rounded-xl overflow-hidden">
+  <div class="px-5 py-4 border-b border-jarvis-border-glow/20">
+    <h3 class="text-sm font-semibold text-jarvis-text font-display">All Department KPIs</h3>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-xs text-jarvis-muted bg-jarvis-raised/50 border-b border-jarvis-border-glow/20">
+          <th class="px-5 py-2.5 font-medium">Department</th>
+          <th class="px-5 py-2.5 font-medium">KPI</th>
+          <th class="px-5 py-2.5 font-medium">Target</th>
+          <th class="px-5 py-2.5 font-medium">Unit</th>
+          <th class="px-5 py-2.5 font-medium">Frequency</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="kpi in allKPIsList" :key="kpi.department + kpi.kpi_id">
+          <tr class="border-b border-jarvis-border-glow/20 hover:bg-jarvis-overlay/30 transition-colors">
+            <td class="px-5 py-2.5 text-jarvis-text" x-text="kpi.department_name"></td>
+            <td class="px-5 py-2.5 text-jarvis-text font-medium" x-text="kpi.name"></td>
+            <td class="px-5 py-2.5 font-mono text-jarvis-muted" x-text="kpi.target ?? 'N/A'"></td>
+            <td class="px-5 py-2.5 text-jarvis-muted" x-text="kpi.unit"></td>
+            <td class="px-5 py-2.5 text-jarvis-muted" x-text="kpi.frequency"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/health.js"></script>
+<script src="/static/js/charts.js"></script>
+{% endblock %}

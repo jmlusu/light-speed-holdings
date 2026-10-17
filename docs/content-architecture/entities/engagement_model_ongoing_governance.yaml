@@ -1,0 +1,11 @@
+# Engagement Model Entity Definition
+
+key: ongoing_governance
+title: "Ongoing Governance"
+description: "Annual governance and oversight engagement for responsible AI operations"
+category: ongoing_governance
+duration_weeks: 52
+capability: data_governance
+price_tier: enterprise
+proof_required: true
+associated_use_cases: []

@@ -1,0 +1,9 @@
+# Technology Entity Definition
+
+key: pytorch
+name: PyTorch
+category: framework
+maturity: mature
+related_use_cases:
+  - predictive_maintenance
+  - customer_segmentation

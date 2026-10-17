@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thought Leadership Roadmap — LightSpeed Holdings</title>
+<style>
+  :root {
+    --ls-navy: #070A40;
+    --ls-red: #E63946;
+    --ls-cyan: #00BFFF;
+    --ls-grey-light: #F2F2F2;
+    --ls-white: #FFFFFF;
+    --ls-grey-dark: #6B7280;
+    --ls-grey-light-text: #9CA3AF;
+    --ls-on-navy: #FFFFFF;
+    --ls-on-red: #FFFFFF;
+    --ls-on-cyan: #070A40;
+    --ls-font: Arial, sans-serif;
+    --ls-space-1: 4px;
+    --ls-space-2: 8px;
+    --ls-space-3: 12px;
+    --ls-space-4: 16px;
+    --ls-space-5: 24px;
+    --ls-space-6: 32px;
+    --ls-space-7: 48px;
+    --ls-radius-sm: 4px;
+    --ls-radius-md: 8px;
+    --ls-radius-lg: 16px;
+    --ls-page-max-width: 1200px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--ls-font);
+    background: var(--ls-white);
+    color: var(--ls-navy);
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: var(--ls-page-max-width);
+    margin: 0 auto;
+    padding: var(--ls-space-5) var(--ls-space-5) var(--ls-space-8);
+  }
+
+  /* Hero */
+  .hero {
+    background: var(--ls-navy);
+    color: var(--ls-on-navy);
+    padding: var(--ls-space-8) var(--ls-space-5) var(--ls-space-7);
+    border-bottom: 4px solid var(--ls-red);
+  }
+
+  .hero .container { padding-bottom: var(--ls-space-5); }
+
+  .hero-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ls-cyan);
+    margin-bottom: var(--ls-space-4);
+  }
+
+  .hero h1 {
+    font-size: 36pt;
+    font-weight: 700;
+    margin-bottom: var(--ls-space-4);
+    line-height: 1.1;
+  }
+
+  .hero-subtitle {
+    font-size: 16pt;
+    color: var(--ls-grey-light-text);
+    max-width: 720px;
+    margin-bottom: var(--ls-space-5);
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ls-space-5);
+    font-size: 14px;
+    color: var(--ls-grey-light-text);
+  }
+
+  .hero-meta strong {
+    color: var(--ls-on-navy);
+    font-weight: 700;
+  }
+
+  .tagline {
+    display: inline-block;
+    margin-top: var(--ls-space-5);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--ls-red);
+  }
+
+  /* Sections */
+  section { margin-top: var(--ls-space-7); }
+
+  .section-title {
+    font-size: 24pt;
+    font-weight: 700;
+    color: var(--ls-navy);
+    margin-bottom: var(--ls-space-5);
+    padding-bottom: var(--ls-space-3);
+    border-bottom: 3px solid var(--ls-cyan);
+  }
+
+  /* The Window */
+  .window-card {
+    background: var(--ls-grey-light);
+    border-left: 6px solid var(--ls-red);
+    border-radius: var(--ls-radius-md);
+    padding: var(--ls-space-6);
+  }
+
+  .window-card ul {
+    list-style: none;
+    margin-bottom: var(--ls-space-5);
+  }
+
+  .window-card li {
+    padding: var(--ls-space-2) 0 var(--ls-space-2) var(--ls-space-5);
+    position: relative;
+    font-size: 14px;
+  }
+
+  .window-card li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: var(--ls-red);
+    font-weight: 700;
+  }
+
+  .window-implication {
+    background: var(--ls-navy);
+    color: var(--ls-on-navy);
+    border-radius: var(--ls-radius-md);
+    padding: var(--ls-space-5);
+    font-size: 15px;
+    margin-top: var(--ls-space-4);
+  }
+
+  .window-implication strong {
+    color: var(--ls-cyan);
+  }
+
+  /* Phase timeline */
+  .timeline {
+    position: relative;
+    padding-left: var(--ls-space-6);
+  }
+
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    background: var(--ls-grey-light);
+  }
+
+  .phase {
+    position: relative;
+    background: var(--ls-white);
+    border: 1px solid var(--ls-grey-light);
+    border-radius: var(--ls-radius-lg);
+    padding: var(--ls-space-6);
+    margin-bottom: var(--ls-space-6);
+    box-shadow: 0 2px 8px rgba(7, 10, 64, 0.06);
+  }
+
+  .phase::before {
+    content: "";
+    position: absolute;
+    left: calc(-1 * var(--ls-space-6) + 2px);
+    top: var(--ls-space-5);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--ls-white);
+    border: 3px solid var(--ls-cyan);
+  }
+
+  .phase.phase-red::before { border-color: var(--ls-red); }
+  .phase.phase-cyan::before { border-color: var(--ls-cyan); }
+  .phase.phase-navy::before { border-color: var(--ls-navy); }
+
+  .phase-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ls-grey-dark);
+    margin-bottom: var(--ls-space-2);
+  }
+
+  .phase h3 {
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--ls-navy);
+    margin-bottom: var(--ls-space-2);
+  }
+
+  .phase-objective {
+    font-size: 14px;
+    color: var(--ls-grey-dark);
+    font-style: italic;
+    margin-bottom: var(--ls-space-4);
+  }
+
+  .phase ul {
+    list-style: none;
+    padding-top: var(--ls-space-2);
+    border-top: 1px solid var(--ls-grey-light);
+  }
+
+  .phase li {
+    padding: var(--ls-space-2) 0 var(--ls-space-2) var(--ls-space-5);
+    position: relative;
+    font-size: 14px;
+  }
+
+  .phase li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--ls-cyan);
+    font-weight: 700;
+  }
+
+  /* Milestone table */
+  .milestone-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--ls-radius-md);
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  .milestone-table thead th {
+    background: var(--ls-navy);
+    color: var(--ls-on-navy);
+    text-align: left;
+    padding: var(--ls-space-4);
+    font-weight: 700;
+  }
+
+  .milestone-table tbody td {
+    padding: var(--ls-space-4);
+    border-bottom: 1px solid var(--ls-grey-light);
+    vertical-align: top;
+  }
+
+  .milestone-table tbody tr:nth-child(even) td {
+    background: var(--ls-grey-light);
+  }
+
+  .milestone-table td:first-child {
+    font-weight: 700;
+    color: var(--ls-red);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 28pt; }
+    .section-title { font-size: 20pt; }
+    .phase h3 { font-size: 17pt; }
+  }
+
+  /* Measurement */
+  .measure-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ls-space-5);
+  }
+
+  .measure-card {
+    background: var(--ls-grey-light);
+    border-radius: var(--ls-radius-md);
+    padding: var(--ls-space-5);
+    border-top: 4px solid var(--ls-cyan);
+  }
+
+  .measure-card.leading { border-top-color: var(--ls-cyan); }
+  .measure-card.lagging { border-top-color: var(--ls-red); }
+
+  .measure-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ls-navy);
+    margin-bottom: var(--ls-space-2);
+  }
+
+  .measure-card ul {
+    list-style: none;
+  }
+
+  .measure-card li {
+    padding: var(--ls-space-2) 0 var(--ls-space-2) var(--ls-space-5);
+    position: relative;
+    font-size: 14px;
+  }
+
+  .measure-card li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--ls-grey-dark);
+  }
+
+  @media (max-width: 768px) {
+    .measure-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: var(--ls-space-8);
+    padding-top: var(--ls-space-5);
+    border-top: 1px solid var(--ls-grey-light);
+    font-size: 13px;
+    color: var(--ls-grey-dark);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Pharos &bull; LightSpeed Holdings</div>
+    <h1>Thought Leadership Roadmap</h1>
+    <p class="hero-subtitle">24-month phased plan making the Human CEO Malawi &amp; SADC&rsquo;s leading voice on Agentic AI Company Building, Use Cases &amp; Policy.</p>
+    <div class="hero-meta">
+      <span>Vehicle: <strong>LightSpeed Holdings</strong></span>
+      <span>Principal: <strong>Jack Mlusu</strong></span>
+      <span>Horizon: <strong>24 months</strong></span>
+    </div>
+    <span class="tagline">ASPIRE. ACT. ACHIEVE.</span>
+  </div>
+</header>
+
+<main class="container">
+
+  <section>
+    <h2 class="section-title">The Window</h2>
+    <div class="window-card">
+      <ul>
+        <li>Malawi&rsquo;s <strong>National AI Strategy</strong> and <strong>Digital Transformation Strategy</strong> are being drafted (late 2025 workshops, UNDP Inclusive Digital Transformation project, PPP Commission Digital Malawi Acceleration project) &mdash; <strong>not finalized</strong>.</li>
+        <li><strong>UNESCO AI Readiness Assessment (RAM)</strong> for Malawi validated <strong>July 2026</strong>.</li>
+        <li>Malawi <strong>Data Protection Act (2024)</strong> in force but <strong>not AI-specific</strong> &mdash; an opening.</li>
+        <li><strong>SADC</strong> Regional Workshop on Data Governance (Harare, Aug 2026) with World Bank, Smart Africa, UNESCO; SADC Digital Transformation Strategy embeds AI.</li>
+        <li><strong>AU Continental AI Strategy</strong> is the reference framework; Malawi/SADC are laggards &mdash; less noise, room to be first.</li>
+        <li><strong>COMESA/IDEA Malawi</strong> AI engagement (Aug 2026); ICT Minister calling for &ldquo;practical implementation.&rdquo;</li>
+      </ul>
+      <div class="window-implication">
+        <strong>Implication:</strong> winning category leadership here is not &ldquo;become famous&rdquo; &mdash; it is becoming the <strong>most-cited, most-consulted, most-referenced practitioner</strong> while the category is being defined.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">The Phases</h2>
+
+    <div class="timeline">
+      <div class="phase phase-cyan">
+        <div class="phase-label">Phase 0</div>
+        <h3>Foundation</h3>
+        <p class="phase-objective">Months 0&ndash;2 &mdash; go from &ldquo;unstructured expert&rdquo; to &ldquo;documented practitioner with a public paper trail.&rdquo;</p>
+        <ul>
+          <li>Write the <a href="manifesto-draft.md">manifesto</a> (1,500&ndash;2,000 words).</li>
+          <li>Make the GitHub repo a build-in-public narrative; fill the README.</li>
+          <li>Rebuild the personal platform (LinkedIn headline/banner/featured; site/Substack).</li>
+          <li>Build the <a href="stakeholder-map.md">institutional stakeholder map</a>; start engaging.</li>
+          <li>Reactivate ICTAM and volunteer for any AI working group.</li>
+        </ul>
+      </div>
+
+      <div class="phase phase-red">
+        <div class="phase-label">Phase 1</div>
+        <h3>Visibility &amp; Credibility</h3>
+        <p class="phase-objective">Months 2&ndash;6</p>
+        <ul>
+          <li>Submit formal commentary into the National AI Strategy consultation.</li>
+          <li>Publish an op-ed responding to the &ldquo;fragmented digital strategy&rdquo; critique.</li>
+          <li>Publish the first quantified use case (J&amp;S StopOver Bar).</li>
+          <li>Secure one speaking/panel slot (ICTAM, COMESA/IDEA, Digital Malawi workshops).</li>
+          <li>Pitch as an expert source to ITWeb Africa, TechAfrica News, Malawi Voice.</li>
+        </ul>
+      </div>
+
+      <div class="phase phase-cyan">
+        <div class="phase-label">Phase 2</div>
+        <h3>Authority Building</h3>
+        <p class="phase-objective">Months 6&ndash;12</p>
+        <ul>
+          <li>Make a formal, on-record National AI Strategy submission.</li>
+          <li>Produce a signature research artifact: &ldquo;State of Agentic AI in Malawi.&rdquo;</li>
+          <li>Speak at a regional convening (SADC, Smart Africa).</li>
+          <li>Pursue an advisory seat (ICTAM AI committee, Dept of E-Government working group).</li>
+          <li>Grow the use-case portfolio to 3&ndash;5 deployments (health, SME, financial inclusion).</li>
+          <li>Start the &ldquo;policy translator&rdquo; series (EU AI Act, US states &rarr; SADC).</li>
+        </ul>
+      </div>
+
+      <div class="phase phase-navy">
+        <div class="phase-label">Phase 3</div>
+        <h3>Institutional Capture &amp; Regional Reach</h3>
+        <p class="phase-objective">Months 12&ndash;24</p>
+        <ul>
+          <li>Target a formal advisory/taskforce appointment (national or SADC working group).</li>
+          <li>Co-publish with a credible institution (UNESCO-ROSA, UNDP, Smart Africa).</li>
+          <li>Launch and own a signature event (Agentic AI Builders / SADC roundtable).</li>
+          <li>Expand deliberately into 2&ndash;3 other SADC states (Zambia, Zimbabwe, South Africa).</li>
+          <li>Secure a profile feature (not just a quote) in a regional tech publication.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Milestone Timeline</h2>
+    <table class="milestone-table">
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Milestone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>3</td><td>First white paper; first speaking engagement; Lighthouse pilot started</td></tr>
+        <tr><td>6</td><td>Pilot live and demonstrable; first CEO Roundtable on Agentic AI Governance</td></tr>
+        <tr><td>12</td><td>Policy paper in response to a government consultation; strategic partnership (KEPSA-style)</td></tr>
+        <tr><td>18</td><td>Lightspeed Academy launched; 2&ndash;3 commercial success stories</td></tr>
+        <tr><td>24</td><td>Indisputable regional authority; preferred solution for agentic AI deployment</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2 class="section-title">Measurement (quarterly)</h2>
+    <div class="measure-grid">
+      <div class="measure-card leading">
+        <h4>Leading indicators</h4>
+        <ul>
+          <li>Posts published / engagement</li>
+          <li>Outreach sent</li>
+          <li>Use cases documented</li>
+          <li>Consultation submissions</li>
+          <li>Speaking invitations</li>
+        </ul>
+      </div>
+      <div class="measure-card lagging">
+        <h4>Lagging indicators</h4>
+        <ul>
+          <li>Press mentions as named source</li>
+          <li>Advisory invitations</li>
+          <li>Co-publications with institutions</li>
+          <li>Citations in national/SADC reports</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    LightSpeed Holdings Limited &mdash; Pharos &bull; ASPIRE. ACT. ACHIEVE.
+  </footer>
+
+</main>
+
+</body>
+</html>

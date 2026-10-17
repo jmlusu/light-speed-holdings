@@ -1,0 +1,55 @@
+policies:
+  - id: "POL-001"
+    name: "Code Review Policy"
+    category: "engineering"
+    description: "All code changes require at least one review before merge"
+    rules:
+      - "PRs must have at least one approval"
+      - "Security-sensitive code requires CISO review"
+      - "Generated code must be marked with generation header"
+    enforcement: "automated"
+    ci_check: true
+
+  - id: "POL-002"
+    name: "Data Classification Policy"
+    category: "security"
+    description: "All data must be classified before storage"
+    rules:
+      - "Public: no restrictions"
+      - "Internal: encrypt at rest"
+      - "Confidential: encrypt at rest and in transit, access logging"
+      - "Restricted: MFA required, audit trail, quarterly review"
+    enforcement: "manual"
+
+  - id: "POL-003"
+    name: "Agent Deployment Policy"
+    category: "operations"
+    description: "Agents must pass validation before deployment"
+    rules:
+      - "All agents must have valid YAML config"
+      - "Permissions must follow least-privilege"
+      - "Agent prompts must be reviewed by department exec"
+      - "Generated agents must pass lint-ecl"
+    enforcement: "automated"
+    ci_check: true
+
+  - id: "POL-004"
+    name: "Budget Policy"
+    category: "finance"
+    description: "Spending must follow approved budgets"
+    rules:
+      - "Department spending within quarterly budget"
+      - "Capital expenditure requires CFO approval"
+      - "Overages require CEO approval"
+    enforcement: "manual"
+
+  - id: "POL-005"
+    name: "Incident Response Policy"
+    category: "security"
+    description: "Security incidents must be handled per playbook"
+    rules:
+      - "Report within 15 minutes"
+      - "CISO leads response"
+      - "Post-mortem within 48 hours"
+      - "Root cause fix within 1 week"
+    enforcement: "manual"

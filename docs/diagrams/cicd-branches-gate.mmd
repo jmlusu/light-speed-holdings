@@ -1,0 +1,39 @@
+flowchart TD
+    classDef branch fill:#070A40,stroke:#00BFFF,color:#fff
+    classDef main fill:#070A40,stroke:#E63946,color:#fff
+    classDef work fill:#fff,stroke:#070A40,color:#070A40
+    classDef opt fill:#F2F2F2,stroke:#6B7280,color:#070A40
+    classDef acc fill:#00BFFF,stroke:#070A40,color:#070A40
+    classDef stop fill:#E63946,stroke:#070A40,color:#fff
+
+    M[(main · protected)]:::main
+    TOPIC["Topic branches<br/>feat/*  fix/*  build/*  chore/*<br/>research/*  governance/*  resolve/*"]:::branch
+    DEV["Developer / Human CEO"]:::work
+    AGT["AI agents · opencode<br/>'/oc' on PR / issue comment"]:::work
+    DEP["Dependabot · weekly updates<br/>(github-actions + pip)"]:::work
+    HOOKS["Local pre-commit hooks<br/>ruff · mypy · bandit<br/>bypassable via --no-verify"]:::opt
+
+    DEV -->|push| TOPIC
+    AGT -->|"/oc /opencode"| TOPIC
+    DEP -->|auto PR| TOPIC
+    HOOKS -.->|local gate only| DEV
+    TOPIC -->|"pull_request → main"| GATE
+    GATE["CI Gate · ci.yml<br/>push main · PR → main · workflow_dispatch"]:::acc
+    GATE --> L["Lint · ruff"]:::opt
+    GATE --> T["Typecheck · mypy"]:::opt
+    GATE --> X["Tests · pytest<br/>ubuntu + windows matrix<br/>coverage ≥ 72%"]:::opt
+    GATE --> H["ECL harness lint · pwsh"]:::opt
+    GATE --> S["Security · bandit"]:::opt
+    GATE --> U["Dependencies · uv-audit"]:::opt
+    GATE --> G["Generated-files drift check"]:::opt
+    GATE --> A["Archify diagram check"]:::opt
+    GATE --> V["Version sync check"]:::opt
+    GATE -.-> E["E2E · Playwright<br/>non-blocking"]:::opt
+    GATE -.-> GR["Graph build + health<br/>non-blocking"]:::opt
+
+    L & T & X & H & S & U & G & A & V --> Q{"All required jobs green?<br/>+ review approval"}:::stop
+    Q -->|"no · fix + re-push"| TOPIC
+    Q -->|"yes · squash merge"| M
+    M -->|"push to main<br/>(CI re-runs)"| CI2["CI re-runs on main"]:::opt
+    M -->|"paths: src/ index.html vercel.json<br/>vite.config.ts tsconfig package.json"| SITE["Site Build + Principles Gate · site-principles-gate.yml<br/>bun install · bun run build (tsc + vite)<br/>no fake-success forms"]:::opt
+    M -->|"git tag v*"| REL["Release pipeline · release.yml"]:::acc

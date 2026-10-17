@@ -1,0 +1,8 @@
+{
+  "name": "LightSpeed Holdings Limited - AI-Native Operator and Partner",
+  "description": "LightSpeed Holdings Limited is an AI-native operator and partner helping organisations design, build, and govern sovereign agentic enterprises across Malawi, SADC, and Africa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

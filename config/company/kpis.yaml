@@ -1,0 +1,199 @@
+# Company-level KPIs — CEO Dashboard (Sprint 3, item 2)
+# ======================================================
+# CEO DECISION (2026-08-08): "Company KPIs must be COMPUTED FROM REAL SOURCES,
+# not hardcoded dummy values."  This file therefore contains NO dummy currents.
+#
+# How each `current` is produced:
+#   * KPI-003 / KPI-004 — computed at REQUEST TIME by
+#       ai_company.dashboard.data_service.get_company_kpi_summary()
+#     (SQLite-first, then .opencode/inbox.json).  The `current` values below are
+#     the latest snapshots computed by scripts/maintenance/compute_company_kpis.py from the
+#     stable file sources, used as a real fallback for the raw /api/ceo-dashboard
+#     pass-through and as a documented reference value.
+#   * KPI-001 / KPI-002 / KPI-005 — NO real source exists in the repo yet, so
+#     `current: null` (the UI renders "n/a").  Targets are kept as strategic
+#     goals (see docs/MISSION_AND_VISION.md).  Each entry documents the
+#     `formula`/`source` that would unlock a computed value.
+#
+# Regenerate / verify the snapshots (from the ai-company root):
+#   python scripts/maintenance/compute_company_kpis.py            # verify only (no writes)
+#   python scripts/maintenance/compute_company_kpis.py --write    # refresh current/computed_at
+#
+kpis:
+  company:
+    - id: "KPI-001"
+      name: "Annual Recurring Revenue"
+      category: "finance"
+      target: 10000000
+      current: null              # n/a — no revenue ledger source in repo yet
+      unit: "usd"
+      frequency: "monthly"
+      owner: "cfo"
+      source: null
+      formula: "MRR x 12 from a revenue ledger; requires CFO/financial-analyst input or a revenue data source (none exists yet)."
+      computed_at: null
+
+    - id: "KPI-002"
+      name: "Customer Satisfaction"
+      category: "customer"
+      target: 95
+      current: null              # n/a — orchestrator/cs/surveys.json exists but is empty
+      unit: "percent"
+      frequency: "quarterly"
+      owner: "chief-of-staff"
+      source: "orchestrator/cs/surveys.json (file present, 0 surveys)"
+      formula: "AVG(score) over orchestrator/cs/surveys.json records (customer_success collector already computes this); no survey data yet."
+      computed_at: null
+
+    - id: "KPI-003"
+      name: "Agent Utilization Rate"
+      category: "operations"
+      target: 80
+      current: 1.5  # file-computed snapshot — see computed_at
+      unit: "percent"
+      frequency: "weekly"
+      owner: "coo"
+      source: ".opencode/inbox.json + company-registry.yaml"
+      formula: "distinct active agents (sender_id/receiver_id) in the 30-day task window / registered agents (company-registry.yaml company.agents) x 100"
+      computed_at: "2026-08-14T20:54:28+00:00"
+
+    - id: "KPI-004"
+      name: "Build Success Rate"
+      category: "engineering"
+      target: 99.5
+      current: 100.0  # file-computed snapshot — see computed_at
+      unit: "percent"
+      frequency: "daily"
+      owner: "cto"
+      source: ".opencode/inbox.json"
+      formula: "completed / (completed + failed) x 100 over the 30-day task window"
+      computed_at: "2026-08-14T20:54:28+00:00"
+
+    - id: "KPI-005"
+      name: "Employee Net Promoter Score"
+      category: "people"
+      target: 75
+      current: null              # n/a — no people-survey source in repo yet
+      unit: "score"
+      frequency: "quarterly"
+      owner: "chro"
+      source: null
+      formula: "Standard eNPS from a people/HR survey (promoters - detractors)/respondents; no survey source exists yet."
+      computed_at: null
+
+  # ── Executive health KPIs (2026-08-31) ──────────────────────────────
+  # Operational KPIs the CEO uses to judge real-time business health.
+  # `current` is computed at REQUEST TIME by
+  #   ai_company.dashboard.data_service.get_executive_scorecard()
+  # from live task telemetry (SQLite-first, then .opencode/inbox.json).
+  # `weight` feeds the weighted executive health score (0-100).
+  executive:
+    - id: "task_throughput"
+      name: "Task Throughput"
+      category: "operations"
+      target: 50
+      unit: "tasks"
+      frequency: "daily"
+      owner: "coo"
+      weight: 20
+      higher_is_better: true
+
+    - id: "task_success_rate"
+      name: "Task Success Rate"
+      category: "operations"
+      target: 80
+      unit: "percent"
+      frequency: "daily"
+      owner: "coo"
+      weight: 15
+      higher_is_better: true
+
+    - id: "agent_utilization"
+      name: "Agent Utilization"
+      category: "operations"
+      target: 80
+      unit: "percent"
+      frequency: "weekly"
+      owner: "coo"
+      weight: 15
+      higher_is_better: true
+
+    - id: "cost_efficiency"
+      name: "Cost Efficiency"
+      category: "finance"
+      target: 70
+      unit: "percent"
+      frequency: "monthly"
+      owner: "cfo"
+      weight: 20
+      higher_is_better: true
+
+    - id: "build_success_rate"
+      name: "Build Success Rate"
+      category: "engineering"
+      target: 99.5
+      unit: "percent"
+      frequency: "daily"
+      owner: "cto"
+      weight: 15
+      higher_is_better: true
+
+    - id: "escalation_resolution_time"
+      name: "Escalation Resolution Time"
+      category: "operations"
+      target: 3600
+      unit: "seconds"
+      frequency: "daily"
+      owner: "coo"
+      weight: 15
+      higher_is_better: false
+
+    - id: "escalation_rate"
+      name: "Escalation Rate"
+      category: "operations"
+      target: 95
+      unit: "percent"
+      frequency: "daily"
+      owner: "coo"
+      weight: 5
+      higher_is_better: true
+
+    - id: "approval_turnaround"
+      name: "Approval Turnaround"
+      category: "operations"
+      target: 1800
+      unit: "seconds"
+      frequency: "daily"
+      owner: "chief-of-staff"
+      weight: 15
+      higher_is_better: false
+
+    - id: "error_rate"
+      name: "Error Rate (Inverted)"
+      category: "engineering"
+      target: 90
+      unit: "percent"
+      frequency: "daily"
+      owner: "cto"
+      weight: 10
+      higher_is_better: true
+
+    - id: "security_posture"
+      name: "Security Posture"
+      category: "security"
+      target: 80
+      unit: "percent"
+      frequency: "daily"
+      owner: "ciso"
+      weight: 5
+      higher_is_better: true
+
+    - id: "strategic_alignment"
+      name: "Strategic Alignment"
+      category: "strategy"
+      target: 80
+      unit: "percent"
+      frequency: "weekly"
+      owner: "cso"
+      weight: 5
+      higher_is_better: true

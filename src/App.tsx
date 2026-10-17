@@ -1,0 +1,129 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { SiteContext } from './site-context';
+import type { Theme } from './site-context';
+import { SiteLayout } from './components/SiteLayout';
+import { withSite } from './site-context';
+import { HomePage } from './pages/HomePage';
+import { WhatWeDoPage } from './pages/WhatWeDoPage';
+import { AiCompanyBuilderPage } from './pages/AiCompanyBuilderPage';
+import { SolutionsPage } from './pages/SolutionsPage';
+import { SectorsPage } from './pages/SectorsPage';
+import { UseCasesPage } from './pages/UseCasesPage';
+import { UseCaseDetailPage } from './pages/UseCaseDetailPage';
+import { SectorDetailPage } from './pages/SectorDetailPage';
+import { AiAssessmentPage } from './pages/AiAssessmentPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import { InsightsPage } from './pages/InsightsPage';
+import { InsightArticlePage } from './pages/InsightArticlePage';
+import { AboutPage } from './pages/AboutPage';
+import { ContactPage } from './pages/ContactPage';
+import { PrivacyPage } from './pages/PrivacyPage';
+import { TermsPage } from './pages/TermsPage';
+
+
+const HomePageRoute = withSite(HomePage);
+const WhatWeDoPageRoute = withSite(WhatWeDoPage);
+const AiCompanyBuilderPageRoute = withSite(AiCompanyBuilderPage);
+const SolutionsPageRoute = withSite(SolutionsPage);
+const SectorsPageRoute = withSite(SectorsPage);
+const SectorDetailPageRoute = withSite(SectorDetailPage);
+const AiAssessmentPageRoute = withSite(AiAssessmentPage);
+const InsightsPageRoute = withSite(InsightsPage);
+const InsightArticlePageRoute = withSite(InsightArticlePage);
+const AboutPageRoute = withSite(AboutPage);
+const ContactPageRoute = withSite(ContactPage);
+const PrivacyPageRoute = withSite(PrivacyPage);
+const TermsPageRoute = withSite(TermsPage);
+
+
+
+export const App: React.FC = () => {
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('lightspeed_theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+    }
+    return 'dark';
+  });
+  const [isBriefingOpen, setIsBriefingOpen] = useState<boolean>(false);
+  const [briefingSummary, setBriefingSummary] = useState<string>('');
+
+  useEffect(() => {
+    localStorage.setItem('lightspeed_theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.backgroundColor = '#121518';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.backgroundColor = '#F7F8F9';
+    }
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  }, []);
+
+  const requestBriefing = useCallback((summary?: string) => {
+    if (summary) setBriefingSummary(summary);
+    setIsBriefingOpen(true);
+  }, []);
+
+  const closeBriefing = useCallback(() => {
+    setIsBriefingOpen(false);
+  }, []);
+
+  const [router] = useState(() =>
+    createBrowserRouter([
+      {
+        path: '/',
+        element: <SiteLayout />,
+        children: [
+          { index: true, element: <HomePageRoute /> },
+          { path: 'what-we-do', element: <WhatWeDoPageRoute /> },
+          { path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
+          { path: 'solutions', element: <SolutionsPageRoute /> },
+          { path: 'sectors', element: <SectorsPageRoute /> },
+          { path: 'sectors/:slug', element: <SectorDetailPageRoute /> },
+          { path: 'use-cases', element: <UseCasesPage /> },
+          { path: 'use-cases/:slug', element: <UseCaseDetailPage /> },
+          { path: 'ai-assessment', element: <AiAssessmentPageRoute /> },
+          { path: 'insights', element: <InsightsPageRoute /> },
+          { path: 'insights/:slug', element: <InsightArticlePageRoute /> },
+          { path: 'about', element: <AboutPageRoute /> },
+          { path: 'contact', element: <ContactPageRoute /> },
+          { path: 'legal/privacy', element: <PrivacyPageRoute /> },
+          { path: 'legal/terms', element: <TermsPageRoute /> },
+          { path: 'architecture', element: <Navigate to="/ai-company-builder" replace /> },
+          { path: 'build', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'offer-a', element: <Navigate to="/solutions" replace /> },
+          { path: 'offer-b', element: <Navigate to="/solutions" replace /> },
+          { path: 'offer-c', element: <Navigate to="/solutions" replace /> },
+          { path: 'offer-d', element: <Navigate to="/solutions" replace /> },
+          { path: 'offer-e', element: <Navigate to="/solutions" replace /> },
+          { path: 'proof', element: <Navigate to="/use-cases" replace /> },
+          { path: 'ask', element: <Navigate to="/contact" replace /> },
+          { path: '*', element: <NotFoundPage /> },
+        ],
+      },
+
+    ])
+  );
+
+  return (
+    <SiteContext.Provider
+      value={{
+        theme,
+        onToggleTheme: toggleTheme,
+        onRequestBriefing: requestBriefing,
+        isBriefingOpen,
+        briefingSummary,
+        closeBriefing,
+      }}
+    >
+      <RouterProvider router={router} />
+    </SiteContext.Provider>
+  );
+};
+
+export default App;

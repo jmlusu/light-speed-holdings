@@ -1,0 +1,59 @@
+# Studio Tracker — venture stage-gate timestamps + CFO value inputs (T2 #418)
+# Owner: COO (gates) / CFO (value section). Runtime reads this read-only.
+#
+# Rules (T1 scoreboard-v1 decisions):
+# - No phase advance without a recorded gate review (gate_reviewed_by + date).
+# - Velocity clock: internal delay always counts; external customer waits pause
+#   the clock ONLY when logged here with reason + from/to dates.
+# - Missing thesis_approved/deploy (or either gate unreviewed) -> the collector
+#   reports velocity as no_data, never 0d.
+# - CFO figures: contracted ARR + verified cost-avoidance ONLY (ADR-020/033).
+#   Absent/unratified figures -> capital efficiency reports no_data.
+# - Baseline: first 30 days after instrumentation_start = measurement only.
+
+instrumentation_start: "2026-10-07"
+baseline_days: 30
+
+ventures:
+  venture-a:
+    name: "Enterprise Agent"
+    archetype: "A"
+    sector: ""
+    stage: "thesis"
+    thesis_approved: ""
+    deploy: ""
+    gate_reviewed_by: ""
+    gate_reviewed_at: ""
+    pauses: []
+    capital_consumed_usd: 0.0
+  venture-b:
+    name: "B2B Workflow"
+    archetype: "B"
+    sector: ""
+    stage: "thesis"
+    thesis_approved: ""
+    deploy: ""
+    gate_reviewed_by: ""
+    gate_reviewed_at: ""
+    pauses: []
+    capital_consumed_usd: 0.0
+  venture-c:
+    name: "Sovereign Data"
+    archetype: "C"
+    sector: ""
+    stage: "thesis"
+    thesis_approved: ""
+    deploy: ""
+    gate_reviewed_by: ""
+    gate_reviewed_at: ""
+    pauses: []
+    capital_consumed_usd: 0.0
+
+# CFO-owned rollup (dual display handled at render: MWK via configured rate).
+cfo:
+  ratified: false
+  ratified_by: ""
+  ratified_at: ""
+  contracted_arr_usd: 0.0
+  verified_cost_avoidance_usd: 0.0
+  mwk_per_usd: 0.0

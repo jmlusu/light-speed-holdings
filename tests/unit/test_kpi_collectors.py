@@ -1,0 +1,854 @@
+"""Tests for the per-department KPI collectors."""
+
+from __future__ import annotations
+
+import json
+import logging
+from pathlib import Path
+from unittest.mock import MagicMock
+
+import pytest
+import yaml
+
+from ai_company.dashboard.kpis import ALL_COLLECTORS, collect_all_kpis
+from ai_company.dashboard.kpis.customer_success import CustomerSuccessKPICollector
+from ai_company.dashboard.kpis.engineering import EngineeringKPICollector
+from ai_company.dashboard.kpis.finance import FinanceKPICollector
+from ai_company.dashboard.kpis.hr import HRKPICollector
+from ai_company.dashboard.kpis.legal import LegalKPICollector
+from ai_company.dashboard.kpis.marketing import MarketingKPICollector
+from ai_company.dashboard.kpis.sales import SalesKPICollector
+
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def _state_store_at_project_root(tmp_path: Path) -> None:
+    """Point the dashboard StateStore + shared bus at the test tmp root.
+
+    The collectors read tasks through the shared dashboard MessageBus
+    (GAP-011), which is rooted at the StateStore base dir. Binding the
+    store to ``tmp_path`` keeps collector tests isolated from the real
+    project state and mirrors what ``create_app`` does at boot.
+    """
+    import ai_company.dashboard.api as dash_api
+    from ai_company.dashboard.repository import configure_state_store, reset_state_store
+
+    reset_state_store()
+    configure_state_store(tmp_path)
+    dash_api._bus = None
+    yield
+    dash_api._bus = None
+    reset_state_store()
+
+
+@pytest.fixture()
+def project(tmp_path: Path) -> Path:
+    """Create a minimal project tree for collectors to read from."""
+    # .opencode/inbox.json with a mix of statuses
+    (tmp_path / ".opencode").mkdir()
+    tasks = [
+        {"id": "t1", "sender_id": "a", "receiver_id": "b", "instruction": "x", "status": "pending"},
+        {
+            "id": "t2",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "y",
+            "status": "completed",
+        },
+        {
+            "id": "t3",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "z",
+            "status": "completed",
+        },
+        {"id": "t4", "sender_id": "a", "receiver_id": "b", "instruction": "w", "status": "failed"},
+        {
+            "id": "t5",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "v",
+            "status": "in_progress",
+        },
+    ]
+    (tmp_path / ".opencode" / "inbox.json").write_text(json.dumps(tasks), encoding="utf-8")
+
+    # orchestrator/escalation.yaml
+    (tmp_path / "orchestrator").mkdir()
+    escalation = {
+        "rules": [],
+        "events": [
+            {
+                "task_id": "e1",
+                "rule_id": "r1",
+                "from_agent": "a",
+                "to_agent": "b",
+                "reason": "timeout",
+                "resolved": False,
+            },
+            {
+                "task_id": "e2",
+                "rule_id": "r1",
+                "from_agent": "a",
+                "to_agent": "b",
+                "reason": "timeout",
+                "resolved": True,
+            },
+        ],
+    }
+    (tmp_path / "orchestrator" / "escalation.yaml").write_text(
+        yaml.dump(escalation), encoding="utf-8"
+    )
+
+    # orchestrator/scheduler.yaml
+    (tmp_path / "orchestrator" / "scheduler.yaml").write_text(
+        yaml.dump({"tasks": [{"name": "daily-sync"}]}), encoding="utf-8"
+    )
+
+    # company/agent-registry.json
+    (tmp_path / "company").mkdir()
+    registry = [
+        {
+            "name": "cto",
+            "role": "CTO",
+            "type": "executive",
+            "department": "Technology",
+            "reportsTo": "ceo",
+            "directReports": [],
+            "description": "CTO",
+        },
+        {
+            "name": "lead_backend",
+            "role": "Backend Lead",
+            "type": "specialist",
+            "department": "Technology",
+            "reportsTo": "cto",
+            "directReports": [],
+            "description": "Backend",
+        },
+        {
+            "name": "cmo",
+            "role": "CMO",
+            "type": "executive",
+            "department": "Marketing",
+            "reportsTo": "ceo",
+            "directReports": [],
+            "description": "CMO",
+        },
+    ]
+    (tmp_path / "company" / "agent-registry.json").write_text(
+        json.dumps(registry), encoding="utf-8"
+    )
+
+    # company/departments.yaml
+    departments = {
+        "departments": [
+            {
+                "name": "Technology",
+                "executive": "cto",
+                "agents": ["lead_backend"],
+                "totalAgents": 8,
+            },
+            {"name": "Marketing", "executive": "cmo", "agents": [], "totalAgents": 1},
+            {"name": "Finance", "executive": "cfo", "agents": [], "totalAgents": 0},
+        ]
+    }
+    (tmp_path / "company" / "departments.yaml").write_text(yaml.dump(departments), encoding="utf-8")
+
+    # company/config/kpis.yaml (minimal)
+    (tmp_path / "company" / "config").mkdir(parents=True)
+    kpis = {
+        "departments": {
+            "finance": {
+                "name": "Finance",
+                "kpis": [
+                    {
+                        "id": "budget_utilization",
+                        "name": "Budget Utilization",
+                        "unit": "%",
+                        "target": 90,
+                        "frequency": "monthly",
+                    },
+                ],
+            }
+        }
+    }
+    (tmp_path / "company" / "config" / "kpis.yaml").write_text(yaml.dump(kpis), encoding="utf-8")
+
+    return tmp_path
+
+
+@pytest.fixture()
+def empty_project(tmp_path: Path) -> Path:
+    """An empty project tree — all collectors should handle missing files."""
+    return tmp_path
+
+
+@pytest.fixture()
+def db(tmp_path: Path):
+    """A freshly initialised temporary SQLite database."""
+    from ai_company.data.database import Database
+
+    database = Database(tmp_path / "kpi-collector.db")
+    database.init_schema()
+    yield database
+    database.close()
+
+
+def _seed_sqlite_tasks(db, tmp_path: Path) -> None:
+    """Seed tasks into SQLite with receivers spanning every department."""
+    from ai_company.data import TaskStore
+
+    tasks = [
+        {"id": "db-t1", "sender_id": "ceo", "receiver_id": "cto", "status": "completed"},
+        {"id": "db-t2", "sender_id": "ceo", "receiver_id": "cmo", "status": "completed"},
+        {
+            "id": "db-t3",
+            "sender_id": "ceo",
+            "receiver_id": "customer_success_owner",
+            "status": "pending",
+        },
+        {"id": "db-t4", "sender_id": "ceo", "receiver_id": "sales", "status": "pending"},
+        {"id": "db-t5", "sender_id": "ceo", "receiver_id": "clo", "status": "failed"},
+    ]
+    path = tmp_path / "sqlite-inbox.json"
+    path.write_text(json.dumps(tasks), encoding="utf-8")
+    assert TaskStore(db).import_json(path) == 5
+
+
+def _seed_sqlite_escalations(db) -> None:
+    """Seed escalation events (2 open, 2 resolved) into SQLite."""
+    from ai_company.data import EscalationStore
+
+    store = EscalationStore(db)
+    store.add_event("db-t1", "r1", "ceo", "cto", "timeout", resolved=False)
+    store.add_event("db-t2", "r1", "ceo", "cto", "timeout", resolved=False)
+    store.add_event("db-t3", "r2", "ceo", "cto", "timeout", resolved=True)
+    store.add_event("db-t4", "r2", "ceo", "cto", "timeout", resolved=True)
+
+
+def _seed_sqlite_costs(db) -> None:
+    """Seed cost records totalling $5.00 into SQLite."""
+    from ai_company.data import CostAnalytics
+
+    cost = CostAnalytics(db)
+    cost.record_usage(
+        model="gpt-x",
+        provider="opencode",
+        agent_name="cto",
+        task_id="db-t1",
+        prompt_tokens=100,
+        completion_tokens=50,
+        cost_usd=2.5,
+    )
+    cost.record_usage(
+        model="gpt-x",
+        provider="opencode",
+        agent_name="cmo",
+        task_id="db-t2",
+        prompt_tokens=100,
+        completion_tokens=50,
+        cost_usd=2.5,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Engineering
+# ---------------------------------------------------------------------------
+
+
+class TestEngineeringCollector:
+    def test_collects_task_counts(self, project: Path) -> None:
+        result = EngineeringKPICollector(project).collect()
+        assert result["department"] == "engineering"
+        kpis = result["kpis"]
+
+        assert kpis["total_tasks"]["current"] == 5
+        assert kpis["pending_tasks"]["current"] == 1
+        assert kpis["in_progress_tasks"]["current"] == 1
+        assert kpis["completed_tasks"]["current"] == 2
+        assert kpis["failed_tasks"]["current"] == 1
+
+    def test_completion_rate(self, project: Path) -> None:
+        result = EngineeringKPICollector(project).collect()
+        rate = result["kpis"]["task_completion_rate"]["current"]
+        # 2 completed / 5 total = 40%
+        assert rate == 40.0
+
+    def test_escalation_counts(self, project: Path) -> None:
+        result = EngineeringKPICollector(project).collect()
+        assert result["kpis"]["open_escalations"]["current"] == 1
+        assert result["kpis"]["escalation_rate"]["current"] == 40.0  # 2 events / 5 tasks
+
+    def test_scheduled_tasks(self, project: Path) -> None:
+        result = EngineeringKPICollector(project).collect()
+        assert result["kpis"]["scheduled_tasks"]["current"] == 1
+
+    def test_missing_files(self, empty_project: Path) -> None:
+        result = EngineeringKPICollector(empty_project).collect()
+        assert result["department"] == "engineering"
+        assert result["kpis"]["total_tasks"]["current"] == 0
+        assert result["kpis"]["open_escalations"]["current"] == 0
+
+
+# ---------------------------------------------------------------------------
+# HR
+# ---------------------------------------------------------------------------
+
+
+class TestHRCollector:
+    def test_total_agents(self, project: Path) -> None:
+        result = HRKPICollector(project).collect()
+        assert result["kpis"]["total_agents"]["current"] == 3
+
+    def test_agents_by_department(self, project: Path) -> None:
+        result = HRKPICollector(project).collect()
+        breakdown = result["kpis"]["agents_by_department"]["current"]
+        assert breakdown["Technology"] == 2
+        assert breakdown["Marketing"] == 1
+
+    def test_department_coverage(self, project: Path) -> None:
+        result = HRKPICollector(project).collect()
+        # 2 of 3 declared departments have agents (Technology=8, Marketing=1, Finance=0)
+        assert result["kpis"]["department_coverage"]["current"] == pytest.approx(66.7, abs=0.1)
+
+    def test_missing_files(self, empty_project: Path) -> None:
+        result = HRKPICollector(empty_project).collect()
+        assert result["kpis"]["total_agents"]["current"] == 0
+        assert result["kpis"]["department_coverage"]["current"] == 0.0
+
+
+# ---------------------------------------------------------------------------
+# Finance
+# ---------------------------------------------------------------------------
+
+
+class TestFinanceCollector:
+    def test_budget_utilization_no_tracker(self, project: Path) -> None:
+        result = FinanceKPICollector(project).collect()
+        assert result["department"] == "finance"
+        assert result["kpis"]["budget_utilization"]["current"] == 0.0
+
+    def test_missing_files(self, empty_project: Path) -> None:
+        result = FinanceKPICollector(empty_project).collect()
+        assert result["kpis"]["active_agents"]["current"] == 0
+
+    def test_revenue_per_task_uses_entered_tasks(
+        self, project: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """revenue_per_task divides by entered_tasks, not by_department task counts."""
+        monkeypatch.setattr(
+            FinanceKPICollector,
+            "_revenue_from_sqlite",
+            lambda self: {
+                "total_revenue": 30.0,
+                "total_cost": 10.0,
+                "overall_roi": 3.0,
+                "period_days": 30,
+                "entered_tasks": 3,
+                "by_department": [
+                    {
+                        "department": "Technology",
+                        "revenue": 30.0,
+                        "cost": 10.0,
+                        "roi": 3.0,
+                        "tasks": 2,
+                    }
+                ],
+            },
+        )
+        result = FinanceKPICollector(project).collect()
+        kpi = result["kpis"]["revenue_per_task"]
+        # 30 / 3 entered_tasks == 10.0; a by_department denominator (2) would give 15.0.
+        assert kpi["current"] == pytest.approx(10.0)
+
+    def test_revenue_per_task_no_data_without_terminal_tasks(
+        self, project: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Zero terminal tasks (entered_tasks == 0) yields no_data, not 0.0 or an error."""
+        monkeypatch.setattr(
+            FinanceKPICollector,
+            "_revenue_from_sqlite",
+            lambda self: {
+                "total_revenue": 30.0,
+                "total_cost": 10.0,
+                "overall_roi": 3.0,
+                "period_days": 30,
+                "entered_tasks": 0,
+                "by_department": [],
+            },
+        )
+        result = FinanceKPICollector(project).collect()
+        kpi = result["kpis"]["revenue_per_task"]
+        assert kpi["current"] is None
+        assert kpi["status"] == "no_data"
+
+
+# ---------------------------------------------------------------------------
+# Marketing
+# ---------------------------------------------------------------------------
+
+
+class TestMarketingCollector:
+    def test_empty_project(self, empty_project: Path) -> None:
+        result = MarketingKPICollector(empty_project).collect()
+        assert result["department"] == "marketing"
+        assert result["kpis"]["campaign_generation_rate"]["current"] == 0
+        # content_quality_score returns None with data_quality="error" when no content data
+        assert result["kpis"]["content_quality_score"]["current"] is None
+        assert result["kpis"]["content_quality_score"]["data_quality"] == "error"
+
+    def test_project_with_data(self, project: Path) -> None:
+        result = MarketingKPICollector(project).collect()
+        assert result["department"] == "marketing"
+        # No marketing-specific task receivers in our fixture tasks
+        assert result["kpis"]["total_marketing_tasks"]["current"] == 0
+
+    def test_pharos_content_missing_files(self, empty_project: Path) -> None:
+        result = MarketingKPICollector(empty_project).collect()
+        pharos = result["kpis"]
+        # Both content + subscriber files missing → error quality, no fake values
+        assert pharos["posts_published_30d"]["current"] == 0
+        assert pharos["posts_published_30d"]["data_quality"] == "error"
+        assert pharos["drafts_in_pipeline"]["current"] == 0
+        assert pharos["subscribers"]["current"] is None
+        assert pharos["subscribers"]["target"] == 2000
+        assert pharos["subscribers"]["data_quality"] == "error"
+
+    def test_pharos_content_with_data(self, project: Path) -> None:
+        from datetime import datetime, timedelta
+
+        marketing_dir = project / "orchestrator" / "marketing"
+        marketing_dir.mkdir(parents=True, exist_ok=True)
+        now = datetime.now()
+        content_log = [
+            {
+                "id": "c1",
+                "status": "published",
+                "published_at": (now - timedelta(days=5)).isoformat(),
+            },
+            {
+                "id": "c2",
+                "status": "published",
+                "published_at": (now - timedelta(days=10)).isoformat(),
+            },
+            {"id": "c3", "status": "draft"},
+            {"id": "c4", "status": "draft"},
+            {
+                "id": "c5",
+                "status": "published",
+                "published_at": (now - timedelta(days=40)).isoformat(),
+            },
+        ]
+        (marketing_dir / "content_log.json").write_text(json.dumps(content_log), encoding="utf-8")
+        (marketing_dir / "pharos_subscribers.json").write_text(
+            json.dumps({"subscribers": 150}), encoding="utf-8"
+        )
+        result = MarketingKPICollector(project).collect()
+        pharos = result["kpis"]
+        # Two published in the last 30 days, two drafts, old publish excluded
+        assert pharos["posts_published_30d"]["current"] == 2
+        assert pharos["drafts_in_pipeline"]["current"] == 2
+        assert pharos["subscribers"]["current"] == 150
+        assert pharos["subscribers"]["status"] == "below_target"
+        assert pharos["subscribers"]["data_quality"] == "real"
+
+    def test_pharos_content_partial_data_quality(self, project: Path) -> None:
+        marketing_dir = project / "orchestrator" / "marketing"
+        marketing_dir.mkdir(parents=True, exist_ok=True)
+        (marketing_dir / "content_log.json").write_text(
+            json.dumps([{"id": "c1", "status": "draft"}]), encoding="utf-8"
+        )
+        result = MarketingKPICollector(project).collect()
+        # Subscriber file missing → fallback quality for the pharos block
+        assert result["kpis"]["subscribers"]["data_quality"] == "fallback"
+        assert result["kpis"]["posts_published_30d"]["data_quality"] == "fallback"
+
+
+# ---------------------------------------------------------------------------
+# Sales
+# ---------------------------------------------------------------------------
+
+
+class TestSalesCollector:
+    def test_empty_project(self, empty_project: Path) -> None:
+        result = SalesKPICollector(empty_project).collect()
+        assert result["department"] == "sales"
+        assert result["kpis"]["pipeline_value"]["current"] == 0
+        assert result["kpis"]["total_deals"]["current"] == 0
+
+    def test_project_with_data(self, project: Path) -> None:
+        result = SalesKPICollector(project).collect()
+        assert result["department"] == "sales"
+        assert result["kpis"]["total_sales_tasks"]["current"] == 0
+
+
+# ---------------------------------------------------------------------------
+# Customer Success
+# ---------------------------------------------------------------------------
+
+
+class TestCustomerSuccessCollector:
+    def test_empty_project(self, empty_project: Path) -> None:
+        result = CustomerSuccessKPICollector(empty_project).collect()
+        assert result["department"] == "customer_success"
+        assert result["kpis"]["total_tickets"]["current"] == 0
+        assert result["kpis"]["customer_satisfaction"]["current"] == 0.0
+
+    def test_project_with_data(self, project: Path) -> None:
+        result = CustomerSuccessKPICollector(project).collect()
+        assert result["department"] == "customer_success"
+        assert result["kpis"]["total_cs_tasks"]["current"] == 0
+
+
+# ---------------------------------------------------------------------------
+# Legal
+# ---------------------------------------------------------------------------
+
+
+class TestLegalCollector:
+    def test_empty_project(self, empty_project: Path) -> None:
+        result = LegalKPICollector(empty_project).collect()
+        assert result["department"] == "legal"
+        assert result["kpis"]["total_contracts"]["current"] == 0
+        # compliance_score returns None with data_quality="error" when no compliance data
+        assert result["kpis"]["compliance_score"]["current"] is None
+        assert result["kpis"]["compliance_score"]["data_quality"] == "error"
+
+    def test_project_with_data(self, project: Path) -> None:
+        result = LegalKPICollector(project).collect()
+        assert result["department"] == "legal"
+        assert result["kpis"]["total_legal_tasks"]["current"] == 0
+
+
+# ---------------------------------------------------------------------------
+# All departments return results
+# ---------------------------------------------------------------------------
+
+
+class TestAllCollectors:
+    def test_all_departments_return_results(self, project: Path) -> None:
+        """Every registered collector produces a valid result dict."""
+        for collector_cls in ALL_COLLECTORS:
+            result = collector_cls(project).collect()
+            assert "department" in result, f"{collector_cls} missing 'department'"
+            assert "kpis" in result, f"{collector_cls} missing 'kpis'"
+            assert result["department"], f"{collector_cls} has empty department"
+
+    def test_missing_files_handled_gracefully(self, empty_project: Path) -> None:
+        """All collectors must not crash when no operational files exist."""
+        for collector_cls in ALL_COLLECTORS:
+            result = collector_cls(empty_project).collect()
+            assert "department" in result
+            assert "kpis" in result
+            assert isinstance(result["kpis"], dict)
+
+    def test_collect_all_kpis_aggregates(self, project: Path) -> None:
+        """collect_all_kpis() returns all departments under a timestamp."""
+        snapshot = collect_all_kpis(project)
+        assert "collected_at" in snapshot
+        assert "departments" in snapshot
+        depts = snapshot["departments"]
+        assert len(depts) == len(ALL_COLLECTORS)
+        assert "engineering" in depts
+        assert "hr" in depts
+        assert "finance" in depts
+        assert "marketing" in depts
+        assert "sales" in depts
+        assert "customer_success" in depts
+        assert "legal" in depts
+
+    def test_collect_all_kpis_empty_project(self, empty_project: Path) -> None:
+        """Aggregation works even when no data files exist."""
+        snapshot = collect_all_kpis(empty_project)
+        assert "departments" in snapshot
+        for dept, data in snapshot["departments"].items():
+            assert "kpis" in data, f"Department {dept} missing kpis"
+
+
+# ---------------------------------------------------------------------------
+# SQLite-first (Sprint 2, Item 2)
+# ---------------------------------------------------------------------------
+
+
+class TestSqliteCollectors:
+    """Collectors prefer SQLite when it is populated, else fall back to files."""
+
+    def test_engineering_reads_tasks_from_sqlite(self, project: Path, db, tmp_path: Path) -> None:
+        _seed_sqlite_tasks(db, tmp_path)
+        result = EngineeringKPICollector(project, database=db).collect()
+        kpis = result["kpis"]
+
+        # inbox.json holds 5 tasks — SQLite holds 5 too, but statuses differ
+        # (1 completed / 1 pending / 1 in_progress / 1 failed from the file vs
+        # 2 completed / 2 pending / 1 failed from SQLite).
+        assert kpis["total_tasks"]["current"] == 5
+        assert kpis["completed_tasks"]["current"] == 2
+        assert kpis["pending_tasks"]["current"] == 2
+        assert kpis["in_progress_tasks"]["current"] == 0
+        assert kpis["failed_tasks"]["current"] == 1
+
+    def test_engineering_reads_escalations_from_sqlite(
+        self, project: Path, db, tmp_path: Path
+    ) -> None:
+        _seed_sqlite_tasks(db, tmp_path)
+        _seed_sqlite_escalations(db)
+        result = EngineeringKPICollector(project, database=db).collect()
+
+        # escalation.yaml holds 2 events (1 open) — SQLite holds 4 (2 open).
+        assert result["kpis"]["open_escalations"]["current"] == 2
+        assert result["kpis"]["escalation_rate"]["current"] == 80.0  # 4 events / 5 tasks
+
+    def test_finance_reads_costs_from_sqlite(self, project: Path, db) -> None:
+        _seed_sqlite_costs(db)
+        result = FinanceKPICollector(project, database=db).collect()
+        kpis = result["kpis"]
+
+        # No cost_tracker.json in the fixture — spend must come from SQLite.
+        assert kpis["total_spent"]["current"] == pytest.approx(5.0)
+        assert kpis["estimated_llm_spend"]["current"] == pytest.approx(5.0)
+
+    def test_finance_revenue_per_task_uses_terminal_tasks(
+        self, project: Path, db, tmp_path: Path
+    ) -> None:
+        """revenue_per_task = total_revenue / terminal tasks in the 30-day window."""
+        from datetime import datetime, timedelta, timezone
+
+        from ai_company.data import TaskStore
+
+        now = datetime.now(timezone.utc)
+        yesterday = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+        stale = (now - timedelta(days=60)).strftime("%Y-%m-%d")
+
+        tasks = [
+            # In-window terminal (3) → the denominator.
+            {
+                "id": "rp-t1",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "assignee": "cto",
+                "instruction": "ship feature",
+                "status": "completed",
+                "created_at": yesterday,
+            },
+            {
+                "id": "rp-t2",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "review patch",
+                "status": "failed",
+                "created_at": yesterday,
+            },
+            {
+                "id": "rp-t3",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "cancel job",
+                "status": "cancelled",
+                "created_at": yesterday,
+            },
+            # In-window non-terminal (2) → must not inflate the denominator.
+            {
+                "id": "rp-t4",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "queued work",
+                "status": "pending",
+                "created_at": yesterday,
+            },
+            {
+                "id": "rp-t5",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "work in progress",
+                "status": "in_progress",
+                "created_at": yesterday,
+            },
+            # Out-of-window terminal (60 days old) → excluded by the 30-day window.
+            {
+                "id": "rp-t6",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "instruction": "stale task",
+                "status": "completed",
+                "created_at": stale,
+            },
+        ]
+        path = tmp_path / "revenue-per-task-tasks.json"
+        path.write_text(json.dumps(tasks), encoding="utf-8")
+        assert TaskStore(db).import_json(path) == 6
+
+        db.execute(
+            """INSERT INTO revenue_transactions
+               (id, linked_task_id, status, amount, currency, timestamp)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            ("REV-TEST-001", "rp-t1", "completed", 30.0, "USD", yesterday),
+        )
+        db.commit()
+
+        result = FinanceKPICollector(project, database=db).collect()
+        kpis = result["kpis"]
+
+        assert kpis["total_revenue"]["current"] == pytest.approx(30.0)
+        # 30.0 / 3 terminal tasks (completed + failed + cancelled, in window).
+        # completed-only denominator (2) → 15.0; all-tasks (5) → 6.0; stale (6) → 5.0.
+        assert kpis["revenue_per_task"]["current"] == pytest.approx(10.0)
+
+    def test_department_tasks_read_from_sqlite(self, project: Path, db, tmp_path: Path) -> None:
+        _seed_sqlite_tasks(db, tmp_path)
+
+        cs = CustomerSuccessKPICollector(project, database=db).collect()
+        assert cs["kpis"]["total_cs_tasks"]["current"] == 1
+        assert cs["kpis"]["cs_task_completion"]["current"] == 0.0  # pending task
+
+        marketing = MarketingKPICollector(project, database=db).collect()
+        assert marketing["kpis"]["total_marketing_tasks"]["current"] == 1
+
+        sales = SalesKPICollector(project, database=db).collect()
+        assert sales["kpis"]["total_sales_tasks"]["current"] == 1
+
+        legal = LegalKPICollector(project, database=db).collect()
+        assert legal["kpis"]["total_legal_tasks"]["current"] == 1
+        assert legal["kpis"]["legal_task_completion"]["current"] == 0.0  # failed task
+
+    def test_collect_all_kpis_accepts_database(self, project: Path, db, tmp_path: Path) -> None:
+        _seed_sqlite_tasks(db, tmp_path)
+        snapshot = collect_all_kpis(project, database=db)
+        depts = snapshot["departments"]
+        assert depts["engineering"]["kpis"]["total_tasks"]["current"] == 5
+
+    def test_empty_sqlite_falls_back_to_files(self, project: Path, db) -> None:
+        """A usable but empty database must not change collector output."""
+        result = EngineeringKPICollector(project, database=db).collect()
+        assert result["kpis"]["total_tasks"]["current"] == 5  # from the MessageBus
+
+
+# ---------------------------------------------------------------------------
+# GAP-011: collectors read tasks through the MessageBus
+# ---------------------------------------------------------------------------
+
+
+class TestCollectorsReadTasksViaMessageBus:
+    """Collectors must read task state through the shared MessageBus.
+
+    Regression lock for GAP-011: the old fallback opened
+    ``.opencode/inbox.json`` directly; task reads must route through
+    ``get_bus().get_all_tasks_raw()`` so collectors see the same live
+    state as the dashboard API and the executor.
+    """
+
+    def test_engineering_tasks_come_from_message_bus(
+        self,
+        empty_project: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        import ai_company.dashboard.api as dash_api
+
+        fake_tasks = [
+            {
+                "id": "bus-1",
+                "sender_id": "ceo",
+                "receiver_id": "b",
+                "instruction": "via bus",
+                "status": "pending",
+            },
+            {
+                "id": "bus-2",
+                "sender_id": "ceo",
+                "receiver_id": "b",
+                "instruction": "done",
+                "status": "completed",
+            },
+        ]
+        fake_bus = MagicMock()
+        fake_bus.get_all_tasks_raw.return_value = fake_tasks
+        monkeypatch.setattr(dash_api, "get_bus", lambda: fake_bus)
+
+        result = EngineeringKPICollector(empty_project).collect()
+        kpis = result["kpis"]
+
+        assert kpis["total_tasks"]["current"] == 2
+        assert kpis["pending_tasks"]["current"] == 1
+        assert kpis["completed_tasks"]["current"] == 1
+        fake_bus.get_all_tasks_raw.assert_called_once()
+
+    def test_department_collectors_read_tasks_via_message_bus(
+        self,
+        empty_project: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Every task-reading department collector routes through the bus."""
+        import ai_company.dashboard.api as dash_api
+
+        fake_tasks = [
+            {
+                "id": "bus-1",
+                "sender_id": "ceo",
+                "receiver_id": "cmo",
+                "instruction": "campaign",
+                "status": "completed",
+            },
+            {
+                "id": "bus-2",
+                "sender_id": "ceo",
+                "receiver_id": "sales",
+                "instruction": "close deal",
+                "status": "pending",
+            },
+        ]
+        fake_bus = MagicMock()
+        fake_bus.get_all_tasks_raw.return_value = fake_tasks
+        monkeypatch.setattr(dash_api, "get_bus", lambda: fake_bus)
+
+        for collector_cls in ALL_COLLECTORS:
+            result = collector_cls(empty_project).collect()
+            assert "kpis" in result
+
+        # At least one department (engineering/cs/legal/marketing/sales) must
+        # have read its tasks through the bus.
+        fake_bus.get_all_tasks_raw.assert_called()
+
+
+# ---------------------------------------------------------------------------
+# GAP-085: collectors must log (not silently swallow) read/parse failures
+# ---------------------------------------------------------------------------
+
+
+class TestCollectorLogging:
+    """Malformed operational files must produce a warning and a KPI result,
+    never a silent pass (issue #85)."""
+
+    def test_customer_success_logs_warning_on_unparseable_sop_date(
+        self, empty_project: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        sop = empty_project / "docs" / "sop" / "customer-success-sop.md"
+        sop.parent.mkdir(parents=True)
+        # "Feb" matches the regex but is not the full "%B" month name expected
+        # by strptime, so parsing fails and the collector must log a warning.
+        sop.write_text("## Header\n\nLast Updated: Feb 2026\n", encoding="utf-8")
+
+        from ai_company.dashboard.kpis.customer_success import CustomerSuccessKPICollector
+
+        with caplog.at_level(logging.WARNING):
+            result = CustomerSuccessKPICollector(empty_project).collect()
+
+        assert result["kpis"]["sop_current"]["current"] == 0
+        assert any("SOP" in r.message for r in caplog.records)
+
+    def test_legal_logs_warning_on_unparseable_sop_date(
+        self, empty_project: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        sop = empty_project / "docs" / "sop" / "legal-sop.md"
+        sop.parent.mkdir(parents=True)
+        sop.write_text("## Header\n\nLast Updated: Feb 2026\n", encoding="utf-8")
+
+        from ai_company.dashboard.kpis.legal import LegalKPICollector
+
+        with caplog.at_level(logging.WARNING):
+            result = LegalKPICollector(empty_project).collect()
+
+        assert result["kpis"]["sop_current"]["current"] == 0
+        assert any("SOP" in r.message for r in caplog.records)

@@ -1,0 +1,32 @@
+voting:
+  default_rules:
+    quorum: 4
+    majority: "simple"
+    voting_period_days: 7
+    allow_absentee: true
+
+  decisions:
+    - type: "budget_over_1m"
+      quorum: 4
+      majority: "super"
+      requires_unanimous: false
+
+    - type: "executive_hiring"
+      quorum: 4
+      majority: "super"
+      requires_unanimous: false
+
+    - type: "strategic_pivot"
+      quorum: 5
+      majority: "super"
+      requires_unanimous: false
+
+    - type: "acquisition"
+      quorum: 5
+      majority: "unanimous"
+      requires_unanimous: true
+
+    - type: "bylaw_changes"
+      quorum: 5
+      majority: "super"
+      requires_unanimous: false

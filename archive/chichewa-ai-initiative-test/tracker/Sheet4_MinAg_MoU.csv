@@ -1,0 +1,10 @@
+Workstream,Deliverable,Owner,Target Date,Actual Date,Status,Blockers,Notes,Priority
+Govt,Formal letter to PS + Minister briefing,CEO/CoS,2026-09-03,,Not Started,,PS: Dr. Godfrey Chingoma; Minister: Hon. Sam Kawale,Critical
+Technical,Data access specification shared,CTO,2026-09-10,,Not Started,,Crop calendars, pest bulletins, variety registry, AIP guidelines, depot locations,High
+Legal,MoU template shared with MinAg legal,CLO,2026-09-10,,Not Started,,Based on MinAg_MoU_Template.md,High
+Field,District site visits (Lilongwe, Kasungu, Mzimba),CEO/CTO/CoS/Malawi Liaison,2026-09-14 to 2026-09-21,,Not Started,,Farmer interviews, officer shadowing, IVR usability testing,Critical
+Govt,MACRA IVR licensing initiated,BD/Malawi Liaison,2026-09-14,,Not Started,,*384# short code; USSD gateway; regulatory clearance,High
+Govt,Airtel/TNM engagement started,BD/Malawi Liaison,2026-09-14,,Not Started,,Zero-rated API; SIP trunk; toll-free termination,High
+Legal,MoU signed (GATE 1),CEO/BD,2026-09-30,,Not Started,,Gate 1 criteria: OI JDA + ZBS NDA + MinAg MoU,Critical
+Technical,Extension officer onboarding (5 pilot),PM/Malawi Liaison,2026-10-15,,Not Started,,WhatsApp training; copilot workflow; escalation protocols,High
+Product,Ministry Dashboard v1 specs,PM,2026-10-30,,Not Started,,Adoption metrics, crop alerts, officer activity, policy insights,Medium

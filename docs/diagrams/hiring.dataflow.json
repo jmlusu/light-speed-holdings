@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Hiring Workflow \u2014 Data Flow",
+    "quality_profile": "showcase",
+    "viewBox": [
+      722,
+      520
+    ]
+  },
+  "stages": [
+    {
+      "label": "Request"
+    },
+    {
+      "label": "Approve"
+    },
+    {
+      "label": "Source"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "create-requisition",
+      "type": "backend",
+      "label": "Create Job \u2026",
+      "sublabel": "chro",
+      "stage": 0,
+      "row": 0,
+      "width": 132,
+      "height": 58
+    },
+    {
+      "id": "approve-requisition",
+      "type": "security",
+      "label": "Approve Req\u2026",
+      "sublabel": "department_\u2026",
+      "stage": 0,
+      "row": 1,
+      "width": 132,
+      "height": 58
+    },
+    {
+      "id": "source-candidates",
+      "type": "frontend",
+      "label": "Source Cand\u2026",
+      "sublabel": "recruiter",
+      "stage": 1,
+      "row": 0,
+      "width": 132,
+      "height": 58
+    },
+    {
+      "id": "interview",
+      "type": "frontend",
+      "label": "Interview P\u2026",
+      "sublabel": "recruiter",
+      "stage": 1,
+      "row": 1,
+      "width": 132,
+      "height": 58
+    },
+    {
+      "id": "make-offer",
+      "type": "backend",
+      "label": "Make Offer",
+      "sublabel": "chro",
+      "stage": 2,
+      "row": 0,
+      "width": 132,
+      "height": 58
+    },
+    {
+      "id": "onboard",
+      "type": "backend",
+      "label": "Onboarding",
+      "sublabel": "chro",
+      "stage": 2,
+      "row": 1,
+      "width": 132,
+      "height": 58
+    }
+  ],
+  "flows": [
+    {
+      "id": "flow-create-requisition-to-approve-requisition",
+      "from": "create-requisition",
+      "to": "approve-requisition",
+      "label": "requisition_id",
+      "variant": "security",
+      "labelAt": [
+        100.0,
+        214.0
+      ]
+    },
+    {
+      "id": "flow-approve-requisition-to-source-candidates",
+      "from": "approve-requisition",
+      "to": "source-candidates",
+      "label": "approved",
+      "variant": "security",
+      "labelAt": [
+        207.5,
+        214.0
+      ]
+    },
+    {
+      "id": "flow-interview-to-make-offer",
+      "from": "interview",
+      "to": "make-offer",
+      "label": "shortlisted",
+      "variant": "default",
+      "labelAt": [
+        422.5,
+        214.0
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Hiring Workflow \u2014 Data Contract",
+      "items": [
+        "6 steps across 3 stages",
+        "Arrows label each hand-off's output data",
+        "Same-owner hand-offs stay local to one node"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# Capability Entity Definition
+
+key: ai_ethics
+title: "AI Ethics"
+description: "Ensuring ethical AI implementation aligned with organizational values and regulatory requirements"
+category: governance
+maturity_model_level: 2
+related_problems:
+  - low_ai_adoption
+enables:
+  - competitive_advantage
+implemented_by:
+  - ai_ethics_review_service
+evidence_references:
+  - claim:028
+  - claim:041
+  - claim:043

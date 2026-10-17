@@ -1,0 +1,12 @@
+# Problem Entity Definition
+
+key: ceo_strategic_alignment
+title: "CEO Strategic Alignment"
+description: "Challenges in aligning AI strategy with overall business strategy and organizational goals"
+industry: african_ai
+severity: high
+related_problems:
+  - low_ai_adoption
+affected_geographies:
+  - malawi
+  - sADC

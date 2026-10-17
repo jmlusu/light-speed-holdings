@@ -1,0 +1,39 @@
+services:
+  open-design:
+    image: ghcr.io/nexu-io/od:latest
+    container_name: lightspeed-open-design
+    ports:
+      - "7456:7456"
+    volumes:
+      - ./output/design:/app/output
+      - ./brand:/app/brand
+      - ./.opencode/integrations/open-design:/app/config
+    environment:
+      - NODE_ENV=production
+      - OD_BIND_HOST=127.0.0.1
+      - BRAND_TOKENS_PATH=/app/brand/tokens/brand-tokens.json
+      - OUTPUT_DIR=/app/output
+    restart: unless-stopped
+    networks:
+      - lightspeed-network
+
+  # Optional: Open Design CLI service for headless creation
+  open-design-cli:
+    image: ghcr.io/nexu-io/od:latest
+    container_name: lightspeed-open-design-cli
+    volumes:
+      - ./output/design:/app/output
+      - ./brand:/app/brand
+      - ./.opencode/integrations/open-design:/app/config
+    environment:
+      - OD_BIND_HOST=127.0.0.1
+      - BRAND_TOKENS_PATH=/app/brand/tokens/brand-tokens.json
+      - OUTPUT_DIR=/app/output
+    command: ["node", "/app/apps/daemon/dist/cli.js", "--no-open"]
+    restart: unless-stopped
+    networks:
+      - lightspeed-network
+
+networks:
+  lightspeed-network:
+    driver: bridge

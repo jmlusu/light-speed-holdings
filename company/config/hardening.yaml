@@ -1,0 +1,26 @@
+# Hardening configuration — ops reliability thresholds for the hardening layer.
+#
+# Loaded by src/ai_company/reliability/config.py and merged over the catalog
+# defaults (docs/HARDENING-PATTERN-CATALOG.md §4). This file is the single
+# source of truth at runtime; code falls back to the catalog when a key is
+# missing. New subsystems (daemon, scheduler, message_bus, audit) register
+# their blocks here as their tickets land.
+
+org_health:
+  # Per-component scoring deadline (seconds). A slow/hung scorer is cut at
+  # this budget and degrades fail-open to cached/None.
+  call_timeout_s: 3.0
+  # Overall compute() safety net for the whole scoring pass (seconds).
+  # 4 scorers x 3s parallel budget + slack; guards against worker starvation.
+  compute_timeout_s: 15.0
+  # Bulkhead: max concurrent scorers. Catalog default is min(#scorers, 4).
+  worker_pool_size: 4
+  # Repeated compute() calls within this window return the last result.
+  dedup_window_s: 5.0
+  breaker:
+    # Consecutive failures before the component circuit opens.
+    failure_threshold: 3
+    # Seconds an OPEN breaker waits before probing in half-open.
+    recovery_timeout_s: 60.0
+    # Consecutive half-open successes that close the circuit.
+    success_threshold: 1

@@ -1,0 +1,15 @@
+# Methodology Entity Definition
+
+key: pharos_method
+title: "Pharos Method"
+description: "The LightSpeed framework for assessing, designing, and implementing AI solutions in emerging markets"
+category: assessment
+associated_capabilities:
+  - ai_strategy
+associated_use_cases:
+  - predictive_maintenance
+steps:
+  - "Assessment: Evaluate organizational AI readiness and business problems"
+  - "Design: Architect AI solution aligned to capabilities and constraints"
+  - "Implement: Deploy AI systems with governance and monitoring"
+  - "Optimize: Continuous improvement and value realization"

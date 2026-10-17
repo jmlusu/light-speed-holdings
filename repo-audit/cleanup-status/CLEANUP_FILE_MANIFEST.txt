@@ -1,0 +1,66 @@
+LIGHTSPEED CLEANUP FILE MANIFEST — audit date 2026-10-07, HEAD be7d1848, baseline 048627ad
+Generated from: git ls-files, git status, git diff --name-status cleanup/c0-baseline..HEAD
+Full per-file listing is reproducible via `git ls-files`; this manifest categorizes it.
+
+=== COUNTS BY TOP-LEVEL DIRECTORY (tracked, HEAD) ===
+.agents: 698 | docs: 619 | harness: 424 | public: 398 | src: 380
+tests: 185 | .opencode: 180 | static: 163 | brand: 103 | .archive: 75
+board: 60 | scripts: 59 | packages: 46 | reports: 40 | output: 38
+config: 29 | .ai-company: 28 | proposal-deliverables: 26 | knowledge: 25
+archive: 20 | templates: 16 | .github: 13 | company: 12 | research: 12
+
+=== COUNTS BY EXTENSION (tracked, HEAD vs BASELINE c0) ===
+.md: 1536 (was 1634) | .py: 571 (was 602) | .png: 303 (was 532)
+.svg: 246 (unchanged) | .yaml: 185 (was 188) | .html: 153 | .json: 126
+.tsx: 92 | .ts: 72 | .pdf: 54 | .gitkeep: 48 | .jpg: 37 | .mjs: 36 | .eps: 34
+
+=== ACTIVE SOURCE ===
+src/ (380 files: ai_company CLI/generator/orchestrator/llm/models, components, pages, data, lib)
+packages/ (46) | templates/ (16, incl. agents/agent.md.j2) | api/ | config/ (29)
+company-registry.yaml + company/departments.yaml + company/models.yaml
+
+=== DOCUMENTATION (1536 .md tracked; 441 under docs/) ===
+Authoritative: AGENTS.md, README.md, docs/ARCHITECTURE.md, docs/ECL.md, docs/STATUS.md,
+  docs/LIGHTSPEED_DESIGN_SYSTEM.md, CONTRIBUTING.md, CODEOWNERS
+Historical (do not edit): harness/changes/archive/*, .archive/*, docs/adr/*
+Untriaged tail: remainder of docs/ (441 files) — per-doc triage pending (P2-2)
+Untracked context (not baseline): repo-audit/*.md, knowledge/technology/bug-fixes/BUG-*.md
+
+=== CONFIGURATION ===
+pyproject.toml, uv.lock, package.json, package-lock.json, tsconfig.json, vite.config.ts,
+vercel.json, opencode.json, .env.example, .env.staging.example, .gitmodules, .gitignore,
+.gitattributes, docker-compose*.yml, Dockerfile, .github/ (13), .vscode/
+
+=== TESTS ===
+tests/ (185 files) | evals/ | vitest.config.ts | .pytest_cache/ (untracked, ignored)
+
+=== GENERATED ARTIFACTS (expected, ignored/untracked — none tracked) ===
+.venv/, node_modules/, __pycache__/, *.pyc, .ruff_cache/, .mypy_cache/,
+.ruff_cache, .pytest_cache, dist/, build/, tsconfig.tsbuildinfo (if local)
+
+=== LEGACY ARTIFACTS (retained deliberately) ===
+.archive/ (75 files, incl. athena — deletions pending commit, P0-1)
+archive/ (20 files) — triage pending (P2-1)
+output/ (38), reports/ (40), results/, logs/ — active working dirs, not legacy dumps
+
+=== SUSPICIOUS FILES (audit only — do not delete on this list alone) ===
+- 57 identically-named openai.yaml (per-agent model config?) — content-diff pending (P1-4)
+- archive/* + output/* contents — keep/delete triage pending (P2-1)
+- untracked: repo-audit/, knowledge/technology/bug-fixes/BUG-{048627ade,0690a1678,421af29d5}.md,
+  docs/case-studies/lightspeed-scroll-page/artifacts/ — track or gitignore (P2-5)
+- modified-but-uncommitted: brand/tokens/*, public/brand/tokens/*, static/brand/tokens/*,
+  10 docs/*, hr/onboarding_requests.yaml, orchestrator/approvals.yaml,
+  src/components/AboutSection.tsx, src/data/registries/use-case-registry.json,
+  src/data/sectors.ts, src/data/siteContent.ts, src/pages/SectorsPage.tsx, src/pages/WhatWeDoPage.tsx
+
+=== PROTECTED FILES (must not be casually removed/renamed/rewritten) ===
+company-registry.yaml, company/departments.yaml (canonical agent sources)
+src/ai_company/generator.py, templates/agents/agent.md.j2 (regeneration pipeline)
+src/ai_company/orchestrator/tier_rules.py, orchestrator/approval.py,
+  orchestrator/approvals.yaml, orchestrator/escalation.yaml (governance)
+brand/tokens/* (canonical design tokens; public/static copies are mirrors)
+.opencode/inbox.json, orchestrator/dead_letter.jsonl (runtime state/audit trail)
+harness/changes/archive/*, .archive/* (historical record, drift-exempt)
+cleanup/c* + backup/* tags, .gitmodules (rollback infrastructure)
+docker-compose*.yml, Dockerfile, scripts/deploy/backup.ps1, .github/* (deploy/CI)
+.env (untracked live secrets — never commit), .env.example, .env.staging.example

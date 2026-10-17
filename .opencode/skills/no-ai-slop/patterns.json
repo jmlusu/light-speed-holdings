@@ -1,0 +1,123 @@
+{
+  "patterns": [
+    {
+      "id": "binary_contrasts",
+      "name": "Binary contrasts",
+      "regex": "(?:It['’]s not |The question isn[’]t |It[’]s not just )(.*?)\\.(?: It[’]s Y| it[’]s Y| but Y)\\.?",
+      "example": "\"It's not X. It's Y.\"",
+      "fix": "State Y directly. \"The eval matters more than the model.\""
+    },
+    {
+      "id": "throat_clearing",
+      "name": "Throat-clearing openers",
+      "regex": "(?:Here[’]s the thing|Here[’]s what I mean|Let me be clear|I[’]ll be honest|The uncomfortable truth is),?\\s*",
+      "example": "\"Here's the thing, the new platform is great.\"",
+      "fix": "Cut the opener and state the point directly."
+    },
+    {
+      "id": "faux_insight",
+      "name": "Faux-insight setups",
+      "regex": "(?:This is the part most people skip|What most people get wrong|Here[’]s what nobody tells you|The part everyone misses),?\\s*",
+      "example": "\"What nobody tells you is how hard it really is.\"",
+      "fix": "Cut the setup and make the claim stand on its own."
+    },
+    {
+      "id": "colon_reveals",
+      "name": "Colon reveals",
+      "regex": "([A-Za-z ]+):\\s+(?=[a-z])",
+      "example": "\"The best part: it learns.\"",
+      "fix": "Rewrite as plain sentence. \"A separate agent does the grading, which is what makes it work.\""
+    },
+    {
+      "id": "dramatic_fragments",
+      "name": "Dramatic fragments",
+      "regex": "(?:That[’]s it|And[^.]+\\.){2,}",
+      "example": "\"That's it. And this. And that.\"",
+      "fix": "Use complete sentences."
+    },
+    {
+      "id": "superficial_analysis",
+      "name": "Superficial analysis",
+      "regex": "\\b(highlighting|underscoring|reflecting|showcasing)\\b",
+      "example": "\"The launch adds file search, highlighting the team's commitment.\"",
+      "fix": "Cut the -ing clause. \"The launch adds file search, so users can find old drafts.\""
+    },
+    {
+      "id": "importance_puffery",
+      "name": "Importance puffery",
+      "regex": "\\b(stands as a testament|marks a pivotal moment|plays a vital role|solidifies its position|underscores its significance)\\b",
+      "example": "\"The launch marks a pivotal moment for the company.\"",
+      "fix": "State the fact. \"The launch is the company's first paid product.\""
+    },
+    {
+      "id": "weasel_attribution",
+      "name": "Weasel attribution",
+      "regex": "\\b(experts agree|industry reports suggest|many argue|widely regarded as|studies show)\\b",
+      "example": "\"Experts agree the platform is good.\"",
+      "fix": "Name the source or cut the claim."
+    },
+    {
+      "id": "synonym_cycling",
+      "name": "Synonym cycling",
+      "regex": "(?:The agent reviews|The assistant scores|The tool suggests)\\b",
+      "example": "\"The agent reviews the draft. The assistant scores the piece. The tool suggests fixes.\"",
+      "fix": "Use clear word consistently. \"The agent reviews the draft, scores it, and suggests fixes.\""
+    },
+    {
+      "id": "negative_listing",
+      "name": "Negative listing",
+      "regex": "Not a [^.]+\\. Not a [^.]+\\. [A-Z][^.]+\\.",
+      "example": "\"Not a X. Not a Y. A Z.\"",
+      "fix": "Just say Z."
+    },
+    {
+      "id": "robotic_rhythm",
+      "name": "Robotic rhythm",
+      "regex": "(?:\\bThe team\\b\\.\\s*){3,}(?:\\bThe team\\b\\.\\s*){3,}",
+      "example": "Repeated identical sentence starts.",
+      "fix": "Vary sentence structure."
+    },
+    {
+      "id": "rhetorical_setups",
+      "name": "Rhetorical setups",
+      "regex": "(?:What if I told you|Think about it:|Plot twist:|\\?\\s+Answer:)\\s*",
+      "example": "\"What if I told you this would change everything?\"",
+      "fix": "Drop and make the point directly."
+    },
+    {
+      "id": "fake_profound_kickers",
+      "name": "Fake-profound kickers",
+      "regex": "(?:In the end|At the end of the day|Truly|Fundamentally|Ultimately),\\s*\\w+\\s+\\w+\\.$",
+      "example": "\"The future isn't coming. It's already here.\"",
+      "fix": "Delete the kicker, end on the clearest concrete sentence."
+    },
+    {
+      "id": "summary_recap_endings",
+      "name": "Summary-recap endings",
+      "regex": "(?:In conclusion|Ultimately|Overall|Overall,)\\s*\\.",
+      "example": "\"In conclusion, the platform is great.\"",
+      "fix": "End on the last concrete point, takeaway, or next action."
+    },
+    {
+      "id": "formatting_slop",
+      "name": "Formatting slop",
+      "regex": "(?:^# .*\\bemoji\\b|\\b\\b\\b[A-Za-z]\\b\\s+\\*+\\s+[A-Za-z]|\\*+\\s+[A-Za-z]+\\*+\\s+\\n[^.]+\\n[^.]+\\n\\n)",
+      "example": "Emoji in headings, bold sprinkled mid-sentence.",
+      "fix": "Format should follow the content, not decorate it."
+    },
+    {
+      "id": "em_dashes",
+      "name": "Em dashes",
+      "regex": "--+",
+      "example": "Multiple em dashes used as rhythm crutch.",
+      "fix": "Use sparingly: none in short copy, 1-2 in longer drafts when they clearly help."
+    },
+    {
+      "id": "fake_strong_verbs",
+      "name": "Fake-strong verbs",
+      "regex": "\\b(serves as a centralized hub for|acts as|serves as)\\b",
+      "example": "\"The app serves as a centralized hub for sponsor management.\"",
+      "fix": "Use direct description. \"The app tracks sponsors, drafts, due dates, and approvals in one place.\""
+    }
+  ]
+}

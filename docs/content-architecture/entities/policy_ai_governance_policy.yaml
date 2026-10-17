@@ -1,0 +1,19 @@
+# Policy Entity Definition
+
+key: ai_governance_policy
+title: "AI Governance Policy"
+description: "Organization-wide policies governing AI development and deployment"
+category: ai_governance
+status: approved
+associated_industries:
+  - african_ai
+  - digital_transformation
+  - ai_governance
+related_use_cases:
+  - predictive_maintenance
+  - customer_segmentation
+evidence_level: evidenced
+evidence_references:
+  - claim:019
+  - claim:041
+  - claim:055

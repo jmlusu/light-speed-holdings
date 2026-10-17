@@ -1,0 +1,9 @@
+# Technology Entity Definition
+
+key: anthropic
+name: Anthropic
+category: ai_model
+maturity: mature
+related_use_cases:
+  - predictive_maintenance
+  - customer_segmentation

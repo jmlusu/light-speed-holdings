@@ -1,0 +1,189 @@
+{
+  "designTeam": {
+    "name": "LightSpeed Design Team",
+    "description": "Integrated design team using Open LightSpeed Design System with Open Design integration",
+    "version": "1.0.0"
+  },
+  "agents": {
+    "orchestrator": {
+      "id": "creative-director",
+      "name": "Creative Director",
+      "role": "orchestrator",
+      "department": "Marketing",
+      "reportsTo": "cmo",
+      "responsibilities": [
+        "Read creative brief and extract artifact type, audience, objective, narrative, visual language",
+        "Decide production chain (design-system + production skill + artifact-qa)",
+        "Route every creative task through the design system first",
+        "Hand off executable creative brief to target production specialist",
+        "Enforce brand tokens without inventing colors or fonts"
+      ],
+      "skills": ["ls-creative-director", "ls-design-system"],
+      "subagents": ["product-designer", "presentation-designer", "document-designer", "diagram-designer", "visual-storyteller", "brand-advertising-designer"]
+    },
+    "production": {
+      "frontend": {
+        "id": "product-designer",
+        "name": "Product Designer",
+        "role": "production",
+        "department": "Product",
+        "reportsTo": "cpo",
+        "responsibilities": [
+          "Design interaction patterns for dashboard and CLI surfaces",
+          "Maintain design system and visual language",
+          "Create wireframes, prototypes, and high-fidelity designs",
+          "Conduct design reviews with engineering teams",
+          "Ensure accessibility compliance in all designs"
+        ],
+        "skills": ["ls-frontend-design", "ls-design-system", "ls-artifact-qa"],
+        "tools": ["open-design", "figma", "playwright"]
+      },
+      "presentation": {
+        "id": "presentation-designer",
+        "name": "Presentation Designer",
+        "role": "production",
+        "department": "Marketing",
+        "reportsTo": "cmo",
+        "responsibilities": [
+          "Produce board presentations, investor decks, strategy decks",
+          "Enforce branded LightSpeed layout (10x7.5in slides, navy left rail)",
+          "Create speaker notes and presentation flow",
+          "Generate charts and data visualizations"
+        ],
+        "skills": ["ls-presentation-design", "ls-design-system", "ls-diagramming"],
+        "tools": ["open-design", "python-pptx"]
+      },
+      "document": {
+        "id": "document-designer",
+        "name": "Document Designer",
+        "role": "production",
+        "department": "Marketing",
+        "reportsTo": "cmo",
+        "responsibilities": [
+          "Produce whitepapers, strategy reports, policy papers",
+          "Create investment memoranda and executive reports",
+          "Generate case studies and annual reports",
+          "Ensure document accessibility and brand compliance"
+        ],
+        "skills": ["ls-document-design", "ls-design-system", "ls-artifact-qa"],
+        "tools": ["open-design", "python-docx", "weasyprint"]
+      },
+      "diagram": {
+        "id": "diagram-designer",
+        "name": "Diagram Designer",
+        "role": "production",
+        "department": "Engineering",
+        "reportsTo": "cto",
+        "responsibilities": [
+          "Produce technical, business, and strategy diagrams",
+          "Use Mermaid for architecture and process flows",
+          "Create SVG/D3 custom data visuals",
+          "Apply brand palette to all diagrams"
+        ],
+        "skills": ["ls-diagramming", "ls-design-system"],
+        "tools": ["open-design", "mermaid", "kroki"]
+      },
+      "visual-storytelling": {
+        "id": "visual-storyteller",
+        "name": "Visual Storyteller",
+        "role": "production",
+        "department": "Marketing",
+        "reportsTo": "cmo",
+        "responsibilities": [
+          "Turn information into visual communication",
+          "Create infographics, timelines, maps, frameworks",
+          "Produce data stories and executive one-pagers",
+          "Generate explainer graphics and visual abstracts"
+        ],
+        "skills": ["ls-visual-storytelling", "ls-design-system", "ls-diagramming"],
+        "tools": ["open-design", "k-dense-infographics", "article-illustrations"]
+      },
+      "advertising": {
+        "id": "brand-advertising-designer",
+        "name": "Brand Advertising Designer",
+        "role": "production",
+        "department": "Marketing",
+        "reportsTo": "cmo",
+        "responsibilities": [
+          "Produce digital ads, display ads, social ads",
+          "Create billboards, flyers, posters, event banners",
+          "Design email headers and campaign graphics",
+          "Build product launch and service promotion materials"
+        ],
+        "skills": ["ls-brand-advertising", "ls-design-system", "ls-artifact-qa"],
+        "tools": ["open-design", "k-dense-infographics"]
+      }
+    },
+    "support": {
+      "research": {
+        "id": "research-lead",
+        "name": "Research Lead",
+        "role": "support",
+        "department": "Marketing",
+        "reportsTo": "cmo",
+        "responsibilities": [
+          "Conduct primary research for creative artifacts",
+          "Verify claims and citations in documents",
+          "Provide evidence-bounded content"
+        ],
+        "skills": ["k-dense-literature-review", "k-dense-research-lookup", "k-dense-paper-lookup"],
+        "tools": ["websearch", "webfetch"]
+      },
+      "qa": {
+        "id": "artifact-qa-reviewer",
+        "name": "Artifact QA Reviewer",
+        "role": "support",
+        "department": "Quality",
+        "reportsTo": "qa-lead",
+        "responsibilities": [
+          "Run visual QA (spacing, hierarchy, balance, contrast)",
+          "Run brand QA (colors, type, logo, tagline)",
+          "Run UX QA (CTA clarity, overflow, navigation)",
+          "Run accessibility QA (contrast, alt text, focus, headings)",
+          "Run content QA (claims, citations, consistency)"
+        ],
+        "skills": ["ls-artifact-qa", "ls-design-system"],
+        "tools": ["playwright", "visual_check.js"]
+      }
+    }
+  },
+  "workflows": {
+    "creative-brief": {
+      "steps": [
+        "1. User provides creative brief or prompt",
+        "2. Creative Director loads ls-design-system",
+        "3. Creative Director asks 5 intake questions (artifact type, audience, objective, narrative, visual language)",
+        "4. Creative Director routes to appropriate production skill",
+        "5. Production skill creates artifact using Open Design",
+        "6. Artifact QA runs final review",
+        "7. Deliver approved artifact"
+      ],
+      "routing": {
+        "website": "ls-frontend-design",
+        "landing-page": "ls-frontend-design",
+        "deck": "ls-presentation-design",
+        "pitch-deck": "ls-presentation-design",
+        "whitepaper": "ls-document-design",
+        "report": "ls-document-design",
+        "proposal": "ls-document-design",
+        "campaign": "ls-social-media-design",
+        "ad": "ls-brand-advertising",
+        "banner": "ls-brand-advertising",
+        "diagram": "ls-diagramming",
+        "infographic": "ls-visual-storytelling",
+        "one-pager": "ls-visual-storytelling"
+      }
+    },
+    "open-design-integration": {
+      "steps": [
+        "1. Load brand tokens from brand/tokens/brand-tokens.json",
+        "2. Set Open Design model and configuration",
+        "3. Create design prompt with brand constraints",
+        "4. Execute Open Design CLI or desktop app",
+        "5. Export artifact in required format",
+        "6. Apply brand QA checks",
+        "7. Deliver final artifact"
+      ]
+    }
+  }
+}

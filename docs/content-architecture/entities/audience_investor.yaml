@@ -1,0 +1,20 @@
+# Audience Entity Definition
+
+key: investor
+name: Investor
+role: financial
+industry: null
+seniority: executive
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_strategy
+  - ai_governance_policy
+preferred_engagement:
+  - assessment
+  - advisory
+content_types:
+  - page
+  - white_paper
+  - case_study
+  - insight

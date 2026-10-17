@@ -1,0 +1,12 @@
+# Engagement Model Entity Definition
+
+key: implementation
+title: "Implementation"
+description: "Hands-on implementation engagement for building and deploying AI solutions"
+category: implementation
+duration_weeks: 8
+capability: machine_learning_operations
+price_tier: enterprise
+proof_required: true
+associated_use_cases:
+  - predictive_maintenance

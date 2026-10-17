@@ -1,0 +1,24 @@
+# Webhook configuration for HITL approval notifications.
+#
+# Each entry fires an HTTP POST when the executor parks or resolves a
+# task.  Delivery is fire-and-forget: failures are logged but never
+# block the executor.
+#
+# Fields:
+#   url     — Webhook endpoint (required).
+#   secret  — HMAC-SHA256 signing secret (optional). When set, the
+#             POST body is signed and the signature is sent in the
+#             X-Webhook-Signature header.
+#   events  — List of event types to deliver.  Valid values:
+#             "parked", "resolved", "all".  Default: ["all"].
+#
+# Example:
+#   webhooks:
+#     - url: "https://hooks.slack.com/services/T.../B.../..."
+#       secret: ""
+#       events: ["parked"]
+#     - url: "https://example.com/api/approval-hook"
+#       secret: "my-hmac-secret"
+#       events: ["parked", "resolved"]
+
+webhooks: []

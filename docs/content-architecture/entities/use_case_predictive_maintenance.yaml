@@ -1,0 +1,15 @@
+# AI Use Case Entity Definition
+
+key: predictive_maintenance
+title: "Predictive Maintenance"
+description: "Using sensor data and machine learning to predict equipment failures before they occur"
+industry: manufacturing
+problem: low_ai_adoption
+capability: ai_strategy
+outcome: reduced_operational_costs
+maturity: production
+evidence_level: evidenced
+technologies:
+  - python
+  - pytorch
+  - aws

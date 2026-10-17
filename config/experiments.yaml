@@ -1,0 +1,33 @@
+experiments:
+- description: Token-efficient system prompts with conditional sections
+  enabled: true
+  end_date: null
+  excluded_agents: []
+  name: optimized_prompts
+  start_date: null
+  target_agents: []
+  traffic_split: 0.5
+- description: Conversation history summarization to reduce context
+  enabled: true
+  end_date: null
+  excluded_agents: []
+  name: history_summarization
+  start_date: null
+  target_agents: []
+  traffic_split: 0.5
+- description: Tool result summarization for token efficiency
+  enabled: true
+  end_date: null
+  excluded_agents: []
+  name: tool_summarization
+  start_date: null
+  target_agents: []
+  traffic_split: 0.5
+- description: Task complexity scoring for smart tier routing
+  enabled: true
+  end_date: null
+  excluded_agents: []
+  name: complexity_routing
+  start_date: null
+  target_agents: []
+  traffic_split: 0.5

@@ -1,0 +1,17 @@
+# Case Study Entity Definition
+
+key: ai_deployment_in_manufacturing
+title: "AI Deployment in Manufacturing"
+description: "Case study of AI implementation in a regional manufacturing firm"
+industry: manufacturing
+problem: low_ai_adoption
+capability: ai_strategy
+outcome: reduced_operational_costs
+evidence_level: qualified
+technologies:
+  - python
+  - pytorch
+  - aws
+published_date: "2024-03-15"
+location: malawi
+testimonials: []

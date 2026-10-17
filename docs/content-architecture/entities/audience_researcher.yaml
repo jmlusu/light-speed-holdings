@@ -1,0 +1,19 @@
+# Audience Entity Definition
+
+key: researcher
+name: Researcher
+role: academic
+industry: ai_governance
+seniority: senior
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_strategy
+  - ai_governance_policy
+preferred_engagement:
+  - assessment
+  - research
+content_types:
+  - research
+  - insight
+  - case_study

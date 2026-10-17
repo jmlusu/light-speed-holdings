@@ -1,0 +1,35 @@
+budget:
+  fiscal_year: 2026
+  total_budget: 500000
+  currency: "USD"
+
+  departments:
+    - name: "Consulting"
+      budget: 120000
+      headcount: 4
+      priorities: ["discovery", "advisory", "roadmaps"]
+
+    - name: "Delivery"
+      budget: 180000
+      headcount: 4
+      priorities: ["implementation", "quality", "integration"]
+
+    - name: "Sales"
+      budget: 90000
+      headcount: 3
+      priorities: ["pipeline", "proposals", "accounts"]
+
+    - name: "Client Success"
+      budget: 60000
+      headcount: 2
+      priorities: ["support", "retention", "expansion"]
+
+    - name: "Executive"
+      budget: 50000
+      headcount: 2
+      priorities: ["strategy", "governance"]
+
+  contingency:
+    percentage: 5
+    amount: 25000
+    approval_required: "cfo"

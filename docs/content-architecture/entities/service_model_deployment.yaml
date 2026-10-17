@@ -1,0 +1,18 @@
+# Service Entity Definition
+
+key: model_deployment_service
+title: "Model Deployment"
+description: "Deploying and managing ML models in production environments with monitoring and lifecycle support"
+capability: machine_learning_operations
+engagement_models:
+  - implementation
+proof: []
+audience:
+  - cto
+  - developer
+duration_weeks: 8
+price_tier: enterprise
+evidence_references:
+  - claim:014
+  - claim:022
+  - claim:057

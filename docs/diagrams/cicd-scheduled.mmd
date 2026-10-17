@@ -1,0 +1,24 @@
+flowchart TD
+    classDef sched fill:#070A40,stroke:#00BFFF,color:#fff
+    classDef job fill:#F2F2F2,stroke:#6B7280,color:#070A40
+    classDef acc fill:#00BFFF,stroke:#070A40,color:#070A40
+    classDef ceo fill:#E63946,stroke:#070A40,color:#fff
+
+    T{{"GitHub Actions triggers<br/>schedule + issue/PR comments"}}:::sched
+    T --> A["autonomous.yml · cron: 0 */6 * * *"]:::job
+    T --> GOV["governance.yml · daily 02:00 + Mon 09:00"]:::job
+    T --> MON["monitoring.yml · cron: 0 */12 * * *"]:::job
+    T --> RA["repo-audit.yml · cron: 0 6 * * 0 (Sun)"]:::job
+    T --> DR["disaster-recovery.yml · cron: 0 3 * * *"]:::job
+    T --> OC["opencode.yml · '/oc' / '/opencode'<br/>on issue / PR-review comment"]:::job
+
+    A --> A1["orchestrator tick → seed inbox<br/>→ executor daemon window<br/>→ briefing + artifact"]:::acc
+    GOV --> G1["retention · compliance · audit trail<br/>risk-register freshness review"]:::acc
+    MON --> M1["CI health · cycle health<br/>metrics anomalies · uv audit"]:::acc
+    M1 --> MI{"CI: >2 consecutive<br/>failures on main?"}:::ceo
+    MI -->|yes| M2["GitHub issue · 'CI health degraded'<br/>labels: bug, monitoring"]:::ceo
+    RA --> R1["Phase 1 · deterministic scans<br/>evidence.json · zero LLM cost"]:::acc
+    R1 --> R2["Phase 2 · agent deep pass<br/>executor daemon → repo-audit report"]:::acc
+    R2 --> R3["Commit report + notify Human CEO<br/>reply: /approve · /park · /reject"]:::ceo
+    DR --> D1["backup tar.gz → artifact (30d)<br/>+ integrity + health checks"]:::acc
+    OC --> O1["run opencode<br/>OPENCODE_API_KEY · model big-pickle"]:::acc

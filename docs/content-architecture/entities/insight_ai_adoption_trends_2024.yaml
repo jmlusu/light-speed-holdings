@@ -1,0 +1,18 @@
+# Insight Entity Definition
+
+key: ai_adoption_trends_2024
+title: "AI Adoption Trends 2024"
+description: "Key trends in AI adoption across emerging markets and SMEs"
+source: market_analysis
+evidence_level: qualified
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_strategy
+related_use_cases:
+  - predictive_maintenance
+published_date: "2024-01-15"
+evidence_references:
+  - claim:031
+  - claim:032
+  - claim:033

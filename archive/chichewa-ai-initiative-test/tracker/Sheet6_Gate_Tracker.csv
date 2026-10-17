@@ -1,0 +1,4 @@
+Gate,Target Date,Criteria,Decision,Conditions,Next Steps,Owner,Status
+Gate 1: Foundation,2026-09-30,"OI JDA signed + ZBS NDA executed + MinAg MoU signed + WB Concept Note cleared",Pending,,If Go: Release budget + hiring wave 1; If No-Go: Pause + reassess,CEO/CoS,Not Started
+Gate 2: Validation,2026-10-30,"Chichewa SFT model >85% accuracy + Data pipeline processing 500hrs + Agent Registry v1 deployed + Dev sandbox live",Pending,,If Go: Phase 2 go-ahead + hiring wave 2; If No-Go: Extend pilot scope,CEO/CoS,Not Started
+Gate 3: Execution,2026-11-29,"Pilot results: >70% resolution rate + CSAT >4.0/5 + IVR sandbox functional + 50 farmer feedback",Pending,,If Go: Scale decision + MSA negotiation; If Pivot: Adjust product/channel; If Pause: Document learnings,CEO/Board,Not Started

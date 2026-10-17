@@ -1,0 +1,129 @@
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\villagereach-ussd-consultant-proposal.md
+  forbidden:
+    (none)
+  required:
+    45,000          x5
+    1,875           x3
+    2024            x3
+    Last updated    x0
+    54747           x18
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\VillageReach-USSD-Consultant-Proposal.docx
+  forbidden:
+    (none)
+  required:
+    45,000          x1
+    1,875           x1
+    2024            x1
+    Last updated    x1
+    54747           x6
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\VillageReach-USSD-Consultant-Proposal-Slides.pptx
+  forbidden:
+    (none)
+  required:
+    45,000          x1
+    1,875           x1
+    2024            x1
+    Last updated    x1
+    54747           x4
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\make_ussd_proposal_docx.py
+  forbidden:
+    (none)
+  required:
+    45,000          x4
+    1,875           x2
+    2024            x2
+    Last updated    x2
+    54747           x17
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\make_villagereach_proposal_docx.py
+  forbidden:
+    (none)
+  required:
+    45,000          x1
+    1,875           x1
+    2024            x1
+    Last updated    x2
+    54747           x6
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\make_villagereach_proposal_pptx.py
+  forbidden:
+    (none)
+  required:
+    45,000          x1
+    1,875           x1
+    2024            x1
+    Last updated    x2
+    54747           x4
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\make_proposal_docx.py
+  forbidden:
+    (none)
+  required:
+    45,000          x0
+    1,875           x0
+    2024            x0
+    Last updated    x0
+    54747           x0
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\make_proposal_pptx.py
+  forbidden:
+    (none)
+  required:
+    45,000          x0
+    1,875           x0
+    2024            x0
+    Last updated    x0
+    54747           x0
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\Jack-Mlusu-Solo-Consultant-Proposal.docx
+  forbidden:
+    (none)
+  required:
+    45,000          x5
+    1,875           x3
+    2024            x2
+    Last updated    x1
+    54747           x17
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\Jack-Mlusu-Solo-Consultant-Proposal.txt
+  forbidden:
+    (none)
+  required:
+    45,000          x1
+    1,875           x2
+    2024            x1
+    Last updated    x1
+    54747           x5
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\Jack-Mlusu-Solo-Consultant-Proposal-Slides.pptx
+  forbidden:
+    (none)
+  required:
+    45,000          x1
+    1,875           x1
+    2024            x1
+    Last updated    x1
+    54747           x4
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\Digital-Health-Consultant-Proposal.docx
+  forbidden:
+    (none)
+  required:
+    45,000          x0
+    1,875           x0
+    2024            x0
+    Last updated    x0
+    54747           x0
+
+C:\Users\jmlus\light-speed-holdings\proposal-deliverables\Digital-Health-Consultant-Proposal-Slides.pptx
+  forbidden:
+    (none)
+  required:
+    45,000          x0
+    1,875           x0
+    2024            x0
+    Last updated    x0
+    54747           x0

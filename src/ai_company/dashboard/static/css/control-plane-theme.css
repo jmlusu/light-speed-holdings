@@ -1,0 +1,301 @@
+/* ═══════════════════════════════════════════════════════════════
+   J.A.R.V.I.S. Control Plane Theme
+   Design tokens + glass treatment + scan-line + status pulse
+   Issue #105 — resolved from #101 visual-language decision
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Design Tokens ────────────────────────────────────────── */
+:root {
+  /* Palettes */
+  --jarvis-bg-base:     #070b14;
+  --jarvis-bg-raised:   #0c1420;
+  --jarvis-bg-overlay:  #101a2b;
+  --jarvis-surface:     #0c1420;
+  --jarvis-border:      #1e293b;
+
+  --jarvis-cyan:        #22d3ee;
+  --jarvis-text:        #e2e8f0;
+  --jarvis-text-muted:  #94a3b8;
+
+  --jarvis-amber:       #fbbf24;
+  --jarvis-red:         #f87171;
+  --jarvis-success:     #34d399;
+
+  /* Glass */
+  --jarvis-glass-opacity:  0.72;
+  --jarvis-glass-blur:     12px;
+  --jarvis-border-glow:    rgba(34, 211, 238, 0.12);
+  --jarvis-shadow-glow:    rgba(34, 211, 238, 0.06);
+
+  /* Typography */
+  --jarvis-font-display: 'Rajdhani', 'Inter', system-ui, sans-serif;
+  --jarvis-font-mono:    'JetBrains Mono', ui-monospace, Consolas, monospace;
+
+  /* Agent state colors */
+  --jarvis-state-online:       #34d399;
+  --jarvis-state-thinking:     #a78bfa;
+  --jarvis-state-executing:    #22d3ee;
+  --jarvis-state-delegating:   #818cf8;
+  --jarvis-state-waiting:      #fbbf24;
+  --jarvis-state-blocked:      #f87171;
+  --jarvis-state-escalated:    #fb923c;
+  --jarvis-state-offline:      #475569;
+
+  /* Motion */
+  --jarvis-motion-duration:    0.3s;
+  --jarvis-motion-easing:      cubic-bezier(0.4, 0, 0.2, 1);
+  --jarvis-pulse-speed:        2s;
+}
+
+/* ── Font Face Declarations (self-hosted, CSP-safe) ───────── */
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/static/fonts/Rajdhani-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/static/fonts/Rajdhani-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/static/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+}
+
+/* ── Base Typography ──────────────────────────────────────── */
+body {
+  font-family: var(--jarvis-font-display);
+  background: var(--jarvis-bg-base);
+  color: var(--jarvis-text);
+}
+
+code, pre, .font-mono {
+  font-family: var(--jarvis-font-mono);
+}
+
+/* ── Glass Panel Utility ──────────────────────────────────── */
+.jarvis-glass {
+  background: rgba(7, 11, 20, var(--jarvis-glass-opacity));
+  backdrop-filter: blur(var(--jarvis-glass-blur));
+  -webkit-backdrop-filter: blur(var(--jarvis-glass-blur));
+  border: 1px solid var(--jarvis-border-glow);
+  box-shadow: 0 0 8px var(--jarvis-shadow-glow);
+}
+
+/* ── Dashboard Panel (glass + rounded + luminous border) ──── */
+.jp-panel {
+  background: rgba(7, 11, 20, var(--jarvis-glass-opacity));
+  backdrop-filter: blur(var(--jarvis-glass-blur));
+  -webkit-backdrop-filter: blur(var(--jarvis-glass-blur));
+  border: 1px solid var(--jarvis-border-glow);
+  border-radius: 12px;
+  box-shadow: 0 0 20px var(--jarvis-shadow-glow);
+}
+
+/* ── Chrome Scan-line Texture ─────────────────────────────── */
+.chrome-scanline {
+  position: relative;
+}
+
+.chrome-scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 2px,
+    rgba(34, 211, 238, 0.03) 2px,
+    rgba(34, 211, 238, 0.03) 4px
+  );
+  opacity: 1;
+}
+
+/* ── Status Pulse Keyframes ───────────────────────────────── */
+@keyframes jarvis-pulse-cyan {
+  0%, 100% { box-shadow: 0 0 4px rgba(34, 211, 238, 0.2); }
+  50%      { box-shadow: 0 0 12px rgba(34, 211, 238, 0.4); }
+}
+
+@keyframes jarvis-pulse-amber {
+  0%, 100% { box-shadow: 0 0 4px rgba(251, 191, 36, 0.2); }
+  50%      { box-shadow: 0 0 12px rgba(251, 191, 36, 0.4); }
+}
+
+@keyframes jarvis-pulse-red {
+  0%, 100% { box-shadow: 0 0 4px rgba(248, 113, 113, 0.2); }
+  50%      { box-shadow: 0 0 12px rgba(248, 113, 113, 0.4); }
+}
+
+.jarvis-pulse-cyan {
+  animation: jarvis-pulse-cyan 3s ease-in-out infinite;
+}
+
+.jarvis-pulse-amber {
+  animation: jarvis-pulse-amber 2s ease-in-out infinite;
+}
+
+.jarvis-pulse-red {
+  animation: jarvis-pulse-red 1.5s ease-in-out infinite;
+}
+
+/* ── Agent State Classes ──────────────────────────────────── */
+.jarvis-state {
+  transition: border-color var(--jarvis-motion-duration) var(--jarvis-motion-easing),
+              box-shadow var(--jarvis-motion-duration) var(--jarvis-motion-easing);
+}
+
+.jarvis-state-online {
+  border-color: var(--jarvis-state-online);
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.15);
+}
+
+.jarvis-state-thinking {
+  border-color: var(--jarvis-state-thinking);
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.2);
+  animation: jarvis-state-thinking-pulse var(--jarvis-pulse-speed) ease-in-out infinite;
+}
+
+.jarvis-state-executing {
+  border-color: var(--jarvis-state-executing);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.25);
+  animation: jarvis-state-executing-pulse var(--jarvis-pulse-speed) ease-in-out infinite;
+}
+
+.jarvis-state-delegating {
+  border-color: var(--jarvis-state-delegating);
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.2);
+  animation: jarvis-state-delegating-pulse var(--jarvis-pulse-speed) ease-in-out infinite;
+}
+
+.jarvis-state-waiting {
+  border-color: var(--jarvis-state-waiting);
+  box-shadow: 0 0 6px rgba(251, 191, 36, 0.15);
+}
+
+.jarvis-state-blocked {
+  border-color: var(--jarvis-state-blocked);
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.2);
+  animation: jarvis-state-blocked-pulse 1s ease-in-out infinite;
+}
+
+.jarvis-state-escalated {
+  border-color: var(--jarvis-state-escalated);
+  box-shadow: 0 0 12px rgba(251, 146, 60, 0.3);
+  animation: jarvis-state-escalated-pulse 1.2s ease-in-out infinite;
+}
+
+.jarvis-state-offline {
+  border-color: var(--jarvis-state-offline);
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+/* ── Agent State Keyframes ────────────────────────────────── */
+@keyframes jarvis-state-thinking-pulse {
+  0%, 100% { border-color: rgba(167, 139, 250, 0.4); }
+  50%      { border-color: rgba(167, 139, 250, 0.8); }
+}
+
+@keyframes jarvis-state-executing-pulse {
+  0%, 100% { border-color: rgba(34, 211, 238, 0.4); box-shadow: 0 0 8px rgba(34, 211, 238, 0.1); }
+  50%      { border-color: rgba(34, 211, 238, 0.9); box-shadow: 0 0 16px rgba(34, 211, 238, 0.3); }
+}
+
+@keyframes jarvis-state-delegating-pulse {
+  0%, 100% { border-color: rgba(129, 140, 248, 0.4); }
+  50%      { border-color: rgba(129, 140, 248, 0.8); }
+}
+
+@keyframes jarvis-state-blocked-pulse {
+  0%, 100% { border-color: rgba(248, 113, 113, 0.4); }
+  50%      { border-color: rgba(248, 113, 113, 1); }
+}
+
+@keyframes jarvis-state-escalated-pulse {
+  0%, 100% { border-color: rgba(251, 146, 60, 0.4); box-shadow: 0 0 8px rgba(251, 146, 60, 0.1); }
+  50%      { border-color: rgba(251, 146, 60, 1); box-shadow: 0 0 20px rgba(251, 146, 60, 0.35); }
+}
+
+/* ── SVG Connection Lines ─────────────────────────────────── */
+.jarvis-connection-line {
+  stroke: var(--jarvis-border-glow);
+  stroke-width: 1;
+  fill: none;
+  stroke-dasharray: 6 4;
+}
+
+.jarvis-connection-line.jarvis-data-packet {
+  animation: jarvis-data-flow 1.8s linear infinite;
+}
+
+@keyframes jarvis-data-flow {
+  to { stroke-dashoffset: -20; }
+}
+
+/* ── Tier Badge Colors ────────────────────────────────────── */
+.jarvis-tier-1 { border-left: 3px solid var(--jarvis-text-muted); }
+.jarvis-tier-2 { border-left: 3px solid var(--jarvis-state-executing); }
+.jarvis-tier-3 { border-left: 3px solid var(--jarvis-state-thinking); }
+.jarvis-tier-4 { border-left: 3px solid var(--jarvis-state-waiting); }
+.jarvis-tier-5 {
+  border-left: 3px solid var(--jarvis-amber);
+  animation: jarvis-tier5-pulse 2s ease-in-out infinite;
+}
+
+@keyframes jarvis-tier5-pulse {
+  0%, 100% { box-shadow: inset 0 0 4px rgba(251, 191, 36, 0.1); }
+  50%      { box-shadow: inset 0 0 12px rgba(251, 191, 36, 0.25); }
+}
+
+/* ── Model Telemetry Bar ──────────────────────────────────── */
+.jarvis-telemetry-bar {
+  display: flex;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(7, 11, 20, 0.6);
+}
+
+.jarvis-telemetry-segment {
+  height: 100%;
+  transition: width var(--jarvis-motion-duration) var(--jarvis-motion-easing);
+}
+
+/* ── Reduced Motion (global theme override) ───────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .chrome-scanline::after {
+    opacity: 0;
+  }
+
+  .jarvis-pulse-cyan,
+  .jarvis-pulse-amber,
+  .jarvis-pulse-red,
+  .jarvis-state-thinking,
+  .jarvis-state-executing,
+  .jarvis-state-delegating,
+  .jarvis-state-blocked,
+  .jarvis-state-escalated,
+  .jarvis-tier-5 {
+    animation: none;
+  }
+
+  .jarvis-connection-line {
+    stroke-dasharray: none;
+  }
+
+  .jarvis-connection-line.jarvis-data-packet {
+    animation: none;
+  }
+}

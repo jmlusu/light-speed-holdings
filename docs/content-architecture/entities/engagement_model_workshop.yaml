@@ -1,0 +1,12 @@
+# Engagement Model Entity Definition
+
+key: workshop
+title: "Workshop"
+description: "Hands-on workshop engagement to build skills, align stakeholders, and co-design AI initiatives"
+category: workshop
+duration_weeks: 2
+capability: ai_strategy
+price_tier: professional
+proof_required: false
+associated_use_cases:
+  - predictive_maintenance

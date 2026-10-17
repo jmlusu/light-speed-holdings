@@ -1,0 +1,12 @@
+# Engagement Model Entity Definition
+
+key: assessment
+title: "Assessment"
+description: "Initial AI opportunity assessment engagement"
+category: assessment
+duration_weeks: 4
+capability: ai_strategy
+price_tier: professional
+proof_required: true
+associated_use_cases:
+  - predictive_maintenance

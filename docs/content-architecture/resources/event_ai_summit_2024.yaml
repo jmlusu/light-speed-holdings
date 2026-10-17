@@ -1,0 +1,20 @@
+# Event Entity Definition
+
+key: ai_summit_2024
+title: "AI Summit 2024"
+description: "Annual AI summit bringing together thought leaders from emerging markets"
+format: conference
+industry: african_ai
+start_date: "2024-11-15"
+end_date: "2024-11-17"
+location: malawi
+virtual: false
+associated_capabilities:
+  - ai_strategy
+  - ai_governance_policy
+associated_use_cases:
+  - predictive_maintenance
+audience:
+  - ceo
+  - cto
+  - investor

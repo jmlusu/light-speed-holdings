@@ -1,0 +1,33 @@
+{
+  "target": "http://localhost:3001/insights",
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scrollWidth": 1280,
+      "scrollHeight": 2919,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 12,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\artifacts\\p5-insights-1280x800.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "scrollHeight": 3957,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 12,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\artifacts\\p5-insights-390x844.png"
+    }
+  ]
+}

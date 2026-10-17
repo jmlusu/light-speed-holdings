@@ -1,0 +1,45 @@
+{
+  "target": "http://localhost:4173",
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scrollWidth": 1280,
+      "scrollHeight": 8890,
+      "horizontalOverflowPx": 0,
+      "imgCount": 2,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 38,
+      "emptyHeadingCount": 0,
+      "screenshot": null
+    },
+    {
+      "viewport": {
+        "width": 375,
+        "height": 667
+      },
+      "scrollWidth": 375,
+      "scrollHeight": 14047,
+      "horizontalOverflowPx": 0,
+      "imgCount": 2,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 38,
+      "emptyHeadingCount": 0,
+      "screenshot": null
+    }
+  ]
+}

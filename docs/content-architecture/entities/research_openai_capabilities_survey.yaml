@@ -1,0 +1,22 @@
+# Research Entity Definition
+
+key: openai_capabilities_survey
+title: "OpenAI Capabilities Survey"
+description: "Survey of OpenAI API capabilities and adoption patterns"
+methodology: "Online survey of 200+ developers and engineering leaders"
+source: primary_research
+status: published
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_strategy
+related_use_cases:
+  - predictive_maintenance
+published_date: "2024-06-01"
+data_sources:
+  - "developer_survey_200 participants"
+  - "API usage logs"
+  - "industry benchmarks"
+evidence_references:
+  - claim:020
+  - claim:021

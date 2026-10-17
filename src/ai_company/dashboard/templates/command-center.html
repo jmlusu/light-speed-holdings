@@ -1,0 +1,650 @@
+{% extends "base.html" %}
+{% block title %}Command Center — CEO Dashboard{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/command-center.css">
+{% endblock %}
+
+{% block content %}
+<div x-data="commandCenter()" x-init="init()" class="command-center">
+
+  <!-- ═══ PANEL NAVIGATION ═══ -->
+  <div class="flex items-center gap-1 mb-4">
+    <button @click="activePanel = 'overview'" :class="activePanel === 'overview' ? 'cc-tab-active' : 'cc-tab'">Overview</button>
+    <button @click="activePanel = 'timeline'" :class="activePanel === 'timeline' ? 'cc-tab-active' : 'cc-tab'">Timeline</button>
+  </div>
+
+  <!-- ═══ OVERVIEW PANEL ═══ -->
+  <div x-show="activePanel === 'overview'">
+
+  <!-- ═══ VARIANT A: THE BRIDGE ═══ -->
+  <template x-if="variant === 'A'">
+    <div class="cc-bridge">
+      <div class="cc-bridge-grid">
+        <!-- Left: Executive Briefing -->
+        <div class="cc-panel cc-briefing">
+          <div class="cc-panel-header">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>Executive Briefing</span>
+          </div>
+          <div class="cc-panel-body">
+            <template x-for="item in briefItems" :key="item.id">
+              <div class="cc-brief-item" :class="'cc-priority-' + item.priority">
+                <div class="cc-brief-icon" :class="item.priority === 'high' ? 'text-red-400' : item.priority === 'medium' ? 'text-amber-400' : 'text-jarvis-muted'">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                </div>
+                <div class="cc-brief-text">
+                  <span class="cc-brief-title" x-text="item.title"></span>
+                  <span class="cc-brief-source" x-text="item.source"></span>
+                </div>
+              </div>
+            </template>
+            <div x-show="briefItems.length === 0" class="cc-empty">All clear</div>
+          </div>
+        </div>
+
+        <!-- Center: Company Core -->
+        <div class="cc-panel cc-core" style="position:relative">
+          <div class="cc-panel-header cc-core-header">
+            <span>Company Core</span>
+          </div>
+          <div class="cc-panel-body cc-core-body">
+            <div class="cc-arc-reactor">
+              <div class="cc-reactor-ring cc-ring-outer"></div>
+              <div class="cc-reactor-ring cc-ring-middle"></div>
+              <div class="cc-reactor-ring cc-ring-inner"></div>
+              <div class="cc-reactor-glow"></div>
+              <!-- SVG Overlay: connection lines + data packets -->
+              <svg viewBox="0 0 200 200" class="cc-core-svg-overlay">
+                <!-- Ring outlines -->
+                <circle cx="100" cy="100" r="98" class="cc-svg-ring cc-svg-ring-outer" />
+                <circle cx="100" cy="100" r="70" class="cc-svg-ring cc-svg-ring-middle cc-svg-ring-pulse" />
+                <circle cx="100" cy="100" r="42" class="cc-svg-ring cc-svg-ring-inner" />
+                <!-- Central glow -->
+                <circle cx="100" cy="100" r="10" class="cc-svg-center-glow cc-svg-center-pulse" />
+                <!-- Connection lines: agent nodes → center -->
+                <line x1="100" y1="2"   x2="100" y2="100" class="cc-svg-connection cc-svg-connection-active" />
+                <line x1="185" y1="51"  x2="100" y2="100" class="cc-svg-connection" />
+                <line x1="185" y1="149" x2="100" y2="100" class="cc-svg-connection cc-svg-connection-active" />
+                <line x1="100" y1="198" x2="100" y2="100" class="cc-svg-connection" />
+                <line x1="15"  y1="149" x2="100" y2="100" class="cc-svg-connection cc-svg-connection-active" />
+                <line x1="15"  y1="51"  x2="100" y2="100" class="cc-svg-connection" />
+                <!-- Agent nodes on outer ring -->
+                <circle cx="100" cy="2"   r="4" class="cc-svg-agent-node cc-svg-agent-node-active" />
+                <circle cx="100" cy="2"   r="1.5" class="cc-svg-agent-dot cc-svg-agent-dot-active" />
+                <circle cx="185" cy="51"  r="4" class="cc-svg-agent-node" />
+                <circle cx="185" cy="51"  r="1.5" class="cc-svg-agent-dot" />
+                <circle cx="185" cy="149" r="4" class="cc-svg-agent-node cc-svg-agent-node-active" />
+                <circle cx="185" cy="149" r="1.5" class="cc-svg-agent-dot cc-svg-agent-dot-active" />
+                <circle cx="100" cy="198" r="4" class="cc-svg-agent-node" />
+                <circle cx="100" cy="198" r="1.5" class="cc-svg-agent-dot" />
+                <circle cx="15"  cy="149" r="4" class="cc-svg-agent-node cc-svg-agent-node-active" />
+                <circle cx="15"  cy="149" r="1.5" class="cc-svg-agent-dot cc-svg-agent-dot-active" />
+                <circle cx="15"  cy="51"  r="4" class="cc-svg-agent-node" />
+                <circle cx="15"  cy="51"  r="1.5" class="cc-svg-agent-dot" />
+                <!-- Data packets (animated along connection lines) -->
+                <circle r="2.5" class="cc-svg-packet">
+                  <animateMotion dur="2.4s" repeatCount="indefinite" path="M100,2 L100,100" />
+                </circle>
+                <circle r="2" class="cc-svg-packet-amber">
+                  <animateMotion dur="3s" repeatCount="indefinite" begin="0.8s" path="M185,149 L100,100" />
+                </circle>
+                <circle r="2" class="cc-svg-packet-red">
+                  <animateMotion dur="2.8s" repeatCount="indefinite" begin="1.6s" path="M15,149 L100,100" />
+                </circle>
+              </svg>
+              <div class="cc-reactor-label">
+                <span class="cc-reactor-status" :class="companyHealth >= 80 ? 'text-emerald-400' : companyHealth >= 50 ? 'text-amber-400' : 'text-red-400'" x-text="companyHealth + '%'"></span>
+                <span class="cc-reactor-subtitle">System Health</span>
+              </div>
+            </div>
+            <div class="cc-core-metrics">
+              <div class="cc-metric">
+                <span class="cc-metric-value text-jarvis-cyan" x-text="metrics.totalAgents"></span>
+                <span class="cc-metric-label">Agents</span>
+              </div>
+              <div class="cc-metric">
+                <span class="cc-metric-value text-emerald-400" x-text="metrics.activeTasks"></span>
+                <span class="cc-metric-label">Active</span>
+              </div>
+              <div class="cc-metric">
+                <span class="cc-metric-value text-amber-400" x-text="metrics.pendingApprovals"></span>
+                <span class="cc-metric-label">Approvals</span>
+              </div>
+              <div class="cc-metric">
+                <span class="cc-metric-value" :class="metrics.openEscalations > 0 ? 'text-red-400' : 'text-jarvis-muted'" x-text="metrics.openEscalations"></span>
+                <span class="cc-metric-label">Escalations</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: AI Workforce + Model Telemetry -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="cc-panel cc-workforce" style="flex:1">
+            <div class="cc-panel-header">
+              <svg class="w-4 h-4 text-jarvis-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span>AI Workforce</span>
+              <span class="cc-header-sub" x-text="workforce.length + ' agents'"></span>
+            </div>
+            <div class="cc-panel-body">
+              <template x-for="agent in workforce" :key="agent.id">
+                <div :class="agentRowClass(agent) + ' ' + tierClass(agent)">
+                  <div class="cc-agent-status" :class="stateClass(agent)"></div>
+                  <div class="cc-agent-info">
+                    <span class="cc-agent-name" x-text="agent.name"></span>
+                    <span class="cc-agent-role" x-text="agent.role"></span>
+                  </div>
+                  <div class="cc-agent-meta">
+                    <span class="cc-agent-model" x-text="agent.model"></span>
+                  </div>
+                </div>
+              </template>
+              <div x-show="workforce.length === 0" class="cc-empty">No agents loaded</div>
+            </div>
+          </div>
+
+          <!-- Model Telemetry (read-only) -->
+          <div class="cc-panel" x-show="modelTelemetry.length > 0">
+            <div class="cc-panel-header">
+              <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              <span>Model Telemetry</span>
+              <span class="cc-header-sub">read-only</span>
+            </div>
+            <div class="cc-panel-body">
+              <template x-for="model in modelTelemetry" :key="model.model_id">
+                <div class="cc-telemetry-row">
+                  <span class="cc-telemetry-name" x-text="model.model_id || 'unknown'"></span>
+                  <div class="cc-telemetry-bar-wrap">
+                    <div class="cc-telemetry-bar-fill" :class="modelBarColor(model)" :style="'width:' + ((model.success_rate || 0) * 100) + '%'"></div>
+                  </div>
+                  <div class="cc-telemetry-stats">
+                    <span class="cc-telemetry-stat"><span x-text="model.request_count || 0"></span> reqs</span>
+                    <span class="cc-telemetry-stat"><span x-text="((model.success_rate || 0) * 100).toFixed(0) + '%'"></span></span>
+                    <span class="cc-telemetry-stat"><span x-text="(model.avg_latency_ms || 0).toFixed(0)"></span>ms</span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- ═══ VARIANT B: THE WAR ROOM (default) ═══ -->
+  <template x-if="variant === 'B'">
+    <div class="cc-warroom">
+      <!-- Top: Company Core Hero -->
+      <div class="cc-panel cc-core-hero" style="position:relative">
+        <div class="cc-panel-header cc-core-header">
+          <span>Company Core</span>
+          <span class="cc-header-sub" x-text="'Uptime: ' + formatUptime(metrics.uptimeSeconds)"></span>
+        </div>
+        <div class="cc-panel-body cc-warroom-core">
+          <div class="cc-arc-reactor cc-arc-large">
+            <div class="cc-reactor-ring cc-ring-outer"></div>
+            <div class="cc-reactor-ring cc-ring-middle"></div>
+            <div class="cc-reactor-ring cc-ring-inner"></div>
+            <div class="cc-reactor-glow"></div>
+            <!-- SVG Overlay: connection lines + data packets -->
+            <svg viewBox="0 0 200 200" class="cc-core-svg-overlay">
+              <circle cx="100" cy="100" r="98" class="cc-svg-ring cc-svg-ring-outer" />
+              <circle cx="100" cy="100" r="70" class="cc-svg-ring cc-svg-ring-middle cc-svg-ring-pulse" />
+              <circle cx="100" cy="100" r="42" class="cc-svg-ring cc-svg-ring-inner" />
+              <circle cx="100" cy="100" r="10" class="cc-svg-center-glow cc-svg-center-pulse" />
+              <line x1="100" y1="2"   x2="100" y2="100" class="cc-svg-connection cc-svg-connection-active" />
+              <line x1="185" y1="51"  x2="100" y2="100" class="cc-svg-connection" />
+              <line x1="185" y1="149" x2="100" y2="100" class="cc-svg-connection cc-svg-connection-active" />
+              <line x1="100" y1="198" x2="100" y2="100" class="cc-svg-connection" />
+              <line x1="15"  y1="149" x2="100" y2="100" class="cc-svg-connection cc-svg-connection-active" />
+              <line x1="15"  y1="51"  x2="100" y2="100" class="cc-svg-connection" />
+              <circle cx="100" cy="2"   r="4" class="cc-svg-agent-node cc-svg-agent-node-active" />
+              <circle cx="100" cy="2"   r="1.5" class="cc-svg-agent-dot cc-svg-agent-dot-active" />
+              <circle cx="185" cy="51"  r="4" class="cc-svg-agent-node" />
+              <circle cx="185" cy="51"  r="1.5" class="cc-svg-agent-dot" />
+              <circle cx="185" cy="149" r="4" class="cc-svg-agent-node cc-svg-agent-node-active" />
+              <circle cx="185" cy="149" r="1.5" class="cc-svg-agent-dot cc-svg-agent-dot-active" />
+              <circle cx="100" cy="198" r="4" class="cc-svg-agent-node" />
+              <circle cx="100" cy="198" r="1.5" class="cc-svg-agent-dot" />
+              <circle cx="15"  cy="149" r="4" class="cc-svg-agent-node cc-svg-agent-node-active" />
+              <circle cx="15"  cy="149" r="1.5" class="cc-svg-agent-dot cc-svg-agent-dot-active" />
+              <circle cx="15"  cy="51"  r="4" class="cc-svg-agent-node" />
+              <circle cx="15"  cy="51"  r="1.5" class="cc-svg-agent-dot" />
+              <circle r="2.5" class="cc-svg-packet">
+                <animateMotion dur="2.4s" repeatCount="indefinite" path="M100,2 L100,100" />
+              </circle>
+              <circle r="2" class="cc-svg-packet-amber">
+                <animateMotion dur="3s" repeatCount="indefinite" begin="0.8s" path="M185,149 L100,100" />
+              </circle>
+              <circle r="2" class="cc-svg-packet-red">
+                <animateMotion dur="2.8s" repeatCount="indefinite" begin="1.6s" path="M15,149 L100,100" />
+              </circle>
+            </svg>
+            <div class="cc-reactor-label">
+              <span class="cc-reactor-status" :class="companyHealth >= 80 ? 'text-emerald-400' : companyHealth >= 50 ? 'text-amber-400' : 'text-red-400'" x-text="companyHealth + '%'"></span>
+              <span class="cc-reactor-subtitle">System Health</span>
+            </div>
+          </div>
+          <div class="cc-warroom-stats">
+            <div class="cc-stat-card">
+              <div class="cc-stat-value text-jarvis-cyan" x-text="metrics.totalAgents"></div>
+              <div class="cc-stat-label">Total Agents</div>
+            </div>
+            <div class="cc-stat-card">
+              <div class="cc-stat-value text-emerald-400" x-text="metrics.activeTasks"></div>
+              <div class="cc-stat-label">Active Tasks</div>
+            </div>
+            <div class="cc-stat-card">
+              <div class="cc-stat-value text-amber-400" x-text="metrics.pendingApprovals"></div>
+              <div class="cc-stat-label">Pending Approvals</div>
+            </div>
+            <div class="cc-stat-card">
+              <div class="cc-stat-value" :class="metrics.openEscalations > 0 ? 'text-red-400' : 'text-jarvis-muted'" x-text="metrics.openEscalations"></div>
+              <div class="cc-stat-label">Escalations</div>
+            </div>
+            <div class="cc-stat-card">
+              <div class="cc-stat-value text-cyan-400" x-text="metrics.completedTasks"></div>
+              <div class="cc-stat-label">Completed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom row: Briefing + Workforce + Activity + Telemetry -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+        <!-- Left: Executive Briefing -->
+        <div class="cc-panel cc-briefing">
+          <div class="cc-panel-header">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>Executive Briefing</span>
+          </div>
+          <div class="cc-panel-body">
+            <template x-for="item in briefItems" :key="item.id">
+              <div class="cc-brief-item" :class="'cc-priority-' + item.priority">
+                <div class="cc-brief-icon" :class="item.priority === 'high' ? 'text-red-400' : item.priority === 'medium' ? 'text-amber-400' : 'text-jarvis-muted'">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                </div>
+                <div class="cc-brief-text">
+                  <span class="cc-brief-title" x-text="item.title"></span>
+                  <span class="cc-brief-source" x-text="item.source"></span>
+                </div>
+              </div>
+            </template>
+            <div x-show="briefItems.length === 0" class="cc-empty">All clear — nothing requires attention</div>
+          </div>
+        </div>
+
+        <!-- Center: AI Workforce -->
+        <div class="cc-panel cc-workforce">
+          <div class="cc-panel-header">
+            <svg class="w-4 h-4 text-jarvis-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>AI Workforce</span>
+            <span class="cc-header-sub" x-text="workforce.length + ' agents'"></span>
+          </div>
+          <div class="cc-panel-body">
+            <template x-for="agent in workforce" :key="agent.id">
+              <div :class="agentRowClass(agent) + ' ' + tierClass(agent)">
+                <div class="cc-agent-status" :class="stateClass(agent)"></div>
+                <div class="cc-agent-info">
+                  <span class="cc-agent-name" x-text="agent.name"></span>
+                  <span class="cc-agent-role" x-text="agent.role"></span>
+                </div>
+                <div class="cc-agent-meta">
+                  <span class="cc-agent-model" x-text="agent.model"></span>
+                </div>
+              </div>
+            </template>
+            <div x-show="workforce.length === 0" class="cc-empty">No agents loaded</div>
+          </div>
+        </div>
+
+        <!-- Right: Activity Stream + Model Telemetry -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <!-- Activity Stream -->
+          <div class="cc-panel" style="flex:1">
+            <div class="cc-panel-header">
+              <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span>Activity Stream</span>
+              <span class="cc-header-sub" x-text="activityStream.length + ' events'"></span>
+            </div>
+            <div class="cc-panel-body">
+              <div class="cc-activity-stream">
+                <template x-for="(item, idx) in activityStream" :key="idx">
+                  <div class="cc-activity-item" :class="activityClass(item)">
+                    <div class="cc-activity-dot" :class="activityDotColor(item)"></div>
+                    <div class="cc-activity-text">
+                      <strong x-text="item.source"></strong>
+                      <span x-text="item.text"></span>
+                    </div>
+                    <span class="cc-activity-time" x-text="formatTime(item.time)"></span>
+                  </div>
+                </template>
+                <div x-show="activityStream.length === 0" class="cc-empty">No recent activity</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Model Telemetry (read-only) -->
+          <div class="cc-panel" x-show="modelTelemetry.length > 0">
+            <div class="cc-panel-header">
+              <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              <span>Model Telemetry</span>
+              <span class="cc-header-sub">read-only</span>
+            </div>
+            <div class="cc-panel-body">
+              <template x-for="model in modelTelemetry" :key="model.model_id">
+                <div class="cc-telemetry-row">
+                  <span class="cc-telemetry-name" x-text="model.model_id || 'unknown'"></span>
+                  <div class="cc-telemetry-bar-wrap">
+                    <div class="cc-telemetry-bar-fill" :class="modelBarColor(model)" :style="'width:' + ((model.success_rate || 0) * 100) + '%'"></div>
+                  </div>
+                  <div class="cc-telemetry-stats">
+                    <span class="cc-telemetry-stat"><span x-text="model.request_count || 0"></span> reqs</span>
+                    <span class="cc-telemetry-stat"><span x-text="((model.success_rate || 0) * 100).toFixed(0) + '%'"></span></span>
+                    <span class="cc-telemetry-stat"><span x-text="(model.avg_latency_ms || 0).toFixed(0)"></span>ms</span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- ═══ VARIANT C: THE COCKPIT ═══ -->
+  <template x-if="variant === 'C'">
+    <div class="cc-cockpit">
+      <div class="cc-cockpit-grid">
+        <!-- Left: Company Core (dominant) -->
+        <div class="cc-panel cc-core cc-core-dominant" style="position:relative">
+          <div class="cc-panel-header cc-core-header">
+            <span>Company Core</span>
+          </div>
+          <div class="cc-panel-body cc-cockpit-core">
+            <div class="cc-arc-reactor cc-arc-large">
+              <div class="cc-reactor-ring cc-ring-outer"></div>
+              <div class="cc-reactor-ring cc-ring-middle"></div>
+              <div class="cc-reactor-ring cc-ring-inner"></div>
+              <div class="cc-reactor-glow"></div>
+              <!-- SVG Overlay: connection lines + data packets -->
+              <svg viewBox="0 0 200 200" class="cc-core-svg-overlay">
+                <circle cx="100" cy="100" r="98" class="cc-svg-ring cc-svg-ring-outer" />
+                <circle cx="100" cy="100" r="70" class="cc-svg-ring cc-svg-ring-middle cc-svg-ring-pulse" />
+                <circle cx="100" cy="100" r="42" class="cc-svg-ring cc-svg-ring-inner" />
+                <circle cx="100" cy="100" r="10" class="cc-svg-center-glow cc-svg-center-pulse" />
+                <line x1="100" y1="2"   x2="100" y2="100" class="cc-svg-connection cc-svg-connection-active" />
+                <line x1="185" y1="51"  x2="100" y2="100" class="cc-svg-connection" />
+                <line x1="185" y1="149" x2="100" y2="100" class="cc-svg-connection cc-svg-connection-active" />
+                <line x1="100" y1="198" x2="100" y2="100" class="cc-svg-connection" />
+                <line x1="15"  y1="149" x2="100" y2="100" class="cc-svg-connection cc-svg-connection-active" />
+                <line x1="15"  y1="51"  x2="100" y2="100" class="cc-svg-connection" />
+                <circle cx="100" cy="2"   r="4" class="cc-svg-agent-node cc-svg-agent-node-active" />
+                <circle cx="100" cy="2"   r="1.5" class="cc-svg-agent-dot cc-svg-agent-dot-active" />
+                <circle cx="185" cy="51"  r="4" class="cc-svg-agent-node" />
+                <circle cx="185" cy="51"  r="1.5" class="cc-svg-agent-dot" />
+                <circle cx="185" cy="149" r="4" class="cc-svg-agent-node cc-svg-agent-node-active" />
+                <circle cx="185" cy="149" r="1.5" class="cc-svg-agent-dot cc-svg-agent-dot-active" />
+                <circle cx="100" cy="198" r="4" class="cc-svg-agent-node" />
+                <circle cx="100" cy="198" r="1.5" class="cc-svg-agent-dot" />
+                <circle cx="15"  cy="149" r="4" class="cc-svg-agent-node cc-svg-agent-node-active" />
+                <circle cx="15"  cy="149" r="1.5" class="cc-svg-agent-dot cc-svg-agent-dot-active" />
+                <circle cx="15"  cy="51"  r="4" class="cc-svg-agent-node" />
+                <circle cx="15"  cy="51"  r="1.5" class="cc-svg-agent-dot" />
+                <circle r="2.5" class="cc-svg-packet">
+                  <animateMotion dur="2.4s" repeatCount="indefinite" path="M100,2 L100,100" />
+                </circle>
+                <circle r="2" class="cc-svg-packet-amber">
+                  <animateMotion dur="3s" repeatCount="indefinite" begin="0.8s" path="M185,149 L100,100" />
+                </circle>
+                <circle r="2" class="cc-svg-packet-red">
+                  <animateMotion dur="2.8s" repeatCount="indefinite" begin="1.6s" path="M15,149 L100,100" />
+                </circle>
+              </svg>
+              <div class="cc-reactor-label">
+                <span class="cc-reactor-status" :class="companyHealth >= 80 ? 'text-emerald-400' : companyHealth >= 50 ? 'text-amber-400' : 'text-red-400'" x-text="companyHealth + '%'"></span>
+                <span class="cc-reactor-subtitle">System Health</span>
+              </div>
+            </div>
+            <div class="cc-cockpit-metrics">
+              <div class="cc-metric-row">
+                <span class="cc-metric-label">Agents</span>
+                <span class="cc-metric-value text-jarvis-cyan" x-text="metrics.totalAgents"></span>
+              </div>
+              <div class="cc-metric-row">
+                <span class="cc-metric-label">Active</span>
+                <span class="cc-metric-value text-emerald-400" x-text="metrics.activeTasks"></span>
+              </div>
+              <div class="cc-metric-row">
+                <span class="cc-metric-label">Approvals</span>
+                <span class="cc-metric-value text-amber-400" x-text="metrics.pendingApprovals"></span>
+              </div>
+              <div class="cc-metric-row">
+                <span class="cc-metric-label">Escalations</span>
+                <span class="cc-metric-value" :class="metrics.openEscalations > 0 ? 'text-red-400' : 'text-jarvis-muted'" x-text="metrics.openEscalations"></span>
+              </div>
+            </div>
+
+            <!-- Model Telemetry (read-only) -->
+            <div class="cc-telemetry" x-show="modelTelemetry.length > 0" style="width:100%">
+              <template x-for="model in modelTelemetry" :key="model.model_id">
+                <div class="cc-telemetry-row">
+                  <span class="cc-telemetry-name" x-text="model.model_id || 'unknown'"></span>
+                  <div class="cc-telemetry-bar-wrap">
+                    <div class="cc-telemetry-bar-fill" :class="modelBarColor(model)" :style="'width:' + ((model.success_rate || 0) * 100) + '%'"></div>
+                  </div>
+                  <div class="cc-telemetry-stats">
+                    <span class="cc-telemetry-stat"><span x-text="model.request_count || 0"></span> reqs</span>
+                    <span class="cc-telemetry-stat"><span x-text="((model.success_rate || 0) * 100).toFixed(0) + '%'"></span></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: Briefing + Workforce + Activity stacked -->
+        <div class="cc-cockpit-right">
+          <div class="cc-panel cc-briefing">
+            <div class="cc-panel-header">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span>Executive Briefing</span>
+            </div>
+            <div class="cc-panel-body">
+              <template x-for="item in briefItems" :key="item.id">
+                <div class="cc-brief-item" :class="'cc-priority-' + item.priority">
+                  <div class="cc-brief-icon" :class="item.priority === 'high' ? 'text-red-400' : item.priority === 'medium' ? 'text-amber-400' : 'text-jarvis-muted'">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                  </div>
+                  <div class="cc-brief-text">
+                    <span class="cc-brief-title" x-text="item.title"></span>
+                    <span class="cc-brief-source" x-text="item.source"></span>
+                  </div>
+                </div>
+              </template>
+              <div x-show="briefItems.length === 0" class="cc-empty">All clear</div>
+            </div>
+          </div>
+
+          <div class="cc-panel cc-workforce">
+            <div class="cc-panel-header">
+              <svg class="w-4 h-4 text-jarvis-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span>AI Workforce</span>
+            </div>
+            <div class="cc-panel-body">
+              <template x-for="agent in workforce" :key="agent.id">
+                <div :class="agentRowClass(agent) + ' ' + tierClass(agent)">
+                  <div class="cc-agent-status" :class="stateClass(agent)"></div>
+                  <div class="cc-agent-info">
+                    <span class="cc-agent-name" x-text="agent.name"></span>
+                    <span class="cc-agent-role" x-text="agent.role"></span>
+                  </div>
+                  <div class="cc-agent-meta">
+                    <span class="cc-agent-model" x-text="agent.model"></span>
+                  </div>
+                </div>
+              </template>
+              <div x-show="workforce.length === 0" class="cc-empty">No agents loaded</div>
+            </div>
+          </div>
+
+          <!-- Activity Stream -->
+          <div class="cc-panel" x-show="activityStream.length > 0">
+            <div class="cc-panel-header">
+              <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span>Recent Activity</span>
+            </div>
+            <div class="cc-panel-body">
+              <div class="cc-activity-stream">
+                <template x-for="(item, idx) in activityStream.slice(0, 5)" :key="idx">
+                  <div class="cc-activity-item" :class="activityClass(item)">
+                    <div class="cc-activity-dot" :class="activityDotColor(item)"></div>
+                    <div class="cc-activity-text">
+                      <strong x-text="item.source"></strong>
+                      <span x-text="item.text"></span>
+                    </div>
+                    <span class="cc-activity-time" x-text="formatTime(item.time)"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  </div><!-- /overview panel -->
+
+  <!-- ═══ TIMELINE PANEL ═══ -->
+  <div x-show="activePanel === 'timeline'" x-data="timelinePanel()" x-init="init()" class="cc-panel">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-jarvis-text">Execution Timeline</h2>
+      <div class="flex items-center gap-2 text-xs text-jarvis-muted">
+        <span x-text="totalCount"></span> events
+        <span x-show="queryMs > 0">in <span x-text="queryMs"></span>ms</span>
+      </div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="flex items-center gap-2 mb-3">
+      <input type="text" x-model="query" @keydown.enter="fetchTimeline()"
+             placeholder="Search events..."
+             class="flex-1 bg-jarvis-bg border border-jarvis-border rounded px-3 py-1.5 text-sm text-jarvis-text placeholder-jarvis-muted focus:outline-none focus:border-jarvis-cyan" />
+      <button @click="fetchTimeline()" class="cc-btn px-3 py-1.5 text-sm">Search</button>
+      <button @click="clearFilters()" class="cc-btn-outline px-3 py-1.5 text-sm">Clear</button>
+    </div>
+
+    <!-- Filter row -->
+    <div class="flex flex-wrap gap-2 mb-3">
+      <select x-model="filters.event_type" @change="fetchTimeline()" class="bg-jarvis-bg border border-jarvis-border rounded px-2 py-1 text-xs text-jarvis-text">
+        <option value="">All types</option>
+        <option value="tool_call">Tool Call</option>
+        <option value="llm_call">LLM Call</option>
+        <option value="task_completed">Task Completed</option>
+        <option value="task_failed">Task Failed</option>
+        <option value="error">Error</option>
+        <option value="hitl_approved">HITL Approved</option>
+        <option value="hitl_rejected">HITL Rejected</option>
+      </select>
+      <select x-model="filters.severity" @change="fetchTimeline()" class="bg-jarvis-bg border border-jarvis-border rounded px-2 py-1 text-xs text-jarvis-text">
+        <option value="">All severity</option>
+        <option value="info">Info</option>
+        <option value="warning">Warning</option>
+        <option value="error">Error</option>
+        <option value="critical">Critical</option>
+      </select>
+      <input type="text" x-model="filters.agent_id" @change="fetchTimeline()"
+             placeholder="Agent ID" class="bg-jarvis-bg border border-jarvis-border rounded px-2 py-1 text-xs text-jarvis-text placeholder-jarvis-muted w-32" />
+      <input type="text" x-model="filters.tool" @change="fetchTimeline()"
+             placeholder="Tool" class="bg-jarvis-bg border border-jarvis-border rounded px-2 py-1 text-xs text-jarvis-text placeholder-jarvis-muted w-24" />
+    </div>
+
+    <!-- Event list -->
+    <div class="overflow-y-auto border border-jarvis-border rounded" style="max-height: 500px">
+      <template x-if="loading && events.length === 0">
+        <div class="p-4 text-center text-jarvis-muted text-sm">Loading...</div>
+      </template>
+      <template x-if="!loading && events.length === 0">
+        <div class="p-4 text-center text-jarvis-muted text-sm">No events found</div>
+      </template>
+      <template x-for="event in events" :key="event.event_id">
+        <div @click="selectEvent(event)"
+             class="flex items-start gap-3 px-3 py-2 border-b border-jarvis-border cursor-pointer hover:bg-jarvis-surface/50 transition-colors">
+          <span class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" :class="severityDot(event.severity)"></span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono text-jarvis-muted" x-text="formatTime(event.timestamp)"></span>
+              <span class="text-sm font-medium text-jarvis-text" x-text="event.event_type"></span>
+              <span class="text-xs text-jarvis-cyan" x-text="event.agent_id"></span>
+              <span x-show="event.tool" class="text-xs bg-jarvis-surface px-1.5 py-0.5 rounded text-jarvis-muted" x-text="event.tool"></span>
+            </div>
+            <div class="text-xs text-jarvis-muted mt-0.5 truncate" x-text="truncate(event.args, 100)"></div>
+          </div>
+          <span class="text-xs px-1.5 py-0.5 rounded flex-shrink-0"
+                :class="{
+                  'bg-blue-500/20 text-blue-300': event.severity === 'info',
+                  'bg-yellow-500/20 text-yellow-300': event.severity === 'warning',
+                  'bg-red-500/20 text-red-300': event.severity === 'error',
+                  'bg-red-700/20 text-red-200': event.severity === 'critical',
+                }" x-text="event.severity"></span>
+        </div>
+      </template>
+    </div>
+
+    <!-- Load more -->
+    <button x-show="cursor" @click="loadMore()" class="w-full mt-2 cc-btn-outline text-sm py-1.5">
+      Load more
+    </button>
+
+    <!-- Detail drawer -->
+    <div x-show="showDetail && selectedEvent" x-transition
+         class="fixed inset-y-0 right-0 w-96 bg-jarvis-bg border-l border-jarvis-border shadow-2xl z-50 overflow-y-auto">
+      <div class="p-4">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-medium text-jarvis-text" x-text="selectedEvent?.event_type"></h3>
+          <button @click="showDetail = false" class="text-jarvis-muted hover:text-jarvis-text">&times;</button>
+        </div>
+        <dl class="space-y-2 text-sm">
+          <div><dt class="text-jarvis-muted">Event ID</dt><dd class="font-mono text-xs" x-text="selectedEvent?.event_id"></dd></div>
+          <div><dt class="text-jarvis-muted">Timestamp</dt><dd x-text="selectedEvent?.timestamp"></dd></div>
+          <div><dt class="text-jarvis-muted">Agent</dt><dd class="text-jarvis-cyan" x-text="selectedEvent?.agent_id"></dd></div>
+          <div><dt class="text-jarvis-muted">Task</dt><dd class="font-mono text-xs" x-text="selectedEvent?.task_id || 'none'"></dd></div>
+          <div><dt class="text-jarvis-muted">Tool</dt><dd x-text="selectedEvent?.tool || 'none'"></dd></div>
+          <div><dt class="text-jarvis-muted">Severity</dt><dd x-text="selectedEvent?.severity"></dd></div>
+          <div><dt class="text-jarvis-muted">Args</dt><dd class="font-mono text-xs whitespace-pre-wrap break-all" x-text="JSON.stringify(selectedEvent?.args, null, 2)"></dd></div>
+          <div><dt class="text-jarvis-muted">Result</dt><dd class="font-mono text-xs whitespace-pre-wrap break-all" x-text="JSON.stringify(selectedEvent?.result, null, 2)"></dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ COMMAND BAR (persistent across all variants) ═══ -->
+  <div class="cc-command-bar" x-show="showCommandBar" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 translate-y-4">
+    <div class="cc-command-inner">
+      <svg class="w-4 h-4 text-jarvis-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input type="text" x-model="commandQuery" @keydown.escape="showCommandBar = false" placeholder="Type a command..." class="cc-command-input" x-ref="commandInput">
+      <kbd class="cc-kbd">esc</kbd>
+    </div>
+  </div>
+
+  <!-- ═══ VARIANT SWITCHER (prototype only) ═══ -->
+  <div class="cc-variant-switcher">
+    <button @click="prevVariant()" class="cc-variant-arrow">&larr;</button>
+    <span class="cc-variant-label" x-text="variant + ' — ' + variantNames[variant]"></span>
+    <button @click="nextVariant()" class="cc-variant-arrow">&rarr;</button>
+  </div>
+
+  <!-- ═══ KEYBOARD SHORTCUT HINTS ═══ -->
+  <div class="cc-kbd-hints">
+    <kbd class="cc-kbd">⌘1-3</kbd>
+    <kbd class="cc-kbd">⌘K</kbd>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/command-center.js"></script>
+{% endblock %}

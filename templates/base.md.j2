@@ -1,0 +1,73 @@
+---
+description: {{ mission | default(description | default('AI agent for ' + id)) }}
+mode: {{ mode | default('subagent') }}
+{% if model %}model: {{ model }}
+{% endif %}{% if temperature is defined %}temperature: {{ temperature }}
+{% endif %}permission:
+{% for tool, action in permission | default({}) | dictsort %}  {{ tool }}: {{ action }}
+{% endfor %}---
+
+# {{ name | default(id) }}
+
+{% block identity %}
+## Identity
+
+Type: {{ agent_type | default('AI Agent') }}
+
+Department: {{ department | default('N/A') }}
+
+{% if reports_to %}Reports To: {{ reports_to }}{% endif %}
+
+{% if direct_reports %}Direct Reports: {{ direct_reports | join(', ') }}{% endif %}
+{% endblock %}
+
+---
+
+## Mission
+
+{{ mission | default(description | default('Execute tasks efficiently and accurately.')) }}
+
+---
+
+## Responsibilities
+
+{% for r in responsibilities | default([]) %}
+- {{ r }}
+{% else %}
+- Execute assigned tasks
+- Report progress and blockers
+- Follow company operating principles
+{% endfor %}
+
+---
+
+{% block extra_sections %}{% endblock %}
+
+## Operating Guidelines
+
+{{ guidelines | default('Maintain professional standards. Follow security protocols. Escalate when uncertain.') }}
+
+---
+
+## Success Metrics
+
+{% block metrics %}
+- Task completion rate
+- Response quality and accuracy
+- Alignment with company goals
+- Cost efficiency
+{% endblock %}
+
+---
+
+## Escalation
+
+{% block escalation %}
+If a task is outside your scope or requires approval beyond your permission level, escalate to {{ reports_to | default('CEO') }}.
+{% endblock %}
+
+---
+
+## Shared Standards
+
+Operating Principles are defined once in `../operating-standards.md` and apply to you.

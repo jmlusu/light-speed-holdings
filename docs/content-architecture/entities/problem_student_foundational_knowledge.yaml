@@ -1,0 +1,11 @@
+# Problem Entity Definition
+
+key: student_foundational_knowledge
+title: "Student Foundational Knowledge"
+description: "Challenges in acquiring foundational AI knowledge and practical experience for career preparation"
+industry: null
+severity: low
+related_problems:
+  - low_ai_adoption
+affected_geographies:
+  - global

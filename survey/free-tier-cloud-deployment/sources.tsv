@@ -1,0 +1,136 @@
+id	url_or_id	kind	year	title	relevance	credibility	claim_ids	notes
+S001	https://huggingface.co/docs/hub/spaces-overview	docs	2024	Hugging Face Spaces Overview - Hardware specs and free tier	high	high	C1.1,C1.2,C1.3	Covers RAM (16GB), storage (50GB non-persistent), sleep policy
+S002	https://huggingface.co/docs/huggingface_hub/v0.25.1/en/package_reference/space_runtime	docs	2024	Managing Space Runtime - sleep_time parameter	high	high	C1.3	Free cpu-basic sleeps after 48 hours inactivity
+S003	https://huggingface.co/docs/hub/spaces-gpus	docs	2024	Spaces GPUs pricing and sleep policy	high	high	C1.1,C1.3,C1.7	CPU Basic free but Gradio/Docker requires paid plan
+S004	https://huggingface.co/docs/hub/spaces-config-reference	docs	2024	Spaces Configuration Reference	medium	high	C1.2	Persistent storage feature no longer available
+S005	https://huggingface.co/spaces/launch	docs	2024	Spaces Launch page	medium	high	C1.1,C1.7	Static Spaces free, Gradio/Docker requires paid plan
+S006	https://discuss.huggingface.co/t/question-about-the-cpu-basic-quota-limit/176628	forum	2026	CPU Basic quota limit discussion	high	medium	C1.1,C1.7	Free tier limit of 8 concurrent CPU-basic runtimes
+S007	https://huggingface.co/pricing	pricing	2024	Hugging Face Pricing page	high	high	C1.1,C1.7	CPU Basic free, ZeroGPU free for PRO, Gradio/Docker requires paid
+S008	https://github.com/somratpro/Hugging8N	code	2026	Hugging8n GitHub repository	high	high	C2.1,C2.2,C2.3,C2.4	Created 2026-04-22, last push 2026-06-24, MIT license, 37 stars
+S009	https://huggingface.co/spaces/somratpro/Hugging8N	code	2026	Hugging8n HF Space	high	high	C2.3,C2.4	Live Space running n8n on HF Spaces
+S010	https://github.com/tenfyzhong/n8n-free	code	2025	n8n-free GitHub repo	high	high	C2.3,C2.4	Template for n8n on HF Spaces with Supabase, GitHub Actions keep-alive
+S011	https://huggingface.co/spaces/m8chaa/n8n_hf	code	2025	Another n8n on HF Space with Supabase	medium	high	C2.3,C2.4	Working example with Supabase backend
+S012	https://tomo.dev/en/posts/deploy-n8n-for-free-using-huggingface-space/	blog	2025	Deploy n8n for FREE with Huggingface Spaces	high	medium	C1.1,C1.2,C1.3,C2.4	Confirms 16GB RAM, 2 CPU, 50GB non-persistent disk
+S013	https://samueltyh.github.io/posts/free-n8n-hosting-leveraging-hugging-face-spaces-and-supabase-for-persistent-workflow-automation/	blog	2025	Free n8n Hosting with HF Spaces + Supabase	high	medium	C1.2,C2.4,C5.2	Supabase 500MB free PostgreSQL, circumvents HF ephemeral storage
+S014	https://github.com/rajeshbsws557/serverless-n8n-blog-pipeline	code	2025	Serverless n8n blog pipeline	high	medium	C1.3,C2.4,C6.2	Uses cron-job.org for keep-alive, Cloudflare Workers for outbound proxy
+S015	https://huggingface.co/docs/hub/spaces-config-reference	docs	2024	Spaces Config Reference - persistent storage	medium	high	C1.2	"Persistent storage feature is no longer available so this setting will be ignored"
+S016	https://fly.io/docs/about/discontinued-plans/	docs	2026	Fly.io Discontinued Plans	high	high	C3.1,C3.2,C3.7	Fly.io deprecated plans Oct 7 2024, no free tier for new customers
+S017	https://fly.io/docs/about/free-trial/	docs	2025	Fly.io Free Trial	high	high	C3.1,C3.2,C3.7	Free trial: 2 VM hours or 7 days, then requires credit card
+S018	https://fly.io/docs/about/billing/	docs	2024	Fly.io Billing - credit card required	high	high	C3.1	"require an active, valid credit card on file for most Fly.io accounts"
+S019	https://fly.io/docs/about/pricing/	docs	2024	Fly.io Resource Pricing	high	high	C3.1	"All organizations (except for Linked Organizations) require a credit card on file"
+S020	https://community.fly.io/t/can-i-use-fly-without-a-payment-card-on-file/26145	forum	2025	Community confirmation - card required	high	high	C3.1	Official response: "We require an active, valid credit card on file"
+S021	https://www.koyeb.com/blog/sustaining-free-compute-in-a-hostile-environment	blog	2023	Koyeb sustaining free compute	high	high	C3.1,C3.2,C3.3	Coyeb free tier no credit card (human verification), 1 free web service
+S022	https://www.koyeb.com/docs/reference/instances	docs	2024	Koyeb Instances - Free Instance specs	high	high	C3.2,C3.3	Free: 512MB RAM, 0.1 vCPU, 2GB SSD, scales to zero after 1 hour inactivity
+S023	https://www.koyeb.com/docs/faqs/pricing	docs	2026	Koyeb Pricing FAQ	high	high	C3.1,C3.2	Coyeb requires credit card for fraud prevention, free tier: 1 web service, 1 Postgres (5h active, 1GB)
+S024	https://www.freetiers.com/directory/koyeb	blog	2025	Koyeb Free Tier infographic	medium	medium	C3.1,C3.2	"No credit card required, never expires, commercial use allowed"
+S025	https://render.com/docs/faq	docs	2024	Render FAQ	high	high	C3.1,C3.2,C3.3	Free web services spin down after 15 min inactivity
+S026	https://render.com/docs/free	docs	2024	Render Free Tier docs	high	high	C3.1,C3.2,C3.3,C3.4	750 instance hours/month, free Postgres expires 30 days after creation
+S027	https://render.com/docs/compute-plans	docs	2024	Render Compute Plans	high	high	C3.2	Free: 512MB RAM, 0.1 CPU
+S028	https://livemy.app/blog/render-pricing	blog	2026	Render pricing explained	high	medium	C3.3,C3.4	Verified Aug 2026: 15-min spin-down, 30-day DB expiry, 750 hrs/month
+S029	https://blog.glitch.com/post/changes-are-coming-to-glitch	blog	2025	Glitch shutting down project hosting	high	high	C3.1,C3.7	Glitch ending app hosting July 8 2025, NOT VIABLE
+S030	https://fastly.my.site.com/GlitchHelpCenter/s/article/Project-Hours	docs	2024	Glitch Project Hours	medium	high	C3.2	1000 free project hours/month for registered users
+S031	https://gadgetbond.com/glitch-app-hosting-shutting-down/	blog	2025	Glitch shutdown confirmation	high	medium	C3.7	Confirms July 8 2025 shutdown
+S032	https://replit.com/blog/hosting-changes	blog	2023	Replit hosting changes - Always On deprecated	high	high	C3.1,C3.2,C3.7	Always On removed Jan 1 2024, Deployments only, free Starter: 1 app expires 30 days
+S033	https://docs.replit.com/billing/plans/starter-plan	docs	2024	Replit Starter Plan	high	high	C3.1,C3.2	Starter free, 1 published app, expires after 30 days, no credit card
+S034	https://replit.com/pricing	pricing	2024	Replit Pricing	medium	high	C3.1	"Start for free — no credit card required"
+S035	https://micahblachman.com/p/browsers-are-boring-again	blog	2025	Deta shutdown announcement	high	high	C3.7	Deta managed services shutdown Nov 25 2025
+S036	https://news.ycombinator.com/item?id=41426388	forum	2024	Deta Space shutdown HN	high	high	C3.7	Deta Space sunset Oct 17 2024
+S037	https://github.com/WebCrateApp/webcrate/issues/91	code	2024	Deta Space shutdown issue	high	high	C3.7	Deta Space sunset Oct 17 2024, data deletion
+S038	https://www.reddit.com/r/Python/comments/1f775pr/deta_space_is_shutting_down/	forum	2024	Deta Space shutdown Reddit	medium	medium	C3.7	Confirmation of Oct 17 2024 shutdown
+S039	https://northflank.com/docs/v1/application/billing/pricing-on-northflank	docs	2024	Northflank Pricing	high	high	C3.1,C3.2,C3.3	Free Developer Sandbox: 2 services, 2 jobs, 1 addon, no sleep
+S040	https://northflank.com/docs/v1/application/billing/pricing-on-northflank.md	docs	2024	Northflank Pricing MD	high	high	C3.1	"all users must add a payment method to start creating resources"
+S041	https://northflank.com/pricing	pricing	2024	Northflank Pricing page	medium	high	C3.1	Credit card verification required
+S042	https://aifree.dev/offer/northflank-developer-sandbox	blog	2026	Northflank Developer Sandbox review	high	medium	C3.1,C3.3	"Card required: Yes" - verified Sep 13 2026
+S043	https://doolpa.com/article/northflank	blog	2026	Northflank Review	high	medium	C3.1,C3.2,C3.3	Sandbox free forever, 2 always-on services, "no card required" - CONFLICTS with official docs
+S044	https://northflank.com/blog/render-alternatives	blog	2025	Northflank vs Render	medium	high	C3.3	Northflank free tier: no forced sleep, always-on
+S045	https://www.val.town/pricing	pricing	2025	Val Town Pricing	high	high	C3.1,C3.2,C3.3	Free: 100k runs/day, 1min timeout, 15min cron, no custom domains
+S046	https://www.val.town/limits	docs	2025	Val Town Limits	high	high	C3.2	C3.3	Detailed free tier limits table
+S047	https://docs.val.town/faq	docs	2025	Val Town FAQ	high	high	C3.1	"Yes, you can start using Val Town on a Free account"
+S048	https://deno.com/deploy/pricing	pricing	2024	Deno Deploy Pricing	high	high	C3.1,C3.2,C3.3	Free: 1M req/mo, 20GB egress, 15 CPU hrs, 512MB RAM, 50 custom domains
+S049	https://docs.deno.com/deploy/pricing_and_limits/	docs	2025	Deno Deploy Pricing and Limits	high	high	C3.2	Max 512MB memory, apps scale to zero after ~20-30s idle
+S050	https://pocketlantern.dev/briefs/deno-deploy-request-egress-cpu-budgeting-2026	blog	2026	Deno Deploy Free Plan Analysis	high	medium	C3.1,C3.3	"organizations only get restricted Free plan limits until they verify by linking a credit card"
+S051	https://developers.cloudflare.com/workers/platform/limits/	docs	2026	Cloudflare Workers Limits	high	high	C3.1,C3.2,C3.3	Free: 100k req/day, 10ms CPU, 128MB RAM, 5 cron triggers, scales to zero
+S052	https://developers.cloudflare.com/workers/platform/pricing/	docs	2024	Cloudflare Workers Pricing	high	high	C3.1,C3.2	Free plan by default, no credit card mentioned for free tier
+S053	https://docs.github.com/en/billing/concepts/product-billing/github-codespaces	docs	2024	GitHub Codespaces Billing	high	high	C3.1,C3.2,C3.3	Free: 120 core hrs/mo, 15GB storage/mo for personal accounts only
+S054	https://docs.github.com/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces	docs	2024	GitHub Codespaces Billing	high	high	C3.1,C3.2	C3.3	Personal accounts only, 120 core hrs/mo
+S055	https://github.blog/changelog/2022-11-09-codespaces-for-free-and-pro-accounts/	blog	2022	GitHub Codespaces for Free/Pro	high	high	C3.1	C3.3	Default spending limit $0, no auto-billing without payment method
+S056	https://ona.com/stories/gitpod-classic-payg-sunset	blog	2025	Gitpod Classic sunset Oct 15 2025	high	high	C3.7	Gitpod Classic PAYG sunset, replaced by Ona
+S057	https://ona.com/docs/classic/payg/billing/overview	docs	2025	Gitpod/Ona Billing	high	high	C3.1,C3.2	Free: 500 credits/mo (~50 hours), up to 4 vCPU, 16GB RAM
+S058	https://github.com/gitpod-io/gitpod	code	2025	Gitpod renamed to Ona	high	high	C3.7	"Gitpod Classic pay-as-you-go did sunset on October 15th 2025"
+S059	https://www.harness.io/blog/gitpod-saas-is-being-deprecated-what-are-your-options	blog	2024	Gitpod SaaS deprecated	high	high	C3.7	Gitpod SaaS disabled by April 2025, replaced by self-hosted only
+S060	https://research.google.com/colaboratory/intl/en-GB/faq.html	docs	2024	Google Colab FAQ	high	high	C3.1,C3.2,C3.3,C3.7	Free: 12hr max runtime, dynamic limits, no persistent storage, GPU restricted
+S061	https://colab.research.google.com/notebooks/relnotes.ipynb	docs	2026	Colab Release Notes	medium	high	C3.7	Runtime version pinning for 1 year
+S062	https://github.com/googlecolab/google-colab-cli	code	2026	Google Colab CLI	medium	high	C3.2	C3.3	`colab run` with --keep flag, keep-alive daemon, 24h cap
+S063	https://www.kaggle.com/docs/notebooks	docs	2024	Kaggle Notebooks Docs	high	high	C3.1,C3.2,C3.3,C3.4	30 GPU-hours/week, 12hr session, 20GB /kaggle/working persistence
+S064	https://dev.to/admantium/fine-tuning-llms-comparison-of-collab-kaggle-and-6-other-platforms-250d	blog	2024	Kaggle vs Colab comparison	high	medium	C3.2	C3.3	Kaggle: 30h GPU/week, 12hr max session, periodic browser refresh needed
+S065	https://d2l.smola.org/chapter_appendix-tools-for-deep-learning/hosted-notebooks.html	blog	2026	Colab and Kaggle Deep Learning	high	medium	C3.2	C3.4	Kaggle: 32GB RAM, versioned outputs, reproducible Save & Run All
+S066	https://docs.aws.amazon.com/sagemaker/latest/dg/studio-lab-availability-change.html	docs	2025	SageMaker Studio Lab closed to new customers	high	high	C3.7	NOT VIABLE - no longer open to new customers
+S067	https://docs.aws.amazon.com/sagemaker/latest/dg/studio-lab-overview.html	docs	2025	SageMaker Studio Lab Overview	high	high	C3.2	15GB storage, 16GB RAM, no AWS account needed (but closed to new users)
+S068	https://dev.to/ujjwalbsoni/unlock-free-machine-learning-with-amazon-sagemaker-studio-lab-no-aws-account-needed-44o3	blog	2024	SageMaker Studio Lab tutorial	medium	medium	C3.1,C3.2	"No AWS account or credit card needed" - but now closed to new users
+S069	https://codesandbox.io/pricing	pricing	2025	CodeSandbox Pricing	high	high	C3.1,C3.2,C3.3	Free: 400 credits/mo (~40hrs Nano VM), unlimited Devboxes, 4 vCPU/8GB RAM
+S070	https://codesandbox.stream/docs/learn/plans/subscriptions	docs	2024	CodeSandbox Subscriptions	high	high	C3.2	C3.3	Free: 400 credits/mo, 20 Sandboxes, freezes when credits exhausted
+S071	https://codesandbox.io/changelog/2024-05-31-storybook-addon-soc2-unlimited-public-sandboxes	blog	2024	CodeSandbox Free plan updates	medium	high	C3.2	Unlimited public Sandboxes, 5 private Sandboxes, private npm
+S072	https://www.windmill.dev/docs/advanced/self_host	docs	2024	Windmill Self-Host Docs	high	high	C4.1,C4.2,C4.3	Min 2 vCPU, 4GB RAM, requires PostgreSQL, AGPLv3
+S073	https://github.com/windmill-labs/windmill/blob/main/docker-compose.yml	code	2024	Windmill docker-compose.yml	high	high	C4.1,C4.2	Worker: 2GB RAM, 1 CPU; native worker: 128MB RAM, 0.1 CPU
+S074	https://servorbit.com/en/blog/installing-windmill-on-a-vps-self-hosted-automation	blog	2026	Windmill VPS install guide	high	high	C4.1,C4.2	Min 2 vCPU, 4GB RAM, 10GB disk, Ubuntu 22.04+
+S075	https://ossalt.com/guides/self-host-windmill-2026	blog	2026	Windmill self-host guide 2026	high	medium	C4.1,C4.2	Hetzner CX22 (2 vCPU, 4GB RAM) works, CX32 (4 vCPU, 8GB) recommended
+S076	https://selfhosting.sh/apps/windmill/	blog	2026	Windmill Docker Compose	high	medium	C4.1,C4.2	RAM: 2GB min (server ~500MB, workers ~500MB each, PG ~500MB)
+S077	https://www.activepieces.com/docs/install/options/docker-compose	docs	2024	Activepieces Self-Host Docker Compose	high	high	C4.1,C4.2,C4.3	Min 2 vCPU, 4GB RAM, requires PostgreSQL + Redis
+S078	https://www.activepieces.com/docs/install/options/docker	docs	2024	Activepieces Hobbyist Docker	high	high	C4.1,C4.2,C4.3	Single container with PGLite (embedded PG) and memory Redis
+S079	https://github.com/activepieces/activepieces/blob/6b04e9e9/docs/install/configuration/hardware.mdx	code	2024	Activepieces Hardware Requirements	high	high	C4.1,C4.2	App: 4GB RAM, 1 CPU, 30GB disk; Worker: 4GB RAM, 1 CPU per replica
+S080	https://www.activepieces.com/docs/install/reference/environment-variables	docs	2024	Activepieces Environment Variables	high	high	C4.3	C4.4	AP_DB_TYPE=PGLITE for embedded DB, AP_NETWORK_MODE=STRICT for egress guard
+S081	https://activepieces-activepieces.mintlify.app/deployment/overview	docs	2024	Activepieces Deployment Overview	high	high	C4.1,C4.2,C4.3	Min: 2 cores, 4GB RAM, 10GB SSD; PostgreSQL 14+, Redis 7+
+S082	https://www.activepieces.com/solutions/open-source-developers	blog	2024	Activepieces Open Source	medium	high	C4.4	Core is MIT licensed, enterprise in separate directory
+S083	https://nodered.org/docs/getting-started/docker	docs	2024	Node-RED Docker Docs	high	high	C4.1,C4.2	Docker image, can limit memory with NODE_OPTIONS --max_old_space_size
+S084	https://discourse.nodered.org/t/node-red-minimun-configuration/31416	forum	2020	Node-RED minimum config	medium	medium	C4.1	C4.2	Min 256-512MB RAM, runs on Pi Zero/1
+S085	https://hub.docker.com/r/nodered/node-red	code	2024	Node-RED Docker Hub	high	high	C4.2	Alpine-based, minimal image available
+S086	https://discourse.nodered.org/t/node-red-docker-container-memory-spike/96797	forum	2025	Node-RED memory spike	medium	medium	C4.1	Container with 750MB memory limit crashed
+S087	https://github.com/node-red/node-red-docker	code	2016	Node-RED Docker repo	high	high	C4.2	Multiple tags including minimal
+S088	https://mustafa.net/2026/07/10/node-red-docker-compose-setup-my-annotated-production-config/	blog	2026	Node-RED Docker Compose 2026	high	medium	C4.1	C4.2	Idle: 100-150MB, heavy flows: 300-400MB, >500MB indicates leak
+S089	https://community.hubitat.com/t/minimum-spec-for-node-red-server-on-vmware/38289	forum	2020	Node-RED VMware min spec	medium	medium	C4.1	1 core, 512MB-1GB RAM in VM, container ~200MB
+S090	https://airflow.apache.org/docs/apache-airflow/stable/installation/prerequisites.html	docs	2024	Airflow Prerequisites	high	high	C4.1	C4.2	Recommends minimum 4GB memory for Airflow
+S091	https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html	docs	2024	Airflow Docker Compose	high	high	C4.1	C4.2	Docker Engine needs at least 4GB (ideally 8GB) for Airflow
+S092	https://github.com/puckel/docker-airflow/issues/409	forum	2019	Airflow Docker RAM requirements	medium	medium	C4.1	Minimum 1GiB plus DAG needs
+S093	https://linen.prefect.io/t/30086089/ulva73b9p-what-s-the-recommended-hardware-for-running-a-self	forum	2025	Prefect self-hosted hardware	high	high	C4.1,C4.2	C4.3	API/UI: 2 vCPU, 4-8GB RAM; Postgres: 2-4 vCPU, 8-16GB RAM
+S094	https://docs.prefect.io/v3/how-to-guides/self-hosted/docker-compose	docs	2024	Prefect Self-Hosted Docker Compose	high	high	C4.1,C4.2,C4.3	Requires PostgreSQL + Redis, multi-worker needs Redis
+S095	https://linen.prefect.io/t/23043740/ulva73b9p-could-you-tell-me-the-minimum-requirements-of-cpu-	forum	2024	Prefect minimum requirements	medium	medium	C4.1	Server: 0.5 vCPU, 512MB; main resources for Postgres
+S096	https://linen.prefect.io/t/26811960/marvin-if-i-am-to-deploy-prefect-on-an-on-premise-server-loc	forum	2025	Prefect on-premise hardware	medium	medium	C4.1	Quad-core CPU, 8-16GB RAM, 100GB disk general guidelines
+S097	https://docs.dagster.io/deployment/oss/deployment-options/docker	docs	2024	Dagster Docker Deployment	high	high	C4.1,C4.2,C4.3	Webserver, daemon, code locations, PostgreSQL
+S098	https://docs.dagster.io/deployment/troubleshooting/hybrid-optimizing-troubleshooting	docs	2024	Dagster Troubleshooting	high	high	C4.1	C4.2	Agent: 0.25 vCPU, 1GB; Code server: 0.25 vCPU, 1GB; Runs: 4 vCPU, 8-16GB
+S099	https://github.com/dagster-io/dagster/discussions/32218	forum	2024	Dagster self-host performance	medium	medium	C4.1	Run launcher determines resource allocation
+S100	https://www.macrostack.net/run/dagster	blog	2024	Dagster real RAM requirements	high	medium	C4.1	Docs say 2GB, practice needs 8GB, 4 vCPU
+S101	https://github.com/dagster-io/dagster/blob/master/examples/deploy_docker/docker-compose.yml	code	2024	Dagster docker-compose example	high	high	C4.2	C4.3	Multiple containers: postgres, user_code, webserver, daemon
+S102	https://docs.temporal.io/self-hosted-guide/deployment	docs	2024	Temporal Self-Host Deployment	high	high	C4.1	C4.2	C4.3	Docker Compose with PostgreSQL + Elasticsearch
+S103	https://community.temporal.io/t/baseline-server-resource-consumption/19267	forum	2026	Temporal resource consumption	high	high	C4.1	C4.2	Frontend: 1.5-2 CPU, 4GB; History: 4 CPU, 6+GB; Matching: 1 CPU, 2GB
+S104	https://github.com/temporalio/docker-compose	code	2026	Temporal docker-compose	high	high	C4.2	C4.3	Multiple configs: postgres, mysql, cassandra, elasticsearch
+S105	https://docs.temporal.io/self-hosted-guide/production-checklist	docs	2024	Temporal Production Checklist	high	high	C4.1	C4.2	Minimal: 2 CPU, 4GB RAM, SQLite/PG, 4 history shards
+S106	https://docs.dagu.sh/getting-started/quickstart	docs	2024	Dagu Quickstart	high	high	C4.1,C4.2	C4.3	Single binary, no external DB, Docker optional, runs locally/SSH
+S107	https://docs.dagu.sh/writing-workflows/container	docs	2024	Dagu Container Field	high	high	C4.1	C4.2	Docker/Podman runtime, DAG-level or step-level containers
+S108	https://dagu.sh/	web	2024	Dagu Homepage	high	high	C4.1	C4.4	"Local-first workflow orchestration", no external DB, no framework
+S109	https://www.tork.run/	web	2024	Tork Homepage	high	high	C4.1	C4.4	Lightweight distributed workflow engine, tasks in Docker containers
+S110	https://www.tork.run/quick-start	docs	2024	Tork Quick Start	high	high	C4.1,C4.2,C4.3	Standalone mode: PostgreSQL, single binary; Distributed: +RabbitMQ
+S111	https://www.tork.run/architecture	web	2024	Tork Architecture	high	high	C4.1	C4.2	Coordinator (stateless), Worker (Docker), Broker (RabbitMQ), Datastore (PG)
+S112	https://www.tork.run/tasks	web	2024	Tork Tasks	high	high	C4.1	C4.2	Tasks run in Docker containers, ephemeral, GPUs supported
+S113	https://huggingface.co/docs/hub/storage-limits	docs	2024	Hugging Face Storage Limits	high	high	C5.1,C5.2	Free: 100GB private storage, public best-effort
+S114	https://github.com/huggingface/hub-docs/blob/main/docs/hub/storage-limits.md	code	2024	HF Storage Limits source	high	high	C5.1	C5.2	No per-repo limit, counts against account quota
+S115	https://discuss.huggingface.co/t/403-error-private-repository-storage-limit-reached-quota-shows-space-remaining/153121	forum	2025	HF storage limit issues	medium	medium	C5.1	LFS/git history can consume quota
+S116	https://supabase.com/pricing	pricing	2024	Supabase Pricing	high	high	C5.1,C5.2,C5.3,C5.4	C5.5	Free: 500MB DB, 1GB storage, 5GB egress, 2 projects, pauses after 1 week inactivity
+S117	https://supabase.com/docs/guides/platform/database-size	docs	2024	Supabase Database Size	high	high	C5.4	Free: read-only at 500MB DB size, 1GB disk
+S118	https://neon.com/pricing	pricing	2024	Neon Pricing	high	high	C5.1,C5.2,C5.3,C5.4	C5.5	Free: 100 projects, 0.5GB/project, 100 CU-hrs/project/mo, scales to zero in 5min, no card
+S119	https://neon.com/faqs/managed-postgres-databases-free-tier	docs	2024	Neon Free Tier FAQ	high	high	C5.1,C5.2	C5.5	"Free plan is not a time-limited trial... no credit card required"
+S120	https://neon.com/blog/neon-free-plan-1-gb-per-project	blog	2026	Neon Free Plan Update Oct 2026	high	high	C5.1	C5.2	1GB/project (up from 0.5GB), 100 projects, 100 CU-hrs/project/mo
+S121	https://turso.tech/pricing	pricing	2024	Turso Pricing	high	high	C5.1,C5.2,C5.3	C5.4	C5.5	Free: 500 DBs, 9GB total storage, 25B row reads/mo, 75M row writes/mo, 3 locations
+S122	https://turso.tech/blog/databases-will-be-free	blog	2024	Turso Free Tier Blog	high	high	C5.1	C5.5	"500 databases for free", scales to unlimited
+S123	https://dev.to/0012303/turso-has-a-free-tier-run-sqlite-at-the-edge-with-9-gb-storage-and-500-databases-3bm7	blog	2026	Turso Free Tier Details	high	medium	C5.1	C5.2	C5.3	C5.5	9GB storage, 500 DBs, 25B reads, 75M writes, 3 locations
+S124	https://developers.cloudflare.com/r2/pricing/	docs	2024	Cloudflare R2 Pricing	high	high	C5.1,C5.2,C5.3	C5.5	Free: 10 GB-month storage, 1M Class A ops, 10M Class B ops, FREE egress
+S125	https://developers.cloudflare.com/r2/platform/limits/	docs	2026	Cloudflare R2 Limits	high	high	C5.1	C5.2	Unlimited buckets/objects, 5TB max object, 1M buckets/account
+S126	https://www.backblaze.com/cloud-storage/pricing	pricing	2024	Backblaze B2 Pricing	high	high	C5.1,C5.2,C5.3	C5.5	Free: 10GB storage, free egress up to 3x storage, no card required
+S127	https://help.backblaze.com/hc/en-us/articles/217667478-Understanding-B2-Pricing-Structure	docs	2022	B2 Pricing Structure	high	high	C5.1	C5.5	First 10GB free, then $0.005/GB/mo
+S128	https://www.backblaze.com/blog/free-isnt-always-free-a-guide-to-free-cloud-tiers/	blog	2022	B2 Free Tier Guide	medium	high	C5.5	"don't need to give us a credit card to create an account"
+S129	https://docs.github.com/en/actions/reference/security/secrets	docs	2024	GitHub Secrets Limits	high	high	C6.1	C6.2	C6.3	100 repo secrets, 1000 org secrets, 100 env secrets, 48KB max size
+S130	https://huggingface.co/docs/hub/spaces-overview	docs	2024	HF Spaces Secrets	high	high	C6.1	C6.2	C6.3	Space secrets for tokens/keys, variables for config, exposed as env vars
+S131	https://docs.doppler.com/docs/platform-limits	docs	2024	Doppler Platform Limits	high	high	C6.1,C6.2	C6.3	C6.4	Free (Developer): 3 users, 10 projects, 4 envs, 10 configs/env, 5 config syncs, 3-day logs
+S132	https://www.doppler.com/pricing	pricing	2024	Doppler Pricing	high	high	C6.1	C6.4	Free for 3 users, $8/mo per additional user
+S133	https://infisical.com/pricing	pricing	2024	Infisical Pricing	high	high	C6.1,C6.2	C6.3	C6.4	Free: 5 identities, 3 projects, 3 envs, 10 integrations, self-host or cloud, no card
+S134	https://www.getbeton.ai/blog/infisical-pricing-teardown/	blog	2026	Infisical Pricing Teardown	high	medium	C6.1	C6.2	C6.4	MIT core free for self-host, RBAC/SAML/dynamic secrets need Pro/Enterprise
+S135	https://freetier.co/directory/products/infisical	blog	2026	Infisical Free Tier	medium	medium	C6.4	"No credit card required to sign up", perpetual free tier
