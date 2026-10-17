@@ -2,6 +2,7 @@ import React from 'react';
 import { AiCompanyBuilderSection } from '../components/AiCompanyBuilderSection';
 import { PublicAgentRegistry } from '../components/PublicAgentRegistry';
 import { RelatedLinks } from '../components/site/RelatedLinks';
+import { KPISection } from '../components/AiCompanyBuilder/KPISection';
 
 interface AiCompanyBuilderPageProps {
   theme: 'light' | 'dark';
@@ -15,6 +16,7 @@ export const AiCompanyBuilderPage: React.FC<AiCompanyBuilderPageProps> = ({ them
         theme={theme}
         onRequestBriefing={onRequestBriefing}
       />
+      <KPISection theme={theme} />
       <PublicAgentRegistry theme={theme} />
       <RelatedLinks
         theme={theme}
