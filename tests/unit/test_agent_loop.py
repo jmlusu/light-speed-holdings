@@ -5,7 +5,7 @@ from __future__ import annotations
 import concurrent.futures
 import json
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from ai_company.executor.agent_loop import (
     AgentLoop,
@@ -13,6 +13,10 @@ from ai_company.executor.agent_loop import (
     LoopResult,
 )
 from ai_company.executor.context import AgentContext
+from ai_company.executor.history_manager import (
+    ConversationHistoryManager,
+    create_history_manager,
+)
 from ai_company.executor.tool_runner import ToolRunner
 from ai_company.llm.providers.base import ChatResponse, LLMProviderError
 
@@ -794,3 +798,110 @@ class TestParseAgentResponse:
     def test_non_dict_json_returns_none(self) -> None:
         assert AgentLoop._parse_agent_response('"just a string"') is None
         assert AgentLoop._parse_agent_response("[1, 2, 3]") is None
+
+
+# ───────────────────────── Test: cache hit/miss heuristic ─────────────────────────
+
+
+class TestCacheHitMissHeuristic:
+    """The loop records cache hits/misses from prompt-token deltas.
+
+    agent_loop compares each iteration's ``prompt_tokens`` against the
+    prior iteration: a delta < 0.10 (relative) counts as a cache HIT,
+    anything larger counts as a MISS.  Recording only happens when a
+    history manager exists, so the tests force one via the A/B gate.
+    """
+
+    @staticmethod
+    def _run_loop_capturing_metrics(
+        tmp_path: Path,
+        prompt_tokens: list[int],
+    ) -> dict:
+        """Run a 3-iteration loop and return the HistoryManager metrics."""
+        assert len(prompt_tokens) == 3
+
+        client, mock_provider = _setup_llm_client(tmp_path)
+        (tmp_path / "input.py").write_text("x = 1", encoding="utf-8")
+
+        runner = ToolRunner(project_root=tmp_path)
+        loop = AgentLoop(
+            llm=client,
+            runner=runner,
+            hitl_gate=_AutoApprovingGate(),
+            config=LoopConfig(max_iterations=10),
+        )
+
+        resp1 = _make_chat_response(
+            _json_response(
+                thought="Read the file first.",
+                plan=[{"tool": "read", "args": {"path": "input.py"}}],
+                done=False,
+            ),
+            prompt_tokens=prompt_tokens[0],
+        )
+        resp2 = _make_chat_response(
+            _json_response(
+                thought="Read it again.",
+                plan=[{"tool": "read", "args": {"path": "input.py"}}],
+                done=False,
+            ),
+            prompt_tokens=prompt_tokens[1],
+        )
+        resp3 = _make_chat_response(
+            _json_response(thought="Done.", result="All read.", done=True),
+            prompt_tokens=prompt_tokens[2],
+        )
+        mock_provider.chat.side_effect = [resp1, resp2, resp3]
+
+        captured: dict[str, ConversationHistoryManager] = {}
+
+        def _capture(*args: object, **kwargs: object) -> ConversationHistoryManager:
+            manager = create_history_manager(*args, **kwargs)
+            captured["manager"] = manager
+            return manager
+
+        with (
+            patch(
+                "ai_company.executor.agent_loop.should_use_history_summarization",
+                return_value=True,
+            ),
+            patch(
+                "ai_company.executor.agent_loop.create_history_manager",
+                side_effect=_capture,
+            ),
+        ):
+            result = loop.run(
+                agent=_make_agent(),
+                user_prompt="Read input.py",
+                task_id="task-cache-heuristic",
+            )
+
+        assert result.done is True
+        assert result.iterations == 3
+        assert "manager" in captured
+        return captured["manager"].get_metrics()
+
+    def test_stable_prompt_tokens_record_cache_hits(self, tmp_path: Path) -> None:
+        """Identical prompt size each iteration -> every delta is a HIT."""
+        metrics = self._run_loop_capturing_metrics(tmp_path, [1000, 1000, 1000])
+        # Iteration 1 has no prior sample -> no record; iterations 2-3 hit.
+        assert metrics["cache_hits"] == 2
+        assert metrics["cache_misses"] == 0
+        assert metrics["cache_hit_rate"] == 1.0
+        assert metrics["cache_hits"] + metrics["cache_misses"] == 2
+
+    def test_growing_prompt_tokens_record_cache_misses(self, tmp_path: Path) -> None:
+        """Prompt size jumps each iteration -> every delta is a MISS."""
+        metrics = self._run_loop_capturing_metrics(tmp_path, [1000, 2000, 3000])
+        # Iteration 1 has no prior sample -> no record; iterations 2-3 miss.
+        assert metrics["cache_misses"] == 2
+        assert metrics["cache_hits"] == 0
+        assert metrics["cache_hit_rate"] == 0.0
+        assert metrics["cache_hits"] + metrics["cache_misses"] == 2
+
+    def test_mixed_deltas_record_both(self, tmp_path: Path) -> None:
+        """Stable then growing -> one hit followed by one miss."""
+        metrics = self._run_loop_capturing_metrics(tmp_path, [1000, 1000, 2500])
+        assert metrics["cache_hits"] == 1
+        assert metrics["cache_misses"] == 1
+        assert metrics["cache_hit_rate"] == 0.5

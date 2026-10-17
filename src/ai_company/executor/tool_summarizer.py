@@ -2,13 +2,126 @@
 
 from __future__ import annotations
 
+import hashlib
 import logging
+import re
 from typing import Any, Callable
 
 from ai_company.llm.client import LLMClient
 from ai_company.llm.token_counter import count_tokens
 
 logger = logging.getLogger(__name__)
+
+# ── PowerShell / stack-trace compression ──
+
+# Markers that indicate a verbose PowerShell or Python stack trace
+_PS_ERROR_PHRASES = (
+    "at line:",
+    "in position",
+    "call stack:",
+    "parameter binding",
+    "\u001b[",  # ANSI escape
+    "traceback (most recent call last):",
+)
+
+_PS_ERROR_FRAME_PREFIXES = (
+    "at ",
+    "in ",
+    'file "',
+    "raise ",
+    "self.",
+)
+
+
+def _compress_powershell_error(stderr: str, max_chars: int = 400) -> str:
+    """Compress a verbose PowerShell/Python error to its essential lines.
+
+    Keeps: first error line, error category, exit code hint.
+    Removes: stack frames, ANSI escapes, repeated blank lines, positional noise.
+    """
+    if not stderr:
+        return ""
+
+    lines = stderr.splitlines()
+    compressed: list[str] = []
+    seen_blank = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Skip ANSI escape sequences entirely
+        if "\u001b[" in line:
+            # Extract plain text from ANSI-wrapped line
+            stripped = re.sub(r"\x1b\[[0-9;]*[a-zA-Z]", "", line).strip()
+            if not stripped:
+                continue
+
+        # Skip blank lines (collapse consecutive blanks)
+        if not stripped:
+            if seen_blank:
+                continue
+            seen_blank = True
+            compressed.append("")
+            continue
+        seen_blank = False
+
+        # Skip stack-frame noise
+        low = stripped.lower()
+        if any(phrase in low for phrase in _PS_ERROR_PHRASES) or low.startswith(
+            _PS_ERROR_FRAME_PREFIXES
+        ):
+            continue
+
+        compressed.append(stripped)
+
+        # Hard cap to avoid pathological cases
+        if len(compressed) >= 12:
+            break
+
+    result = "\n".join(compressed).strip()
+
+    # Truncate to max_chars
+    if len(result) > max_chars:
+        result = result[:max_chars] + "... [error truncated]"
+
+    return result
+
+
+# ── Repeated-error deduplication ──
+
+# In-process cache of seen error fingerprints → compressed forms.
+# Bounded to avoid memory growth in long sessions.
+_MAX_ERROR_CACHE = 200
+_error_fingerprints: dict[str, tuple[str, int]] = {}
+
+
+def _fingerprint_error(text: str) -> str:
+    """Stable fingerprint for an error string (ignores volatile numbers/paths)."""
+    # Normalize: strip numbers, hex addresses, absolute paths, timestamps
+    normalized = re.sub(r"0x[0-9a-fA-F]+", "0x?", text)
+    normalized = re.sub(r"\d{4,}", "N", normalized)  # long numbers (timestamps, line nums)
+    normalized = re.sub(r"[A-Z]:\\[^\s]+", "PATH", normalized)
+    normalized = re.sub(r"\s+", " ", normalized).strip().lower()
+    return hashlib.sha256(normalized.encode()).hexdigest()[:16]
+
+
+def _dedupe_error(error_text: str) -> str:
+    """If this exact error (normalized) was already seen, return a short reference."""
+    fp = _fingerprint_error(error_text)
+    cached = _error_fingerprints.get(fp)
+    if cached is not None:
+        text, count = cached
+        _error_fingerprints[fp] = (text, count + 1)
+        return f"(repeat of earlier error #{count + 1}; same root cause)"
+    if len(_error_fingerprints) >= _MAX_ERROR_CACHE:
+        _error_fingerprints.pop(next(iter(_error_fingerprints)))
+    _error_fingerprints[fp] = (error_text[:200], 1)
+    return error_text
+
+
+def _reset_error_cache() -> None:
+    """Reset dedup cache (for tests / new sessions)."""
+    _error_fingerprints.clear()
 
 
 def summarize_tool_result(
@@ -39,7 +152,8 @@ def _summarize_read(result: dict[str, Any], max_tokens: int, llm: LLMClient | No
     error = result.get("error")
 
     if error:
-        return f"read({path}) → ERROR: {error}"
+        compressed = _dedupe_error(_compress_powershell_error(str(error)))
+        return f"read({path}) → ERROR: {compressed}"
 
     lines = content.split("\n")
     line_count = len(lines)
@@ -109,7 +223,7 @@ def _summarize_edit(result: dict[str, Any], max_tokens: int, llm: LLMClient | No
 
 
 def _summarize_bash(result: dict[str, Any], max_tokens: int, llm: LLMClient | None) -> str:
-    """Summarize a bash tool result."""
+    """Summarize a bash tool result with aggressive PowerShell error compression."""
     command = result.get("command", "unknown")
     returncode = result.get("returncode", -1)
     stdout = result.get("stdout", "")
@@ -117,11 +231,11 @@ def _summarize_bash(result: dict[str, Any], max_tokens: int, llm: LLMClient | No
     error = result.get("error")
 
     if error:
-        return f"bash({command}) → ERROR: {error}"
+        compressed = _dedupe_error(_compress_powershell_error(str(error)))
+        return f"bash({command}) → ERROR: {compressed}"
 
     status = "OK" if returncode == 0 else f"FAILED (exit {returncode})"
 
-    # Truncate output
     output_parts = []
     if stdout:
         stdout_short = stdout[: max_tokens * 2]
@@ -129,10 +243,11 @@ def _summarize_bash(result: dict[str, Any], max_tokens: int, llm: LLMClient | No
             stdout_short += f"\n... [{len(stdout)} chars truncated] ..."
         output_parts.append(f"stdout: {stdout_short}")
     if stderr:
-        stderr_short = stderr[: max_tokens * 2]
-        if len(stderr) > max_tokens * 2:
-            stderr_short += f"\n... [{len(stderr)} chars truncated] ..."
-        output_parts.append(f"stderr: {stderr_short}")
+        # Always compress stderr — it's almost always the bloat source
+        compressed_err = _compress_powershell_error(stderr, max_chars=max_tokens * 2)
+        compressed_err = _dedupe_error(compressed_err)
+        if compressed_err:
+            output_parts.append(f"stderr: {compressed_err}")
 
     output_str = "; ".join(output_parts) if output_parts else "no output"
     return f"bash({command}) → {status}; {output_str}"
@@ -214,7 +329,8 @@ def _summarize_generic(result: dict[str, Any], max_tokens: int, llm: LLMClient |
     """Generic fallback summarizer."""
     error = result.get("error")
     if error:
-        return f"ERROR: {error}"
+        compressed = _dedupe_error(_compress_powershell_error(str(error)))
+        return f"ERROR: {compressed}"
 
     # Remove internal fields and truncate
     filtered = {

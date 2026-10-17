@@ -307,6 +307,7 @@ class AgentLoop:
             all_tool_records: list[ToolCallRecord] = []
             total_prompt_tokens = 0
             total_completion_tokens = 0
+            prev_prompt_tokens: int | None = None
             total_cost_usd = 0.0
             done = False
             final_result_text = ""
@@ -407,6 +408,20 @@ class AgentLoop:
                 comp_tok = response.usage.get("completion_tokens", 0)
                 total_prompt_tokens += prompt_tok
                 total_completion_tokens += comp_tok
+
+                # ── Cache hit/miss heuristic ───────────────────────────
+                # Provider-native cache metrics are unavailable on ChatResponse.
+                # Heuristic: a prompt-token delta <10% vs the prior iteration
+                # indicates the prefix was cache-hit; a larger delta (e.g. after
+                # a summarization compaction) indicates a miss.
+                if history_manager:
+                    if prev_prompt_tokens is not None and prompt_tok > 0:
+                        delta_ratio = abs(prompt_tok - prev_prompt_tokens) / prompt_tok
+                        if delta_ratio < 0.10:
+                            history_manager.record_cache_hit()
+                        else:
+                            history_manager.record_cache_miss()
+                    prev_prompt_tokens = prompt_tok
 
                 # ── Detailed token logging for validation ─────────────────────────────
                 if self.config.enable_detailed_token_logging:
