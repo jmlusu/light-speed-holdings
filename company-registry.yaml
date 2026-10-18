@@ -1255,6 +1255,45 @@ company:
     workflows: *id004
     inputs: *id005
     outputs: *id006
+  - id: job_board
+    name: Job Board Source Inventory
+    type: specialist
+    department: Marketing
+    reports_to: cmo
+    description: Own the canonical job board and source inventory matching the JobSource enum, tracking crawl status, last-checked timestamps, and data quality grades across all 16 sources.
+    technical_domain: Job board crawl status, data quality grading, source coverage matrix.
+    responsibilities:
+    - Own the canonical job board / source inventory matching the JobSource enum (16 entries).
+    - Maintain crawl_status (not_started, in_progress, completed, ruled_out, deferred) per source.
+    - Maintain last_checked timestamp per source.
+    - Maintain data_quality_grade (A-F) per source.
+    - Coordinate with registry_owner (GAP-003) to keep YAML validation clean.
+    guidelines: Every JobSource enum value has a recorded entry. No source is omitted.
+      Crawl status and data quality are living fields, updated on each release cycle.
+    tools:
+    - read
+    - edit
+    - bash
+    - grep
+    - list
+    model_tier: standard
+    approval_level: lead
+    escalation_path:
+    - cmo
+    - chief_of_staff
+    - human_ceo
+    - board
+    kpis:
+    - Source coverage completeness
+    - Data quality score
+    - Last checked recency
+    decision_rights:
+    - 'Decides and owns: Own the canonical job board / source inventory matching the JobSource enum'
+    - 'Decides and owns: Maintain crawl_status per source'
+    - 'Decides and owns: Maintain data_quality_grade per source'
+    workflows: *id004
+    inputs: *id005
+    outputs: *id006
   - id: sales_owner
     name: Sales Owner
     title: Sales Owner

@@ -18,6 +18,7 @@ const NAV_ITEMS = [
   { path: '/solutions', label: 'Solutions' },
   { path: '/use-cases', label: 'Use Cases' },
   { path: '/sectors', label: 'Sectors' },
+  { path: '/haomtgv', label: 'HAOMTGV' },
   { path: '/insights', label: 'Insights' },
   { path: '/about', label: 'About' },
 ];
