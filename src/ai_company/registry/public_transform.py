@@ -94,8 +94,8 @@ VALUE_DENY_PATTERNS: tuple[str, ...] = (
 )
 
 KEBAB_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
-TYPE_CENSUS = {"executive": 19, "specialist": 65, "board": 7}
-EXPECTED_AGENTS = 91
+TYPE_CENSUS = {"executive": 19, "specialist": 64, "board": 7}
+EXPECTED_AGENTS = 90
 EXPECTED_DEPARTMENTS = 20
 ENVELOPE_REQUIRED = (
     "schema_version",

@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-18T08:54:27Z",
+  "generated_at": "2026-10-18T11:14:16Z",
   "source": "company-registry.yaml",
   "meta": {
-    "agents": 91,
+    "agents": 90,
     "departments": 20
   },
   "agents": [
@@ -1001,41 +1001,6 @@
         "Recommend and, where safe, apply self-healing fixes."
       ],
       "technical_domain": "System diagnostics, health probes, dependency checks, remediation guidance."
-    },
-    {
-      "id": "job-board",
-      "name": "Job Board Source Inventory",
-      "title": "Job Board Source Inventory",
-      "type": "specialist",
-      "department": "Marketing",
-      "department_id": "marketing",
-      "reports_to": "cmo",
-      "mission": "Own the canonical job board and source inventory matching the JobSource enum, tracking crawl status, last-checked timestamps, and data quality grades across all 16 sources.",
-      "tools": [
-        "read",
-        "edit",
-        "bash",
-        "grep",
-        "list"
-      ],
-      "kpi_labels": [
-        "Source coverage completeness",
-        "Data quality score",
-        "Last checked recency"
-      ],
-      "decision_rights": [
-        "Decides and owns: Own the canonical job board / source inventory matching the JobSource enum",
-        "Decides and owns: Maintain crawl_status per source",
-        "Decides and owns: Maintain data_quality_grade per source"
-      ],
-      "responsibilities": [
-        "Own the canonical job board / source inventory matching the JobSource enum (16 entries).",
-        "Maintain crawl_status (not_started, in_progress, completed, ruled_out, deferred) per source.",
-        "Maintain last_checked timestamp per source.",
-        "Maintain data_quality_grade (A-F) per source.",
-        "Coordinate with registry_owner (GAP-003) to keep YAML validation clean."
-      ],
-      "technical_domain": "Job board crawl status, data quality grading, source coverage matrix."
     },
     {
       "id": "sales-owner",
