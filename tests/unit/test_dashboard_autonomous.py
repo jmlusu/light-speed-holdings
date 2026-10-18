@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import re
 from typing import Any
 
 import pytest
@@ -15,6 +16,18 @@ from ai_company.cli.dashboard import app
 from ai_company.executor.daemon import ExecutorDaemon
 
 runner = CliRunner()
+
+_ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _strip_ansi(text: str) -> str:
+    """Remove ANSI escape sequences.
+
+    Rich forces color output when running under CI (``GITHUB_ACTIONS``),
+    splitting option text like ``--no-executor`` across styled spans, so
+    assertions must match against the plain-text rendering.
+    """
+    return _ANSI_ESCAPE.sub("", text)
 
 
 def _combined(result: Any) -> str:
@@ -38,15 +51,16 @@ class TestAutonomousHelp:
     def test_autonomous_help_renders(self) -> None:
         result = runner.invoke(app, ["autonomous", "--help"])
         assert result.exit_code == 0, _combined(result)
-        assert "--no-executor" in result.output
-        assert "--port" in result.output
-        assert "--host" in result.output
-        assert "--no-open" in result.output
+        output = _strip_ansi(result.output)
+        assert "--no-executor" in output
+        assert "--port" in output
+        assert "--host" in output
+        assert "--no-open" in output
 
     def test_dashboard_help_lists_autonomous(self) -> None:
         result = runner.invoke(app, ["--help"])
         assert result.exit_code == 0, _combined(result)
-        assert "autonomous" in result.output
+        assert "autonomous" in _strip_ansi(result.output)
 
 
 class TestAutonomousLaunchGuards:
