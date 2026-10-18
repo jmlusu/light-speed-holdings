@@ -54,6 +54,14 @@ const SolutionCard: React.FC<{
 }> = ({ sol, theme, to, id, sectors = [] }) => {
   const isLight = theme === 'light';
 
+    {/*
+     * AGENT TEAM NARRATIVE - SolutionsPage
+     * Content fidelity governed by:
+     *   - registry-owner           | canonical solutions data, evidence tiers
+     *   - decision-engine-owner    | G1-G4 gate logic, solution approval matrix
+     *   - content-writer           | solution value propositions, CTAs
+     * Last audited: 2026-10-18
+     */}
   return (
     <div
       id={id}

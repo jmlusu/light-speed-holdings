@@ -1,5 +1,5 @@
 /* LightSpeed Holdings — Public Agent Registry
-   Canonical source: company/agent-registry.json (90 agents)
+    Canonical source: company/agent-registry.json (91 agents)
    This file exposes ONLY approved public fields per MASTER_SPEC §28.
    DO NOT expose: prompts, credentials, internal endpoints, private tool config,
    private memory, security controls, internal orchestration instructions. */
@@ -32,7 +32,7 @@ export function toPublicAgent(agent: any): PublicAgent {
     type: agent.type,
     department: agent.department,
     description: agent.description,
-    publicResponsibilities: (agent.responsibilities || []).slice(0, 3).map((r: string) => 
+    publicResponsibilities: (agent.responsibilities || []).slice(0, 3).map((r: string) =>
       r.replace(/\(GAP-\d+\)|\(ticket #\d+\)|\(issue #\d+\)/gi, '').trim()
     ),
     capabilities: agent.tools || [],

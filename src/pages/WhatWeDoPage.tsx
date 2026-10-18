@@ -23,6 +23,14 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
   const isLight = theme === 'light';
   const [activeTab, setActiveTab] = useState<CatalogTab>('packages');
 
+    {/*
+     * AGENT TEAM NARRATIVE - WhatWeDoPage
+     * Content fidelity governed by:
+     *   - registry-owner           | sector/solution evidence mapping
+     *   - decision-engine-owner    | G1-G4 gate logic, 5-tier approval matrix
+     *   - security-compliance-lead | tier_rules.py compliance, risk assessment
+     * Last audited: 2026-10-18
+     */}
   return (
     <>
       {/* 1. EXECUTIVE OUTCOME (Above the fold: what/who/why/next in 5s) */}
@@ -373,7 +381,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
           theme={theme}
           eyebrow="ENGAGEMENT PATH"
           title="Four Governance Gates Before Any Work Ships"
-          lead="Every client relationship moves through an orderly four-gate lifecycle. No unexpected charges, no runaway scopes, and full intellectual property transfer upon delivery."
+          lead="Every client relationship moves through an orderly four-gate lifecycle (G1 Discovery to G4 Handover) governed by a five-tier human-approval matrix. No unexpected charges, no runaway scopes, and full intellectual property transfer upon delivery."
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
           <div
@@ -381,7 +389,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
               isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'
             }`}
           >
-            <span className="text-2xl font-black font-body text-ls-red">G1</span>
+            <span className="text-2xl font-black font-body text-ls-red">G1 <span className="text-sm font-bold tracking-widest ml-2">DISCOVERY</span></span>
             <h4 className="mt-2 text-base font-bold font-display">Discovery &amp; Contract</h4>
             <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               Agree on goals, deliverables, and unit pricing with your executives before anything is signed.
@@ -392,7 +400,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
               isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'
             }`}
           >
-            <span className="text-2xl font-black font-body text-ls-red">G2</span>
+            <span className="text-2xl font-black font-body text-ls-red">G2 <span className="text-sm font-bold tracking-widest ml-2">ARCHITECTURE</span></span>
             <h4 className="mt-2 text-base font-bold font-display">Architecture &amp; DPA</h4>
             <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               Data processing agreement, system security classification, and local compliance sign-off.
@@ -403,7 +411,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
               isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'
             }`}
           >
-            <span className="text-2xl font-black font-body text-ls-red">G3</span>
+            <span className="text-2xl font-black font-body text-ls-red">G3 <span className="text-sm font-bold tracking-widest ml-2">BUILD</span></span>
             <h4 className="mt-2 text-base font-bold font-display">Build &amp; Pilot Sprint</h4>
             <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               Agents build in parallel under regression tests, with a human approving each checkpoint before work moves on.
@@ -414,7 +422,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
               isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'
             }`}
           >
-            <span className="text-2xl font-black font-body text-ls-red">G4</span>
+            <span className="text-2xl font-black font-body text-ls-red">G4 <span className="text-sm font-bold tracking-widest ml-2">HANDOVER</span></span>
             <h4 className="mt-2 text-base font-bold font-display">Handover &amp; Support</h4>
             <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               Complete code and asset transfer, deployment verification, and 30 days of included executive support.

@@ -62,13 +62,14 @@
 - **Data Privacy Officer** (`data-privacy-officer`) - specialist; reports to: `clo`
 - **Legal Owner** (`legal-owner`) - specialist; reports to: `clo`
 
-## Marketing (9 agents)
+## Marketing (10 agents)
 
 - **Chief Marketing Officer** (`cmo`) - executive; reports to: `chief-of-staff`
 - **Content Creator** (`content-creator`) - specialist; reports to: `cmo`
 - **Creative Director** (`creative-director`) - specialist; reports to: `cmo`
 - **Growth Hacker** (`growth-hacker`) - specialist; reports to: `cmo`
 - **Head of Developer Relations** (`head-of-developer-relations`) - specialist; reports to: `cmo`
+- **Job Board Source Inventory** (`job-board`) - specialist; reports to: `cmo`
 - **Marketing Owner** (`marketing-owner`) - specialist; reports to: `cmo`
 - **Media Generation Owner** (`media-generation-owner`) - specialist; reports to: `cmo`
 - **Product Marketing Manager** (`product-marketing-manager`) - specialist; reports to: `cmo`

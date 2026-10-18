@@ -26,6 +26,14 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
     });
   }, []);
 
+    {/*
+     * AGENT TEAM NARRATIVE - InsightsPage (Pharos Thought Leadership)
+     * Content fidelity governed by:
+     *   - thought-leadership-lead | heads the Pharos department, long-form strategy
+     *   - content-writer          | article copy, headlines, and executive summaries
+     *   - researcher              | verifies evidence against proofCaseStudies and sources
+     * Last audited: 2026-10-18
+     */}
   return (
     <>
       <section

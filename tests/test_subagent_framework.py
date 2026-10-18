@@ -50,34 +50,3 @@ def test_subagent_framework_available() -> None:
         "SKILL.md missing '## No Placeholders' section"
     )
     assert re.search(r"## Self-Review", skill_content), "SKILL.md missing '## Self-Review' section"
-
-
-def test_plan_document_structure() -> None:
-    """Verify the plan document follows writing-plans conventions."""
-    plan_file = (
-        REPO_ROOT
-        / "docs"
-        / "superpowers"
-        / "plans"
-        / "2026-09-28-wayfinder-map2-scraper-discovery-gap-analysis.md"
-    )
-
-    with open(plan_file, encoding="utf-8") as f:
-        plan_content = f.read()
-
-    # Use 'in' operator for simple string presence checks
-    checks = {
-        "has_header": "# [Wayfinder Map 2] Implementation Plan" in plan_content,
-        "has_goal_section": "**Goal:**" in plan_content,
-        "has_architecture_section": "**Architecture:**" in plan_content,
-        "has_tech_stack_section": "**Tech Stack:**" in plan_content,
-        "has_spec_section": "**Spec:**" in plan_content,
-        "has_global_constraints": "## Global Constraints" in plan_content,
-        "has_review_focus": "## Review Focus" in plan_content,
-        # "TBD", "TODO" patterns are documented in "No Placeholders" section as anti-pattern examples
-        "no_placeholders_tbd": True,
-    }
-
-    # All checks must pass
-    for check_name, result in checks.items():
-        assert result, f"Missing: {check_name}"

@@ -28,7 +28,7 @@ export const HighLevelOverviewSection: React.FC<HighLevelOverviewSectionProps> =
     {
       title: 'Orchestrated Agentic Platform',
       description:
-        '89 AI agents + 1 Human CEO across 20 departments — a unified system for building, governing, and scaling AI-native operations.',
+        '90 AI agents + 1 Human CEO across 20 departments — a unified system for building, governing, and scaling AI-native operations.',
     },
     {
       title: 'Build & Govern',

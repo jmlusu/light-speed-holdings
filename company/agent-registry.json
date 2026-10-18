@@ -804,6 +804,33 @@
     "technical_domain": "System diagnostics, health probes, dependency checks, remediation guidance."
   },
   {
+    "name": "job-board",
+    "role": "Job Board Source Inventory",
+    "type": "Specialist",
+    "department": "Marketing",
+    "reportsTo": "cmo",
+    "directReports": [],
+    "description": "Own the canonical job board and source inventory matching the JobSource enum, tracking crawl status, last-checked timestamps, and data quality grades across all 16 sources.",
+    "responsibilities": [
+      "Own the canonical job board / source inventory matching the JobSource enum (16 entries).",
+      "Maintain crawl_status (not_started, in_progress, completed, ruled_out, deferred) per source.",
+      "Maintain last_checked timestamp per source.",
+      "Maintain data_quality_grade (A-F) per source.",
+      "Coordinate with registry_owner (GAP-003) to keep YAML validation clean."
+    ],
+    "guidelines": "Every JobSource enum value has a recorded entry. No source is omitted. Crawl status and data quality are living fields, updated on each release cycle.",
+    "tools": [
+      "read",
+      "edit",
+      "bash",
+      "grep",
+      "list"
+    ],
+    "permission": "Execute",
+    "model_tier": "standard",
+    "technical_domain": "Job board crawl status, data quality grading, source coverage matrix."
+  },
+  {
     "name": "sales-owner",
     "role": "Sales Owner",
     "type": "Specialist",

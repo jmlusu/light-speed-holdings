@@ -83,6 +83,14 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme }) => {
     ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md'
     : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl';
 
+    {/*
+     * AGENT TEAM NARRATIVE - HAOMTVGPage (7-Layer Framework)
+     * Content fidelity governed by:
+     *   - orchestration-owner | MessageBus task queue, agent coordination
+     *   - governance-owner    | 5-tier approval matrix, H-A-O-M-T-G-V compliance
+     *   - registry-owner      | canonical pillar data, company-registry.yaml mapping
+     * Last audited: 2026-10-18
+     */}
   return (
     <>
       {/* Hero */}

@@ -145,6 +145,9 @@ data/*.db-journal
 # Legacy decoy audit DB at repo root (canonical trail: .opencode/audit)
 /audit/
 
+# Junk from previous failed sessions (locked resources_app.asar, cannot remove)
+recovered_all_files/
+
 # LS-MEM local memory store (never commit)
 .lightspeed/memory/
 .lightspeed/memory.db
@@ -210,3 +213,4 @@ static/brand/social/facebook-cover-1640x664_1.jpg
 company/athena/
 *.log
 output/
+output/marketing-site/
