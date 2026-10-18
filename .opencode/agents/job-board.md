@@ -1,5 +1,5 @@
 ---
-description: Specialist in Marketing
+description: Own the canonical job board and source inventory matching the JobSource enum, tracking crawl status, last-checked timestamps, and data quality grades across all 16 sources.
 mode: subagent
 permission:
   bash: allow
@@ -27,7 +27,7 @@ Seniority: mid
 
 ## Mission
 
-Execute specialized tasks with technical excellence.
+Own the canonical job board and source inventory matching the JobSource enum, tracking crawl status, last-checked timestamps, and data quality grades across all 16 sources.
 
 ---
 
