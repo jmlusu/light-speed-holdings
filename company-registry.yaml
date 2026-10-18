@@ -1260,6 +1260,7 @@ company:
     type: specialist
     department: Marketing
     reports_to: cmo
+    description: Own the canonical job board and source inventory matching the JobSource enum, tracking crawl status, last-checked timestamps, and data quality grades across all 16 sources.
     technical_domain: Job board crawl status, data quality grading, source coverage matrix.
     responsibilities:
     - Own the canonical job board / source inventory matching the JobSource enum (16 entries).
