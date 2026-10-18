@@ -87,7 +87,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
      honestyBadge: 'Fieldable in 2026' as const,
       oneLiner: '90 AI agents. One human CEO. Every action signed off before it ships.',
      nav: 'AI Company Builder',
-     lead: 'Build governed AI companies with 90 agents and 1 human CEO.',
+      lead: 'Build governed AI companies with 90 agents and 1 human CEO.',
     capabilities: [
       { title: 'Multi-Agent Orchestration', desc: '90 agents, 20 departments, each with explicit role definitions and approval thresholds.' },
       { title: '5-Tier Approval Matrix', desc: 'Auto through CEO sign-off with configurable thresholds and expiration sweeps.' },
