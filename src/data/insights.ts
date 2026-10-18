@@ -73,7 +73,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         kind: 'p',
-        text: 'All 91 agents in our company, 90 AI plus one human CEO, are runnable locally on Ollama/llama.cpp, per our remote-runtime architecture documentation. Open source is our cost architecture, not a licensing shortcut. The machinery of the company (orchestration, approvals, audit, dashboard) does not require a single paid runtime dependency to operate.',
+        text: 'All 90 agents in our company, 89 AI plus one human CEO, are runnable locally on Ollama/llama.cpp, per our remote-runtime architecture documentation. Open source is our cost architecture, not a licensing shortcut. The machinery of the company (orchestration, approvals, audit, dashboard) does not require a single paid runtime dependency to operate.',
       },
       {
         kind: 'quote',
@@ -230,7 +230,7 @@ export const insightArticles: InsightArticle[] = [
       { kind: 'h', text: 'What has actually been sold' },
       {
         kind: 'p',
-        text: 'Here is the constraint that governs everything above: nothing has been delivered to paying clients yet. What exists is operating evidence. J&S StopOver Bar, a real non-tech SME, is the single LIVE commercial proof point: inventory, procurement and pricing agents running on a small business\'s actual numbers. The 91-agent company itself (90 AI agents and one human CEO) is proven in-house, verified by a direct count of the company registry on 23 September 2026. The agricultural coop, health monitoring and VSLA/SACCO work are pilots, honest about being pilots, with no signed partnership or engagement to name. The WhatsApp automation offer is blocked pending security review. No revenue figures, win rates or pipeline values appear here because none exist to appear.',
+        text: 'Here is the constraint that governs everything above: nothing has been delivered to paying clients yet. What exists is operating evidence. J&S StopOver Bar, a real non-tech SME, is the single LIVE commercial proof point: inventory, procurement and pricing agents running on a small business\'s actual numbers. The 90-agent company itself (89 AI agents and one human CEO) is proven in-house, verified by a direct count of the company registry on 23 September 2026. The agricultural coop, health monitoring and VSLA/SACCO work are pilots, honest about being pilots, with no signed partnership or engagement to name. The WhatsApp automation offer is blocked pending security review. No revenue figures, win rates or pipeline values appear here because none exist to appear.',
       },
       { kind: 'h', text: 'A category being defined, not settled' },
       {
@@ -264,7 +264,7 @@ export const insightArticles: InsightArticle[] = [
     blocks: [
       {
         kind: 'p',
-        text: 'Ask a team how they govern their AI agents and you will hear a policy. Ask them what happens when nobody answers an approval request and you will learn whether the policy is real. That second question is the one this article is about, because LightSpeed Holdings runs 91 agents (90 AI personas plus one human CEO) across 20 departments, and the only thing standing between that fleet and ungoverned action is a five-tier approval matrix enforced in code, not prose.',
+        text: 'Ask a team how they govern their AI agents and you will hear a policy. Ask them what happens when nobody answers an approval request and you will learn whether the policy is real. That second question is the one this article is about, because LightSpeed Holdings runs 90 agents (89 AI personas plus one human CEO) across 20 departments, and the only thing standing between that fleet and ungoverned action is a five-tier approval matrix enforced in code, not prose.',
       },
       { kind: 'h', text: 'The failure mode nobody designs for' },
       {
@@ -334,7 +334,7 @@ export const insightArticles: InsightArticle[] = [
       { kind: 'h', text: 'Honest status' },
       {
         kind: 'p',
-        text: 'LightSpeed runs this model in-house. The five-tier matrix is implemented in our platform code: the ApprovalTier enum, path and command escalation, per-tier timeouts, request persistence, the expired-state sweep, and metacharacter flagging are all in the repository, exercised by our own regression suite, not drafted for a deck. The pillar essay that narrates this system is a draft awaiting CEO review; the code it describes is not. What this governance has not yet earned is a client claim: no paid enterprise deployment has been delivered this stack. The operating evidence is our own company (91 agents, one human CEO, every gated action attributable), and the tier table above is what we would show a regulator today.',
+        text: 'LightSpeed runs this model in-house. The five-tier matrix is implemented in our platform code: the ApprovalTier enum, path and command escalation, per-tier timeouts, request persistence, the expired-state sweep, and metacharacter flagging are all in the repository, exercised by our own regression suite, not drafted for a deck. The pillar essay that narrates this system is a draft awaiting CEO review; the code it describes is not. What this governance has not yet earned is a client claim: no paid enterprise deployment has been delivered this stack. The operating evidence is our own company (90 agents, one human CEO, every gated action attributable), and the tier table above is what we would show a regulator today.',
       },
     ],
     relatedSolutions: ['ai-company-builder', 'enterprise-deployment', 'boardroom-briefing'],
@@ -342,23 +342,23 @@ export const insightArticles: InsightArticle[] = [
   },
   {
     slug: 'inside-a-90-agent-company',
-    title: 'Inside a 91-Agent Company: What the Registry, the Queue, and the Approval Gate Actually Do',
+    title: 'Inside a 90-Agent Company: What the Registry, the Queue, and the Approval Gate Actually Do',
     topic: 'AI COMPANY BUILDING',
-    dek: 'Building ninety-one personas takes an afternoon. Making them safe to run takes a control plane: a registry, a message bus, and an approval gate that scales friction with risk.',
+    dek: 'Building ninety personas takes an afternoon. Making them safe to run takes a control plane: a registry, a message bus, and an approval gate that scales friction with risk.',
     category: 'AI Company Building',
     readMins: 8,
     publishedAt: '2026-10-12',
     seo: {
-      title: 'Inside a 91-Agent Company | Registry, Queue, Gate',
+      title: 'Inside a 90-Agent Company | Registry, Queue, Gate',
       description:
-        '91 agents (90 AI + 1 human CEO) across 20 departments. What the registry, message bus, and five-tier approval gate actually do.',
+        '90 agents (89 AI + 1 human CEO) across 20 departments. What the registry, message bus, and five-tier approval gate actually do.',
     },
     source:
       'company-registry.yaml · src/ai_company/orchestrator/tier_rules.py · src/ai_company/orchestrator/approval.py · src/ai_company/orchestrator/message_bus.py · docs/Pharos/pillars/01-built-a-90-agent-company.md · docs/APPROVAL-UX-SPEC.md',
     blocks: [
       {
         kind: 'p',
-        text: 'Most conversations about "AI companies" start with the model. Ours starts with the paperwork. LightSpeed Holdings runs 91 agents (90 AI personas plus one human CEO) across 20 departments. That count is not a marketing abstraction; it is a direct tally of company-registry.yaml, the single source of truth that defines every agent\'s identity, tools, approval level, and escalation path. The agents themselves are the easy part. A schema, a generator, and an afternoon will mint ninety-one personas. What took the discipline was everything that sits above them: how work is assigned, how actions are gated, and what happens when a human does not answer.',
+        text: 'Most conversations about "AI companies" start with the model. Ours starts with the paperwork. LightSpeed Holdings runs 90 agents (89 AI personas plus one human CEO) across 20 departments. That count is not a marketing abstraction; it is a direct tally of company-registry.yaml, the single source of truth that defines every agent\'s identity, tools, approval level, and escalation path. The agents themselves are the easy part. A schema, a generator, and an afternoon will mint ninety personas. What took the discipline was everything that sits above them: how work is assigned, how actions are gated, and what happens when a human does not answer.',
       },
       { kind: 'h', text: 'The org is a registry, not a slide' },
       {
@@ -415,12 +415,12 @@ export const insightArticles: InsightArticle[] = [
       { kind: 'h', text: 'Starting from the registry' },
       {
         kind: 'p',
-        text: 'For a bank, a ministry, or a cooperative asking how to begin: start with the registry, not the model. Define what work agents will own, which tools they may touch, who approves what, and where escalation lands, before wiring a single LLM call. Pick one workflow, put it behind a real gate, measure it against the old way, then widen. Retrofitting governance onto an ungoverned fleet is an order of magnitude harder than designing the tiers in from day one. That is the whole lesson of ninety-one agents in one sentence.',
+        text: 'For a bank, a ministry, or a cooperative asking how to begin: start with the registry, not the model. Define what work agents will own, which tools they may touch, who approves what, and where escalation lands, before wiring a single LLM call. Pick one workflow, put it behind a real gate, measure it against the old way, then widen. Retrofitting governance onto an ungoverned fleet is an order of magnitude harder than designing the tiers in from day one. That is the whole lesson of ninety agents in one sentence.',
       },
       { kind: 'h', text: 'Honest status' },
       {
         kind: 'p',
-        text: 'LightSpeed runs this model in-house. The agent count is 91 (90 AI plus one human CEO) across 20 departments per company-registry.yaml, verified by direct count. The five-tier matrix, message-bus queue, and audit-ledger patterns ship in our own platform code: Tier 0 through Tier 4 classification, approval-gate persistence, and expiry sweeps are implemented, not proposed. J&S StopOver Bar is a real SME running agentic decision support; it is not a LightSpeed client engagement. No paid enterprise client has been delivered this stack yet. Client-facing badges on the site say the same thing: proven in-house first, fieldable and piloted where true, never claimed delivered when it is not.',
+        text: 'LightSpeed runs this model in-house. The agent count is 90 (89 AI plus one human CEO) across 20 departments per company-registry.yaml, verified by direct count. The five-tier matrix, message-bus queue, and audit-ledger patterns ship in our own platform code: Tier 0 through Tier 4 classification, approval-gate persistence, and expiry sweeps are implemented, not proposed. J&S StopOver Bar is a real SME running agentic decision support; it is not a LightSpeed client engagement. No paid enterprise client has been delivered this stack yet. Client-facing badges on the site say the same thing: proven in-house first, fieldable and piloted where true, never claimed delivered when it is not.',
       },
     ],
     relatedSolutions: ['ai-company-builder', 'enterprise-deployment', 'boardroom-briefing'],
@@ -691,7 +691,7 @@ export const insightArticles: InsightArticle[] = [
         'Bandwidth, data protection, technology debt and AI skepticism are real. The engineering answers are already concrete.',
     },
     source:
-      'docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · pillars/01-built-a-90-agent-company.md · company-registry.yaml (91 agents / 20 departments)',
+      'docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · pillars/01-built-a-90-agent-company.md · company-registry.yaml (90 agents / 20 departments)',
     blocks: [
       {
         kind: 'p',
@@ -725,7 +725,7 @@ export const insightArticles: InsightArticle[] = [
       { kind: 'h', text: 'Honest status' },
       {
         kind: 'p',
-        text: 'LightSpeed runs this model in-house: 91 agents (90 AI plus one human CEO) across 20 departments, coordinated through a message-bus queue under a five-tier approval matrix. On the public-sector side, the engagement is policy-level: advisory work on Malawi’s National AI Strategy consultation, with a submission prepared for the record. No ministerial production deployment is claimed. The systems are the evidence; the badges say which stage each one is at.',
+        text: 'LightSpeed runs this model in-house: 90 agents (89 AI plus one human CEO) across 20 departments, coordinated through a message-bus queue under a five-tier approval matrix. On the public-sector side, the engagement is policy-level: advisory work on Malawi’s National AI Strategy consultation, with a submission prepared for the record. No ministerial production deployment is claimed. The systems are the evidence; the badges say which stage each one is at.',
       },
     ],
     relatedSolutions: ['ai-company-builder', 'boardroom-briefing', 'enterprise-deployment'],
@@ -769,7 +769,7 @@ export const insightArticles: InsightArticle[] = [
       { kind: 'h', text: 'What LightSpeed runs' },
       {
         kind: 'p',
-        text: 'LightSpeed Holdings is an AI-native company builder headquartered in Lilongwe. The company operates the system it sells: 91 agents (90 AI plus one human CEO) across 20 departments, coordinated through a message-bus task queue, governed by a five-tier approval matrix and SHA-256-sealed audit trails. Digital transformation digitised the paperwork; AI-native changes who does the work, and who is answerable for it.',
+        text: 'LightSpeed Holdings is an AI-native company builder headquartered in Lilongwe. The company operates the system it sells: 90 agents (89 AI plus one human CEO) across 20 departments, coordinated through a message-bus task queue, governed by a five-tier approval matrix and SHA-256-sealed audit trails. Digital transformation digitised the paperwork; AI-native changes who does the work, and who is answerable for it.',
       },
       { kind: 'h', text: 'Starting where you are' },
       {

@@ -181,7 +181,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     owner: 'cto',
     source: 'src/data/public-agent-registry.json',
     category: 'scale',
-    evidence: 'Canonical count of 91 agents; every view must consume this registry, not a hard-coded number.',
+    evidence: 'Canonical count of 90 agents; every view must consume this registry, not a hard-coded number.',
     lastReviewed: '2026-09-28',
   },
   {

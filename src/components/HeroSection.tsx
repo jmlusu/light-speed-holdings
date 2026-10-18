@@ -165,7 +165,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
             <div className="space-y-3">
               <p className={`text-justify text-base sm:text-lg font-bold leading-relaxed ${isLight ? 'text-ls-navy' : 'text-ls-white'
                 }`}>
-                <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds AI-native companies: 91 agents, 20 departments, five-tier human approval, every decision auditable.
+                <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds AI-native companies: 90 agents, 20 departments, five-tier human approval, every decision auditable.
               </p>
               <p className={`text-justify text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'
                 }`}>
