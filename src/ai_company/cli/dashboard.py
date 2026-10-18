@@ -17,24 +17,16 @@ def _open_browser(port: int) -> None:
     webbrowser.open(f"http://localhost:{port}")
 
 
-@app.callback(invoke_without_command=True)
-def dashboard(
-    ctx: typer.Context,
-    port: int = typer.Option(8420, help="Port to serve on"),
-    host: str = typer.Option("127.0.0.1", help="Host to bind to"),
-    no_open: bool = typer.Option(False, "--no-open", help="Don't auto-open browser"),
-) -> None:
-    """Start the CEO dashboard web server.
+def _validate_launch(port: int, host: str) -> None:
+    """Validate dashboard launch parameters (ADR-012 + G-2 guards).
 
     Args:
-        ctx: Typer invocation context (used to detect subcommands).
         port: Port to serve on.
         host: Host to bind to.
-        no_open: Don't auto-open the browser.
-    """
-    if ctx.invoked_subcommand is not None:
-        return
 
+    Raises:
+        typer.Exit: If the auth-mode or port-boundary guardrail is violated.
+    """
     # ADR-012: ``open`` auth mode bypasses the API-key guard, so it may only
     # bind to a loopback interface.
     import os
@@ -60,6 +52,15 @@ def dashboard(
         )
         raise typer.Exit(1)
 
+
+def _serve(port: int, host: str, no_open: bool) -> None:
+    """Run the CEO dashboard uvicorn server.
+
+    Args:
+        port: Port to serve on.
+        host: Host to bind to.
+        no_open: Don't auto-open the browser.
+    """
     import uvicorn
 
     if not no_open:
@@ -73,6 +74,94 @@ def dashboard(
         port=port,
         log_level="info",
     )
+
+
+def _ensure_executor_daemon() -> None:
+    """Start the executor daemon if it is not already running (US-A09).
+
+    Reuses the ``executor start`` daemon path with its defaults so the
+    autonomous-oversight launch runs the task loop alongside the dashboard.
+    Imports are function-local so tests can patch the executor helpers.
+
+    Raises:
+        typer.Exit: If daemon startup fails (e.g. an already-running race).
+    """
+    from ai_company.cli.executor import _resolve_budgets, _start_daemon
+    from ai_company.executor.daemon import ExecutorDaemon
+
+    if ExecutorDaemon.is_daemon_running():
+        typer.echo("Executor daemon already running — skipping start.")
+        return
+
+    daily_cap, task_cap, do_suspend = _resolve_budgets(
+        None, None, False, "config/company/guardrails.yaml"
+    )
+    _start_daemon(
+        poll_interval=5.0,
+        config="company/models.yaml",
+        registry="company/agent-registry.json",
+        pid_dir="logs",
+        log_dir="logs",
+        kpi_snapshot_interval=3600.0,
+        governance_interval=86400.0,
+        routine_interval=900.0,
+        db_path=None,
+        daily_budget_usd=daily_cap,
+        task_budget_usd=task_cap,
+        auto_suspend=do_suspend,
+    )
+
+
+@app.callback(invoke_without_command=True)
+def dashboard(
+    ctx: typer.Context,
+    port: int = typer.Option(8420, help="Port to serve on"),
+    host: str = typer.Option("127.0.0.1", help="Host to bind to"),
+    no_open: bool = typer.Option(False, "--no-open", help="Don't auto-open browser"),
+) -> None:
+    """Start the CEO dashboard web server.
+
+    Args:
+        ctx: Typer invocation context (used to detect subcommands).
+        port: Port to serve on.
+        host: Host to bind to.
+        no_open: Don't auto-open the browser.
+    """
+    if ctx.invoked_subcommand is not None:
+        return
+
+    _validate_launch(port, host)
+    _serve(port, host, no_open)
+
+
+@app.command("autonomous")
+def autonomous(
+    port: int = typer.Option(8420, help="Port to serve on"),
+    host: str = typer.Option("127.0.0.1", help="Host to bind to"),
+    no_open: bool = typer.Option(False, "--no-open", help="Don't auto-open browser"),
+    no_executor: bool = typer.Option(
+        False, "--no-executor", help="Serve only; don't start the executor daemon"
+    ),
+) -> None:
+    """Start the executor daemon, then serve the CEO dashboard (US-A09).
+
+    One-shot autonomous-oversight launch: validates launch guards, starts
+    the executor daemon if it is not already running, and serves the
+    dashboard until interrupted.
+
+    Args:
+        port: Port to serve on.
+        host: Host to bind to.
+        no_open: Don't auto-open the browser.
+        no_executor: Skip starting the executor daemon.
+
+    Raises:
+        typer.Exit: If launch guards fail or daemon startup fails.
+    """
+    _validate_launch(port, host)
+    if not no_executor:
+        _ensure_executor_daemon()
+    _serve(port, host, no_open)
 
 
 @app.command("backfill")
