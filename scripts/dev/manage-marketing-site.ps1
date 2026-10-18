@@ -1,7 +1,22 @@
 #!/usr/bin/env pwsh
 # Marketing Site Lifecycle Manager
 # Manages Vite dev server (1441) and preview server (1440)
-# Usage: pwsh scripts/dev/manage-marketing-site.ps1 -Action Start/Stop/Status/Monitor [-Minutes N]
+# Usage: pwsh scripts/dev/manage-marketing-site.ps1 -Action Start/Stop/Status/Monitor [-Minutes N] [-AllowDirtyWorktree]
+#
+# Safety rules (2026-10-17 marketing site operations plan):
+#   - Never kill processes wholesale (no taskkill /IM node.exe); only stop PIDs
+#     recorded in output/marketing-site/*.pid, or (Stop only) the listener on
+#     our own ports 1440/1441.
+#   - Start/Stop run the dirty-worktree preflight first and fail closed.
+#   - Servers run via bun (CI pins bun 1.4.2), not uv.
+
+param(
+    [Parameter(Mandatory = $true)]
+    [ValidateSet('Start', 'Stop', 'Status', 'Monitor')]
+    [string]$Action,
+    [int]$Minutes = 10,
+    [switch]$AllowDirtyWorktree
+)
 
 # Check we're on Windows
 $isWin = ($PSVersionTable.PSVersion.Major -ge 5)
@@ -11,13 +26,24 @@ if (-not $isWin) {
 }
 
 # Port definitions per CTO ratification 2026-10-10, G-5
-$PortDev = 1441   # Vite dev server
-$PortPreview = 1440  # Vite preview server
+$PortDev = 1441     # Vite dev server
+$PortPreview = 1440 # Vite preview server
+
+# Runtime paths (output/ is gitignored)
+$RepoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$RuntimeDir = Join-Path $RepoRoot 'output\marketing-site'
+$DevPidFile = Join-Path $RuntimeDir 'vite-dev.pid'
+$PreviewPidFile = Join-Path $RuntimeDir 'vite-preview.pid'
+$DevLog = Join-Path $RuntimeDir 'vite-dev.log'
+$DevErrLog = Join-Path $RuntimeDir 'vite-dev.err.log'
+$PreviewLog = Join-Path $RuntimeDir 'vite-preview.log'
+$PreviewErrLog = Join-Path $RuntimeDir 'vite-preview.err.log'
+$PreflightScript = Join-Path $PSScriptRoot 'Test-MarketingSiteOperationalPreflight.ps1'
 
 function Test-PortBound {
     param([int]$Port)
     $conn = Get-NetTCPConnection -LocalPort $Port -State Listen 2>$null
-    if (-not $conn) { return False }
+    if (-not $conn) { return $false }
     $proc = Get-Process -Id $conn.OwningProcess 2>$null
     return ($proc -ne $null)
 }
@@ -36,42 +62,128 @@ function Invoke-HTTP-Probe {
 }
 
 function Write-Step {
+    param([string]$Message)
     Write-Host "`n==> $Message" -ForegroundColor Cyan
 }
 function Write-Ok {
+    param([string]$Message)
     Write-Host "    [OK] $Message" -ForegroundColor Green
 }
 function Write-Warn {
+    param([string]$Message)
     Write-Host "    [WARN] $Message" -ForegroundColor Yellow
 }
 function Write-Fail {
+    param([string]$Message)
     Write-Host "    [FAIL] $Message" -ForegroundColor Red
 }
 
+function New-RuntimeDir {
+    if (-not (Test-Path $RuntimeDir)) {
+        New-Item -ItemType Directory -Path $RuntimeDir -Force | Out-Null
+    }
+}
+
+function Invoke-Preflight {
+    if (-not (Test-Path $PreflightScript)) {
+        Write-Fail ("Preflight script not found: " + $PreflightScript)
+        exit 1
+    }
+    & $PreflightScript -AllowDirtyWorktree:$AllowDirtyWorktree
+    if ($LASTEXITCODE -ne 0) {
+        Write-Fail "Preflight failed - aborting (fail closed)"
+        exit 1
+    }
+}
+
+function Stop-TrackedProcess {
+    param([string]$PidFile, [string]$Label)
+    if (-not (Test-Path $PidFile)) { return }
+    $procId = 0
+    try {
+        $procId = [int](Get-Content -Path $PidFile -ErrorAction Stop | Select-Object -First 1)
+    } catch {
+        $procId = 0
+    }
+    Remove-Item -Path $PidFile -Force -ErrorAction SilentlyContinue
+    if ($procId -le 0) {
+        Write-Warn ($Label + ": invalid PID file, removed")
+        return
+    }
+    $p = Get-Process -Id $procId -ErrorAction SilentlyContinue
+    if (-not $p) {
+        Write-Warn ($Label + ": PID " + $procId + " not running")
+        return
+    }
+    if ($p.ProcessName -notmatch '^(bun|node)') {
+        Write-Warn ($Label + ": PID " + $procId + " is now '" + $p.ProcessName + "' - not stopping it")
+        return
+    }
+    # Kill only this PID's process tree (never a whole-image taskkill)
+    taskkill /PID $procId /T /F 2>$null | Out-Null
+    Write-Ok ($Label + ": PID " + $procId + " stopped")
+}
+
+function Stop-PortOwner {
+    param([int]$Port)
+    $conn = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
+    if (-not $conn) { return }
+    $ownerId = [int](@($conn.OwningProcess)[0])
+    $p = Get-Process -Id $ownerId -ErrorAction SilentlyContinue
+    if (-not $p) { return }
+    if ($p.ProcessName -notmatch '^(bun|node)') {
+        Write-Warn ("Port " + $Port + " is held by '" + $p.ProcessName + "' (PID " + $ownerId + ") - not a Vite process, leaving it alone")
+        return
+    }
+    taskkill /PID $ownerId /T /F 2>$null | Out-Null
+    Write-Ok ("Port " + $Port + ": stopped PID " + $ownerId + " (" + $p.ProcessName + ")")
+}
+
 function Start-Servers {
-    Write-Step ("Starting Marketing Site Vite servers...")
+    Write-Step "Starting Marketing Site Vite servers..."
+    Invoke-Preflight
 
-    # Kill any lingering node processes
-    cmd /c "taskkill /F /IM node.exe" 2>$null
+    $bun = Get-Command bun -ErrorAction SilentlyContinue
+    if (-not $bun) {
+        Write-Fail "bun not found on PATH (CI pins bun 1.4.2)"
+        exit 1
+    }
+    New-RuntimeDir
 
-    # Start Vite dev server on 1441
+    # Stop only processes this script started earlier
+    Stop-TrackedProcess -PidFile $DevPidFile -Label "tracked dev server"
+    Stop-TrackedProcess -PidFile $PreviewPidFile -Label "tracked preview server"
+
+    # Fail closed: if our ports are still occupied, require an explicit Stop
+    $devConn = Get-NetTCPConnection -LocalPort $PortDev -State Listen -ErrorAction SilentlyContinue
+    $previewConn = Get-NetTCPConnection -LocalPort $PortPreview -State Listen -ErrorAction SilentlyContinue
+    if ($devConn -or $previewConn) {
+        if ($devConn) { Write-Fail ("Port " + $PortDev + " still bound after cleanup") }
+        if ($previewConn) { Write-Fail ("Port " + $PortPreview + " still bound after cleanup") }
+        Write-Fail "Run with -Action Stop first, then retry"
+        exit 1
+    }
+
     Write-Step ("Starting Vite dev server on port " + $PortDev)
-    & 'uv' 'run' 'vite' > $null 2>&1 &
+    $devProc = Start-Process -FilePath $bun.Source -ArgumentList 'run', 'dev' -WorkingDirectory $RepoRoot -PassThru -RedirectStandardOutput $DevLog -RedirectStandardError $DevErrLog -WindowStyle Hidden
+    Set-Content -Path $DevPidFile -Value $devProc.Id
+    Write-Ok ("Vite dev started (PID " + $devProc.Id + ")")
 
-    # Start Vite preview on 1440
     Write-Step ("Starting Vite preview on port " + $PortPreview)
-    & 'uv' 'run' 'vite' --preview > $null 2>&1 &
+    $previewProc = Start-Process -FilePath $bun.Source -ArgumentList 'run', 'preview' -WorkingDirectory $RepoRoot -PassThru -RedirectStandardOutput $PreviewLog -RedirectStandardError $PreviewErrLog -WindowStyle Hidden
+    Set-Content -Path $PreviewPidFile -Value $previewProc.Id
+    Write-Ok ("Vite preview started (PID " + $previewProc.Id + ")")
 
     # Wait for ports to bind (up to 30s)
     $waitCount = 0
     while ($waitCount -lt 30) {
-        if (Test-PortBound $PortDev -and Test-PortBound $PortPreview) { break }
+        if ((Test-PortBound $PortDev) -and (Test-PortBound $PortPreview)) { break }
         Start-Sleep -Seconds 1
         $waitCount++
     }
 
     if ($waitCount -ge 30) {
-        Write-Warn ("Ports did not bind within 30s, but proceeding anyway")
+        Write-Warn "Ports did not bind within 30s, but probing anyway"
     }
 
     # Probe both ports
@@ -98,32 +210,45 @@ function Start-Servers {
         Write-Warn ("Port " + $PortPreview + ": no HTTP response")
     }
 
-    Write-Ok ("Marketing Site servers started")
+    Write-Ok "Marketing Site servers started"
 }
 
 function Stop-Servers {
-    Write-Step ("Stopping Marketing Site Vite servers...")
+    Write-Step "Stopping Marketing Site Vite servers..."
+    Invoke-Preflight
 
-    # Kill node processes
-    cmd /c "taskkill /F /IM node.exe" 2>$null
+    Stop-TrackedProcess -PidFile $DevPidFile -Label "tracked dev server"
+    Stop-TrackedProcess -PidFile $PreviewPidFile -Label "tracked preview server"
+
+    # Wait for ports to release (up to 10s)
+    $waitCount = 0
+    while ($waitCount -lt 10) {
+        if ((Test-PortUnbound $PortDev) -and (Test-PortUnbound $PortPreview)) { break }
+        Start-Sleep -Seconds 1
+        $waitCount++
+    }
+
+    # Port-based fallback: stop ONLY the listener on our own site ports
+    Stop-PortOwner -Port $PortDev
+    Stop-PortOwner -Port $PortPreview
 
     # Wait for ports to become unbound (up to 15s)
     $waitCount = 0
     while ($waitCount -lt 15) {
-        if (Test-PortUnbound $PortDev -and Test-PortUnbound $PortPreview) { break }
+        if ((Test-PortUnbound $PortDev) -and (Test-PortUnbound $PortPreview)) { break }
         Start-Sleep -Seconds 1
         $waitCount++
     }
 
     if ($waitCount -ge 15) {
-        Write-Warn ("Ports did not become unbound within 15s")
+        Write-Warn "Ports did not become unbound within 15s"
     } else {
-        Write-Ok ("Both ports unbound")
+        Write-Ok "Both ports unbound"
     }
 }
 
 function Get-Status {
-    Write-Step ("Checking Marketing Site server status...")
+    Write-Step "Checking Marketing Site server status..."
 
     $devBound = Test-PortBound $PortDev
     $previewBound = Test-PortBound $PortPreview
@@ -152,7 +277,7 @@ function Get-Status {
 }
 
 function Monitor-Servers {
-    param([int]$Minutes = 1)
+    param([int]$Minutes = 10)
 
     Write-Step ("Monitoring Marketing Site servers for " + $Minutes + " minute(s)...")
 
@@ -182,7 +307,8 @@ function Monitor-Servers {
 
         # Report every 30 seconds
         if ($checkCount % 3 -eq 0) {
-            Write-Host ("Monitor check " + $checkCount + ": " + (if ($ok) {'OK'} else {'FAIL'}))
+            $state = if ($ok) { 'OK' } else { 'FAIL' }
+            Write-Host ("Monitor check " + $checkCount + ": " + $state)
         }
 
         Start-Sleep -Seconds 10
@@ -191,7 +317,7 @@ function Monitor-Servers {
     Write-Ok ("Monitoring complete (" + $Minutes + " minutes elapsed)")
 }
 
-# Parse action parameter
+# Dispatch action
 if ($Action -eq 'Start') {
     Start-Servers
 } elseif ($Action -eq 'Stop') {

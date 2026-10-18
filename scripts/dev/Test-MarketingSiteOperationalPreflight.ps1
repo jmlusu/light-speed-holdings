@@ -1,7 +1,8 @@
 #!/usr/bin/env pwsh
 # Dirty-Worktree Preflight Check
 # Ensures sensitive files aren't modified without -AllowDirtyWorktree
-# Wire: required before Start/Stop, optional for Monitor
+# Wire: required before Start/Stop (manage-marketing-site.ps1 fails closed),
+#       optional for Monitor/Status
 
 param(
     [switch]$AllowDirtyWorktree
@@ -19,16 +20,27 @@ $SensitivePatterns = @(
 )
 
 function Test-SensitiveFilesModified {
-    # Check git diff for modified files in sensitive paths
-    $modifiedFiles = @(cmd /c "git diff --name-only HEAD" 2>$null | Where-Object { $_ })
+    # git status --porcelain covers staged, unstaged AND untracked files.
+    # (2026-10-17 fix: `git diff --name-only HEAD` missed untracked files.)
+    $statusLines = @(git status --porcelain 2>$null | Where-Object { $_ })
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "git status failed - cannot verify worktree state (fail closed)"
+        exit 1
+    }
 
-    if ($modifiedFiles.Count -eq 0) {
+    if ($statusLines.Count -eq 0) {
         return $false  # No modifications, pass through
     }
 
-    foreach ($file in $modifiedFiles) {
+    foreach ($line in $statusLines) {
+        if ($line.Length -lt 4) { continue }
+        $path = $line.Substring(3).Trim()
+        if ($path -like '* -> *') {
+            $path = (($path -split ' -> ')[-1]).Trim()
+        }
+        $path = $path.Trim('"')
         foreach ($pattern in $SensitivePatterns) {
-            if ($file -like "$pattern*") {
+            if ($path -like "$pattern*") {
                 return $true  # Sensitive file modified
             }
         }
@@ -39,20 +51,19 @@ function Test-SensitiveFilesModified {
 
 Write-Host "Checking for sensitive file modifications..."
 
-if (-not $AllowDirtyWorktree) {
-    if (Test-SensitiveFilesModified) {
-        Write-Host "Sensitive files modified without -AllowDirtyWorktree. "
-        Write-Host "Please commit/Stash changes or rerun with -AllowDirtyWorktree."
-        exit 1
-    } else {
-        Write-Host "No sensitive file modifications detected - preflight passed"
-    }
+$sensitiveDirty = Test-SensitiveFilesModified
+
+if ($sensitiveDirty -and -not $AllowDirtyWorktree) {
+    Write-Host "Sensitive files modified without -AllowDirtyWorktree. "
+    Write-Host "Please commit/Stash changes or rerun with -AllowDirtyWorktree."
+    exit 1
+}
+
+if ($sensitiveDirty) {
+    Write-Host "Sensitive files modified with -AllowDirtyWorktree (allowed)"
 } else {
-    if (Test-SensitiveFilesModified) {
-        Write-Host "Sensitive files modified with -AllowDirtyWorktree (allowed)"
-    } else {
-        Write-Host "No sensitive file modifications - preflight passed"
-    }
+    Write-Host "No sensitive file modifications - preflight passed"
 }
 
 Write-Host "Preflight check complete"
+exit 0
