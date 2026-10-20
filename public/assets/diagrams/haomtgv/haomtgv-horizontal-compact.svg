@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400" role="img" aria-labelledby="title desc">
+  <title id="title">H-A-O-M-T-G-V Framework (Horizontal Compact)</title>
+  <desc id="desc">Condensed horizontal H-A-O-M-T-G-V framework for inline use in sections with limited vertical space.</desc>
+
+  <defs>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#070A40"/>
+      <stop offset="100%" style="stop-color:#0A0C12"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00BFFF"/>
+      <stop offset="100%" style="stop-color:#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E63946"/>
+      <stop offset="100%" style="stop-color:#FF2D55"/>
+    </linearGradient>
+    <filter id="glowCyan" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowRed" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="url(#cyanGrad)"/>
+    </marker>
+    <marker id="arrowheadRed" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="url(#redGrad)"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="400" fill="url(#navyGrad)"/>
+
+  <g font-family="Arial, sans-serif">
+    <!-- HUMAN -->
+    <g transform="translate(80, 200)">
+      <rect x="-60" y="-35" width="120" height="70" rx="12" fill="#0A0C12" stroke="url(#redGrad)" stroke-width="2" filter="url(#glowRed)"/>
+      <circle cx="-35" cy="0" r="18" fill="#0A0C12" stroke="url(#redGrad)" stroke-width="2"/>
+      <text x="-35" y="5" text-anchor="middle" font-size="20" font-weight="900" fill="url(#redGrad)">H</text>
+      <text x="20" y="-8" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">Human</text>
+      <text x="20" y="12" text-anchor="middle" font-size="10" fill="#9CA3AF">People set intent</text>
+    </g>
+
+    <path d="M140 200 L190 200" stroke="url(#cyanGrad)" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)" filter="url(#glowCyan)"/>
+
+    <!-- AGENTS -->
+    <g transform="translate(260, 200)">
+      <rect x="-60" y="-35" width="120" height="70" rx="12" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2" filter="url(#glowCyan)"/>
+      <circle cx="-35" cy="0" r="18" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2"/>
+      <text x="-35" y="5" text-anchor="middle" font-size="20" font-weight="900" fill="url(#cyanGrad)">A</text>
+      <text x="20" y="-8" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">Agents</text>
+      <text x="20" y="12" text-anchor="middle" font-size="10" fill="#9CA3AF">89 AI roles</text>
+    </g>
+
+    <path d="M320 200 L370 200" stroke="url(#cyanGrad)" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)" filter="url(#glowCyan)"/>
+
+    <!-- ORCHESTRATION -->
+    <g transform="translate(440, 200)">
+      <rect x="-60" y="-35" width="120" height="70" rx="12" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2" filter="url(#glowCyan)"/>
+      <circle cx="-35" cy="0" r="18" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2"/>
+      <text x="-35" y="5" text-anchor="middle" font-size="20" font-weight="900" fill="url(#cyanGrad)">O</text>
+      <text x="20" y="-8" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">Orchestration</text>
+      <text x="20" y="12" text-anchor="middle" font-size="10" fill="#9CA3AF">MessageBus</text>
+    </g>
+
+    <path d="M500 200 L550 200" stroke="url(#cyanGrad)" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)" filter="url(#glowCyan)"/>
+
+    <!-- MEMORY -->
+    <g transform="translate(620, 200)">
+      <rect x="-60" y="-35" width="120" height="70" rx="12" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2" filter="url(#glowCyan)"/>
+      <circle cx="-35" cy="0" r="18" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2"/>
+      <text x="-35" y="5" text-anchor="middle" font-size="20" font-weight="900" fill="url(#cyanGrad)">M</text>
+      <text x="20" y="-8" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">Memory</text>
+      <text x="20" y="12" text-anchor="middle" font-size="10" fill="#9CA3AF">6-type store</text>
+    </g>
+
+    <path d="M680 200 L730 200" stroke="url(#cyanGrad)" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)" filter="url(#glowCyan)"/>
+
+    <!-- TOOLS -->
+    <g transform="translate(800, 200)">
+      <rect x="-60" y="-35" width="120" height="70" rx="12" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2" filter="url(#glowCyan)"/>
+      <circle cx="-35" cy="0" r="18" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2"/>
+      <text x="-35" y="5" text-anchor="middle" font-size="20" font-weight="900" fill="url(#cyanGrad)">T</text>
+      <text x="20" y="-8" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">Tools</text>
+      <text x="20" y="12" text-anchor="middle" font-size="10" fill="#9CA3AF">Isolated exec</text>
+    </g>
+
+    <path d="M860 200 L910 200" stroke="url(#redGrad)" stroke-width="2.5" fill="none" marker-end="url(#arrowheadRed)" filter="url(#glowRed)"/>
+
+    <!-- GOVERNANCE -->
+    <g transform="translate(980, 200)">
+      <rect x="-60" y="-35" width="120" height="70" rx="12" fill="#0A0C12" stroke="url(#redGrad)" stroke-width="2" filter="url(#glowRed)"/>
+      <circle cx="-35" cy="0" r="18" fill="#0A0C12" stroke="url(#redGrad)" stroke-width="2"/>
+      <text x="-35" y="5" text-anchor="middle" font-size="20" font-weight="900" fill="url(#redGrad)">G</text>
+      <text x="20" y="-8" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">Governance</text>
+      <text x="20" y="12" text-anchor="middle" font-size="10" fill="#9CA3AF">5-tier approval</text>
+    </g>
+
+    <path d="M1040 200 L1090 200" stroke="url(#cyanGrad)" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)" filter="url(#glowCyan)"/>
+
+    <!-- VALUE -->
+    <g transform="translate(1110, 200)">
+      <rect x="-60" y="-35" width="120" height="70" rx="12" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2" filter="url(#glowCyan)"/>
+      <circle cx="-35" cy="0" r="18" fill="#0A0C12" stroke="url(#cyanGrad)" stroke-width="2"/>
+      <text x="-35" y="5" text-anchor="middle" font-size="20" font-weight="900" fill="url(#cyanGrad)">V</text>
+      <text x="20" y="-8" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">Value</text>
+      <text x="20" y="12" text-anchor="middle" font-size="10" fill="#9CA3AF">Measured outcomes</text>
+    </g>
+  </g>
+
+  <!-- Feedback loop indicator (small, below) -->
+  <g opacity="0.5" font-size="9" font-family="Arial, sans-serif">
+    <path d="M260 280 Q350 240 440 280" stroke="url(#cyanGrad)" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrowhead)"/>
+    <text x="350" y="230" text-anchor="middle" fill="#00BFFF">feedback</text>
+    <path d="M620 280 Q710 240 800 280" stroke="url(#cyanGrad)" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrowhead)"/>
+    <text x="710" y="230" text-anchor="middle" fill="#00BFFF">feedback</text>
+    <path d="M980 280 Q1070 240 1110 280" stroke="url(#redGrad)" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrowheadRed)"/>
+    <text x="1070" y="230" text-anchor="middle" fill="#E63946">oversight</text>
+  </g>
+
+  <!-- Brand bar -->
+  <g transform="translate(0, 380)">
+    <rect x="50" y="0" width="366.66" height="4" fill="#070A40"/>
+    <rect x="416.66" y="0" width="366.66" height="4" fill="#E63946"/>
+    <rect x="783.32" y="0" width="366.68" height="4" fill="#00BFFF"/>
+  </g>
+</svg>

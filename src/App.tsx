@@ -20,6 +20,7 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
+import { HaomtgvPage } from './pages/HAOMTGVPage';
 
 
 const HomePageRoute = withSite(HomePage);
@@ -35,6 +36,7 @@ const AboutPageRoute = withSite(AboutPage);
 const ContactPageRoute = withSite(ContactPage);
 const PrivacyPageRoute = withSite(PrivacyPage);
 const TermsPageRoute = withSite(TermsPage);
+const HaomtgvPageRoute = withSite(HaomtgvPage);
 
 
 
@@ -82,6 +84,7 @@ export const App: React.FC = () => {
           { index: true, element: <HomePageRoute /> },
           { path: 'what-we-do', element: <WhatWeDoPageRoute /> },
           { path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
+          { path: 'haomtgv', element: <HaomtgvPageRoute /> },
           { path: 'solutions', element: <SolutionsPageRoute /> },
           { path: 'sectors', element: <SectorsPageRoute /> },
           { path: 'sectors/:slug', element: <SectorDetailPageRoute /> },
