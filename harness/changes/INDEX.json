@@ -1834,5 +1834,30 @@
         "phase":  "validate",
         "spec_review":  "approved",
         "session_id":  null
+    },
+    {
+        "id":  "2026-10-18-haomtgv-blueprint-hero-and-page-wiring",
+        "title":  "HAOMTGV blueprint hero and page wiring",
+        "status":  "abandoned",
+        "location":  "archive",
+        "modules":  [
+
+                    ],
+        "files":  [
+
+                  ],
+        "tags":  [
+
+                 ],
+        "decisions":  [
+
+                      ],
+        "validation_status":  "unknown",
+        "slug":  "haomtgv-blueprint-hero-and-page-wiring",
+        "path":  "harness/changes/archive/2026-10-18-haomtgv-blueprint-hero-and-page-wiring",
+        "updated_at":  "2026-10-18",
+        "phase":  "intake",
+        "spec_review":  "pending",
+        "session_id":  "0ae3f812-5907-4363-b033-4470d7c36b00"
     }
 ]
