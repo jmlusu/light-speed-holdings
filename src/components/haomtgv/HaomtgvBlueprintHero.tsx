@@ -79,26 +79,38 @@ export const HaomtgvBlueprintHero: React.FC<HaomtgvBlueprintHeroProps> = ({
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block">
             {HAOMTGV_LAYERS.map((layer, i) => {
               const isGov = layer.letter === 'G';
+              const isActive = activeIndex === i;
+              const dimmed = activeIndex !== null && !isActive;
               return (
                 <span
                   key={layer.id}
-                  className="absolute h-px w-10"
+                  className="absolute h-px"
                   style={{
                     top: i * SLAB_STEP + 24,
                     left: 'calc(50% + 150px)',
+                    width: isActive ? 64 : 40,
                     backgroundColor: isGov
-                      ? 'rgba(255,45,85,0.6)'
-                      : 'rgba(34,211,238,0.6)',
+                      ? `rgba(255,45,85,${isActive ? 1 : 0.6})`
+                      : `rgba(34,211,238,${isActive ? 1 : 0.6})`,
+                    boxShadow: isActive
+                      ? `0 0 12px ${isGov ? 'rgba(255,45,85,0.9)' : 'rgba(34,211,238,0.9)'}`
+                      : 'none',
+                    opacity: dimmed ? 0.35 : 1,
                     transformOrigin: 'left',
+                    transition:
+                      'width 200ms ease-out, opacity 200ms ease-out, background-color 200ms ease-out, box-shadow 200ms ease-out',
                     animation: 'ls-hero-draw 0.5s ease-out backwards',
                     animationDelay: `${i * 80 + 300}ms`,
                   }}
                 >
                   <span
-                    className="absolute right-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full"
                     style={{
+                      width: isActive ? 8 : 6,
+                      height: isActive ? 8 : 6,
                       backgroundColor: isGov ? RED : CYAN,
-                      boxShadow: `0 0 8px ${isGov ? 'rgba(255,45,85,0.8)' : 'rgba(34,211,238,0.8)'}`,
+                      boxShadow: `0 0 ${isActive ? 12 : 8}px ${isGov ? 'rgba(255,45,85,0.8)' : 'rgba(34,211,238,0.8)'}`,
+                      transition: 'width 200ms ease-out, height 200ms ease-out, box-shadow 200ms ease-out',
                     }}
                   />
                 </span>
@@ -175,7 +187,7 @@ export const HaomtgvBlueprintHero: React.FC<HaomtgvBlueprintHeroProps> = ({
 
             <Link
               to="/ai-company-builder/#governance"
-              className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#FF2D55] px-6 py-3 text-sm font-bold tracking-wide text-white transition-all hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+              className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#FF2D55] px-6 py-3 text-sm font-bold tracking-wide text-[#050B1A] transition-all hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
               style={{
                 animation: 'ls-hero-slide 0.7s ease-out backwards',
                 animationDelay: '300ms',
@@ -187,8 +199,11 @@ export const HaomtgvBlueprintHero: React.FC<HaomtgvBlueprintHeroProps> = ({
           </div>
 
           {/* Center: the slab stack */}
-          <div className="relative flex justify-center">
-            <div className="relative mx-auto aspect-video w-full max-w-[560px] overflow-hidden lg:aspect-auto lg:h-[720px] lg:max-w-none">
+          <div
+            className="relative flex justify-center"
+            onMouseLeave={() => setActiveIndex(null)}
+          >
+            <div className="relative mx-auto aspect-video w-full max-w-[560px] overflow-hidden lg:aspect-auto lg:h-[760px] lg:max-w-none lg:overflow-visible lg:w-[240px] lg:-ml-[120px] xl:w-[300px] xl:-ml-[150px]">
               <div className="absolute inset-0 origin-center scale-[0.26] sm:scale-[0.4] md:scale-[0.42] lg:scale-100">
                 <div
                   aria-hidden="true"
@@ -227,6 +242,7 @@ export const HaomtgvBlueprintHero: React.FC<HaomtgvBlueprintHeroProps> = ({
                       key={layer.id}
                       className="absolute left-1/2 -ml-[150px] w-[300px]"
                       style={{ top: i * SLAB_STEP, perspective: 1200 }}
+                      onMouseEnter={() => setActiveIndex(i)}
                     >
                       <div
                         className="relative h-24 transition-[transform,opacity] duration-300 ease-out"
@@ -331,7 +347,7 @@ export const HaomtgvBlueprintHero: React.FC<HaomtgvBlueprintHeroProps> = ({
             className="relative"
             onMouseLeave={() => setActiveIndex(null)}
           >
-            <div className="relative lg:h-[720px]">
+            <div className="relative lg:h-[760px]">
               {HAOMTGV_LAYERS.map((layer, i) => {
                 const isActive = activeIndex === i;
                 return (
@@ -341,7 +357,7 @@ export const HaomtgvBlueprintHero: React.FC<HaomtgvBlueprintHeroProps> = ({
                     onMouseEnter={() => setActiveIndex(i)}
                     onFocus={() => setActiveIndex(i)}
                     onBlur={() => setActiveIndex(null)}
-                    className="mb-5 grid grid-cols-[48px_40px_1fr] items-start gap-x-4 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 lg:absolute lg:mb-0"
+                    className="mb-5 grid grid-cols-[48px_40px_1fr] items-start gap-x-4 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 xl:absolute xl:mb-0"
                     style={{
                       top: i * SLAB_STEP,
                       transform: isActive ? 'translateX(6px)' : 'translateX(0)',
@@ -392,8 +408,19 @@ export const HaomtgvBlueprintHero: React.FC<HaomtgvBlueprintHeroProps> = ({
           </div>
         </div>
 
-        <p className="mt-12 text-xs tracking-[0.35em] text-slate-400 lg:absolute lg:right-16 lg:top-12 lg:mt-0">
-          ASPIRE. ACT. ACHIEVE.
+        <p
+          className="mt-12 text-xs tracking-[0.35em] xl:absolute xl:right-16 xl:top-12 xl:mt-0"
+          aria-label="ASPIRE. ACT. ACHIEVE."
+        >
+          <span aria-hidden="true" className="text-white">
+            ASPIRE.
+          </span>{' '}
+          <span aria-hidden="true" style={{ color: CYAN }}>
+            ACT.
+          </span>{' '}
+          <span aria-hidden="true" style={{ color: RED }}>
+            ACHIEVE.
+          </span>
         </p>
       </div>
     </section>
