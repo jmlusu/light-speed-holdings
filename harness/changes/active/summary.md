@@ -40,3 +40,4 @@ Pending.
 
 - Parked by deck-QA automation change to free the single active slot; resume with harness-change.ps1 resume <id>.
 - Parked for the deck logo crop-cache change (issue #485) to free the single active slot; resume with harness-change.ps1 resume <id>.
+- Parked for the perf-gate calibration change (issue #484) to free the single active slot; resume with harness-change.ps1 resume <id>.
