@@ -1836,6 +1836,40 @@
         "session_id":  null
     },
     {
+        "id":  "2026-10-20-calibrate-the-dashboard-performance-gate-and-cache-the-registry-read",
+        "title":  "Calibrate the dashboard performance gate and cache the registry read",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "src/ai_company/dashboard",
+                        "tests/performance",
+                        "tests/unit"
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     "dashboard",
+                     "performance",
+                     "ci",
+                     "correctness"
+                 ],
+        "decisions":  [
+                          "- Median plus a per-endpoint budget, rather than a single threshold or a tightened percentile: the median is the statistic that survives a contended runner, and per-endpoint budgets are the only way to keep the gate meaningful across endpoints that differ tenfold in cost.",
+                          "- Key the cache on the file revision rather than a TTL: the registry is written by another process, so a TTL would show a stale org chart for the TTL window after a write.",
+                          "- Keep the hard ceiling: dropping the maximum entirely would have removed the pathological case the original gate was there to catch.",
+                          "- Leave `mobile_api.py` alone: it has its own `_load_registry()` with a separate contract and no reported latency problem.",
+                          "- Do not make the perf suite non-blocking. That was the last resort if the gate still flapped; the measurement problem was the cause, so the gate stays a required check."
+                      ],
+        "validation_status":  "pass",
+        "slug":  "calibrate-the-dashboard-performance-gate-and-cache-the-registry-read",
+        "path":  "harness/changes/archive/2026-10-20-calibrate-the-dashboard-performance-gate-and-cache-the-registry-read",
+        "updated_at":  "2026-10-20",
+        "phase":  "validate",
+        "spec_review":  "approved",
+        "session_id":  "3b71c0a4-8f2d-4c15-9a77-2b6d4e8f1a90"
+    },
+    {
         "id":  "2026-10-20-deck-logo-crop-cache-content-address-the-cache-keep-the-deck-description-stable",
         "title":  "Deck logo crop cache: content-address the cache, keep the deck description stable",
         "status":  "completed",
