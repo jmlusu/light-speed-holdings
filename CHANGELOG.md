@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- **Deck QA automation**: The AI Venture Studio client deck is now policed like generated code. New `scripts/presentation/deck_geometry.py` holds the design intent shared by the generator, the structural verifier and the rendered-pixel gate; new `tests/presentation/test_venture_studio_deck.py` (8 tests) guards the logo-over-tagline defect fixed in PR #480 and checks the committed deck against the generator output; two new required CI checks run the gates on every PR (`Deck QA (structure)`, `Deck QA (rendered pixels)` via headless LibreOffice).
 - **HAOMTGV Verification Status** (P4 Equivalent): Added HAOMTGV pillar alignment (`H-A-O-M-T-G-V`) to all 7 ProofPage sections with verification status lines per pillar; canonical 7-tool vocabulary compliance notes per agent card; honest badge mapping to CLAIMS_GOVERNANCE.md statuses (VERIFIED/PROVEN_IN_HOUSE/PILOT/DEMONSTRATION/FIELDABLE/FUTURE)
 - **KPI Collectors**: Ensured HAOMTGV-aligned metrics (5-tier gates, 90 agents, 17 verified tests, 20 departments) synchronized across metrics.ts, ProofPage, and insight articles; drift telemetry with HAOMTGV pillar context in model performance tracking
 - **Stale Count Sweep**: Verified no "145 agents" or "152 agents" in public copy; CI gate passes (ruff, mypy, pytest drift/tests all green)
@@ -17,6 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 - **Tests**: `EXPECTED_AGENT_COUNT` bumped to 145; `test_doc_agent_counts.py` + `test_doc_drift.py` green (33 passed / 1 skipped).
 
 ### Changed
+- **Deck tools hardened**: the deck generator refuses a brand logo asset whose size does not match the expected 1254x1254 (instead of cropping the wrong region) and re-cuts its cached crop when the source asset is newer; the structural verifier now asserts the exact shared lockup placement on the cover and closing slides; the rendered-pixel gate also probes the cover slide and measures clearance against the declared tagline top, so font substitution on CI cannot mask a real overlap.
 - **Agent count folded 152 → 90** (62 cuts; 89 AI + 1 Human CEO) across edge files: `docs/STATUS.md`, `TESTING.md`, brand template generators; registry-verified count now 90.
 - **Agent count reconciled 144 → 145** across living docs: README.md, USER-GUIDE.md, ORGANIZATION.md (Marketing 9 → 11 + `social-media-manager`), DEVELOPMENT.md, `docs/source-of-truth.yaml`, `company/org-chart.md` (Marketing 10 → 11), `docs/AGENT-REGISTRY-TABLE.md`; `company/agent-registry.json` re-synced via `ai-company sync-registry --verify`.
 - **Social media setup plan retired**: `social-media/LIGHTSPEED-SOCIAL-MEDIA-SETUP.md` removed; content preserved in normalized form at `docs/marketing/digital-identity-setup.md`.

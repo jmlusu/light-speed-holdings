@@ -1,9 +1,12 @@
-"""Render the AI Venture Studio deck and probe the closing slide.
+"""Render the AI Venture Studio deck and probe the cover and closing slides.
 
 LibreOffice is the reference renderer: it ignores ``a:srcRect`` on pictures and
 honours ``a:clrChange``, so a headless PDF export reproduces what a client
-actually sees. This gate fails when the slide 13 lockup overruns its frame, a
-navy plate shows behind the logo, or the tagline loses its clear space.
+actually sees. This gate fails when a lockup overruns its frame, a navy plate
+shows behind the logo, or the artwork loses its clear space to the text.
+
+Every expected position comes from ``scripts/presentation/deck_geometry.py``,
+the same module the generator places the artwork from.
 
 Usage:
     uv run --with pymupdf python scripts/presentation/render-venture-studio-deck.py [deck.pptx]
@@ -26,19 +29,25 @@ try:
 except ImportError:  # PyMuPDF < 1.24 exposes only the fitz alias
     import fitz as pymupdf
 
+from deck_geometry import (
+    CLOSING_LOGO_BOTTOM_IN,
+    CLOSING_LOGO_W_IN,
+    CLOSING_LOGO_X_IN,
+    CLOSING_LOGO_Y_IN,
+    COVER_LOGO_BOTTOM_IN,
+    COVER_LOGO_W_IN,
+    COVER_LOGO_X_IN,
+    COVER_LOGO_Y_IN,
+    COVER_TITLE_Y_IN,
+    MIN_GAP_IN,
+    SLIDE_H_IN,
+    SLIDE_W_IN,
+    TAGLINE_Y_IN,
+)
+
 # --------------------------------------------------------------- design intent
-SLIDE_W_IN = 10.0
-SLIDE_H_IN = 7.5
-
-LOGO_X_IN = 3.80
-LOGO_Y_IN = 3.95
-LOGO_W_IN = 2.40
-LOGO_ASPECT = 880 / 713  # cropped content bbox of logo-full.png
-LOGO_H_IN = LOGO_W_IN / LOGO_ASPECT
-LOGO_BOTTOM_IN = LOGO_Y_IN + LOGO_H_IN  # 5.8945
-
-TAGLINE_Y_IN = 6.24
-MIN_GAP_IN = 0.15
+# Every expected value comes from scripts/presentation/deck_geometry.py, the
+# same module the generator places the artwork from.
 
 NAVY = (7, 10, 63)  # #070A40 as rendered by LibreOffice
 LOGO_BG = (2, 6, 47)  # #02062F plate that a:clrChange is meant to remove
@@ -46,7 +55,13 @@ TOL = 14
 MAX_PLATE_RATIO = 0.10
 
 DEFAULT_DPI = 150
+COVER_INDEX = 0
 CLOSING_INDEX = 12
+# How far the rendered tagline may sit from its declared position. Font
+# substitution changes glyph ascent, not the layout, so the clearance is
+# measured against the declared top edge while the tagline is still located
+# in the rendered pixels.
+TAGLINE_POS_TOL_IN = 0.12
 
 
 def find_soffice() -> str:
@@ -151,9 +166,9 @@ def probe_closing(pix, dpi: int) -> list[tuple[str, bool, str]]:
     glyphs = bbox(
         pix,
         is_white,
-        LOGO_X_IN - 0.10,
-        LOGO_Y_IN - 0.10,
-        LOGO_X_IN + LOGO_W_IN + 0.10,
+        CLOSING_LOGO_X_IN - 0.10,
+        CLOSING_LOGO_Y_IN - 0.10,
+        CLOSING_LOGO_X_IN + CLOSING_LOGO_W_IN + 0.10,
         TAGLINE_Y_IN - 0.02,
         dpi,
     )
@@ -163,22 +178,29 @@ def probe_closing(pix, dpi: int) -> list[tuple[str, bool, str]]:
 
     left, top, right, bottom = glyphs
     inside = (
-        bottom <= LOGO_BOTTOM_IN + 0.05
-        and top >= LOGO_Y_IN - 0.05
-        and left >= LOGO_X_IN - 0.05
-        and right <= LOGO_X_IN + LOGO_W_IN + 0.05
-        and (right - left) >= 0.8 * LOGO_W_IN
+        bottom <= CLOSING_LOGO_BOTTOM_IN + 0.05
+        and top >= CLOSING_LOGO_Y_IN - 0.05
+        and left >= CLOSING_LOGO_X_IN - 0.05
+        and right <= CLOSING_LOGO_X_IN + CLOSING_LOGO_W_IN + 0.05
+        and (right - left) >= 0.8 * CLOSING_LOGO_W_IN
     )
     results.append(
         (
             "logo inside frame",
             inside,
             f"artwork x {left:.2f}-{right:.2f} y {top:.2f}-{bottom:.2f} in; "
-            f"frame y {LOGO_Y_IN:.2f}-{LOGO_BOTTOM_IN:.2f}",
+            f"frame y {CLOSING_LOGO_Y_IN:.2f}-{CLOSING_LOGO_BOTTOM_IN:.2f}",
         )
     )
 
-    ratio = plate_ratio(pix, LOGO_X_IN, LOGO_Y_IN, LOGO_X_IN + LOGO_W_IN, LOGO_BOTTOM_IN, dpi)
+    ratio = plate_ratio(
+        pix,
+        CLOSING_LOGO_X_IN,
+        CLOSING_LOGO_Y_IN,
+        CLOSING_LOGO_X_IN + CLOSING_LOGO_W_IN,
+        CLOSING_LOGO_BOTTOM_IN,
+        dpi,
+    )
     results.append(("no navy plate", ratio <= MAX_PLATE_RATIO, f"{ratio:.1%} of logo frame"))
 
     tagline = bbox(
@@ -202,10 +224,73 @@ def probe_closing(pix, dpi: int) -> list[tuple[str, bool, str]]:
             f"x {t_left:.2f}-{t_right:.2f} y {t_top:.2f}-{t_bottom:.2f} in",
         )
     )
-    gap = t_top - bottom
+    results.append(
+        (
+            "tagline position",
+            abs(t_top - TAGLINE_Y_IN) <= TAGLINE_POS_TOL_IN,
+            f"rendered {t_top:.2f}in vs declared {TAGLINE_Y_IN:.2f}in "
+            f"(+/-{TAGLINE_POS_TOL_IN:.2f})",
+        )
+    )
+    # Clearance is measured against the declared tagline top edge, so font
+    # substitution cannot mask a real overlap.
+    gap = TAGLINE_Y_IN - bottom
     results.append(
         (
             "logo / tagline clear space",
+            gap >= MIN_GAP_IN,
+            f"gap {gap:+.2f} in (min {MIN_GAP_IN:.2f})",
+        )
+    )
+    return results
+
+
+def probe_cover(pix, dpi: int) -> list[tuple[str, bool, str]]:
+    """Check the cover lockup: the artwork must stay inside its own frame and
+    keep clear of the cover title.
+
+    The cover lockup is part white, part cyan, so the artwork is found as
+    "anything that is not the navy background and not the #02062F plate".
+    """
+    results: list[tuple[str, bool, str]] = []
+
+    bg = pixel(pix, 0.20, 0.20, dpi)
+    results.append(("cover navy background", near(bg, NAVY), f"{bg}"))
+
+    def is_artwork(r: int, g: int, b: int) -> bool:
+        return not near((r, g, b), NAVY) and not near((r, g, b), LOGO_BG)
+
+    band = (
+        COVER_LOGO_X_IN - 0.15,
+        COVER_LOGO_Y_IN - 0.15,
+        COVER_LOGO_X_IN + COVER_LOGO_W_IN + 0.15,
+        COVER_LOGO_BOTTOM_IN + 0.15,
+    )
+    artwork = bbox(pix, is_artwork, band[0], band[1], band[2], band[3], dpi)
+    if artwork is None:
+        results.append(("cover logo present", False, "no artwork in the cover logo band"))
+        return results
+
+    left, top, right, bottom = artwork
+    inside = (
+        bottom <= COVER_LOGO_BOTTOM_IN + 0.05
+        and top >= COVER_LOGO_Y_IN - 0.05
+        and left >= COVER_LOGO_X_IN - 0.05
+        and right <= COVER_LOGO_X_IN + COVER_LOGO_W_IN + 0.05
+    )
+    results.append(
+        (
+            "cover logo inside frame",
+            inside,
+            f"artwork x {left:.2f}-{right:.2f} y {top:.2f}-{bottom:.2f} in; "
+            f"frame y {COVER_LOGO_Y_IN:.2f}-{COVER_LOGO_BOTTOM_IN:.2f}",
+        )
+    )
+
+    gap = COVER_TITLE_Y_IN - bottom
+    results.append(
+        (
+            "cover logo / title clear space",
             gap >= MIN_GAP_IN,
             f"gap {gap:+.2f} in (min {MIN_GAP_IN:.2f})",
         )
@@ -238,7 +323,7 @@ def main() -> int:
         return 1
 
     pix_cache = {}
-    for index in (0, CLOSING_INDEX):
+    for index in (COVER_INDEX, CLOSING_INDEX):
         pix = doc[index].get_pixmap(matrix=pymupdf.Matrix(scale, scale), alpha=False)
         target = out_dir / f"qa-deck-s{index + 1:02d}.png"
         pix.save(target)
@@ -246,6 +331,10 @@ def main() -> int:
         pix_cache[index] = pix
 
     failed = 0
+    for name, ok, detail in probe_cover(pix_cache[COVER_INDEX], args.dpi):
+        print(f"[{'PASS' if ok else 'FAIL'}] {name}: {detail}")
+        if not ok:
+            failed += 1
     for name, ok, detail in probe_closing(pix_cache[CLOSING_INDEX], args.dpi):
         print(f"[{'PASS' if ok else 'FAIL'}] {name}: {detail}")
         if not ok:
