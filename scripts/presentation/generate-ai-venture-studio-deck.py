@@ -13,6 +13,18 @@ import argparse
 import os
 import tempfile
 
+from deck_geometry import (
+    CLOSING_LOGO_W_IN,
+    CLOSING_LOGO_X_IN,
+    CLOSING_LOGO_Y_IN,
+    COVER_LOGO_W_IN,
+    COVER_LOGO_X_IN,
+    COVER_LOGO_Y_IN,
+    LOGO_ASPECT,
+    LOGO_BG_HEX,
+    LOGO_SRC_BOX,
+    LOGO_SRC_SIZE,
+)
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
@@ -56,10 +68,6 @@ BOTTOM = 6.85
 FOOTER_Y = 6.96
 
 LOGO_PATH = os.path.join("brand", "logo", "logo-full.png")
-# Artwork bbox of the 1254x1254 square (l, t, r, b); drops the baked-in tagline.
-LOGO_SRC_BOX = (190, 232, 1070, 945)
-LOGO_ASPECT = (LOGO_SRC_BOX[2] - LOGO_SRC_BOX[0]) / (LOGO_SRC_BOX[3] - LOGO_SRC_BOX[1])
-LOGO_BG_HEX = "02062F"
 
 
 # --------------------------------------------------------------------- helpers
@@ -201,6 +209,11 @@ def _cropped_logo() -> str:
     `a:srcRect` only works where the renderer honours it: LibreOffice ignores it
     and stretches the full square, which draws the baked-in tagline down over
     the slide text. Cropping the asset up front keeps the two identical.
+
+    The cropped file is cached in the temp dir under a stable name (it ends up
+    in the deck as the picture's description, so it must not vary between
+    machines). It is re-cut whenever the brand asset is newer than the cache,
+    so a replaced logo can never be shipped from a stale crop.
     """
     from PIL import Image
 
@@ -209,8 +222,15 @@ def _cropped_logo() -> str:
     left, top, right, bottom = LOGO_SRC_BOX
     name = f"ai-venture-studio-lockup-{right - left}x{bottom - top}.png"
     out = os.path.join(tempfile.gettempdir(), name)
-    if not os.path.exists(out):
+    source_mtime = os.stat(LOGO_PATH).st_mtime_ns
+    if not os.path.exists(out) or source_mtime > os.stat(out).st_mtime_ns:
         with Image.open(LOGO_PATH) as im:
+            if im.size != LOGO_SRC_SIZE:
+                raise SystemExit(
+                    f"Logo asset is {im.size}, expected {LOGO_SRC_SIZE}. "
+                    "Update LOGO_SRC_BOX and LOGO_SRC_SIZE in "
+                    "scripts/presentation/deck_geometry.py."
+                )
             im.crop(LOGO_SRC_BOX).save(out)
     return out
 
@@ -285,7 +305,7 @@ def build(out_path: str) -> None:
 
     # ---------------------------------------------------------- 1. Cover (navy)
     s = new_slide(prs, navy=True, chrome=False)
-    logo(s, X0, 0.55, 1.90)
+    logo(s, COVER_LOGO_X_IN, COVER_LOGO_Y_IN, COVER_LOGO_W_IN)
     text(s, X0, 2.50, 8.00, 1.10, ["AI Venture Studio"], size=T_DISPLAY_XL, color=WHITE, bold=True)
     rect(s, X0, 3.95, 0.90, 0.04, RED)
     text(
@@ -1081,7 +1101,7 @@ def build(out_path: str) -> None:
         align=PP_ALIGN.CENTER,
     )
     rect(s, 4.20, 3.30, 1.60, 0.04, CYAN)
-    logo(s, (SLIDE_W - 2.40) / 2, 3.95, 2.40)
+    logo(s, CLOSING_LOGO_X_IN, CLOSING_LOGO_Y_IN, CLOSING_LOGO_W_IN)
     text(
         s,
         X0,

@@ -1834,5 +1834,39 @@
         "phase":  "validate",
         "spec_review":  "approved",
         "session_id":  null
+    },
+    {
+        "id":  "2026-10-20-deck-qa-automation-enforce-deck-gates-in-ci-and-add-regression-tests",
+        "title":  "Deck QA automation: enforce deck gates in CI and add regression tests",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "scripts/presentation",
+                        "tests/presentation",
+                        ".github/workflows"
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     "presentation",
+                     "qa",
+                     "ci"
+                 ],
+        "decisions":  [
+                          "- Shared geometry module rather than duplicating constants: the audit showed the same numbers hardcoded in three files, which is how a gate ends up asserting stale expectations.",
+                          "- Stable crop cache file name plus a re-cut on a newer source, instead of a hash- or mtime-keyed name: the name lands in the deck as the picture\u0027s description, so a machine-specific name would make the artifact differ between machines and break the drift guard.",
+                          "- Clearance measured against the declared tagline top edge, not the rendered glyph ascent: CI substitutes Arial with a metric-compatible font, and the invariant is layout, not font metrics.",
+                          "- Both deck jobs live in `ci.yml` and join the `CI Gate` aggregate rather than a separate workflow: a separate workflow would not be a merge blocker.",
+                          "- PyMuPDF stays an ad-hoc `uv run --with` overlay instead of a dev dependency: it pulls numpy and onnxruntime, and adding it would churn `uv.lock` for a job that needs it once.",
+                          "- The unrelated `haomtgv-blueprint-hero-and-page-wiring` change was parked with the harness script to free the single active slot, and resumed after this change closed."
+                      ],
+        "validation_status":  "pass",
+        "slug":  "deck-qa-automation-enforce-deck-gates-in-ci-and-add-regression-tests",
+        "path":  "harness/changes/archive/2026-10-20-deck-qa-automation-enforce-deck-gates-in-ci-and-add-regression-tests",
+        "updated_at":  "2026-10-20",
+        "phase":  "validate",
+        "spec_review":  "approved",
+        "session_id":  "65b6d19b-96b4-4356-8907-6e5b4ab6a6d8"
     }
 ]

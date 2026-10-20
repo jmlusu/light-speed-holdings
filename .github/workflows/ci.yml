@@ -325,11 +325,55 @@ jobs:
         shell: powershell
         run: .\scripts\maintenance\check-index-freshness.ps1
 
+  # Deck QA: the client deck is generated code, so it is policed like code.
+  # deck-qa runs the structural verifier plus the regression tests (including
+  # the drift check that the committed deck is the one the generator produces).
+  deck-qa:
+    name: Deck QA (structure)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      - name: Verify deck structure
+        run: uv run python scripts/presentation/verify-venture-studio-deck.py
+      - name: Deck regression tests
+        run: uv run pytest tests/presentation -q
+
+  # Deck QA (rendered pixels): LibreOffice is the reference renderer -- it
+  # ignores a:srcRect on pictures, so a deck can pass every structural check
+  # and still render the logo's baked-in tagline over the slide text. This job
+  # exports to PDF and measures the rendered cover and closing slides.
+  deck-render:
+    name: Deck QA (rendered pixels)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      - name: Install LibreOffice
+        run: |
+          if ! command -v soffice >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends libreoffice-impress fonts-liberation
+          fi
+          soffice --version
+      - name: Render deck and probe pixels
+        run: uv run --with pymupdf python scripts/presentation/render-venture-studio-deck.py --out-dir qa-render
+
   # All required checks must succeed for the gate to pass.
   gate:
     name: CI Gate
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, registry-baseline, archify-check, version-check, index-freshness]
+    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, registry-baseline, archify-check, version-check, index-freshness, deck-qa, deck-render]
     steps:
       - uses: actions/checkout@v7
-      - run: echo "All required checks passed (ruff + mypy + pytest + coverage + harness + bandit + uv-audit + generated-files + registry-baseline + archify)."
+      - run: echo "All required checks passed (ruff + mypy + pytest + coverage + harness + bandit + uv-audit + generated-files + registry-baseline + archify + deck-qa)."

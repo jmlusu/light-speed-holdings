@@ -13,8 +13,8 @@ Checks:
   7. Zero empty placeholders.
   8. Titles exact and in order.
   9. Speaker notes >= 20 chars on every slide.
- 10. Logo on slide 1 (top-left) and slide 13 (bottom-center), no srcRect crop
-     (LibreOffice ignores it), aspect within 5%, width >= 0.8in, and the slide 13
+ 10. Logo on slide 1 (cover) and slide 13 (closing) at the shared placement, no
+     srcRect crop (LibreOffice ignores it), aspect within 5%, and the slide 13
      logo clears the tagline by >= 0.15in.
  11. No picture/text collisions (text never lands on the logo or on other text).
 """
@@ -25,6 +25,20 @@ import math
 import os
 import sys
 
+from deck_geometry import (
+    CLOSING_LOGO_BOTTOM_IN,
+    CLOSING_LOGO_W_IN,
+    CLOSING_LOGO_X_IN,
+    CLOSING_LOGO_Y_IN,
+    COVER_LOGO_W_IN,
+    COVER_LOGO_X_IN,
+    COVER_LOGO_Y_IN,
+    LOGO_ASPECT,
+    LOGO_BG_HEX,
+    MIN_GAP_IN,
+    SLIDE_H_IN,
+    SLIDE_W_IN,
+)
 from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.oxml.ns import qn
@@ -34,11 +48,9 @@ PT_PER_IN = 72
 
 PALETTE = {"070A40", "E63946", "00BFFF", "F2F2F2", "FFFFFF", "6B7280"}
 # The logo PNG has a #02062F background removed via a:clrChange on slides 1/13.
-LOGO_BG = "02062F"
+LOGO_BG = LOGO_BG_HEX
 ALLOWED = PALETTE | {LOGO_BG}
 
-SLIDE_W_IN = 10.0
-SLIDE_H_IN = 7.5
 RAIL_W_IN = 0.15
 
 EXPECTED_TITLES = [
@@ -57,7 +69,10 @@ EXPECTED_TITLES = [
     "Thank You",
 ]
 
-LOGO_ASPECT = 880 / 713  # cropped content bbox of logo-full.png
+
+# Placement tolerance: the generator writes EMU-rounded inches, so a rebuilt
+# deck matches the shared geometry to well under a hundredth of an inch.
+PLACE_TOL_IN = 0.05
 
 
 def emu_to_in(v: int | None) -> float:
@@ -263,10 +278,13 @@ def check_logo(prs):
         problems.append("s1: no logo picture")
     else:
         x, y, w, h, crop = pics1[0]
-        if not (x < 1.0 and y < 1.2):
-            problems.append(f"s1: logo not top-left ({x:.2f},{y:.2f})")
-        if w < 0.8:
-            problems.append(f"s1: logo width {w:.2f}in")
+        for label, got, want in (
+            ("x", x, COVER_LOGO_X_IN),
+            ("y", y, COVER_LOGO_Y_IN),
+            ("width", w, COVER_LOGO_W_IN),
+        ):
+            if abs(got - want) > PLACE_TOL_IN:
+                problems.append(f"s1: logo {label} {got:.2f}in vs {want:.2f}in")
         if crop > 0.001:
             problems.append(f"s1: logo has srcRect crop {crop:.3f} (not portable)")
         if abs((w / h) / LOGO_ASPECT - 1) > 0.05:
@@ -277,6 +295,13 @@ def check_logo(prs):
         problems.append("s13: no logo picture")
     else:
         x, y, w, h, crop = pics13[0]
+        for label, got, want in (
+            ("x", x, CLOSING_LOGO_X_IN),
+            ("y", y, CLOSING_LOGO_Y_IN),
+            ("width", w, CLOSING_LOGO_W_IN),
+        ):
+            if abs(got - want) > PLACE_TOL_IN:
+                problems.append(f"s13: logo {label} {got:.2f}in vs {want:.2f}in")
         if abs((x + w / 2) - SLIDE_W_IN / 2) > 0.1:
             problems.append(f"s13: logo not horizontally centered (cx={x + w / 2:.2f})")
         if y < SLIDE_H_IN * 0.5:
@@ -287,6 +312,8 @@ def check_logo(prs):
             problems.append(f"s13: logo has srcRect crop {crop:.3f} (not portable)")
         if abs((w / h) / LOGO_ASPECT - 1) > 0.05:
             problems.append(f"s13: aspect {w / h:.3f} vs {LOGO_ASPECT:.3f}")
+        if abs((y + h) - CLOSING_LOGO_BOTTOM_IN) > PLACE_TOL_IN:
+            problems.append(f"s13: logo bottom {y + h:.2f}in vs {CLOSING_LOGO_BOTTOM_IN:.2f}in")
 
         tagline = next(
             (
@@ -301,10 +328,10 @@ def check_logo(prs):
         else:
             tagline_top = emu_to_in(tagline.top)
             gap = tagline_top - (y + h)
-            if gap < 0.15:
+            if gap < MIN_GAP_IN:
                 problems.append(
                     f"s13: logo bottom {y + h:.2f}in vs tagline top {tagline_top:.2f}in "
-                    f"(gap {gap:.2f}in < 0.15in)"
+                    f"(gap {gap:.2f}in < {MIN_GAP_IN:.2f}in)"
                 )
 
     return not problems, "logo placement ok" if not problems else "; ".join(problems)
