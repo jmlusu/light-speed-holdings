@@ -10,6 +10,7 @@ still be the one the generator produces.
 import importlib
 import importlib.util
 import io
+import os
 import subprocess
 import sys
 import zipfile
@@ -171,3 +172,38 @@ def test_generator_refuses_an_unexpected_logo_size(tmp_path: Path) -> None:
     with pytest.raises(SystemExit) as excinfo:
         generator._cropped_logo()
     assert "expected" in str(excinfo.value)
+
+
+def test_crop_cache_is_content_addressed(tmp_path: Path) -> None:
+    """Same size, different content, older timestamp: the crop must change.
+
+    The cache used to be keyed on mtime, so a replaced asset carrying an
+    older timestamp reused the stale crop. The cache is content-addressed now.
+    """
+    generator = load_module("generate_ai_venture_studio_deck", GENERATOR)
+    width, height = geometry.LOGO_SRC_SIZE
+    old_timestamp = 1_000_000_000
+
+    crops = []
+    for index, colour in enumerate(((255, 0, 0, 255), (0, 0, 255, 255))):
+        source = tmp_path / f"logo-{index}.png"
+        Image.new("RGBA", (width, height), colour).save(source)
+        os.utime(source, (old_timestamp, old_timestamp))
+        generator.LOGO_PATH = str(source)
+        cache_path, stable_name = generator._cropped_logo()
+        crops.append((cache_path, stable_name))
+
+    first, second = crops
+    assert first[0] != second[0], "different content must not share a cache entry"
+    assert first[1] == second[1], "the stable name must not depend on the content"
+    with Image.open(first[0]) as a, Image.open(second[0]) as b:
+        assert a.tobytes() != b.tobytes()
+
+
+def test_built_deck_uses_the_stable_picture_description(generated_deck: Path) -> None:
+    """The deck must not carry the content-addressed cache file name."""
+    with zipfile.ZipFile(generated_deck) as archive:
+        for slide in ("slide1.xml", "slide13.xml"):
+            xml = archive.read(f"ppt/slides/{slide}").decode()
+            assert 'descr="ai-venture-studio-lockup-880x713.png"' in xml
+            assert "-880x713-" not in xml.split("descr=")[1].split('"')[0]

@@ -10,8 +10,10 @@ Run:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import os
 import tempfile
+from pathlib import Path
 
 from deck_geometry import (
     CLOSING_LOGO_W_IN,
@@ -202,28 +204,29 @@ def _make_logo_bg_transparent(pic) -> None:
     )
 
 
-def _cropped_logo() -> str:
-    """Crop the lockup to its artwork box, once, and return the cached path.
+def _cropped_logo() -> tuple[str, str]:
+    """Crop the lockup to its artwork box and return (cache path, stable name).
 
     The picture frame must equal the visible artwork in every renderer. Setting
     `a:srcRect` only works where the renderer honours it: LibreOffice ignores it
     and stretches the full square, which draws the baked-in tagline down over
     the slide text. Cropping the asset up front keeps the two identical.
 
-    The cropped file is cached in the temp dir under a stable name (it ends up
-    in the deck as the picture's description, so it must not vary between
-    machines). It is re-cut whenever the brand asset is newer than the cache,
-    so a replaced logo can never be shipped from a stale crop.
+    The cache is content-addressed: its file name carries a digest of the
+    source, so a replaced logo always gets a fresh crop even if the new file
+    carries an older timestamp. The stable name is returned separately because
+    it is what lands in the deck as the picture's description -- the artifact
+    must not vary between machines.
     """
     from PIL import Image
 
     if not os.path.exists(LOGO_PATH):
         raise SystemExit(f"Missing logo asset: {LOGO_PATH}")
     left, top, right, bottom = LOGO_SRC_BOX
-    name = f"ai-venture-studio-lockup-{right - left}x{bottom - top}.png"
-    out = os.path.join(tempfile.gettempdir(), name)
-    source_mtime = os.stat(LOGO_PATH).st_mtime_ns
-    if not os.path.exists(out) or source_mtime > os.stat(out).st_mtime_ns:
+    stable = f"ai-venture-studio-lockup-{right - left}x{bottom - top}.png"
+    digest = hashlib.sha256(Path(LOGO_PATH).read_bytes()).hexdigest()[:8]
+    out = os.path.join(tempfile.gettempdir(), f"{stable[:-4]}-{digest}.png")
+    if not os.path.exists(out):
         with Image.open(LOGO_PATH) as im:
             if im.size != LOGO_SRC_SIZE:
                 raise SystemExit(
@@ -232,18 +235,22 @@ def _cropped_logo() -> str:
                     "scripts/presentation/deck_geometry.py."
                 )
             im.crop(LOGO_SRC_BOX).save(out)
-    return out
+    return out, stable
 
 
 def logo(slide, x, y, content_w: float):
     """Place the lockup so the artwork is content_w inches wide at (x, y)."""
+    crop_path, stable_name = _cropped_logo()
     pic = slide.shapes.add_picture(
-        _cropped_logo(),
+        crop_path,
         Inches(x),
         Inches(y),
         width=Inches(content_w),
         height=Inches(content_w / LOGO_ASPECT),
     )
+    # The description ends up in the deck XML, so it must not carry the
+    # content-addressed cache file name.
+    pic._element.nvPicPr.cNvPr.set("descr", stable_name)
     _make_logo_bg_transparent(pic)
     return pic
 

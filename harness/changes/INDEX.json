@@ -1836,6 +1836,36 @@
         "session_id":  null
     },
     {
+        "id":  "2026-10-20-deck-logo-crop-cache-content-address-the-cache-keep-the-deck-description-stable",
+        "title":  "Deck logo crop cache: content-address the cache, keep the deck description stable",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "scripts/presentation",
+                        "tests/presentation"
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     "presentation",
+                     "qa",
+                     "correctness"
+                 ],
+        "decisions":  [
+                          "- Decouple the cache key from the artifact identity rather than choosing one. Content-addressing alone would have leaked the digest into the deck\u0027s picture description and made the artifact differ between machines, breaking the drift guard; a stable cache name alone would have left the stale-crop hole open.",
+                          "- Set `descr` on the picture element after `add_picture`, because python-pptx derives it from the file name. The generator already performs raw XML surgery for the `a:clrChange` transparency effect, so this is consistent with the file.",
+                          "- Keep the deck out of the change: the crop box, the placement and the content are untouched, and the committed .pptx is not regenerated. The drift guard proves a fresh build is still byte-identical."
+                      ],
+        "validation_status":  "pass",
+        "slug":  "deck-logo-crop-cache-content-address-the-cache-keep-the-deck-description-stable",
+        "path":  "harness/changes/archive/2026-10-20-deck-logo-crop-cache-content-address-the-cache-keep-the-deck-description-stable",
+        "updated_at":  "2026-10-20",
+        "phase":  "validate",
+        "spec_review":  "approved",
+        "session_id":  "6f0e0a4c-4c93-4a3a-9b6e-6a0b0d5f1c22"
+    },
+    {
         "id":  "2026-10-20-deck-qa-automation-enforce-deck-gates-in-ci-and-add-regression-tests",
         "title":  "Deck QA automation: enforce deck gates in CI and add regression tests",
         "status":  "completed",
