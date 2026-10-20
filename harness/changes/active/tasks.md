@@ -20,3 +20,6 @@
 ## Deferred Tasks
 
 - None.
+
+## Completed Tasks
+- [x] T011 Visual QA: Playwright screenshots at 1440x900 and 1024x768 passed.
