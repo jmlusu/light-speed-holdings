@@ -549,9 +549,33 @@ def _save_yaml(path: str, data: Any) -> None:
     _get_store().write_yaml(path, data)
 
 
+_REGISTRY_PATH = "company/agent-registry.json"
+# Parsed-registry cache, keyed on the source file's revision. Re-reading and
+# re-parsing the registry on every request dominated the latency of the agent
+# and org-chart endpoints (8.4 ms locally for the 96 KB file) and was the
+# reason a single slow read could fail the CI performance gate.
+_REGISTRY_CACHE: dict[str, Any] = {"key": None, "raw": None}
+
+
 def _load_registry() -> list[dict[str, Any]]:
-    raw = _load_json("company/agent-registry.json") or []
-    return [_normalize_agent(a) for a in raw]
+    """Return the agent registry, re-parsed only when the file changes.
+
+    The cache is keyed on the registry file's path, mtime and size, so a write
+    - including one made by another process, such as the registry writer -
+    invalidates it immediately rather than after a TTL. Callers get their own
+    normalized copies, so no mutable state is shared between requests.
+    """
+    path = Path(_get_store().base_dir) / "company" / "agent-registry.json"
+    try:
+        stat = path.stat()
+        key: tuple[str, int, int] | None = (str(path), stat.st_mtime_ns, stat.st_size)
+    except OSError:
+        key = None
+
+    if key is None or _REGISTRY_CACHE["key"] != key or _REGISTRY_CACHE["raw"] is None:
+        _REGISTRY_CACHE["raw"] = _load_json(_REGISTRY_PATH) or []
+        _REGISTRY_CACHE["key"] = key
+    return [_normalize_agent(a) for a in _REGISTRY_CACHE["raw"]]
 
 
 _CAMEL_TO_SNAKE: dict[str, str] = {
