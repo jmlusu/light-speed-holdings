@@ -31,7 +31,10 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev --frozen
       - name: Ruff lint
-        run: uv run ruff check src/ tests/
+        # scripts/presentation/ is the deck tooling: it generates, verifies and
+        # renders the client deck, so it is linted server-side like the rest
+        # of the code rather than only by the local pre-commit hook.
+        run: uv run ruff check src/ tests/ scripts/presentation/
 
   typecheck:
     name: Type check (mypy)

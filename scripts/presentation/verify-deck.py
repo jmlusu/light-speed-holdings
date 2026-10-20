@@ -16,8 +16,8 @@ Checks:
 - No empty or duplicate slides
 """
 
-import sys
 import re
+import sys
 from pathlib import Path
 
 
@@ -26,7 +26,9 @@ def check_navy_rail(markdown_text: str) -> bool:
 
     Marp syntax for rail: <!-- style: {left: 20px; width: 20px; background: #070A40} -->
     """
-    rail_pattern = r"<!--\s*style:\s*\{[^\}]*left\s*:\s*\d+px[^\}]*background\s*:\s*#070A40[^\}]*\}-->"
+    rail_pattern = (
+        r"<!--\s*style:\s*\{[^\}]*left\s*:\s*\d+px[^\}]*background\s*:\s*#070A40[^\}]*\}-->"
+    )
     return bool(re.search(rail_pattern, markdown_text, re.IGNORECASE))
 
 
@@ -113,7 +115,9 @@ def main() -> int:
     rail_ok = check_navy_rail(markdown_text)
     results["checks"]["navy_rail"] = {
         "pass": rail_ok,
-        "detail": "Navy left rail markdown present" if rail_ok else "Missing navy left rail markdown",
+        "detail": "Navy left rail markdown present"
+        if rail_ok
+        else "Missing navy left rail markdown",
     }
 
     # Check 2: Brand colors density
@@ -135,13 +139,11 @@ def main() -> int:
     results["checks"]["slide_sequence"] = {
         "pass": seq["count_matches"] and not seq["has_duplicates"],
         "detail": f"Slide count: {seq['actual_slide_count']} (expected {seq['expected_slide_count']}), "
-                  f"duplicates: {seq['has_duplicates']}",
+        f"duplicates: {seq['has_duplicates']}",
     }
 
     # Summary
-    all_pass = all(
-        check["pass"] for check in results["checks"].values()
-    )
+    all_pass = all(check["pass"] for check in results["checks"].values())
 
     print(f"=== Deck Verification: {md_file.name} ===")
     print(f"Deck type: {deck_type} (expected {expected_count} slides)")
