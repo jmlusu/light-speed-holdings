@@ -61,4 +61,3 @@ Adapt the headings to the audience, but retain the answer-first logic.
 - Return the primary artifact path plus only the relevant supporting notebook, SQL, data, or chart files.
 
 If the user asks only for an inline brief or explicitly says no file/artifact, deliver the same answer-first structure concisely in chat.
-

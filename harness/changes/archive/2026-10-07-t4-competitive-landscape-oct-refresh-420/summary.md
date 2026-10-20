@@ -35,4 +35,3 @@ Change closed. T4 #420 Oct refresh competitive-landscape.md baseline v1 (2026-09
 ## Next Step
 
 - Archive change. STATUS update per ECL lifecycle → `validate`, `lint-ecl.ps1`, phase transition. Map #416 "Decisions so far" updated. PR #424 references #420.
-

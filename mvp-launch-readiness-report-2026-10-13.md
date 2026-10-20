@@ -1,8 +1,8 @@
 # MVP Launch Readiness Report — 2026-10-13
 
-**Site:** lightspeedholdings.vercel.app  
-**Branch:** `chore/remove-legacy-marketing-site-pages` @ `52aca095` (+ working-tree changes below)  
-**Audit baseline:** `docs/website/audit-2026-10-13-post-implementation.md` (commit `449a6df3`)  
+**Site:** lightspeedholdings.vercel.app
+**Branch:** `chore/remove-legacy-marketing-site-pages` @ `52aca095` (+ working-tree changes below)
+**Audit baseline:** `docs/website/audit-2026-10-13-post-implementation.md` (commit `449a6df3`)
 **Scope:** CEO MVP realignment — defer Use Cases & Sectors, fix P0–P6, no rebuild, no registry migration.
 
 ---

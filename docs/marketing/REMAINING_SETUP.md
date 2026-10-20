@@ -30,4 +30,3 @@ Order from provisioning-runbook: LinkedIn ? X ? TikTok ? YouTube ? Threads (done
 
 ## Resend (blocked)
 - Blocked by #192/#194 until domain settled. See docs/marketing/atomized/resend-note.md
-

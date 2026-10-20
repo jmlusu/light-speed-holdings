@@ -1,5 +1,4 @@
 import subprocess
-import os
 
 # Check git log for memory/ and inbox changes
 result = subprocess.run(
