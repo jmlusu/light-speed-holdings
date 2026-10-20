@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import tempfile
 
 from pptx import Presentation
 from pptx.dml.color import RGBColor
@@ -55,8 +56,9 @@ BOTTOM = 6.85
 FOOTER_Y = 6.96
 
 LOGO_PATH = os.path.join("brand", "logo", "logo-full.png")
-# Tight content bbox of the 1254x1254 square (tagline cropped off: y<=945).
-LOGO_CROP = {"l": 190 / 1254, "r": 184 / 1254, "t": 232 / 1254, "b": 309 / 1254}
+# Artwork bbox of the 1254x1254 square (l, t, r, b); drops the baked-in tagline.
+LOGO_SRC_BOX = (190, 232, 1070, 945)
+LOGO_ASPECT = (LOGO_SRC_BOX[2] - LOGO_SRC_BOX[0]) / (LOGO_SRC_BOX[3] - LOGO_SRC_BOX[1])
 LOGO_BG_HEX = "02062F"
 
 
@@ -192,19 +194,36 @@ def _make_logo_bg_transparent(pic) -> None:
     )
 
 
+def _cropped_logo() -> str:
+    """Crop the lockup to its artwork box, once, and return the cached path.
+
+    The picture frame must equal the visible artwork in every renderer. Setting
+    `a:srcRect` only works where the renderer honours it: LibreOffice ignores it
+    and stretches the full square, which draws the baked-in tagline down over
+    the slide text. Cropping the asset up front keeps the two identical.
+    """
+    from PIL import Image
+
+    if not os.path.exists(LOGO_PATH):
+        raise SystemExit(f"Missing logo asset: {LOGO_PATH}")
+    left, top, right, bottom = LOGO_SRC_BOX
+    name = f"ai-venture-studio-lockup-{right - left}x{bottom - top}.png"
+    out = os.path.join(tempfile.gettempdir(), name)
+    if not os.path.exists(out):
+        with Image.open(LOGO_PATH) as im:
+            im.crop(LOGO_SRC_BOX).save(out)
+    return out
+
+
 def logo(slide, x, y, content_w: float):
-    """Place the lockup so the *visible* artwork is content_w inches wide at (x, y)."""
-    frame_w = content_w / (1 - LOGO_CROP["l"] - LOGO_CROP["r"])
-    frame_h = frame_w  # square source
-    left = x - LOGO_CROP["l"] * frame_w
-    top = y - LOGO_CROP["t"] * frame_h
+    """Place the lockup so the artwork is content_w inches wide at (x, y)."""
     pic = slide.shapes.add_picture(
-        LOGO_PATH, Inches(left), Inches(top), width=Inches(frame_w), height=Inches(frame_h)
+        _cropped_logo(),
+        Inches(x),
+        Inches(y),
+        width=Inches(content_w),
+        height=Inches(content_w / LOGO_ASPECT),
     )
-    pic.crop_left = LOGO_CROP["l"]
-    pic.crop_right = LOGO_CROP["r"]
-    pic.crop_top = LOGO_CROP["t"]
-    pic.crop_bottom = LOGO_CROP["b"]
     _make_logo_bg_transparent(pic)
     return pic
 

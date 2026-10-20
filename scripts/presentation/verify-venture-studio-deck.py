@@ -1,20 +1,22 @@
-"""Verify the AI Venture Studio client deck against the 10 QA acceptance checks.
+"""Verify the AI Venture Studio client deck against the 11 QA acceptance checks.
 
 Usage:
     uv run --with python-pptx python scripts/presentation/verify-venture-studio-deck.py [deck.pptx]
 
 Checks:
- 1. Exactly 13 slides.
- 2. Slide size 10 x 7.5 in.
- 3. Zero non-Arial runs.
- 4. Zero off-palette RGB values.
- 5. Navy rail 0.15in (+/-0.02) on slides 2-12, absent on 1 and 13.
- 6. Zero shapes out of bounds; zero text overflow > 5% (estimate).
- 7. Zero empty placeholders.
- 8. Titles exact and in order.
- 9. Speaker notes >= 20 chars on every slide.
-10. Logo on slide 1 (top-left) and slide 13 (bottom-center), aspect within 5%,
-    width >= 0.8in.
+  1. Exactly 13 slides.
+  2. Slide size 10 x 7.5 in.
+  3. Zero non-Arial runs.
+  4. Zero off-palette RGB values.
+  5. Navy rail 0.15in (+/-0.02) on slides 2-12, absent on 1 and 13.
+  6. Zero shapes out of bounds; zero text overflow > 5% (estimate).
+  7. Zero empty placeholders.
+  8. Titles exact and in order.
+  9. Speaker notes >= 20 chars on every slide.
+ 10. Logo on slide 1 (top-left) and slide 13 (bottom-center), no srcRect crop
+     (LibreOffice ignores it), aspect within 5%, width >= 0.8in, and the slide 13
+     logo clears the tagline by >= 0.15in.
+ 11. No picture/text collisions (text never lands on the logo or on other text).
 """
 
 from __future__ import annotations
@@ -235,32 +237,38 @@ def check_notes(prs):
     return not bad, "notes present on all slides" if not bad else "; ".join(bad)
 
 
+def pic_info(shape):
+    """Return the rendered picture box plus its total srcRect crop.
+
+    Pictures are stretched to the frame (`fillRect`), so the frame *is* the
+    visible box whenever the crop is zero. Any crop means the visible artwork
+    depends on `a:srcRect`, which LibreOffice ignores -- the exact failure that
+    drew the logo's baked-in tagline over the slide 13 tagline.
+    """
+    left, top = emu_to_in(shape.left), emu_to_in(shape.top)
+    w, h = emu_to_in(shape.width), emu_to_in(shape.height)
+    crop = sum(
+        abs(c or 0.0)
+        for c in (shape.crop_left, shape.crop_right, shape.crop_top, shape.crop_bottom)
+    )
+    return left, top, w, h, crop
+
+
 def check_logo(prs):
     slides = list(prs.slides)
     problems = []
-
-    def pic_info(shape):
-        w, h = emu_to_in(shape.width), emu_to_in(shape.height)
-        left, top = emu_to_in(shape.left), emu_to_in(shape.top)
-        crop_l = shape.crop_left or 0.0
-        crop_r = shape.crop_right or 0.0
-        crop_t = shape.crop_top or 0.0
-        crop_b = shape.crop_bottom or 0.0
-        vis_w = w * (1.0 - crop_l - crop_r)
-        vis_h = h * (1.0 - crop_t - crop_b)
-        vis_left = left + crop_l * w
-        vis_top = top + crop_t * h
-        return vis_left, vis_top, vis_w, vis_h
 
     pics1 = [pic_info(sh) for sh in iter_slide_shapes(slides[0]) if is_picture(sh)]
     if not pics1:
         problems.append("s1: no logo picture")
     else:
-        x, y, w, h = pics1[0]
+        x, y, w, h, crop = pics1[0]
         if not (x < 1.0 and y < 1.2):
             problems.append(f"s1: logo not top-left ({x:.2f},{y:.2f})")
         if w < 0.8:
             problems.append(f"s1: logo width {w:.2f}in")
+        if crop > 0.001:
+            problems.append(f"s1: logo has srcRect crop {crop:.3f} (not portable)")
         if abs((w / h) / LOGO_ASPECT - 1) > 0.05:
             problems.append(f"s1: aspect {w / h:.3f} vs {LOGO_ASPECT:.3f}")
 
@@ -268,17 +276,68 @@ def check_logo(prs):
     if not pics13:
         problems.append("s13: no logo picture")
     else:
-        x, y, w, h = pics13[0]
+        x, y, w, h, crop = pics13[0]
         if abs((x + w / 2) - SLIDE_W_IN / 2) > 0.1:
             problems.append(f"s13: logo not horizontally centered (cx={x + w / 2:.2f})")
         if y < SLIDE_H_IN * 0.5:
             problems.append(f"s13: logo not in lower half (y={y:.2f})")
         if w < 0.8:
             problems.append(f"s13: logo width {w:.2f}in")
+        if crop > 0.001:
+            problems.append(f"s13: logo has srcRect crop {crop:.3f} (not portable)")
         if abs((w / h) / LOGO_ASPECT - 1) > 0.05:
             problems.append(f"s13: aspect {w / h:.3f} vs {LOGO_ASPECT:.3f}")
 
+        tagline = next(
+            (
+                sh
+                for sh in iter_slide_shapes(slides[12])
+                if sh.has_text_frame and "ASPIRE" in shape_text(sh)
+            ),
+            None,
+        )
+        if tagline is None:
+            problems.append("s13: tagline 'ASPIRE. ACT. ACHIEVE.' not found")
+        else:
+            tagline_top = emu_to_in(tagline.top)
+            gap = tagline_top - (y + h)
+            if gap < 0.15:
+                problems.append(
+                    f"s13: logo bottom {y + h:.2f}in vs tagline top {tagline_top:.2f}in "
+                    f"(gap {gap:.2f}in < 0.15in)"
+                )
+
     return not problems, "logo placement ok" if not problems else "; ".join(problems)
+
+
+def check_collisions(prs):
+    """Flag text that lands on the logo, or text that lands on other text."""
+    problems = []
+    for idx, slide in enumerate(prs.slides, start=1):
+        items = []
+        for shape in iter_slide_shapes(slide):
+            text = shape_text(shape)
+            if is_picture(shape):
+                items.append(("picture", "logo", shape))
+            elif text:
+                items.append(("text", text.replace("\n", " ")[:24], shape))
+        for i in range(len(items)):
+            for j in range(i + 1, len(items)):
+                kind_a, label_a, a = items[i]
+                kind_b, label_b, b = items[j]
+                if "picture" not in (kind_a, kind_b):
+                    continue
+                ax, ay = emu_to_in(a.left), emu_to_in(a.top)
+                aw, ah = emu_to_in(a.width), emu_to_in(a.height)
+                bx, by = emu_to_in(b.left), emu_to_in(b.top)
+                bw, bh = emu_to_in(b.width), emu_to_in(b.height)
+                ox = min(ax + aw, bx + bw) - max(ax, bx)
+                oy = min(ay + ah, by + bh) - max(ay, by)
+                if ox > 0.02 and oy > 0.02:
+                    problems.append(
+                        f"s{idx} {kind_a} '{label_a}' x {kind_b} '{label_b}' ({ox:.2f}x{oy:.2f}in)"
+                    )
+    return not problems, "no collisions" if not problems else "; ".join(problems[:4])
 
 
 def main() -> int:
@@ -299,6 +358,7 @@ def main() -> int:
         ("title sequence", check_titles(prs)),
         ("speaker notes", check_notes(prs)),
         ("logo placement", check_logo(prs)),
+        ("no collisions", check_collisions(prs)),
     ]
 
     print(f"=== QA: {os.path.basename(path)} ===")
