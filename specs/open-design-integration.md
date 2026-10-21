@@ -7,7 +7,7 @@ Make **Open Design (`od`)** the render layer for LightSpeed Holdings creative wo
 The integration adds:
 
 1. Nine `ls-od-*` skills in `.agents/skills/` that teach agents how to drive the `od` daemon, select the right rendering template, apply LightSpeed brand tokens, and gate output through `ls-artifact-qa`.
-2. **Option B (enforced binding):** an optional `skills:` field on agent registry entries, rendered into generated `.opencode/agents/*.md` cards for 12 existing agents. No new agents are added to `company-registry.yaml`.
+2. **Agent binding:** the 12 existing agents are bound to `ls-od-*` skills as specified in this spec's agent binding table and documented in `docs/OPEN-DESIGN.md` §7 and `AGENTS.md` §14. No `skills:` registry field, generator, or template changes are made (no enforcement layer), and no new agents are added to `company-registry.yaml`.
 3. Submodule content in `open-design/` (LightSpeed design system + HyperFrames house-style override), committed on `lightspeed/format-pass`, with the main-repo pin bumped.
 4. Repo wiring: MCP entry, integration config update, working quickstart script, and `docs/OPEN-DESIGN.md`.
 
@@ -16,7 +16,7 @@ The integration adds:
 - `od` daemon can be started, queried, and stopped from PowerShell on this machine.
 - `od mcp` stdio server is registered in root `opencode.json` and exposes the daemon tools to OpenCode agents.
 - All nine skills are discoverable, follow the repo `ls-*` frontmatter format, and contain no invented `--skill` ids.
-- The 12 mapped agents emit a `## Skills` section in generated cards; unmapped agents render byte-identically to before.
+- The binding table covers exactly 12 agents, documented consistently in this spec, `docs/OPEN-DESIGN.md` §7, and `AGENTS.md` §14; no registry, generator, or template changes are made.
 - `uv run ruff check src/ tests/`, `uv run mypy src/`, `uv run pytest`, the generator drift check, and `pwsh scripts/maintenance/lint-ecl.ps1` pass.
 - The PR contains only open-design integration paths; unrelated pre-existing worktree changes are not committed.
 

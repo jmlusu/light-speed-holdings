@@ -7,6 +7,20 @@
       "type": "remote",
       "url": "https://mcp.resend.com/mcp",
       "enabled": true
+    },
+    "open-design": {
+      "type": "local",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\apps\\daemon\\dist\\cli.js",
+        "mcp",
+        "--daemon-url",
+        "http://127.0.0.1:7456"
+      ],
+      "enabled": true,
+      "environment": {
+        "OD_DATA_DIR": "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\.od"
+      }
     }
   },
   "provider": {
