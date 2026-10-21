@@ -296,6 +296,8 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 | Support | `ls-diagramming`, `ls-documentation-engineering`, `ls-visual-storytelling` | Diagram/graphic/doc-IA assets used inside produced artifacts |
 | Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes Playwright visual checks via `ls-artifact-qa` skill (see `.agents/skills/ls-artifact-qa/`) |
 
+**Open Design render layer (`ls-od-*` skills):** For artifacts rendered through the Open Design daemon (prototypes, live artifacts/dashboards, HTML decks, images, HyperFrames video), a nine-skill layer sits under the production skills: `ls-od-runtime`, `ls-od-catalogue`, `ls-od-brand`, `ls-od-project`, `ls-od-prototype`, `ls-od-live-artifact`, `ls-od-deck`, `ls-od-image`, `ls-od-video` (all in `.agents/skills/`). The bindings to 12 existing agents are specified in `specs/open-design-integration.md`; no agents were added (roster baseline unchanged, §9.4). Production skills delegate rendering to the matching `ls-od-*` skill; `ls-artifact-qa` still gates delivery last. Full guide: `docs/OPEN-DESIGN.md`.
+
 **Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.
 
 ## 15 Evidence, Honesty and Execution Integrity Policy
