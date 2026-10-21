@@ -12,7 +12,7 @@ This specification is the single source of truth for all image/media handling ac
 **Key invariants:**
 - Every image is typed via `data-ls-image-type` (one of 5 kinds)
 - Brand assets are canonical at `brand/**`; mirrors at `static/brand/**` and `public/brand/**` are sync-only
-- WCAG AA contrast: brand red is `#DC3641` (not `#E63946`) — verified in `brand-tokens.json`
+- WCAG AA contrast: brand red is `#DC3641` (rgb 220, 54, 65) per `reports/WCAG_AA_FIX_SUMMARY.md`, not `#E63946`. **Known gap:** `brand/tokens/brand-tokens.json:21` and `brand-tokens.css` still carry the legacy `#E63946` — the token-file half of that migration is outstanding (`tasks/brand-update/todo.md`, WS-B).
 - All media rendering is behind feature flag `VITE_CONTENT_MEDIA_ENABLED`
 - `HonestyBadge` travels with media in the component layer — **never baked into the image file**
 
@@ -20,7 +20,7 @@ This specification is the single source of truth for all image/media handling ac
 
 ## 1. Taxonomy — 5 Kinds with Exact Field Shapes
 
-Defined in `src/types.ts` (lines 219–270). Each kind is a discriminated union on `kind`.
+Defined in `src/types.ts` (lines 205–227). Each kind is a discriminated union on `kind`.
 
 | Kind | Interface | Required Fields | Optional Fields | Notes |
 |------|-----------|-----------------|-----------------|-------|
@@ -28,7 +28,7 @@ Defined in `src/types.ts` (lines 219–270). Each kind is a discriminated union 
 | `brand-mark` | `BrandMedia` | `kind: 'brand-mark'`, `src`, `alt: ''`, `width`, `height` | — | Official logos only; `alt` empty (decorative) |
 | `diagram` | `DiagramMedia` | `kind: 'diagram'`, `alt`, `tone: 'light' \| 'dark'` | — | **No `src`** — rendered inline via `ls-diagramming` (Mermaid/SVG) |
 | `metrics` | `MetricMedia` | `kind: 'metrics'`, `alt`, `tone: 'light' \| 'dark'` | — | **No `src`** — rendered inline via chart components (recharts) |
-| `illustration` | `IllustrationMedia` | `kind: 'illustration'`, `src`, `alt`, `width`, `height`, `tone: 'light' \| 'dark'` | — | Hand-drawn (Grav IP) or generated; `tone` drives container |
+| `illustration` | `IllustrationMedia` | `kind: 'illustration'`, `src`, `alt`, `width`, `height`, `tone: 'light' \| 'dark'` | — | Hand-drawn (Grav IP) or generated; `tone` drives container. Generated people and avatars are prohibited — see §3.5 |
 
 ### Aggregate Types
 
@@ -138,6 +138,25 @@ Every rendered `<img>` or media container **must** carry these attributes for QA
 - **Palette:** Must pass through `ls-design-system` (navy/red/cyan, Arial, 4px grid)
 - **Dimensions:** Declared in `ContentMedia` — typically 800×600 (4:3) or 1200×675 (16:9)
 
+**Sourcing rules** (per [ADR-027](adr/027-ai-generated-imagery-policy.md)):
+
+- AI-generated imagery is permitted for this kind across all content and artifacts.
+- **Generated people and avatars are prohibited.** No synthetic face, figure, or persona
+  icon. Human imagery requires real, consented, commissioned photography with a model or
+  property release, and is governed as a `screenshot`-class capture, never an
+  `illustration`. Hero imagery is non-human by default: geometry, infrastructure,
+  environment, product surfaces, abstract data.
+- Vendors are restricted to those allow-listed in `docs/APPROVED-VENDORS.md` (Gemini Image
+  API, Comfy Cloud, exception window to 2026-12-30). Prompts are subject to the
+  third-party transmission ban in `docs/SKILL_CURATION_POLICY.md`.
+- A raw model output is not an asset. Generated rasters must be post-processed to the
+  brand palette and checked before commit. Flat graphic, diagram and vector output keeps
+  the exact-match gate (`check_brand_palette.py --tolerance 3`); generated raster,
+  photographic and continuous-tone output is checked for brand-token presence plus
+  dominant-colour compliance instead.
+- Provenance is recorded. `generated: true` is a required literal on `IllustrationMedia`,
+  so a synthetic asset cannot be typed as authored or captured one.
+
 ---
 
 ## 4. Placement Map — Per Page/Component
@@ -235,7 +254,9 @@ Default: `1280x800` (desktop). Configurable via `--viewport WxH` (multiple allow
 
 | Rule | Kind | Check | Tool |
 |------|------|-------|------|
-| Brand colors only | All | No hex outside `#070A40`, `#DC3641`, `#00BFFF`, neutrals | `ls-artifact-qa` |
+| Brand colors only — flat/graphic | `diagram`, `brand-mark`, flat `illustration` | No hex outside `#070A40`, `#DC3641`, `#00BFFF`, neutrals — per-pixel exact match at `--tolerance 3` | `ls-artifact-qa` |
+| Brand colors only — continuous-tone | Generated raster `illustration` | Brand-token presence plus dominant-colour compliance (navy-dominant, red/cyan as accents); per-pixel exact match not applied | `ls-artifact-qa` |
+| No generated people | `illustration` | No synthetic face, figure, or persona/avatar | Visual inspection |
 | Logo clear space | `brand-mark` | 1× "L" height padding | Visual inspection |
 | Logo min size | `brand-mark` | ≥120px (full), ≥32px (icon) | Visual inspection |
 | WCAG AA contrast | All text on brand red | 4.52:1 (verified) | Mathematical |
