@@ -1962,5 +1962,35 @@
         "phase":  "validate",
         "spec_review":  "approved",
         "session_id":  "9d2a7e13-5c48-4b0e-8f61-1a9c4e7b2d55"
+    },
+    {
+        "id":  "2026-10-21-haomtgv-blueprint-hero-and-page-wiring",
+        "title":  "HAOMTGV blueprint hero and page wiring",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+
+                    ],
+        "files":  [
+
+                  ],
+        "tags":  [
+
+                 ],
+        "decisions":  [
+                          "- Hero interaction: slab `onMouseEnter`/`onMouseLeave` with shared `activeIndex`; two‑way hover ↔ row selection.",
+                          "- Connector active highlighting: width/opacity/box‑shadow follow the active slab.",
+                          "- Tagline: three `aria‑hidden` spans (white/cyan/red) with `aria‑label=\"ASPIRE. ACT. ACHIEVE.\"`.",
+                          "- CTA contrast: text colour changed from `text‑white` to `text-[#050B1A]` (≈5.4 : 1).",
+                          "- Responsive layout: centre slab width `lg:w‑[240px]` / `lg:-ml‑[120px]`; at `xl` expands to `xl:w‑[300px]` / `xl:-ml‑[150px]`. Right list and tagline now behave correctly at both 1440 × 900 and 1024 × 768.",
+                          "- ECL: all required checks (lint, build, test, ECL lint, visual‑QA) passed; the change is ready for closure."
+                      ],
+        "validation_status":  "pass",
+        "slug":  "haomtgv-blueprint-hero-and-page-wiring",
+        "path":  "harness/changes/archive/2026-10-21-haomtgv-blueprint-hero-and-page-wiring",
+        "updated_at":  "2026-10-21",
+        "phase":  "validate",
+        "spec_review":  "approved",
+        "session_id":  "0ae3f812-5907-4363-b033-4470d7c36b00"
     }
 ]

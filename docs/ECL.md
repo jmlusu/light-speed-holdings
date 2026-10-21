@@ -48,6 +48,9 @@ Archive gates:
 - Archive hygiene: git-restore known side-effect files before archive (`docs/AGENT-REGISTRY-TABLE.md`, `hr/onboarding_requests.yaml`, `data/orchestrator/approvals.yaml`). Test runs and scaffolding may leave these dirty; they must not be committed as part of a change.
 - When a change is parked, its test failures should not be counted as baseline by other changes. Tag parked failures (e.g., `parked:<change-id>`) to keep baselines isolated.
 - If `pyproject.toml` is in the changeset, `uv.lock` must also be updated in the same commit. Lockfile atomicity prevents `--frozen` workflow breakage.
+- **Negative control validation**: test pre-fix artifact to confirm gates catch the defect (e.g., deck-qa: pre-fix deck 2/11 checks failed, 3 render checks failed). Document negative control outcome in `validation_results`.
+- **Cache keyed on file revision (path + mtime + size), not TTL**: registry written by another process; TTL shows stale data.
+- **Shared constants module > duplicated hardcoded values**: single source of truth for lockup placement, logo crop box, clear-space invariant prevents stale expectations across generator/verifier/render-gate.
 
 ## 5 Plan Review Gate
 
@@ -74,6 +77,12 @@ Before closing active work:
 2. Run `.\scripts\maintenance\harness-change.ps1 close completed` to archive and rebuild INDEX.
 3. After close, update `docs/STATUS.md` with archive path.
 4. Run `.\scripts\maintenance\lint-ecl.ps1` to confirm consistency.
+
+**Side-effect file restoration list (from auto-evolve 2026-10-21):**
+- `docs/AGENT-REGISTRY-TABLE.md`
+- `hr/onboarding_requests.yaml`
+- `data/orchestrator/approvals.yaml`
+- `src/data/generated/agent-registry.public.json`
 
 ## 8 Failure Feedback
 
