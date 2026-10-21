@@ -4,9 +4,11 @@
 
 ## Last Updated
 
-2026-10-20
+2026-10-21
 
 ## Current State
+
+- **Harness auto-evolve applied (2026-10-21, shipped)**: ECL `harness/evolution/proposals/2026-10-21-auto-evolve.md` processed. 10 eligible archives (window 2026-10-11→2026-10-21), 9 accepted by independent auditor (1 conditional, 1 override of rejection). Reusable constraints documented in AGENTS.md §6/§7, ECL.md §4/§7, known-issues.md, and STATUS.md. Gates: `lint-ecl.ps1` PASS, `ruff check` clean, `mypy src/` clean, full non-e2e pytest green. Result recorded in `harness/evolution/results.tsv`; `harness-evolve mark-complete` executed.
 
 - **Deck tooling linted in CI (2026-10-20, shipped)**: ECL `lint-the-deck-tooling-in-ci-cover-scripts-presentation-in-the-ruff-job` closed `completed`. The `Lint (ruff)` job covered `src/` and `tests/` only, so the scripts that generate, verify and render the AI Venture Studio client deck were policed solely by the local pre-commit hook - which `--no-verify` can bypass, the exact situation the server-side gate exists to prevent. The job now also covers `scripts/presentation/`, with a comment recording why. Two pre-existing ruff findings in `scripts/presentation/verify-deck.py` (unsorted import block, no newline at end of file) plus the file's format drift were fixed to make the widened scope green on the first run; the change is import ordering, a trailing newline and line wrapping, with no behaviour change. Eleven ruff findings remain in `scripts/maintenance/`; they belong to other owners' files, some under active work elsewhere, and widening the scope to all of `scripts/` is recorded as deferred in the ECL tasks. Gates: `ruff check scripts/presentation/` clean, `ruff format --check scripts/presentation/` clean (5 files), `pytest tests/presentation` and `pytest tests/performance` green, full non-e2e pytest green, CI green with the widened scope. ECL archived; the unrelated `haomtgv-blueprint-hero-and-page-wiring` change was parked to free the single active slot and resumed afterwards.
 
