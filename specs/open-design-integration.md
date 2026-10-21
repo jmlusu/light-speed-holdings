@@ -117,21 +117,13 @@ scripts/maintenance/open-design-quickstart.ps1
 opencode.json
 .opencode/integrations/open-design/agent-config.yaml
 AGENTS.md
-company-registry.yaml
-src/ai_company/models/models.py
-src/ai_company/generator.py
-templates/specialist.md.j2
-templates/executive.md.j2
-templates/agents/agent.md.j2
-tests/unit/test_registry.py
-tests/unit/test_generator*.py
 ```
 
 ## Code Style
 
 - **Python:** `ruff` + `mypy` clean; Pydantic `Field(default_factory=list)` for new list fields; no comments unless required.
-- **Jinja:** preserve existing whitespace; the new block is wrapped in `{% if skills %}...{% endif %}` so empty values render byte-identically.
-- **Registry YAML:** 2-space indentation, `skills:` as a block list under each agent entry, matching the existing `tools:` shape.
+- **Jinja:** preserve existing whitespace; no template changes are made in this integration.
+- **Registry YAML:** no `skills:` field is added; `company-registry.yaml` is unchanged.
 - **Skills:** frontmatter is exactly:
   ```yaml
   ---
@@ -146,10 +138,6 @@ tests/unit/test_generator*.py
 
 | Change | Test |
 |--------|------|
-| `Agent.skills` field | `tests/unit/test_registry.py`: optional, defaults to `[]`, accepts list |
-| Generator skill block | Unit test renders a specialist/executive with and without `skills`; asserts section present/absent |
-| Empty-value compatibility | Regenerate and confirm unmapped cards are byte-identical |
-| Registry mapping | Parse `company-registry.yaml` and assert the 12 agents carry the expected skill ids |
 | Skills | Frontmatter parseable; every `od --skill` id referenced exists in `open-design/design-templates` |
 | Runtime | Manual smoke: `od daemon start --headless`, `od daemon status --json`, `od mcp --help` |
 | CI | `ruff`, `mypy`, `pytest`, generator drift, archify, ECL lint |
@@ -161,7 +149,6 @@ tests/unit/test_generator*.py
 - Read `.ai-company/constitution/11-GIT-STANDARDS.md` before git work.
 - Work on `feat/open-design-integration`; open a PR; merge only when the 6 required checks are green.
 - Commit path-scoped (`git commit -- <paths>`); leave unrelated worktree changes alone.
-- Regenerate `.opencode/agents/*.md` after registry/template changes.
 - Validate `--skill` ids against `open-design/design-templates/` before documenting them.
 - Use LightSpeed brand tokens from `brand/tokens/brand-tokens.json`.
 
