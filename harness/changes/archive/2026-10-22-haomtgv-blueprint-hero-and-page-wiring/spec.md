@@ -32,7 +32,7 @@
 
 ## Open Questions
 
-- [NEEDS CLARIFICATION: Replace with a specific high-impact question, or remove before implementation.]
+None.
 
 ## Resolved Clarifications
 
