@@ -456,9 +456,13 @@ class TestPreapprovedBypassesHitl:
 class TestHitlGateUnit:
     """Supplementary unit-level checks on HITLGate directly."""
 
-    def test_request_and_park_creates_pending(self) -> None:
+    def test_request_and_park_creates_pending(self, tmp_path: Path) -> None:
         """request_and_park creates a PENDING approval and tracks it."""
-        gate = HITLGate(poll_interval=1, timeout_minutes=60)
+        gate = HITLGate(
+            approval_gate=ApprovalGate(config_path=str(tmp_path / "approvals.yaml")),
+            poll_interval=1,
+            timeout_minutes=60,
+        )
         request_id = gate.request_and_park(
             task_id="task-001",
             agent_id="agent-a",
@@ -472,8 +476,12 @@ class TestHitlGateUnit:
         assert req is not None
         assert req.status == ApprovalStatus.PENDING
 
-    def test_resume_approved_returns_none_while_pending(self) -> None:
-        gate = HITLGate(poll_interval=1, timeout_minutes=60)
+    def test_resume_approved_returns_none_while_pending(self, tmp_path: Path) -> None:
+        gate = HITLGate(
+            approval_gate=ApprovalGate(config_path=str(tmp_path / "approvals.yaml")),
+            poll_interval=1,
+            timeout_minutes=60,
+        )
         request_id = gate.request_and_park(
             task_id="task-002",
             agent_id="agent-b",
@@ -483,8 +491,12 @@ class TestHitlGateUnit:
         result = gate.resume_approved(request_id)
         assert result is None
 
-    def test_resume_approved_returns_true_after_approval(self) -> None:
-        gate = HITLGate(poll_interval=1, timeout_minutes=60)
+    def test_resume_approved_returns_true_after_approval(self, tmp_path: Path) -> None:
+        gate = HITLGate(
+            approval_gate=ApprovalGate(config_path=str(tmp_path / "approvals.yaml")),
+            poll_interval=1,
+            timeout_minutes=60,
+        )
         request_id = gate.request_and_park(
             task_id="task-003",
             agent_id="agent-c",
@@ -496,8 +508,12 @@ class TestHitlGateUnit:
         assert result is True
         assert not gate.has_pending_requests()
 
-    def test_resume_approved_returns_false_after_rejection(self) -> None:
-        gate = HITLGate(poll_interval=1, timeout_minutes=60)
+    def test_resume_approved_returns_false_after_rejection(self, tmp_path: Path) -> None:
+        gate = HITLGate(
+            approval_gate=ApprovalGate(config_path=str(tmp_path / "approvals.yaml")),
+            poll_interval=1,
+            timeout_minutes=60,
+        )
         request_id = gate.request_and_park(
             task_id="task-004",
             agent_id="agent-d",
