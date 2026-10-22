@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "policy": "docs/adr/027-ai-generated-imagery-policy.md",
+  "description": "Register of AI-generated imagery committed under public/assets/generated/. Enforced by scripts/maintenance/check-generated-imagery.ps1: every image file in that directory must have exactly one entry here, and every entry must name a file that exists.",
+  "rules": {
+    "permitted": "non-person subjects only, on every content surface (ADR-027 section 1)",
+    "prohibited": "generated people, faces, figures and avatars (ADR-027 section 2)",
+    "kind": "illustration",
+    "vendors": "allow-listed in docs/APPROVED-VENDORS.md only (ADR-027 section 7)"
+  },
+  "schema": {
+    "id": "stable unique kebab-case slug",
+    "path": "path relative to public/, e.g. assets/generated/hero-lilongwe.png",
+    "kind": "must be the literal 'illustration'",
+    "generated": "must be the literal true",
+    "subject": "short description of the non-person subject",
+    "provenance": {
+      "vendor": "allow-listed vendor name from docs/APPROVED-VENDORS.md",
+      "model": "model or tool and version",
+      "prompt_sha256": "SHA-256 of the prompt; the prompt text is not committed",
+      "generated_at": "ISO-8601 date the asset was generated",
+      "edited_by": "human who post-processed the asset to brand",
+      "post_processing": "short description of the palette or grade applied"
+    }
+  },
+  "assets": []
+}
