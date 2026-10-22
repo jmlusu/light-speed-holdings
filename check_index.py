@@ -1,4 +1,5 @@
 import json
+
 with open("harness/changes/INDEX.json", encoding="utf-8-sig") as f:
     d = json.load(f)
 print("Type:", type(d))
@@ -19,4 +20,6 @@ for i, e in enumerate(d[:3]):
 print("\nCompleted entries:")
 for e in d:
     if e.get("status") == "completed":
-        print(f"  id={e['id']} validation_status={e.get('validation_status')} phase={e.get('phase')} spec_review={e.get('spec_review')}")
+        print(
+            f"  id={e['id']} validation_status={e.get('validation_status')} phase={e.get('phase')} spec_review={e.get('spec_review')}"
+        )

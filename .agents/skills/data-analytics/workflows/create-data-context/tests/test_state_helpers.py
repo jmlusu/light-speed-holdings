@@ -10,7 +10,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-
 PLUGIN_ROOT = Path(__file__).resolve().parents[3]
 DATA_CONTEXT_ROOT = PLUGIN_ROOT / "skills/create-data-context"
 PREFLIGHT_SCRIPT = DATA_CONTEXT_ROOT / "scripts/data_analytics_preflight.py"

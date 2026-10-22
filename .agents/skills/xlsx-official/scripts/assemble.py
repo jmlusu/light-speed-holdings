@@ -16,7 +16,6 @@ import zipfile
 from pathlib import Path
 from typing import Iterator
 
-
 CONTENT_TYPES_ENTRY = "[Content_Types].xml"
 
 

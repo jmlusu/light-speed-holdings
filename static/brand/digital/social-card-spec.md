@@ -1,7 +1,7 @@
 # Social-Card & Favicon Bundle Spec (Ticket #380)
 
-**Generated**: 2026-10-01  
-**Base**: LightSpeed Holdings Brand Design System  
+**Generated**: 2026-10-01
+**Base**: LightSpeed Holdings Brand Design System
 **Compliance**: `ls-design-system` enforced; `ls-artifact-qa` gate required
 
 ---

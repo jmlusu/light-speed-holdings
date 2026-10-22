@@ -1,7 +1,7 @@
 # LightSpeed External Web App — Post-Implementation Audit
 
-**Auditor role:** Independent pre-handover verification (no code changes, no redesign)  
-**Date:** 2026-10-13  
+**Auditor role:** Independent pre-handover verification (no code changes, no redesign)
+**Date:** 2026-10-13
 **Verdict:** **Ready with Conditions** — see §16. Do not treat as production-ready until P1 is fixed.
 
 ---

@@ -15,4 +15,3 @@ Posts created in parallel (no friction/deps):
 
 All use existing brand assets under static/brand/social/.
 Verification + 2FA tracked in digital-asset-register.md.
-

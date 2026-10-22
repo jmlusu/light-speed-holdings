@@ -81,15 +81,15 @@ export const solutions = [
   {
     slug: 'ai-company-builder',
     title: 'AI Company Builder',
-description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-tier approval matrix, append-only SHA-256 sealed audit trails, and 4 governance gates ensure every action is accountable.',
+description: 'Build governed AI companies with 91 agents and 1 human CEO. A 5-tier approval matrix, append-only SHA-256 sealed audit trails, and 4 governance gates ensure every action is accountable.',
      eyebrow: 'AI OPERATING MODEL',
      proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
      honestyBadge: 'Fieldable in 2026' as const,
       oneLiner: '90 AI agents. One human CEO. Every action signed off before it ships.',
      nav: 'AI Company Builder',
-      lead: 'Build governed AI companies with 90 agents and 1 human CEO.',
+      lead: 'Build governed AI companies with 91 agents and 1 human CEO.',
     capabilities: [
-      { title: 'Multi-Agent Orchestration', desc: '90 agents, 20 departments, each with explicit role definitions and approval thresholds.' },
+      { title: 'Multi-Agent Orchestration', desc: '91 agents, 20 departments, each with explicit role definitions and approval thresholds.' },
       { title: '5-Tier Approval Matrix', desc: 'Auto through CEO sign-off with configurable thresholds and expiration sweeps.' },
       { title: 'Append-Only Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs for every agent action.' },
     ],
@@ -409,7 +409,7 @@ export const trustEvidence = [
     id: 'te-05',
     title: 'Canonical Registry Numbers',
     description:
-      'Every platform figure (90 agents, 20 departments, the regression-test count) is read from company-registry.yaml and the test suite, never from marketing copy.',
+      'Every platform figure (91 agents, 20 departments, the regression-test count) is read from company-registry.yaml and the test suite, never from marketing copy.',
     proof: 'Proven in-house',
   },
   {

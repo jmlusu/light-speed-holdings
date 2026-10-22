@@ -31,7 +31,7 @@ from typing import Iterable
 
 try:
     from lxml import etree as _et
-except ImportError as exc:  # pragma: no cover
+except ImportError:  # pragma: no cover
     sys.stderr.write(
         "resolve_revisions.py needs `lxml`. Run with `uv run resolve_revisions.py` "
         "(auto-installs) or: pip install lxml\n"

@@ -1,8 +1,8 @@
 # Regression Test Plan for Issue #374 — Phase 6: Full Regression + Artifact-QA Gates + 40 DoD
 
-**Date**: 2026-10-03  
-**Branch**: `feature/382-content-media-fields` (staging for #382)  
-**Target**: Main branch after #381 ratification  
+**Date**: 2026-10-03
+**Branch**: `feature/382-content-media-fields` (staging for #382)
+**Target**: Main branch after #381 ratification
 **ECL Change**: Customer Journey Conversion Architecture (active, Phase 6)
 
 ---

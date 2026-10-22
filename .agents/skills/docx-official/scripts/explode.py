@@ -28,7 +28,7 @@ from pathlib import Path
 
 try:
     from lxml import etree as _et
-except ImportError as exc:  # pragma: no cover
+except ImportError:  # pragma: no cover
     sys.stderr.write(
         "explode.py needs `lxml`. Run with `uv run explode.py` (auto-installs) "
         "or: pip install lxml\n"

@@ -426,7 +426,7 @@ class TestGovernanceMandatoryFields:
         errors = RegistryValidator()._check_governance_fields(registry)
         assert errors == [], errors
         total = len(registry.executives) + len(registry.specialists) + len(registry.board)
-        assert total == 90
+        assert total == 91
 
 
 # ---------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 import yaml
-import os
+
 
 def read_yaml(path):
     try:
@@ -8,32 +8,33 @@ def read_yaml(path):
     except Exception as e:
         return f"ERROR: {e}"
 
+
 print("=== PHAROS EVIDENCE VALIDATION ===\n")
 
 # 1. Company registry
 print("=== COMPANY REGISTRY ===")
-registry = read_yaml('company-registry.yaml')
+registry = read_yaml("company-registry.yaml")
 if isinstance(registry, dict):
-    agents = registry.get('agents', {})
+    agents = registry.get("agents", {})
     print(f"Total agents: {len(agents)}")
-    depts = registry.get('departments', {})
+    depts = registry.get("departments", {})
     print(f"Departments: {depts}")
     # Count agents per department
     dept_counts = {}
     for a, info in agents.items():
-        d = info.get('department', 'unknown')
+        d = info.get("department", "unknown")
         dept_counts[d] = dept_counts.get(d, 0) + 1
     print(f"Agent counts per department: {dept_counts}")
-    
+
     # Check for 152 vs 90
-    if 'meta' in registry:
+    if "meta" in registry:
         print(f"Meta: {registry['meta']}")
 else:
     print(f"Output: {registry}")
 
 # 2. Source of truth
 print("\n=== SOURCE OF TRUTH ===")
-sot = read_yaml('docs/source-of-truth.yaml')
+sot = read_yaml("docs/source-of-truth.yaml")
 if isinstance(sot, dict):
     for k, v in sot.items():
         print(f"  {k}: {v}")
@@ -43,33 +44,81 @@ else:
 # 3. Cross-document claim counts
 print("\n=== CLAIM LEDGER COUNTS ===")
 claims_by_doc = {}
-for doc_name in ['README.md', 'positioning.md', 'manifesto-draft.md', 'roadmap.md', 
-                  'pillars/01-built-a-90-agent-company.md', 'pillars/02-5-tier-human-in-the-loop.md',
-                  'pillars/03-agentic-ai-resource-constrained-africa.md', 'case-study-pipeline.md',
-                  'h-a-o-m-t-g-v-framework.md', 'whitepaper/resource-constrained-deployment-playbook.md',
-                  'content-calendar.md', 'ai-native-orgs-linkedin-series-plan.md']:
+for doc_name in [
+    "README.md",
+    "positioning.md",
+    "manifesto-draft.md",
+    "roadmap.md",
+    "pillars/01-built-a-90-agent-company.md",
+    "pillars/02-5-tier-human-in-the-loop.md",
+    "pillars/03-agentic-ai-resource-constrained-africa.md",
+    "case-study-pipeline.md",
+    "h-a-o-m-t-g-v-framework.md",
+    "whitepaper/resource-constrained-deployment-playbook.md",
+    "content-calendar.md",
+    "ai-native-orgs-linkedin-series-plan.md",
+]:
     content = open(doc_name).read()
     # Count specific claims
     claims = {
-        '90 agents': len([l for l in content.split('\n') if '90 agents' in l.lower()]),
-        '20 depts': len([l for l in content.split('\n') if '20 dept' in l.lower() or '20 department' in l.lower()]),
-        '5-tier': len([l for l in content.split('\n') if '5-tier' in l.lower() or 'five-tier' in l.lower() or '5 tier' in l.lower()]),
-        'H-A-O-M-T-G-V': len([l for l in content.split('\n') if 'H-A-O-M-T-G-V' in l or 'H-A-O-M-T-G-V' in l]),
-        'Four Reservations': len([l for l in content.split('\n') if 'Four Reservation' in l or 'four reservation' in l or 'four reservations' in l]),
-        'J&S StopOver': len([l for l in content.split('\n') if 'StopOver' in l or 'StopOver' in l]),
-        '152 agents': len([l for l in content.split('\n') if '152' in l]),
+        "90 agents": len([l for l in content.split("\n") if "90 agents" in l.lower()]),
+        "20 depts": len(
+            [
+                l
+                for l in content.split("\n")
+                if "20 dept" in l.lower() or "20 department" in l.lower()
+            ]
+        ),
+        "5-tier": len(
+            [
+                l
+                for l in content.split("\n")
+                if "5-tier" in l.lower() or "five-tier" in l.lower() or "5 tier" in l.lower()
+            ]
+        ),
+        "H-A-O-M-T-G-V": len(
+            [l for l in content.split("\n") if "H-A-O-M-T-G-V" in l or "H-A-O-M-T-G-V" in l]
+        ),
+        "Four Reservations": len(
+            [
+                l
+                for l in content.split("\n")
+                if "Four Reservation" in l or "four reservation" in l or "four reservations" in l
+            ]
+        ),
+        "J&S StopOver": len([l for l in content.split("\n") if "StopOver" in l or "StopOver" in l]),
+        "152 agents": len([l for l in content.split("\n") if "152" in l]),
     }
     claims_by_doc[doc_name] = claims
-    
+
 for doc, claims in claims_by_doc.items():
     print(f"\n  {doc}: {claims}")
 
 # 4. Generate validation report
 print("\n=== CLAIM CONSISTENCY MATRIX ===")
-key_claims = ['90 agents', '20 departments', '5-tier', 'H-A-O-M-T-G-V', 'Four Reservations', 'J&S StopOver', '152 agents']
-doc_list = ['README.md', 'positioning.md', 'manifesto-draft.md', 'roadmap.md',
-            'pillars/01', 'pillars/02', 'pillars/03', 'case-study-pipeline.md',
-            'h-a-o-m-t-g-v', 'whitepaper', 'content-calendar', 'linkedin-series']
+key_claims = [
+    "90 agents",
+    "20 departments",
+    "5-tier",
+    "H-A-O-M-T-G-V",
+    "Four Reservations",
+    "J&S StopOver",
+    "152 agents",
+]
+doc_list = [
+    "README.md",
+    "positioning.md",
+    "manifesto-draft.md",
+    "roadmap.md",
+    "pillars/01",
+    "pillars/02",
+    "pillars/03",
+    "case-study-pipeline.md",
+    "h-a-o-m-t-g-v",
+    "whitepaper",
+    "content-calendar",
+    "linkedin-series",
+]
 
 for claim in key_claims:
     print(f"\n  '{claim}' appears in:")
@@ -77,7 +126,7 @@ for claim in key_claims:
         content = open(doc).read()
         if claim.lower() in content.lower():
             # Count occurrences
-            count = len([l for l in content.split('\n') if claim.lower() in l.lower()])
+            count = len([l for l in content.split("\n") if claim.lower() in l.lower()])
             print(f"    ✓ {doc} ({count} occurrences)")
         else:
             print(f"    ✗ {doc}")
@@ -123,7 +172,7 @@ KEY FINDINGS:
 """)
 
 # Write final validation report
-with open('evidence_validation_report.md', 'w') as f:
+with open("evidence_validation_report.md", "w") as f:
     f.write("""# Pharos Evidence Validation Report
 
 Generated: 2026-10-14
@@ -144,7 +193,7 @@ Generated: 2026-10-14
 - **Tier 3**: Dual Approve - two distinct humans, 30min → escalate to CEO
 - **Tier 4**: CEO Only - explicit CEO authorization, 24hr → board notification
 - **Timeout rule**: Always escalates upward, never auto-approves or auto-deletes
-- **Tool-to-tier mapping**: read/ grep/ list → T0; write/ edit → T2; execute/ shell → T3; 
+- **Tool-to-tier mapping**: read/ grep/ list → T0; write/ edit → T2; execute/ shell → T3;
   delete audit logs → T4
 
 ### 3. H-A-O-M-T-G-V Framework (7 Layers)
@@ -186,39 +235,39 @@ Generated: 2026-10-14
 
 ## Evidence Gaps and Strengthening Recommendations
 
-1. **J&S StopOver Quantification**: Currently described as "real" but quantified metrics (cost/time/yield) 
+1. **J&S StopOver Quantification**: Currently described as "real" but quantified metrics (cost/time/yield)
    pending. Next deliverable: quantified case study write-up with hard numbers.
 
-2. **152→90 Consolidation History**: The consolidation from 152 to 90 agents (via ADR-025) is 
+2. **152→90 Consolidation History**: The consolidation from 152 to 90 agents (via ADR-025) is
    documented in whitepaper but could be more prominently featured in the Pharos page narrative.
 
-3. **144 vs 90 Agent Distinction**: The 144 verified configurations vs 90 registry agents needs 
+3. **144 vs 90 Agent Distinction**: The 144 verified configurations vs 90 registry agents needs
    clearer public framing to avoid confusion in external citations.
 
-4. **SADC Governance Framework Status**: The SADC Agentic AI Governance Framework is a policy 
+4. **SADC Governance Framework Status**: The SADC Agentic AI Governance Framework is a policy
    proposal (not adopted/law). This distinction needs to be prominent in any public page.
 
-5. **National AI Strategy Submission Status**: "Prepared/drafted, not published" status is 
+5. **National AI Strategy Submission Status**: "Prepared/drafted, not published" status is
    consistently reported but could be strengthened with actual submission evidence if available.
 
-6. **Honest Status Transparency**: The "no paid client deployments" claim is consistently 
+6. **Honest Status Transparency**: The "no paid client deployments" claim is consistently
    reported but could include a "what we are working on" roadmap for external credibility.
 
 ## Page-Ready Evidence Map — Pharos Page Structure
 
 ### HEADER / NORTH STAR
-**Claim**: Jacob "Jack" Mlisu is an AI-Native Enterprise Transformation leader helping 
-governments, corporations and development institutions design, govern and deploy 
+**Claim**: Jacob "Jack" Mlisu is an AI-Native Enterprise Transformation leader helping
+governments, corporations and development institutions design, govern and deploy
 Agentic AI organizations across Malawi and Southern Africa.
 
-**Evidence**: 
+**Evidence**:
 - Positioning architecture (positioning.md North Star)
 - H-A-O-M-T-G-V framework (h-a-o-m-t-g-v-framework.md)
 - Company Builder pillar proof (90 agents, 20 departments, 5-tier HITL)
 - Four Reservations engineered answers (positioning.md §4)
 
 ### SECTION 1: THE COMPANY BUILDER EVIDENCE
-**Sub-claim**: Lightspeed Holdings is an AI-native enterprise with 90 agents across 
+**Sub-claim**: Lightspeed Holdings is an AI-native enterprise with 90 agents across
 20 departments operating under a five-tier human-in-the-loop approval system.
 
 **Metrics & Evidence**:
@@ -244,11 +293,11 @@ Agentic AI organizations across Malawi and Southern Africa.
   - One human owner in control
   - Answers Reservation 4 (skepticism) with concrete evidence
 
-- **Health/M&E** (case-study-pipeline.md:30-34): Composite workflow for clinic 
+- **Health/M&E** (case-study-pipeline.md:30-34): Composite workflow for clinic
   supply chain monitoring, Z-score anomaly detection, donor reporting
 
-- **VSLA/SACCO/Financial Inclusion** (case-study-pipeline.md:36-40): Agentic 
-  workflows over mobile-money rails (Airtel Money, TNM Mpamba) and informal savings 
+- **VSLA/SACCO/Financial Inclusion** (case-study-pipeline.md:36-40): Agentic
+  workflows over mobile-money rails (Airtel Money, TNM Mpamba) and informal savings
   groups for micro-loan risk assessment
 
 - **StopOver Bar as meta-case-study** (README.md): The "throughline" artifact
@@ -279,15 +328,15 @@ Agentic AI organizations across Malawi and Southern Africa.
 - SADC framework as CEO policy proposal (not adopted)
 
 ### SECTION 4: INTELLECTUAL TERRITORIES / FRAMEWORK
-**Sub-claim**: The three intellectual territories (moat) that differentiate the Pharos 
+**Sub-claim**: The three intellectual territories (moat) that differentiate the Pharos
 positioning.
 
 **Territory Map** (positioning.md:26-34):
-1. **AI Company Building**: How to build organizations where AI agents perform meaningful 
+1. **AI Company Building**: How to build organizations where AI agents perform meaningful
    organizational work? (Company Builder pillar)
-2. **Agentic AI Use Cases**: Where should agents be deployed for measurable economic/social 
+2. **Agentic AI Use Cases**: Where should agents be deployed for measurable economic/social
    value? (Use Cases pillar)
-3. **AI Governance & Policy**: How should institutions govern autonomous AI responsibly? 
+3. **AI Governance & Policy**: How should institutions govern autonomous AI responsibly?
    (Policy pillar)
 
 **The Proof Stack** (positioning.md:60-61):
@@ -309,41 +358,41 @@ positioning.
 **24-month Roadmap** (roadmap.md):
 - Phase 0: Foundation (Months 0-2): Manifesto, stakeholder repo, platform rebuild
 - Phase 1: Visibility & Credibility (Months 2-6): Four Reservations thesis, first use case
-- Phase 2: Authority Building (Months 6-12): National AI Strategy submission, State of 
+- Phase 2: Authority Building (Months 6-12): National AI Strategy submission, State of
   Agentic AI in Malawi artifact
 - Phase 3: Institutional Capture & Regional Reach (Months 12-24): Advisory appointments,
   regional expansion, profile features
 
 **10 Flagship Publications** (content-calendar.md:58-60):
-2026: AI-Native Company, Chatbots→Agentic Organizations, Malawi Opportunity, Four 
+2026: AI-Native Company, Chatbots→Agentic Organizations, Malawi Opportunity, Four
 Reservations
 2027: Malawi Use Case Map, Governing Autonomous AI, AI-Augmented CEO, Future Org Chart
 2028: SADC Readiness Index, Economics of AI Employees, AI-Native Enterprises
 
 ## Data Gaps and What Would Strengthen the Page
 
-1. **J&S StopOver Quantified Metrics**: Cost/time/yield numbers still pending — 
+1. **J&S StopOver Quantified Metrics**: Cost/time/yield numbers still pending —
    next deliverable in case-study pipeline
 
-2. **National AI Strategy Submission**: Actual submission evidence (if filed) would 
+2. **National AI Strategy Submission**: Actual submission evidence (if filed) would
    strengthen the "formal submission" claim
 
-3. **SADC Framework Adoption Status**: Currently a policy proposal — if any member 
+3. **SADC Framework Adoption Status**: Currently a policy proposal — if any member
    state adopts it, this would be a significant credibility marker
 
 4. **Test Suite Full Pass Rate**: 2,373 documented collection count (results/use-case-fact-pack.md:79)
    — re-run before external citation (known discrepancy: 2,211 + parametrize)
 
-5. **Pricing MWK/USD Validation**: Estimates at ~1,800 MWK/USD — revalidate before 
+5. **Pricing MWK/USD Validation**: Estimates at ~1,800 MWK/USD — revalidate before
    external use, pressure-test against actual mobile-money market rates
 
-6. **Honest Status Remediation Track**: What was previously over-claimed (152 agents, 
-   superlatives on J&S) and what has been remediated publicly — good transparency 
+6. **Honest Status Remediation Track**: What was previously over-claimed (152 agents,
+   superlatives on J&S) and what has been remediated publicly — good transparency
    model for external audiences
 
 ---
-*Evidence validation completed 2026-10-14. All claims traced to primary sources. 
-Cross-document consistency confirmed where multiple sources corroborate. 
+*Evidence validation completed 2026-10-14. All claims traced to primary sources.
+Cross-document consistency confirmed where multiple sources corroborate.
 Narrative claims distinguished from verified quantitative claims.*
 """)
 

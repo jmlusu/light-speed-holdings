@@ -94,21 +94,21 @@ def check_approval_from_registry(tool_name, args, agent_approval_level, seniorit
         risk_level="medium",
         task_id="",
     )
-    
+
     # If agent's approval_level is "specialist", enforce max_auto_tier=1
     if agent_approval_level == "specialist":
         max_auto = 1  # specialist seniority ceiling
         if tier_info["tier"] > max_auto:
             tier_info["needs_hitl"] = True
             tier_info["authorized"] = False
-    
+
     # If agent's approval_level is "exec" or "lead", allow up to tier 2
     elif agent_approval_level in ("exec", "lead"):
         max_auto = 2
         if tier_info["tier"] > max_auto:
             tier_info["needs_hitl"] = True
             tier_info["authorized"] = False
-    
+
     return tier_info
 ```
 """

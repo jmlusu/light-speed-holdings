@@ -58,7 +58,7 @@ Determine **what remains to be done, its current status, and why it is still ope
 
 5. **Reconcile conflicting sources.**
    Do not treat every TODO or old document as an active task.
-   
+
    For every candidate task, determine whether it is:
    - **OPEN** — still genuinely outstanding
    - **IN PROGRESS** — actively being worked on

@@ -5,28 +5,28 @@ integrations:
   open-design:
     enabled: true
     version: "0.9.0"
-    
+
     # Connection settings
     connection:
       method: cli  # cli or desktop
       cliPath: "open-design"
       autoUpdate: true
-      
+
     # Authentication (AMR - no API key needed)
     auth:
       method: amr
       signInOnce: true
-      
+
     # Default model
     models:
       default: "claude-sonnet-4.5"
-      
+
     # Brand enforcement
     brand:
       enforceBrand: true
       tokensPath: "brand/tokens/brand-tokens.json"
       guidelinesPath: "brand/guidelines/brand-guidelines.md"
-      
+
     # Output settings
     output:
       baseDir: "output/design"
@@ -47,7 +47,7 @@ agents:
       - Ask 5 intake questions
       - Route to production skill
       - Enforce brand compliance
-      
+
   product-designer:
     role: production
     openDesignMode: ai-ui-generator
@@ -59,7 +59,7 @@ agents:
       - html
       - svg
       - png
-      
+
   presentation-designer:
     role: production
     openDesignMode: slides
@@ -71,7 +71,7 @@ agents:
       - pptx
       - pdf
       - html
-      
+
   document-designer:
     role: production
     openDesignMode: document
@@ -83,7 +83,7 @@ agents:
       - pdf
       - html
       - docx
-      
+
   diagram-designer:
     role: production
     openDesignMode: diagram
@@ -94,7 +94,7 @@ agents:
       - svg
       - png
       - html
-      
+
   visual-storyteller:
     role: production
     openDesignMode: infographic
@@ -107,7 +107,7 @@ agents:
       - svg
       - html
       - pdf
-      
+
   brand-advertising-designer:
     role: production
     openDesignMode: image
@@ -129,19 +129,19 @@ workflows:
       - name: intake
         agent: creative-director
         action: "Load brand system and ask 5 intake questions"
-        
+
       - name: route
         agent: creative-director
         action: "Route to appropriate production skill based on artifact type"
-        
+
       - name: produce
         agent: "[production-agent]"
         action: "Create artifact using Open Design with brand constraints"
-        
+
       - name: qa
         agent: artifact-qa-reviewer
         action: "Run visual, brand, UX, accessibility, and content QA"
-        
+
       - name: deliver
         agent: creative-director
         action: "Deliver approved artifact to user"
