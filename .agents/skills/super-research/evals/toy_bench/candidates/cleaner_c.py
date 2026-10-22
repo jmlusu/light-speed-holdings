@@ -1,6 +1,8 @@
 """Cleaner C: full pipeline — unicode + whitespace + lowercased, tolerates empty."""
 
-import sys, unicodedata, re
+import re
+import sys
+import unicodedata
 
 
 def clean(text: str) -> str:

@@ -23,9 +23,9 @@ Before any measured runs, smoke-test the harness on ONE candidate and ONE case, 
 
 ```
 candidate	case	rep	metric	resource	status	notes
-lib_a	case01	1	0.912	1.2	done	
-lib_a	case01	2	0.909	1.2	done	
-lib_b	case01	1	0.877	0.4	done	
+lib_a	case01	1	0.912	1.2	done
+lib_a	case01	2	0.909	1.2	done
+lib_b	case01	1	0.877	0.4	done
 lib_b	case07	1	0	0	error	throws on unicode input — see run logs
 lib_c	case07	1	0	0	timeout	killed at 2× budget
 ```

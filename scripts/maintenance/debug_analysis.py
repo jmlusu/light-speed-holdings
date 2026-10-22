@@ -31,7 +31,7 @@ for e in entries:
             old_count += 1
         if delta <= 3:
             recent_count += 1
-    except Exception as ex:
+    except Exception:
         pass  # skip entries with unparseable dates
 print(f"Entries older than 7 days: {old_count}")
 print(f"Entries in last 3 days: {recent_count}")

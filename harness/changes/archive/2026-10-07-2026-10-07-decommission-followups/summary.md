@@ -71,4 +71,3 @@ runtime state, delete `tmp/` scratch, verify the open-design submodule pin.
 ## Next Step
 
 Close this change.
-

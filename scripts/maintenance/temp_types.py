@@ -1,5 +1,4 @@
 import yaml
-import os
 
 with open(r"C:\Users\jmlus\light-speed-holdings\company-registry.yaml") as f:
     data = yaml.safe_load(f)

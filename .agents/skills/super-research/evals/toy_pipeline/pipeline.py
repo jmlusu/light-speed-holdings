@@ -16,7 +16,6 @@ Design intent (verify with a leave-one-out run + noise-floor comparison):
 """
 
 import random
-import sys
 
 # ------------- component switches (ablatable) -------------
 ENABLED_NORMALIZE = True

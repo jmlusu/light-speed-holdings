@@ -165,7 +165,7 @@
 
 ### Daily Standup Format (Chief of Staff → Steering Committee)
 ```
-STATUS: [what was done yesterday] | BLOCKERS: [what's preventing progress] | 
+STATUS: [what was done yesterday] | BLOCKERS: [what's preventing progress] |
 PLAN: [what will be done today] | DECISIONS: [any decisions needed from CEO/board]
 ```
 

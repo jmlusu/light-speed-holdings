@@ -4,7 +4,7 @@
 
 **Last Observed Activity:** `<date / description>`
 
-**Policy Changes:** 
+**Policy Changes:**
 - `<Policy change 1>` (e.g., Malawi AI Bill, SADC Regional AI Strategy)
 - `<Policy change 2>`
 

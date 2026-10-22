@@ -1,7 +1,7 @@
 # Platform Comparison Research — LightSpeed Remote Autonomous Runtime
 
-**Research Date**: October 3, 2026  
-**Focus**: Platforms with genuinely usable free tiers **without requiring a credit card/payment method**  
+**Research Date**: October 3, 2026
+**Focus**: Platforms with genuinely usable free tiers **without requiring a credit card/payment method**
 **Methodology**: Official documentation, pricing pages, terms of service, developer documentation
 
 ---

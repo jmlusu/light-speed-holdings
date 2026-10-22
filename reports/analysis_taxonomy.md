@@ -99,45 +99,45 @@ The evidence ledger must inform all evidence_level assignments:
 **A. Missing Problem entities (4 recommended):**
 1. `skills_gap` — "Insufficient AI talent and skills within organizations"
    - industry: african_ai, severity: high, related_problems: [low_ai_adoption]
-   
+
 2. `data_infrastructure_lack` — "Inadequate data collection, storage, and processing infrastructure"
    - industry: african_ai, severity: high, related_problems: [low_ai_adoption]
-   
+
 3. `change_resistance` — "Organizational resistance to AI cultural and process change"
    - industry: african_ai, severity: medium, related_problems: [low_ai_adoption]
-   
+
 4. `talent_shortage` — "Lack of AI-specialized personnel across technical and strategic roles"
    - industry: african_ai, severity: high, related_problems: [low_ai_adoption]
 
 **B. Missing Capability entities (5 recommended):**
 1. `machine_learning_operations` — "Operationalizing ML models into production environments"
    - category: technical, maturity_model_level: 2, enables: [reduced_operational_costs], implemented_by: [model_deployment_service]
-   
+
 2. `data_governance` — "Managing data assets for AI compliance, quality, and accessibility"
    - category: governance, maturity_model_level: 3, enables: [improved_decision_making], implemented_by: [ai_governance_framework]
-   
+
 3. `ai_ethics` — "Ensuring ethical AI implementation aligned with values and regulations"
    - category: governance, maturity_model_level: 2, enables: [competitive_advantage], implemented_by: [ethics_review_service]
-   
+
 4. `change_management` — "Managing organizational change for AI adoption"
    - category: organizational, maturity_model_level: 3, enables: [accelerated_ai_adoption], implemented_by: [change_management_service]
-   
+
 5. `technology_integration` — "Integrating AI solutions with existing technology stacks"
    - category: technical, maturity_model_level: 2, enables: [enhanced_customer_experience], implemented_by: [api_integration_service]
 
 **C. Missing Service entities (5 recommended):**
 1. `model_deployment_service` — "Deploying and managing ML models in production"
    - capability: machine_learning_operations, engagement_models: [implementation], price_tier: enterprise
-   
+
 2. `ai_governance_framework` — " establishing AI governance structure and processes"
    - capability: data_governance, engagement_models: [ongoing_governance], price_tier: enterprise
-   
+
 3. `ai_ethics_review_service` — "Ethical review and compliance validation for AI systems"
    - capability: ai_ethics, engagement_models: [assessment], price_tier: professional
-   
+
 4. `change_management_service` — "Guiding organizational through AI adoption change"
    - capability: change_management, engagement_models: [advisory, workshop], price_tier: professional
-   
+
 5. `api_integration_service` — "Connecting AI capabilities to existing business systems"
    - capability: technology_integration, engagement_models: [implementation], price_tier: enterprise
 

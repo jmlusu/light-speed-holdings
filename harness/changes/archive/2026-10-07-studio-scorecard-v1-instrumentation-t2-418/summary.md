@@ -42,4 +42,3 @@ T2 #418 in progress — Studio Scorecard v1 instrumentation (collectors + page +
 ## Next Step
 
 - T008: `close completed` + resolution comment on #418.
-

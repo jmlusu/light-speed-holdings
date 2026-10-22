@@ -39,4 +39,3 @@ Do not require React, Vite, Recharts, MCP Apps, or widget runtimes.
 - Check chart labels, units, legends, accessibility, and table readability.
 - Ensure the artifact does not expose secrets, credentials, unnecessary personal data, or temporary local paths.
 - Deliver the dashboard artifact or governed platform link plus metric definitions, source/query files, refresh instructions, and known limitations.
-

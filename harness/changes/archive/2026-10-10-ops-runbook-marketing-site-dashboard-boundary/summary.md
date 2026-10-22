@@ -45,4 +45,3 @@ Ops runbook delta applied: four SOPs now carry Marketing Site / CEO Dashboard bo
 ## Next Step
 
 - Mark T007 after lint + greps; set validation_status; close change via harness script; deliver delta summary to user (COO handoff).
-

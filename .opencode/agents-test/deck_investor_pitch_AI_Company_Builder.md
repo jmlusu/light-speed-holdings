@@ -76,4 +76,3 @@ Aspire. Act. Achieve. - closing strategic thesis
 - Key point 14 related to closing
 - Supporting detail for closing
 Closing slide sets the date for the next meeting and reinforces the brand thesis
-

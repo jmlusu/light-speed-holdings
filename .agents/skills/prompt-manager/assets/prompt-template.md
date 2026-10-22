@@ -7,11 +7,11 @@ Use this blank template when creating a new LightSpeed-style prompt. Fill in eac
 
 ## 1. STATUS
 Choose exactly one:
-- COMPLETE  
-- COMPLETE WITH CONDITIONS  
-- PARTIALLY COMPLETE  
+- COMPLETE
+- COMPLETE WITH CONDITIONS
+- PARTIALLY COMPLETE
 - BLOCKED�
-- FAILED  
+- FAILED
 - NOT STARTED
 
 ## 2. PROGRESS

@@ -113,30 +113,30 @@ Everything else is out of scope.
 
 ## REQUIRED FINAL REPORT
 
-**ROOT CAUSE:**  
+**ROOT CAUSE:**
 ...
 
 **CONFIDENCE:** HIGH / MEDIUM / LOW
 
-**EVIDENCE:**  
+**EVIDENCE:**
 ...
 
-**FIX:**  
+**FIX:**
 ...
 
-**FILES CHANGED:**  
+**FILES CHANGED:**
 ...
 
-**TESTS / VERIFICATION:**  
+**TESTS / VERIFICATION:**
 ...
 
-**REGRESSION STATUS:**  
+**REGRESSION STATUS:**
 ...
 
-**OUT-OF-SCOPE ISSUES:**  
+**OUT-OF-SCOPE ISSUES:**
 ...
 
-**REMAINING RISKS:**  
+**REMAINING RISKS:**
 ...
 
 **STATUS:** FIXED / BLOCKED

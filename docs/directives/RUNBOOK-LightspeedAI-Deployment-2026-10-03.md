@@ -1,8 +1,8 @@
 # n8n on Hugging Face Spaces — Zero-Cost 24/7 Deployment Plan
 
-**Prepared by:** DevOps Lead  
-**Date:** 2026-10-03  
-**Status:** DRAFT — NEEDS VERIFICATION  
+**Prepared by:** DevOps Lead
+**Date:** 2026-10-03
+**Status:** DRAFT — NEEDS VERIFICATION
 **Sources:** `survey/free-tier-cloud-deployment/RESEARCH-LightspeedAI-FreeTier-2026-10-03.md` (S001–S135)
 
 ---
@@ -159,13 +159,13 @@ export default {
   async scheduled(event, env, ctx) {
     const spaceUrl = env.SPACE_URL; // e.g., https://user-n8n-prod.hf.space
     const url = new URL('/health', spaceUrl);
-    
+
     try {
       const response = await fetch(url, {
         headers: { 'User-Agent': 'cf-keepalive/1.0' },
         cf: { cacheTtl: 0, cacheEverything: false }
       });
-      
+
       if (!response.ok) {
         console.error(`Keep-alive failed: ${response.status} ${response.statusText}`);
         // Optionally: send alert via webhook (Discord, Slack, email)
@@ -180,26 +180,26 @@ export default {
   // Optional: Proxy outbound n8n webhooks for IP allowlisting
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // Only proxy paths under /webhook/
     if (url.pathname.startsWith('/webhook/')) {
       const targetUrl = env.N8N_WEBHOOK_TARGET; // e.g., https://api.example.com
       const proxyUrl = new URL(url.pathname + url.search, targetUrl);
-      
+
       const proxyRequest = new Request(proxyUrl, {
         method: request.method,
         headers: request.headers,
         body: request.body,
         redirect: 'follow'
       });
-      
+
       // Add Cloudflare IP headers for allowlisting
       proxyRequest.headers.set('CF-Connecting-IP', request.headers.get('CF-Connecting-IP') || '');
       proxyRequest.headers.set('X-Forwarded-For', request.headers.get('X-Forwarded-For') || '');
-      
+
       return fetch(proxyRequest);
     }
-    
+
     return new Response('Not found', { status: 404 });
   }
 };
@@ -371,10 +371,10 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install n8n CLI
         run: npm install -g n8n
-      
+
       - name: Run backup script
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -725,8 +725,8 @@ IF Infisical unavailable > 1 hour
 
 ---
 
-**Verification Agent:** Test Engineering Lead  
-**Date:** 2026-10-03  
+**Verification Agent:** Test Engineering Lead
+**Date:** 2026-10-03
 **Sources:** HF Docs, Neon Docs, Cloudflare Docs, Infisical Pricing, Community GitHub repos (Hugging8n, talentiq, portfolio keep-alive, Hermes-Agent), HF Forums
 
 ---
@@ -766,5 +766,5 @@ IF Infisical unavailable > 1 hour
 
 ---
 
-**End of Deployment Plan**  
+**End of Deployment Plan**
 **Next Action:** Verification Agent executes Steps 1–10, fills Section 9.

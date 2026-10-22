@@ -1,7 +1,7 @@
 # Agent Execution Classification Matrix — LightSpeed 90-Agent Architecture
 
-**Source**: `company-registry.yaml` (3993 lines, 90 agents)  
-**Generated**: October 3, 2026  
+**Source**: `company-registry.yaml` (3993 lines, 90 agents)
+**Generated**: October 3, 2026
 **Purpose**: Classify each agent for remote execution platform assignment
 
 ---

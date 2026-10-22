@@ -1,8 +1,8 @@
 # LightSpeed External Website — Final Handover Report
 
-**Date:** 2026-10-13  
-**Auditor role:** Independent pre-handover verification (no code changes, no redesign, no deploy)  
-**Baseline:** `main` @ `9e031b64` (`copy: humanizer pass on marketing site content (#462)`), tracks `origin/main`  
+**Date:** 2026-10-13
+**Auditor role:** Independent pre-handover verification (no code changes, no redesign, no deploy)
+**Baseline:** `main` @ `9e031b64` (`copy: humanizer pass on marketing site content (#462)`), tracks `origin/main`
 **Audience:** Human CEO + external reviewer (ChatGPT)
 
 ---
@@ -113,7 +113,7 @@ Primary routes present and wired: `/`, `/what-we-do`, `/ai-company-builder`, `/s
 
 Playwright navigation to `http://localhost:1441/use-cases/uc-js-bar` renders:
 
-> **Use case not found**  
+> **Use case not found**
 > We couldn't find a use case matching "uc-js-bar". It may have moved, or the link may be out of date.
 
 Screenshot: `C:\Users\jmlus\AppData\Local\Temp\ls-ucdetail.png`. Prior audit browser-report-2 recorded the same for all 16 slugs.

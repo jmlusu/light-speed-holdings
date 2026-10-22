@@ -6,7 +6,7 @@ Generated from `docs/venture-studio/11-pilot-outreach-pack.md` wedge script. One
 
 ## Script Template (shared structure, org-filled)
 
-**Opener (30s):** 
+**Opener (30s):**
 > "We help Malawi NGOs turn one painful donor report from weeks to days — governed, auditable, on your format. 90-day design partnership, starting with a MWK 150k one-report MVD. Worth 15 minutes on your [named report]?"
 
 **Four Reservations — answer before asked (2 min):**
@@ -15,7 +15,7 @@ Generated from `docs/venture-studio/11-pilot-outreach-pack.md` wedge script. One
 3. **Tech debt:** "No rip-and-replace; we sit beside your current M&E sheets for one cycle."
 4. **Skepticism:** "Human-led — 5-tier approvals + immutable audit on every output; you sign off before anything ships to a donor."
 
-**Proof (30s, honest):** 
+**Proof (30s, honest):**
 > "No paying clients yet — I'll show you our internal governed pipeline and the audit trail it leaves, then we prove it on your report."
 
 **Ask stack (in order):**
@@ -30,8 +30,8 @@ Generated from `docs/venture-studio/11-pilot-outreach-pack.md` wedge script. One
 ---
 
 ## Script 1: CONGOMA — Council for NGOs in Malawi
-**Contact:** +265 111 759 881 / info@congoma.mw — M&E Coordinator (2026 NGO Directory open role)  
-**Tier:** 1 | **Warm path:** CONGOMA 2026 directory download; membership list  
+**Contact:** +265 111 759 881 / info@congoma.mw — M&E Coordinator (2026 NGO Directory open role)
+**Tier:** 1 | **Warm path:** CONGOMA 2026 directory download; membership list
 **Named report:** Q3 2026 donor impact report, due 15 Oct (per directory concept)
 
 > **Opener:** "We help Malawi NGOs turn one painful donor report from weeks to days — governed, auditable, on your format. 90-day design partnership, starting with a MWK 150k one-report MVD. Worth 15 minutes on your Q3 donor impact report due 15 Oct?"
@@ -42,15 +42,15 @@ Generated from `docs/venture-studio/11-pilot-outreach-pack.md` wedge script. One
 >
 > **Ask:** (a) 30-min working session on one past Q3 report → (b) MWK 150k MVD for next cycle → (c) LOI so we can count you as a Validation design partner.
 >
-> **Objection handle:** 
+> **Objection handle:**
 > - Price: "MVD is 150k for one report — the 3.5M only applies if the MVD proves cycle-time on your format."
 > - Timing: "If your next deadline is >60 days out, we park you as Tier 2."
 
 ---
 
 ## Script 2: ADRA Malawi — Adventist Development and Relief Agency
-**Contact:** +265 88 00 05 876 / info@adra.mw.org — Grants Manager  
-**Tier:** 1 | **Warm path:** 2024 annual report public channel; direct email  
+**Contact:** +265 88 00 05 876 / info@adra.mw.org — Grants Manager
+**Tier:** 1 | **Warm path:** 2024 annual report public channel; direct email
 **Named report:** Quarterly donor M&E report, cycle ends 30 Sep (per 2024 annual report)
 
 > **Opener:** "We help Malawi NGOs turn one painful donor report from weeks to days — governed, auditable, on your format. 90-day design partnership, starting with a MWK 150k one-report MVD. Worth 15 minutes on your quarterly donor M&E report, cycle ending 30 Sep?"
@@ -61,15 +61,15 @@ Generated from `docs/venture-studio/11-pilot-outreach-pack.md` wedge script. One
 >
 > **Ask:** (a) 30-min working session on one past quarterly report → (b) MWK 150k MVD for next cycle → (c) LOI so we can count you as a Validation design partner.
 >
-> **Objection handle:** 
+> **Objection handle:**
 > - Data sensitivity: "We start on a redacted past report; PII guardrails + your sign-off gate before any donor sees output."
 > - Price: "MVD is 150k for one report — the 3.5M only applies if the MVD proves cycle-time on your format."
 
 ---
 
 ## Script 3: Yamba Malawi
-**Contact:** +265 88 00 05 876 (shared with ADRA) / info — MEAL Manager Kitty Maluwa  
-**Tier:** 1 | **Warm path:** ADRA shared contact; warm intro via shared Malawi hub  
+**Contact:** +265 88 00 05 876 (shared with ADRA) / info — MEAL Manager Kitty Maluwa
+**Tier:** 1 | **Warm path:** ADRA shared contact; warm intro via shared Malawi hub
 **Named report:** Annual grant M&E report, due Q4 2026 (per team & partners page)
 
 > **Opener:** "We help Malawi NGOs turn one painful donor report from weeks to days — governed, auditable, on your format. 90-day design partnership, starting with a MWK 150k one-report MVD. Worth 15 minutes on your annual grant M&E report, due Q4 2026?"
@@ -80,15 +80,15 @@ Generated from `docs/venture-studio/11-pilot-outreach-pack.md` wedge script. One
 >
 > **Ask:** (a) 30-min working session on one past grant report → (b) MWK 150k MVD for next cycle → (c) LOI so we can count you as a Validation design partner.
 >
-> **Objection handle:** 
+> **Objection handle:**
 > - Timing: "If your next deadline is >60 days out, we park you as Tier 2."
 > - Price: "MVD is 150k for one report — the 3.5M only applies if the MVD proves cycle-time on your format."
 
 ---
 
 ## Script 4: Fount for Nations
-**Contact:** LinkedIn Madalitso Kasinje, M&E Officer (verified)  
-**Tier:** 1 | **Warm path:** LinkedIn connect + message; M&E Officer named  
+**Contact:** LinkedIn Madalitso Kasinje, M&E Officer (verified)
+**Tier:** 1 | **Warm path:** LinkedIn connect + message; M&E Officer named
 **Named report:** Quarterly child-health + education M&E report, due 15 Nov (inferred from M&E officer scope)
 
 > **Opener:** "We help Malawi NGOs turn one painful donor report from weeks to days — governed, auditable, on your format. 90-day design partnership, starting with a MWK 150k one-report MVD. Worth 15 minutes on your quarterly child-health + education M&E report, due 15 Nov?"
@@ -99,7 +99,7 @@ Generated from `docs/venture-studio/11-pilot-outreach-pack.md` wedge script. One
 >
 > **Ask:** (a) 30-min working session on one past quarterly report → (b) MWK 150k MVD for next cycle → (c) LOI so we can count you as a Validation design partner.
 >
-> **Objection handle:** 
+> **Objection handle:**
 > - Data sensitivity: "We start on a redacted past report; PII guardrails + your sign-off gate before any donor sees output."
 > - Price: "MVD is 150k for one report — the 3.5M only applies if the MVD proves cycle-time on your format."
 

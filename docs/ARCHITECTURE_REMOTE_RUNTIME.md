@@ -1,8 +1,8 @@
 # LightSpeed Remote Autonomous Runtime — Architecture Specification
 
-**Version**: 1.0  
-**Date**: October 3, 2026  
-**Status**: APPROVED FOR IMPLEMENTATION  
+**Version**: 1.0
+**Date**: October 3, 2026
+**Status**: APPROVED FOR IMPLEMENTATION
 **Classification**: Internal — Architecture Decision Record
 
 ---

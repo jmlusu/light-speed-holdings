@@ -27,10 +27,10 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from dataclasses import asdict, dataclass, field as _field
+from dataclasses import asdict, dataclass
+from dataclasses import field as _field
 from pathlib import Path
 from typing import Iterator
-
 
 # ---------------------------------------------------------------- data model
 

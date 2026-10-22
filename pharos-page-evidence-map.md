@@ -1,7 +1,7 @@
 # Pharos Page — Evidence and Research Backing
 ## Marketing Site Standalone Page: Pharos Department Credibility in Agentic AI Company Building
 
-**Generated:** 2026-10-14 | **Agent:** Agentic Research Lead (Pharos) | **Department:** Pharos  
+**Generated:** 2026-10-14 | **Agent:** Agentic Research Lead (Pharos) | **Department:** Pharos
 **Purpose:** Standalone Pharos page on the Lightspeed Holdings marketing site, showcasing the department's credibility in agentic AI company building.
 
 ---

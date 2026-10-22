@@ -1,7 +1,7 @@
 # LightSpeed Remote Autonomous Runtime — Artifacts Index
 
-**Version**: 1.0  
-**Date**: October 3, 2026  
+**Version**: 1.0
+**Date**: October 3, 2026
 **Status**: All artifacts created and ready for implementation
 
 ---

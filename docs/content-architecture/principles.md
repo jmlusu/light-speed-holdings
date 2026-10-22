@@ -8,7 +8,7 @@
 
 3. **Ontology First**: The entity-relationship model (ontology.yaml) is the foundational artifact. All downstream work (content types, sitemap, metadata) derives from it.
 
-4. **Four-Layer Architecture**: 
+4. **Four-Layer Architecture**:
    - Layer 1: Business Model → Problem → Capability → Service → Engagement Model → Outcome
    - Layer 2: Knowledge → Insight → Research → Use Case → Framework → Methodology → Policy
    - Layer 3: Experience → Case Study → Demonstration → Resource → Event → Testimonial

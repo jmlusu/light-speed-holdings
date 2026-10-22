@@ -94,4 +94,3 @@ Drafts v1 for Posts 1–3 rewritten to full LinkedIn long-form spec and **approv
 ## Next Step
 
 - Step 7 scheduling is done (queue built, format decision recorded). Remaining before publish: GitHub issue #194 (LinkedIn Company account provisioning, "Pending") blocks any live POST; then `ai-company publishing publish <id> --live` on each scheduled date.
-

@@ -29,7 +29,7 @@ from typing import Iterable
 
 try:
     from lxml import etree as _et
-except ImportError as exc:  # pragma: no cover
+except ImportError:  # pragma: no cover
     sys.stderr.write(
         "assemble.py needs `lxml`. Run with `uv run assemble.py` (auto-installs) "
         "or: pip install lxml\n"

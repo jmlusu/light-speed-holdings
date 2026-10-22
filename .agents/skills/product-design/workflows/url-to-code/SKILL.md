@@ -30,4 +30,3 @@ Read `../index/SKILL.md`, `../../references/critical-overrides.md`, and relevant
 - Do not leave placeholder assets or improvised icon glyphs in the final implementation.
 - Build success and server health are not visual verification.
 - Publish only when the user asks and the host exposes an authorized deployment tool.
-

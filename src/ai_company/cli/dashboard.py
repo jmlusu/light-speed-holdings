@@ -90,7 +90,7 @@ def _ensure_executor_daemon() -> None:
     from ai_company.executor.daemon import ExecutorDaemon
 
     if ExecutorDaemon.is_daemon_running():
-        typer.echo("Executor daemon already running — skipping start.")
+        typer.echo("Executor daemon already running - skipping start.")
         return
 
     daily_cap, task_cap, do_suspend = _resolve_budgets(

@@ -660,7 +660,7 @@
 - [ ] Escalation alerts highlighted
 - [ ] Budget consumption gauge (current vs limit)
 - [ ] Agent health status (all agents green/yellow/red)
-- [x] `ai-company dashboard autonomous` CLI shortcut
+- [ ] `ai-company dashboard autonomous` CLI shortcut
 
 **Dependencies:** P5-01-P5-04
 

@@ -1,6 +1,6 @@
 # Roadmap
 
-> **Last Updated**: 2026-10-18
+> **Last Updated**: 2026-07-16
 > **Current Phase**: Phase 3 — Autonomy
 
 ---
@@ -40,15 +40,14 @@
 **Duration**: Sessions 13-24
 **Status**: In Progress
 
-| Target | Description | Priority | Status |
-|--------|-------------|----------|--------|
-| Task execution loop | Agents receive tasks, execute, report | High | Complete (2026-10-18) |
-| HITL gates | Critical decisions pause for human approval | High | Complete (2026-10-18) |
-| Escalation automation | Agents escalate based on risk and authority | High | Complete (2026-10-18) |
-| Briefing generation | Daily executive briefings from aggregated data | Medium | Complete (2026-10-18) |
-| Scheduler | Time-based task assignment and deadlines | Medium | Complete (2026-10-18) |
-| Dashboard completion | Full CEO dashboard with real-time data | Medium | In Progress — API + WebSocket live; `dashboard autonomous` CLI shortcut (US-A09) shipped 2026-10-18 |
-| Workflow-triggered scheduling | Wire `WorkflowEngine.to_tasks()` to MessageBus (P5-05) | Medium | Pending — not wired |
+| Target | Description | Priority |
+|--------|-------------|----------|
+| Task execution loop | Agents receive tasks, execute, report | High |
+| HITL gates | Critical decisions pause for human approval | High |
+| Escalation automation | Agents escalate based on risk and authority | High |
+| Briefing generation | Daily executive briefings from aggregated data | Medium |
+| Scheduler | Time-based task assignment and deadlines | Medium |
+| Dashboard completion | Full CEO dashboard with real-time data | Low |
 
 ---
 

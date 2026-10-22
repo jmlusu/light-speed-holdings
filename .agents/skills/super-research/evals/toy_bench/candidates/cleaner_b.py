@@ -1,6 +1,8 @@
 """Cleaner B: normalizes unicode + collapses internal whitespace. Crashes on empty input."""
 
-import sys, unicodedata, re
+import re
+import sys
+import unicodedata
 
 
 def clean(text: str) -> str:
