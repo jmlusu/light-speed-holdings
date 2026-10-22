@@ -31,7 +31,7 @@ from pathlib import Path
 
 try:
     from lxml import etree as _et
-except ImportError as exc:  # pragma: no cover
+except ImportError:  # pragma: no cover
     sys.stderr.write(
         "annotate.py needs `lxml`. Run with `uv run annotate.py` (auto-installs) "
         "or: pip install lxml\n"
@@ -222,7 +222,7 @@ def _patch_anchor(exploded: Path, cid: int, anchor: str) -> PatchResult:
         paragraph.insert(slot + offset, node)
 
     _write_tree(tree, document_path)
-    return PatchResult("anchor", True, f"wrapped first occurrence")
+    return PatchResult("anchor", True, "wrapped first occurrence")
 
 
 # ---- driver -------------------------------------------------------------- #

@@ -1266,9 +1266,7 @@ def sanitize_svg_markup(svg_markup: str) -> str:
                 target = collapse_ws(value_text)
                 if target and not target.startswith("#"):
                     del tag.attrs[attr]
-            elif attr_lower == "style":
-                tag.attrs[attr] = sanitize_css(value_text)
-            elif "url(" in value_text.lower():
+            elif attr_lower == "style" or "url(" in value_text.lower():
                 tag.attrs[attr] = sanitize_css(value_text)
     svg = soup.find("svg")
     return str(svg) if svg else ""

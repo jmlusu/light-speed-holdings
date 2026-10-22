@@ -9,12 +9,12 @@ import { getMediaByType, MediaAsset } from '../../data/media/registry';
 
 /**
  * HAOMTGV Standalone Page ΓÇö H-A-O-M-T-G-V Operating Philosophy
- * 
+ *
  * Demonstrates the 7-layer framework as a dedicated page, silent on Honest status discipline.
  * Brand: navy `#070A40` / red `#E63946` / cyan `#00BFFF` + Arial type scale.
  * Media: Type B HAOMTGV_INFOGRAPHIC (full vertical), Type K micro-illustrations (glyphs).
  * Animations: scroll-reveal (Reveal component), line-draw aesthetic, card hover flips, hover pulses.
- * 
+ *
  * @see HAOMTGVSection ΓÇö embedded variant within HomePage
  * @see MEDIA_ARCHITECTURE.md ┬º20 ΓÇö HAOMTGV media placement
  */

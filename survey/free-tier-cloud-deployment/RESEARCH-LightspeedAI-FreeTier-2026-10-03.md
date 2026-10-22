@@ -1,9 +1,9 @@
 # Free-Tier Cloud Deployment Research Report
 ## Lightspeed AI Company Builder — 24/7 Operation Without Credit Card
 
-**Date:** 2026-10-02  
-**Research Mode:** Topic Survey (super-research)  
-**Sources Examined:** 135 (logged in `sources.tsv`)  
+**Date:** 2026-10-02
+**Research Mode:** Topic Survey (super-research)
+**Sources Examined:** 135 (logged in `sources.tsv`)
 **Saturation:** Reached — last 10 sources added no new claims
 
 ---

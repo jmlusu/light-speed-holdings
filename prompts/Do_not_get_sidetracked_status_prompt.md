@@ -24,16 +24,16 @@ Answer these questions:
 
 Use this format:
 
-**STATUS:**  
-**OBJECTIVE:**  
-**COMPLETED:**  
-**INCOMPLETE:**  
-**FAILED/BLOCKED:**  
-**EVIDENCE:**  
-**RISKS:**  
-**REPOSITORY IMPACT:**  
-**NEXT ACTION:**  
-**CEO DECISION:**  
+**STATUS:**
+**OBJECTIVE:**
+**COMPLETED:**
+**INCOMPLETE:**
+**FAILED/BLOCKED:**
+**EVIDENCE:**
+**RISKS:**
+**REPOSITORY IMPACT:**
+**NEXT ACTION:**
+**CEO DECISION:**
 **BOTTOM LINE:**
 
 Maximum 300 words.

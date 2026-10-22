@@ -30,7 +30,7 @@ import argparse
 import json
 import sys
 import zipfile
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Callable
 from xml.etree import ElementTree as _stdet

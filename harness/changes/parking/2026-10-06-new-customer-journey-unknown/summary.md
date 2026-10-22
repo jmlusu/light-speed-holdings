@@ -35,4 +35,3 @@ Pending.
 ## Next Step
 
 - Run Intake Review, then update `spec.md` and `plan.md`.
-

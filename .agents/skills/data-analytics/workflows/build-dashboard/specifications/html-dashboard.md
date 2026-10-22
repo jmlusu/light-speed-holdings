@@ -14,4 +14,3 @@ Use semantic HTML, CSS, inline SVG or canvas, and small vanilla JavaScript inter
 ## Verification
 
 Serve or open the real HTML artifact with the host's browser tool when available. Check layout at representative desktop and narrow widths, controls, empty/error states, chart labels, table overflow, console errors, and no-JavaScript readability.
-

@@ -36,4 +36,3 @@ Translate a selected visual target into a high-quality frontend. Read `../index/
 ## Handoff
 
 Provide the runnable project or changed files, the local preview information when useful, and a concise summary of what was implemented, verified, and left as a limitation. Publish only when the user asks and the host exposes an authorized deployment tool.
-

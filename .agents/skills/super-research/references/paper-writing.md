@@ -22,7 +22,7 @@ Before drafting: write `claims.tsv`, one row per empirical claim, each mapped to
 
 ```
 id	claim	evidence_kind	evidence_ref	confidence	notes
-K1	our method reduces val-loss by 12% at 200M params	own experiment	results.tsv row 47 (commit c3d4e5f)	high	
+K1	our method reduces val-loss by 12% at 200M params	own experiment	results.tsv row 47 (commit c3d4e5f)	high
 K2	prior work uses AdamW as default optimizer for LMs	cited paper	@vaswani2017,@brown2020	medium	need one more citation for "default"
 K3	Muon has been shown to outperform AdamW at small scale	cited paper	@karpathy2024	low — single blog source	replace with peer-reviewed source or hedge
 K4	our approach is "significantly better"	???	—	—	CUT — no evidence source, drop or hedge
