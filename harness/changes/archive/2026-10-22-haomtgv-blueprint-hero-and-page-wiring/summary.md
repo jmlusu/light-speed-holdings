@@ -2,17 +2,17 @@
 title: "HAOMTGV blueprint hero and page wiring"
 slug: "haomtgv-blueprint-hero-and-page-wiring"
 status: "completed"
-location: "active"
-phase: "validated"
+location: "archive"
+phase: "validate"
 intake_status: "completed"
 spec_review: "completed"
-plan_review: "completed"
+plan_review: "approved"
 modules: []
 files: []
 tags: []
-validation_status: "passed"
+validation_status: "pass"
 created_at: "2026-10-16"
-updated_at: "2026-10-20"
+updated_at: "2026-10-22"
 session_id: "0ae3f812-5907-4363-b033-4470d7c36b00"
 owner_agent: "jmlus"
 claimed_at: "2026-10-16"
