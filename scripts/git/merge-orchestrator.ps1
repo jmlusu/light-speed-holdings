@@ -88,7 +88,9 @@ if ($LASTEXITCODE -eq 0 -and $submoduleStatus) {
     $dirtySubmodules = $submoduleStatus | Select-String -Pattern "^[+-U]"
     if ($dirtySubmodules) {
         if ($AutoFix) {
-            Write-Fix "Submodules out of alignment. Synchronizing and updating recursively..."
+            Write-Fix "Submodules have dirty state. Running hard reset and clean before sync..."
+            git submodule foreach --recursive "git reset --hard HEAD; git clean -fdx" 2>&1 | Out-Null
+            Write-Fix "Submodules hard-reset. Synchronizing and updating recursively..."
             git submodule sync --recursive | Out-Null
             git submodule update --init --recursive | Out-Null
             Write-Pass "Submodules updated and synchronized."
@@ -201,16 +203,36 @@ if ($mergeExitCode -ne 0) {
 # ==========================================
 Write-Header "PHASE 4: POST-MERGE VALIDATION"
 
+$testPassed = $false
 if ($TestCommand) {
     Write-Step "Executing test suite..."
-    & $TestCommand
-    if ($LASTEXITCODE -eq 0) {
+    # Capture stdout/stderr cleanly to prevent premature termination
+    $testOutput = & $TestCommand 2>&1
+    $testExitCode = $LASTEXITCODE
+
+    if ($testExitCode -eq 0) {
         Write-Pass "Test suite completed successfully."
+        if ($testOutput) { Write-Host $testOutput -ForegroundColor Gray }
+        $testPassed = $true
     } else {
-        Write-Fail "Test suite failed post-merge. Please inspect errors before proceeding."
+        Write-Host "`n  [TEST FAILURE OUTPUT]" -ForegroundColor Red
+        if ($testOutput) { Write-Host $testOutput -ForegroundColor Red }
+
+        # Atomic rollback: reset the merge commit and clean working tree
+        Write-Fix "Test suite failed. Rolling back merge commit..."
+        git reset --hard HEAD~1 2>&1 | Out-Null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "  [WARNING] git reset --hard HEAD~1 failed. Manual intervention required." -ForegroundColor Yellow
+        }
+        git clean -fd 2>&1 | Out-Null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "  [WARNING] git clean -fd failed. Manual intervention required." -ForegroundColor Yellow
+        }
+        Write-Fail "Test suite failed post-merge. Merge rolled back to pre-merge state."
     }
 } else {
     Write-Pass "No post-merge test command provided. Skipping test execution."
+    $testPassed = $true
 }
 
 Write-Step "Displaying post-merge commit log..."
