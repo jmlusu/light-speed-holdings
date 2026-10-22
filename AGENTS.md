@@ -185,10 +185,6 @@ An agent performing an audit must treat its evidence set as read-only: **never w
 - **Where output goes** — a directory outside the evidence set (for the weekly audit: `reports/repo-audit-<AUDIT_DATE>.md`, with evidence at `reports/evidence/<AUDIT_DATE>.json`), or a path outside the repository.
 - **On violation** — discard the run, re-fetch evidence from a fresh clone or CI artifact, re-run, and report the incident alongside the findings.
 
-### 9.4 Agent Registry Requires CEO Approval (HITL)
-
-The agent roster in `company-registry.yaml` (90 entries: 89 AI + 1 human CEO) may only change with Human CEO approval, per [`docs/architecture/adr/026-single-owner-architecture.md`](docs/architecture/adr/026-single-owner-architecture.md) (new agent IDs are forbidden without approval). The approved roster is pinned in `company/agent-baseline.json`; the `Registry Baseline (HITL)` CI check fails any change to agent ids or count that the baseline does not record. To add, remove, or swap an agent: get CEO approval, edit `company-registry.yaml`, then update the baseline (`approved_ids`, `approved_count`, `approved_by`, `approved_date`) in the same PR. Never edit the baseline alone to silence the check.
-
 ## 10 Verification
 
 See §6 Verification — the single source of the minimum-verification table.

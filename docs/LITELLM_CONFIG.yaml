@@ -287,25 +287,25 @@ router_settings:
   # Primary routing strategy
   routing_strategy: "cost-based-routing"
   # Alternative: "latency-based-routing" for speed-critical workloads
-  
+
   # Fallback chains — ordered by preference
   fallbacks:
     # Premium reasoning tasks
     - "gemini-flash": ["cf-llama-3.3-70b", "groq-gpt-oss-120b", "openrouter-free"]
     - "gemini-flash-lite": ["cf-llama-3.3-70b", "groq-gpt-oss-120b", "openrouter-free"]
-    
+
     # Standard tool-calling tasks
     - "cf-llama-3.3-70b": ["groq-gpt-oss-120b", "gemini-flash", "openrouter-free"]
     - "cf-qwen-2.5-coder-32b": ["groq-qwen-2.5-coder-32b", "cf-llama-3.3-70b", "openrouter-free"]
     - "cf-mistral-small-3.1": ["cf-llama-3.3-70b", "gemini-flash", "openrouter-free"]
     - "cf-deepseek-v4-flash": ["gemini-flash", "openrouter-nemotron-3-ultra", "groq-gpt-oss-120b"]
-    
+
     # Speed-critical tasks
     - "groq-gpt-oss-120b": ["cf-llama-3.3-70b", "gemini-flash", "openrouter-free"]
     - "groq-qwen-2.5-coder-32b": ["cf-qwen-2.5-coder-32b", "groq-llama-3.3-70b", "openrouter-free"]
     - "groq-llama-3.3-70b": ["cf-llama-3.3-70b", "gemini-flash", "openrouter-free"]
     - "groq-mixtral-8x7b": ["cf-llama-3.3-70b", "gemini-flash", "openrouter-free"]
-    
+
     # Fallback chain
     - "openrouter-free": ["openrouter-nemotron-3-ultra", "openrouter-glm-5.2", "openrouter-kimi-k2.7-code"]
     - "openrouter-nemotron-3-ultra": ["openrouter-glm-5.2", "openrouter-free", "gemini-flash"]
@@ -315,10 +315,10 @@ router_settings:
   # Retry configuration
   num_retries: 3
   retry_after: 60  # seconds
-  
+
   # Timeout for model calls
   request_timeout: 120  # seconds
-  
+
   # Fallback on specific errors
   fallback_on:
     - "rate_limit"
@@ -343,7 +343,7 @@ plugins:
       track_per_model: true
       # Block requests when budget exceeded
       block_on_budget_exceeded: true
-  
+
   # Region-aware routing — prefer edge near Malawi
   - "plugins.region_router.RegionRouterPlugin"
     config:
@@ -362,7 +362,7 @@ plugins:
         "groq-llama-3.3-70b": ["us-east", "europe"]
         "groq-mixtral-8x7b": ["us-east", "europe"]
         "openrouter-free": ["europe", "us-east"]
-  
+
   # Rate limit awareness — respect provider limits
   - "plugins.rate_limit_aware.RateLimitAwarePlugin"
     config:
@@ -371,13 +371,13 @@ plugins:
       # Backoff strategy
       backoff_strategy: "exponential"
       max_backoff: 300
-  
+
   # Observability
   - "plugins.prometheus.PrometheusPlugin"
     config:
       port: 9090
       path: "/metrics"
-  
+
   # Structured logging
   - "plugins.json_logging.JsonLoggingPlugin"
     config:
@@ -392,20 +392,20 @@ plugins:
 general_settings:
   # Master key for LiteLLM proxy (optional, for admin access)
   master_key: "os.environ/LITELLM_MASTER_KEY"
-  
+
   # Enable debug mode
   debug: false
-  
+
   # Default model if none specified
   default_model: "gemini-flash"
-  
+
   # Maximum concurrent requests
   max_concurrent_requests: 100
-  
+
   # Enable caching for deterministic queries
   enable_cache: true
   cache_ttl: 3600  # 1 hour
-  
+
   # Health check endpoint
   health_check_path: "/health"
   health_check_interval: 30

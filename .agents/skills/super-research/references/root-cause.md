@@ -27,8 +27,8 @@ Your baseline is not "the code before my changes"; it's the **symptom made measu
 
 ```
 id	hypothesis	prediction	test	result	status	notes
-H01	env var X was unset in prod after Fri deploy	symptom reproduces locally when X is unset	unset X; run repro 20×	20/20 pass — X does NOT reproduce it	ruled-out	
-H02	commit abc123 (retry-loop change) is the trigger	git bisect between last-good and HEAD lands on it	bisect 12 commits, ~4 steps	landed on abc123	suspect	
+H01	env var X was unset in prod after Fri deploy	symptom reproduces locally when X is unset	unset X; run repro 20×	20/20 pass — X does NOT reproduce it	ruled-out
+H02	commit abc123 (retry-loop change) is the trigger	git bisect between last-good and HEAD lands on it	bisect 12 commits, ~4 steps	landed on abc123	suspect
 H03	abc123's off-by-one causes double-close on retry	reverting abc123 alone fixes the symptom AND replaying the diff onto known-good REINTRODUCES the symptom	revert + rerun 30×; cherry-pick onto old + rerun 30×	revert: 30/30 pass. cherry-pick: 28/30 fail (matches baseline rate)	confirmed	both directions match — this is the cause
 H04	load balancer stickiness change same day	drops out under H03 if we can reintroduce symptom on isolated node	—	—	unexplored	deprioritized after H03 confirmed
 ```

@@ -31,8 +31,8 @@ Log these as the first rows of the ablation log. Everything you claim later is m
 
 ```
 config	component_removed	seed	metric	resource	status	delta_vs_ref	notes
-reference	—	0	0.812	1.2	done	0.000	
-reference	—	1	0.809	1.2	done	-0.003	
+reference	—	0	0.812	1.2	done	0.000
+reference	—	1	0.809	1.2	done	-0.003
 reference	—	2	0.815	1.2	done	+0.003	noise floor: ±0.003 (±1σ)
 ablate_attention	attention	0	0.740	1.1	done	-0.072	well outside noise band — component carries load
 ablate_dropout	dropout	0	0.813	1.2	done	+0.001	inside noise band — no measurable contribution

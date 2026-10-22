@@ -4,7 +4,7 @@
 param(
     [Parameter(Mandatory=$true)]
     [string]$Prompt,
-    
+
     [string]$Model = "claude-sonnet-4.5",
     [string]$Format = "html",
     [string]$OutputDir = "output\design"

@@ -39,5 +39,5 @@ If complete:
 
 Do not start another task.
 
-**The mission is not "make the repository better."  
+**The mission is not "make the repository better."
 The mission is "complete the task specified above."**

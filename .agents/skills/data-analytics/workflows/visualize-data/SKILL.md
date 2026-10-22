@@ -44,4 +44,3 @@ Do not install or require React, Recharts, Vite, MCP widgets, or proprietary UI 
 - Check ordering, scales, labels, clipping, overlap, empty states, and small-screen behavior where relevant.
 - Confirm the exported file opens and contains the expected marks and text.
 - Preserve the code or notebook needed to reproduce the chart when the user needs an auditable artifact.
-

@@ -126,7 +126,7 @@ The AI Venture Studio is a **stage-gated, repeatable engine** that co-founds, va
 
 ---
 
-**Instrumentation roadmap (Part 5):** 
+**Instrumentation roadmap (Part 5):**
 - Deploy ATC counters in all agent workflows
 - Implement manual override logging
 - Build real-time dashboard (7-department KPI collectors)

@@ -1,0 +1,363 @@
+# TASK: Produce an Evidence-Based Structural Inventory of the LightSpeed Holdings Marketing Website
+
+## 1. Objective
+
+Produce a complete, repository-verified description of the **actual LightSpeed Holdings external Marketing website** as it exists in the current working tree.
+
+This inventory will be used to diagnose why Google AI Studio imports of `jmlusu/light-speed-holdings` are displaying a generic AI Company Builder dashboard instead of the Marketing website.
+
+The objective is to establish the actual implementation, not to describe the intended architecture, propose a redesign, or reconstruct the application from memory.
+
+**Deliverable:** Create a comprehensive Markdown report at:
+
+`reports/marketing-site-structure.md`
+
+If the `reports/` directory does not exist, report that fact first. Do not create directories or files without authorization. You may return the complete report in your response if writing a file is not authorized.
+
+## 2. Mandatory operating rules
+
+1. Work from the actual repository root:
+   `C:\Users\jmlus\light-speed-holdings`
+
+2. Verify the current working directory and Git repository before proceeding.
+
+3. Treat the current filesystem as the object of inspection. Do not assume that previous handovers, agent summaries, documentation, or memory accurately describe the current implementation.
+
+4. Do not modify application code, configuration, dependencies, assets, routes, styles, tests, Git history, branches, or submodules.
+
+5. Do not run formatting commands, automated fixes, migrations, cleanup scripts, dependency installation, or commands that could modify the working tree.
+
+6. Do not switch branches, reset files, stash changes, commit, push, or synchronize with external services.
+
+7. Do not use external web applications or send source code, environment variables, credentials, or repository contents to external services.
+
+8. Do not print secrets or environment variable values. Identify configuration variable names only when relevant.
+
+9. Distinguish verified facts from inferences and unknowns. Never invent a file, route, component, dependency, or implementation detail.
+
+10. Preserve the distinction between the external Marketing website and internal dashboards, agent interfaces, CEO control planes, experiments, prototypes, and other applications in the repository.
+
+11. If multiple applications or competing entry points exist, inventory each separately and establish which one is actually configured as the root application.
+
+12. If a requested check cannot be completed safely or with available tools, state the limitation instead of claiming it was completed.
+
+## 3. Phase A: Establish the repository baseline
+
+Record:
+
+- Absolute repository root.
+- Current branch.
+- Current commit hash and subject.
+- Working-tree status, including staged, unstaged, and untracked changes.
+- Whether the root is a Git repository.
+- Whether submodules exist and their current status.
+- Root-level directory and file structure relevant to application discovery.
+
+Do not assume that the repository is clean.
+
+Do not include secrets, private tokens, or sensitive environment values in the report.
+
+Explain the limitations of the inspection if files are untracked, ignored, unavailable, or outside the current checkout.
+
+## 4. Phase B: Discover all application entry points
+
+Inspect the repository to identify all plausible application entry points.
+
+For the root application, investigate the actual contents of:
+
+- `package.json`
+- `index.html`
+- `src/main.tsx`
+- `src/App.tsx`
+- `src/index.css`
+- `vite.config.ts`
+- TypeScript configuration files
+- Tailwind and PostCSS configuration files, where present
+- `vercel.json` and other deployment configuration, where present
+
+Do not assume all these files exist or are authoritative.
+
+Identify any additional entry points discovered, including:
+
+- Alternate Vite applications.
+- Next.js or Astro applications.
+- Dashboard applications.
+- Internal agent interfaces.
+- AI Studio-specific generated application files.
+- Legacy websites.
+- Nested packages or workspaces.
+- Storybook, demo, or prototype applications.
+
+For every plausible application, report:
+
+| Field | Required information |
+|---|---|
+| Application name | Evidence-based identification |
+| Root directory | Exact repository-relative path |
+| Entry document | Exact path, if applicable |
+| JavaScript/TypeScript entry | Exact path |
+| Root component | Exact path or export |
+| Framework and build tool | Verified from configuration |
+| Build command | Actual package script |
+| Development command | Actual package script |
+| Output directory | Verified configuration |
+| Deployment target | Only if supported by repository configuration |
+| Purpose | Verified purpose or clearly marked inference |
+| Relationship to Marketing site | Primary, supporting, separate, legacy, or unresolved |
+
+Do not assume that a directory name establishes an application's purpose.
+
+## 5. Phase C: Reconstruct the actual runtime entry chain
+
+Trace the Marketing website from its initial HTML document to its rendered page.
+
+Document the actual chain, for example:
+
+`index.html → application entry → root component → router → shared layout → route component → page sections`
+
+Use the real file names and exports found in the repository.
+
+For every link in this chain, record:
+
+- File path.
+- Relevant export, import, function, or component.
+- What it does.
+- The file or component that invokes it.
+- Evidence supporting the relationship.
+
+Establish which component renders the homepage at `/`.
+
+Identify the component responsible for the generic dashboard title and subtitle if they exist anywhere in the repository.
+
+Determine whether that dashboard is:
+
+- The active root application.
+- A route inside the Marketing application.
+- A separate application.
+- An unused component.
+- An AI Studio-generated scaffold.
+- Or unresolved from available evidence.
+
+Do not infer active runtime behavior from file names alone.
+
+## 6. Phase D: Produce a complete route inventory
+
+Inspect the actual router implementation, route configuration, and route components.
+
+Document every declared route, including:
+
+- Static paths.
+- Dynamic parameters.
+- Nested routes.
+- Index routes.
+- Redirects and legacy aliases.
+- Catch-all routes.
+- Not-found handling.
+- Query parameters or hash-based navigation where implemented.
+- Routes that render modals or other non-page UI instead of separate pages.
+
+For each route, provide:
+
+| Field | Required information |
+|---|---|
+| Route pattern | Exact declared URL pattern |
+| Route implementation | Actual component or handler |
+| Source file | Exact path |
+| Layout | Shared layout, nested layout, or standalone |
+| Main components | Verified directly rendered components |
+| Navigation exposure | Whether linked from the site's actual navigation |
+| Access conditions | Any actual guards or conditions |
+| Status | Verified active, declared but unreachable, redirect, or unresolved |
+
+Do not label a route active solely because a page component exists.
+
+Distinguish a route declaration from a route that can actually be reached through the configured application.
+
+Identify links in the navigation that point to undeclared routes and routes that are declared but not linked from the navigation.
+
+Do not modify the route configuration.
+
+## 7. Phase E: Inventory the actual page components
+
+Find all page-level components associated with the Marketing application.
+
+For every page, document:
+
+- Page component name.
+- Source file.
+- Export type.
+- Route association.
+- Layout wrapper.
+- Direct child components.
+- Data or content sources.
+- Navigation and interaction dependencies.
+- Styling and asset dependencies.
+- Loading, error, and empty states where present.
+- Whether the page is actually connected to a route.
+
+Separate page-level components from reusable components and internal tools.
+
+If a page component exists but is not routed, list it separately as an unrouted page component.
+
+Do not assume that every page-looking component belongs to the Marketing site.
+
+## 8. Phase F: Decompose the homepage into its real sections
+
+Inspect the actual homepage implementation and produce a complete ordered section inventory.
+
+For every section, report:
+
+1. Section order.
+2. Displayed name or heading, if present.
+3. Component name.
+4. Exact source file.
+5. Direct parent component.
+6. Major child components.
+7. Main content or purpose, based on the source.
+8. Relevant assets, images, animations, or visualizations.
+9. Navigation anchor or hash, if implemented.
+10. Interactive behavior, if implemented.
+11. Whether the section is rendered unconditionally or conditionally.
+
+Include the hero, navigation-related elements, content sections, calls to action, FAQs, footer-related sections, and any modal or overlay rendered by the homepage.
+
+Do not infer section order from filenames. Follow the actual JSX/render tree.
+
+Produce a tree such as the following, populated only with verified components:
+
+`HomePage`
+- Hero section
+- Visitor pathways
+- Operating philosophy
+- Solutions
+- AI Company Builder
+- Workforce
+- Insights
+- About
+- FAQ
+- Briefing section
+
+The names above are illustrative clues from an earlier inspection, not an authoritative list. Confirm the current implementation and report differences.
+
+Identify sections that are imported but not rendered, conditionally rendered, duplicated, or disconnected.
+
+## 9. Phase G: Inventory shared site components
+
+Inspect the real component dependency graph and identify shared components, including where applicable:
+
+- Site layout and page containers.
+- Header and primary navigation.
+- Mobile navigation.
+- Footer.
+- Theme controls and theme providers.
+- Buttons and calls to action.
+- Cards and content panels.
+- Typography and section headings.
+- Breadcrumbs and related links.
+- Forms and contact/briefing workflows.
+- Modals, drawers, and overlays.
+- Reveal animations and scroll behavior.
+- Accessibility utilities.
+- Error boundaries and not-found components.
+
+For every component, record:
+
+- Component name and exact path.
+- Export name.
+- Direct importers.
+- Where it appears at runtime, if determinable.
+- Relevant props and state.
+- External dependencies.
+- Whether it is shared, page-specific, or application-specific.
+
+Classify components as:
+
+- Verified used by the Marketing site.
+- Defined but not imported.
+- Imported but not rendered.
+- Only reachable through another potentially unused component.
+- Used by another application.
+- Unresolved.
+
+Do not equate an absence of direct imports with definitive dead code. Account for barrel exports, dynamic imports, route configuration, registries, lazy loading, and indirect usage.
+
+## 10. Phase H: Inventory styles, branding, assets, and visual behavior
+
+Inspect the actual implementation of:
+
+- Global CSS.
+- Tailwind configuration and utility usage.
+- CSS modules and component-specific stylesheets.
+- CSS variables and design tokens.
+- Light and dark themes.
+- Fonts and font-loading mechanisms.
+- Logos and brand assets.
+- Images, illustrations, video, and SVG files.
+- Icon libraries.
+- Animation libraries.
+- Scroll-triggered effects.
+- Responsive breakpoints.
+- Background layers and decorative elements.
+- Layout constraints and shared visual primitives.
+
+Produce a source map connecting each major page or section to its styles and assets.
+
+For assets, report repository-relative paths and their verified usage. Do not include huge binary files or secrets in the report.
+
+Distinguish an asset that exists on disk from one that is actually referenced by the Marketing application.
+
+Do not claim visual fidelity without inspecting the rendered application.
+
+## 11. Phase I: Inventory dependencies and runtime assumptions
+
+Read `package.json` and the actual imports.
+
+Identify the libraries and runtime capabilities that the Marketing website depends on, including where present:
+
+- React and React DOM.
+- Router.
+- Vite.
+- Tailwind CSS.
+- Icon libraries.
+- Animation libraries.
+- Markdown or content-rendering libraries.
+- Form and validation libraries.
+- Analytics.
+- External APIs.
+- Backend endpoints.
+- Environment-dependent features.
+- Dynamic imports.
+- Asset URL assumptions.
+- SPA fallback and deployment requirements.
+
+For each important dependency, identify the source files that use it.
+
+Report any dependency or configuration that could materially affect importing or running the Marketing site in Google AI Studio.
+
+Do not install, update, or remove dependencies.
+
+## 12. Phase J: Investigate the AI Studio dashboard discrepancy
+
+Determine why the current preview may be rendering a generic dashboard instead of the Marketing website.
+
+Investigate the actual source code and configuration for:
+
+- The text “Dashboard for AI Company Builder”.
+- The heading “LightSpeed Holdings”.
+- The dashboard scaffold mentioned in AI Studio.
+- Any default or fallback application component.
+- Competing `App` components.
+- Competing `main` files.
+- Alternate HTML entry documents.
+- Root component imports and exports.
+- Preview/build configuration.
+- AI Studio-specific files or generated code, if present.
+- Components that may shadow or replace the intended Marketing entry point.
+
+Search exact strings and inspect the relevant implementation.
+
+Report the findings under three headings:
+
+**Confirmed:** Directly established by source code, configuration, or a verifiable diff.
+
+**Probable:** Supported by code evidence

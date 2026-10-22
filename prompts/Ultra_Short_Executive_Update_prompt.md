@@ -4,26 +4,26 @@ Give me a CEO-level status update using EXACTLY this format:
 
 **STATUS:** COMPLETE / COMPLETE WITH CONDITIONS / PARTIALLY COMPLETE / BLOCKED / FAILED
 
-**DONE:**  
+**DONE:**
 - 3–5 bullets describing only work actually completed.
 
-**EVIDENCE:**  
+**EVIDENCE:**
 - 1–3 concrete pieces of evidence proving completion.
 
-**NOT DONE:**  
+**NOT DONE:**
 - Anything incomplete, failed, skipped, or deferred. If none, say "None."
 
-**RISKS:**  
+**RISKS:**
 - Any material risk or issue. If none, say "None."
 
-**NEXT:**  
+**NEXT:**
 - The 1–3 most important next actions.
 
-**CEO DECISION:**  
+**CEO DECISION:**
 - Required / Not required.
 - If required, state exactly what decision is needed.
 
-**BOTTOM LINE:**  
+**BOTTOM LINE:**
 One plain-English sentence describing the current state.
 
 Rules:

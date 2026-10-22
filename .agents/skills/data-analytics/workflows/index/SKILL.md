@@ -54,4 +54,3 @@ This bundle targets a generic code agent and does not depend on React, MCP Apps,
 - Notebooks: keep SQL/Python reproducible and make assumptions visible.
 
 Preserve source names, metric definitions, grain, time windows, filters, units, and uncertainty. Never expose credentials, secrets, hidden reasoning, or unnecessary personal data.
-

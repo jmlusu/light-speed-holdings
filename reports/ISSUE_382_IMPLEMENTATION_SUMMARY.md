@@ -1,8 +1,8 @@
 # Issue #382 — ContentMedia Fields Implementation Summary
 
-**Date**: 2026-10-03  
-**Branch**: `feature/382-content-media-fields`  
-**Status**: Ready for merge after #381 ratification  
+**Date**: 2026-10-03
+**Branch**: `feature/382-content-media-fields`
+**Status**: Ready for merge after #381 ratification
 **Dependencies**: #381 (ContentMedia union ratification)
 
 ---
@@ -111,11 +111,11 @@ Implemented comprehensive `ContentMedia` fields across all content data models a
 
 All media rendering is conditional on:
 ```typescript
-const isMediaEnabled = () => 
+const isMediaEnabled = () =>
   typeof window !== 'undefined' && import.meta.env.VITE_CONTENT_MEDIA_ENABLED === 'true';
 ```
 
-**Default**: `false` (disabled in production until #381 ratified)  
+**Default**: `false` (disabled in production until #381 ratified)
 **Enable**: Set `VITE_CONTENT_MEDIA_ENABLED=true` in `.env` for staging/production
 
 ---
