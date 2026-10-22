@@ -1,0 +1,49 @@
+TASK: Fortify `main` Branch for AI Studio Import
+
+CONTEXT:
+Google AI Studio's GitHub integration is currently restricted to importing only the `main` branch. Previously, it attempted a "compatibility rewrite" because it failed to recognize the project structure as a standard Vite/React application. We have successfully recovered the original Marketing site files into the `marketing-site-recovered` branch.
+
+OBJECTIVE:
+1. Ensure the `main` branch contains the complete, recovered Marketing website.
+2. Standardize the `package.json` scripts to be unmistakably clear to AI Studio's parser, preventing any auto-rewrite triggers.
+3. Commit and push the fortified `main` branch.
+
+STRICT SAFEGUARDS:
+- DO NOT delete, refactor, or "optimize" any existing Marketing site components, routes, or styles.
+- DO NOT introduce new dependencies.
+- DO NOT alter the folder structure.
+- Use read-only checks first; only modify files if the merge or script update is strictly necessary.
+
+PHASE 1: Verify and Merge
+1. Checkout the `main` branch: `git checkout main`
+2. Pull the latest from origin: `git pull origin main`
+3. Check if the Marketing site files (e.g., `src/App.tsx`, `src/pages/HomePage.tsx`) are present and contain the correct routes.
+4. If they are missing or represent the broken "dashboard" scaffold, safely merge the recovered branch:
+   `git merge marketing-site-recovered --no-ff -m "chore: merge recovered marketing site into main"`
+   (If there are conflicts, favor the `marketing-site-recovered` version of the files).
+
+PHASE 2: Fortify `package.json`
+Inspect `package.json`. AI Studio looks for standard, explicit entry points. Ensure the `"scripts"` section contains exactly these standard Vite commands (add them if missing, or correct them if they are non-standard):
+
+"scripts": {
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "preview": "vite preview",
+  "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+}
+
+Also, verify that the `"type": "module"` field is present at the root of `package.json` (required for modern Vite and heavily checked by AI parsers).
+
+PHASE 3: Verify and Push
+1. Run a quick read-only check to confirm `src/App.tsx` contains the Marketing routes (e.g., `/what-we-do`, `/solutions`).
+2. Stage the changes: `git add .`
+3. Commit the changes: `git commit -m "chore: fortify main branch with standard vite scripts for AI Studio compatibility"`
+4. Push to GitHub: `git push origin main`
+
+PHASE 4: Report
+Provide a brief summary confirming:
+- Whether a merge into `main` was necessary.
+- The exact `"scripts"` object now present in `package.json`.
+- Confirmation that `git push origin main` was successful.
+
+Stop after pushing. Do not attempt to run the build or install dependencies unless explicitly instructed.

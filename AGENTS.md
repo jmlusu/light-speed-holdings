@@ -111,6 +111,23 @@ Staging dashboard runs on host port **8421** (maps to container 8420; production
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/maintenance/lint-ecl.ps1` |
 
+**Performance gate rules (from auto-evolve 2026-10-21):**
+- Use **median** over warm-up + 20 samples, not P95/P99 over 10 samples (P95 over 10 = maximum).
+- Define **per-endpoint budgets** calibrated at 3-5x headroom from measured medians; endpoints differ by 10x in latency.
+- Keep a **hard ceiling** (e.g., 2000 ms) for pathological cases the original gate caught.
+- Cache invalidation keyed on **file revision (path + mtime + size)**, not TTL — registry written by another process; TTL shows stale data.
+
+**CI gate scope = pre-commit scope:**
+- Pre-commit hooks can be bypassed with `--no-verify`; server-side CI gate must cover all owned directories (not just `src/`/`tests/`).
+- Example: deck tooling in `scripts/presentation/` must be in `Lint (ruff)` job scope.
+
+**Negative control validation required for archive gates:**
+- Test pre-fix artifact to confirm gates catch the defect (e.g., deck-qa: pre-fix deck 2/11 checks failed, 3 render checks failed).
+- Document negative control outcome in `validation_results`.
+
+**Shared constants module > duplicated hardcoded values:**
+- Single source of truth for lockup placement, logo crop box, clear-space invariant prevents stale expectations across generator/verifier/render-gate.
+
 ## 7 Safety Boundaries
 
 - Agents may modify business/application code when the user's task requires it.
@@ -142,6 +159,13 @@ The canonical runtime tool vocabulary for all agent cards (OpenCode v2 permissio
 - `code_interpreter` → **removed** (not an alias; rejected at runtime)
 
 Agent generators must emit only the canonical 7 tools. ToolRunner validates against this list; unknown tools return an error.
+
+**Cache / content-addressing pattern (from auto-evolve 2026-10-21):**
+- Key caches on **content identity (SHA-256)**, not mtime — prevents silent stale-cache failures from backup restore, artifact copy, or build-step timestamp changes.
+- Decouple cache key from artifact identity: cache file name must not leak into artifact (e.g., deck picture description). Set `descr` explicitly after `add_picture`; stable name `ai-venture-studio-lockup-880x713.png`.
+
+**Reject invasive fixes when minimal fix exists (from auto-evolve 2026-10-21):**
+- Vite MIME bug: removed 15 redundant imports (global load via `src/index.css` existed) rather than deleting `public/brand/tokens/`, changing `vite.config`, or path-alias tricks.
 
 ## 9 Governance Rules
 
@@ -292,7 +316,11 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 | Support | `ls-diagramming`, `ls-documentation-engineering`, `ls-visual-storytelling` | Diagram/graphic/doc-IA assets used inside produced artifacts |
 | Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes Playwright visual checks via `ls-artifact-qa` skill (see `.agents/skills/ls-artifact-qa/`) |
 
+**Open Design render layer (`ls-od-*` skills):** For artifacts rendered through the Open Design daemon (prototypes, live artifacts/dashboards, HTML decks, images, HyperFrames video), a nine-skill layer sits under the production skills: `ls-od-runtime`, `ls-od-catalogue`, `ls-od-brand`, `ls-od-project`, `ls-od-prototype`, `ls-od-live-artifact`, `ls-od-deck`, `ls-od-image`, `ls-od-video` (all in `.agents/skills/`). The bindings to 12 existing agents are specified in `specs/open-design-integration.md`; no agents were added (roster baseline unchanged, §9.4). Production skills delegate rendering to the matching `ls-od-*` skill; `ls-artifact-qa` still gates delivery last. Full guide: `docs/OPEN-DESIGN.md`.
+
 **Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.
+
+**Imagery:** AI-generated imagery is permitted for every non-person surface (see `docs/adr/027-ai-generated-imagery-policy.md`). Generated people, faces, figures and avatars are prohibited — human imagery is only real, consented, commissioned photography with a release. Generated rasters are typed `illustration` with `generated: true` and are never `screenshot`; promoters must be vendors allow-listed in `docs/APPROVED-VENDORS.md`, and prompts are subject to the third-party transmission ban in `docs/SKILL_CURATION_POLICY.md`.
 
 ## 15 Evidence, Honesty and Execution Integrity Policy
 
