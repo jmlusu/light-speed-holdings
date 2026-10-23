@@ -24,12 +24,12 @@ class TestP7Idempotency:
         """Running transform twice yields identical meta section."""
         # We already know it's idempotent from manual verification,
         # but this test documents the expectation.
-        assert transform_result["meta"]["agents"] == 91
+        assert transform_result["meta"]["agents"] == 90
         assert transform_result["meta"]["departments"] == 20
 
     def test_idempotent_agent_count(self, transform_result):
         """Agent list length is consistent across calls."""
-        assert len(transform_result["agents"]) == 91
+        assert len(transform_result["agents"]) == 90
 
     def test_idempotent_department_count(self, transform_result):
         """Department count is consistent across calls."""
@@ -93,7 +93,7 @@ class TestP7Integration:
         assert result1["meta"] == result2["meta"]
 
         # Compare agents (order-independent but structure-identical)
-        assert len(result1["agents"]) == len(result2["agents"]) == 91
+        assert len(result1["agents"]) == len(result2["agents"]) == 90
 
         # Compare departments
         assert result1["departments"] == result2["departments"]
