@@ -29,6 +29,16 @@ interface SessionState {
   verificationPending: boolean
   pivotedAfterError: boolean
   reportedLimitation: boolean
+  // Task lifecycle tracking
+  taskId: string | null
+  taskObjective: string | null
+  taskPhase: "queued" | "running" | "blocked" | "waiting_for_approval" | "failed" | "completed" | "cancelled" | "suspected_stalled" | null
+  taskStartTime: number | null
+  taskLastHeartbeat: number | null
+  taskAgentId: string | null
+  taskParentId: string | null
+  taskBlockers: string[]
+  taskValidationResults: Record<string, "passed" | "failed" | "skipped" | "not_run">
 }
 
 interface ToolCall {
@@ -81,6 +91,16 @@ export default Plugin.define({
       verificationPending: false,
       pivotedAfterError: false,
       reportedLimitation: false,
+      // Task lifecycle tracking
+      taskId: null,
+      taskObjective: null,
+      taskPhase: null,
+      taskStartTime: null,
+      taskLastHeartbeat: null,
+      taskAgentId: null,
+      taskParentId: null,
+      taskBlockers: [],
+      taskValidationResults: {},
     }
 
     // Load rules from file
@@ -193,6 +213,11 @@ export default Plugin.define({
           sessionState.toolHistory = sessionState.toolHistory.slice(-50)
         }
 
+        // Task lifecycle: update heartbeat on every tool execution
+        if (sessionState.taskId) {
+          sessionState.taskLastHeartbeat = Date.now()
+        }
+
         saveSessionState(sessionState)
         return output
       },
@@ -247,6 +272,16 @@ export default Plugin.define({
           verificationPending: false,
           pivotedAfterError: false,
           reportedLimitation: false,
+          // Task lifecycle tracking
+          taskId: null,
+          taskObjective: null,
+          taskPhase: null,
+          taskStartTime: null,
+          taskLastHeartbeat: null,
+          taskAgentId: null,
+          taskParentId: null,
+          taskBlockers: [],
+          taskValidationResults: {},
         }
         saveSessionState(sessionState)
 
@@ -267,6 +302,14 @@ export default Plugin.define({
         sessionState.sameErrorCounts = {}
         sessionState.pivotedAfterError = false
         sessionState.reportedLimitation = false
+        // Reset task lifecycle state
+        sessionState.taskId = null
+        sessionState.taskObjective = null
+        sessionState.taskPhase = null
+        sessionState.taskStartTime = null
+        sessionState.taskLastHeartbeat = null
+        sessionState.taskBlockers = []
+        sessionState.taskValidationResults = {}
         saveSessionState(sessionState)
 
         await ctx.client.app.log({
