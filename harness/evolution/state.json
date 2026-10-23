@@ -2,9 +2,10 @@
   "enabled": true,
   "threshold": 5,
   "window": 10,
-  "last_evolved_archive_count": 32,
-  "last_evolved_change_id": "2026-10-03-customer-journey-conversion-architecture-implementation",
+  "last_evolved_archive_count": 52,
+  "last_evolved_change_id": "2026-10-22-haomtgv-blueprint-hero-and-page-wiring",
   "last_score": null,
-  "last_run_at": "2026-10-05T19:05:17",
+  "last_run_at": "2026-10-23T04:36:51",
   "pending": false
 }
+

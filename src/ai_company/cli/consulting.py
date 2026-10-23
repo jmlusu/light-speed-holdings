@@ -105,7 +105,7 @@ def start(
     typer.echo("")
     typer.echo("Next steps:")
     typer.echo(
-        f"  1. Deploy interview agents: ai-company consulting deploy-interviews --engagement {engagement_id}"
+        f"  1. Deploy interview agents: ai-company consulting deploy-interviews {engagement_id}"
     )
     typer.echo(
         f"  2. Check status:            ai-company consulting status --engagement {engagement_id}"

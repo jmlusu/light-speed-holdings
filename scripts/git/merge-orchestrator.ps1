@@ -278,16 +278,99 @@ if ($mergeExitCode -ne 0) {
 # ==========================================
 Write-Header "PHASE 4: POST-MERGE VALIDATION"
 
+$testPassed = $false
 if ($TestCommand) {
-    Write-Step "Executing test suite..."
-    & $TestCommand
-    if ($LASTEXITCODE -eq 0) {
-        Write-Pass "Test suite completed successfully."
+    Write-Step "Executing test suite (timeout: ${TestTimeout}s)..."
+    # Capture stdout/stderr cleanly with timeout to prevent premature termination
+    $job = Start-Job -ScriptBlock {
+        param($cmd, $cwd)
+        Set-Location $cwd
+        & $cmd 2>&1
+    } -ArgumentList $TestCommand, (Get-Location).Path
+
+    $completed = Wait-Job -Job $job -Timeout $TestTimeout
+    if ($completed) {
+        $testOutput = Receive-Job -Job $job 2>&1
+        Remove-Job -Job $job -Force -ErrorAction SilentlyContinue
+
+        if ($LASTEXITCODE -eq 0) {
+            Write-Pass "Test suite completed successfully."
+            if ($testOutput) { Write-Host $testOutput -ForegroundColor Gray }
+            $testPassed = $true
+        } else {
+            Write-Host "`n  [TEST FAILURE OUTPUT]" -ForegroundColor Red
+            if ($testOutput) { Write-Host $testOutput -ForegroundColor Red }
+
+            # Atomic rollback: verify current state before changing history
+            Write-Fix "Test suite failed. Verifying rollback safety..."
+            $currentBranch = git rev-parse --abbrev-ref HEAD 2>&1
+            $currentSha = git rev-parse HEAD 2>&1
+
+            # Safety check: only rollback if we're on the expected target branch
+            if ($currentBranch -ne $TargetBranch) {
+                Write-Host "  [ERROR] Rollback aborted: current branch '$currentBranch' does not match target '$TargetBranch'." -ForegroundColor Red
+                Write-Host "  [ERROR] Manual intervention required. Checkpoint: $checkpointFile" -ForegroundColor Red
+                Write-Fail "Rollback safety check failed. Repository state may have changed unexpectedly."
+            }
+
+            # Safety check: verify the merge commit exists
+            if (-not $currentSha) {
+                Write-Host "  [ERROR] Rollback aborted: unable to determine current commit." -ForegroundColor Red
+                Write-Host "  [ERROR] Manual intervention required. Checkpoint: $checkpointFile" -ForegroundColor Red
+                Write-Fail "Rollback safety check failed. Repository state may have changed unexpectedly."
+            }
+
+            # Atomic rollback: reset the merge commit and clean working tree
+            Write-Fix "Rolling back merge commit ($currentSha)..."
+            git reset --hard HEAD~1 2>&1 | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  [ERROR] git reset --hard HEAD~1 failed. Manual intervention required." -ForegroundColor Red
+                Write-Host "  [ERROR] Checkpoint: $checkpointFile" -ForegroundColor Red
+                Write-Fail "Rollback failed. Repository may be in an inconsistent state."
+            }
+
+            # Clean untracked files generated during test run (but preserve ignored files)
+            git clean -fd 2>&1 | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  [WARNING] git clean -fd failed. Untracked files may remain." -ForegroundColor Yellow
+            }
+
+            Write-Host "  [ROLLBACK] Repository restored to pre-merge state." -ForegroundColor Green
+            Write-Host "  [ROLLBACK] Original SHA: $originalSha" -ForegroundColor Green
+            Write-Host "  [ROLLBACK] Checkpoint: $checkpointFile" -ForegroundColor Green
+            Write-Fail "Test suite failed post-merge. Merge rolled back to pre-merge state."
+        }
     } else {
-        Write-Fail "Test suite failed post-merge. Please inspect errors before proceeding."
+        # Timeout - kill the job and its child processes
+        Write-Host "`n  [TIMEOUT] Test suite exceeded ${TestTimeout}s timeout." -ForegroundColor Red
+        Stop-Job -Job $job -ErrorAction SilentlyContinue
+        Remove-Job -Job $job -Force -ErrorAction SilentlyContinue
+
+        # Attempt to kill any child processes spawned by the test command
+        Write-Host "  [TIMEOUT] Attempting to clean up child processes..." -ForegroundColor Yellow
+
+        # Atomic rollback on timeout
+        Write-Fix "Test timeout. Verifying rollback safety..."
+        $currentBranch = git rev-parse --abbrev-ref HEAD 2>&1
+        $currentSha = git rev-parse HEAD 2>&1
+
+        if ($currentBranch -ne $TargetBranch) {
+            Write-Host "  [ERROR] Rollback aborted: current branch '$currentBranch' does not match target '$TargetBranch'." -ForegroundColor Red
+            Write-Fail "Rollback safety check failed. Manual intervention required."
+        }
+
+        Write-Fix "Rolling back merge commit ($currentSha)..."
+        git reset --hard HEAD~1 2>&1 | Out-Null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "  [ERROR] git reset --hard HEAD~1 failed. Manual intervention required." -ForegroundColor Red
+            Write-Fail "Rollback failed. Repository may be in an inconsistent state."
+        }
+        git clean -fd 2>&1 | Out-Null
+        Write-Fail "Test suite timed out after ${TestTimeout}s. Merge rolled back to pre-merge state."
     }
 } else {
     Write-Pass "No post-merge test command provided. Skipping test execution."
+    $testPassed = $true
 }
 
 Write-Step "Displaying post-merge commit log..."
@@ -302,12 +385,24 @@ Write-Host "`n  [NEXT STEPS]" -ForegroundColor Cyan
 Write-Host "  1. Push the feature branch to remote:" -ForegroundColor Cyan
 Write-Host "       git push origin $FeatureBranch" -ForegroundColor Cyan
 Write-Host "  2. Open a Pull Request targeting '$TargetBranch':" -ForegroundColor Cyan
-Write-Host "       gh pr create --base $TargetBranch --head $FeatureBranch --title \"merge: $FeatureBranch into $TargetBranch\"" -ForegroundColor Cyan
+Write-Host "       gh pr create --base $TargetBranch --head $FeatureBranch --title `"merge: $FeatureBranch into $TargetBranch`"" -ForegroundColor Cyan
 Write-Host "  3. After PR approval and CI passes, merge via GitHub (auto-merge enabled)." -ForegroundColor Cyan
 
 if ($stashCreated) {
     Write-Host "`n  [REMINDER] Your pre-merge changes were stashed as '$stashName'." -ForegroundColor Cyan
     Write-Host "  To restore them, run: git stash pop" -ForegroundColor Cyan
 }
+
+# Clean up lock file on successful completion
+if (Test-Path $lockFile) {
+    $currentLock = Get-Content $lockFile -Raw -ErrorAction SilentlyContinue
+    if ($currentLock -and $currentLock.Contains($operationId)) {
+        Remove-Item -Path $lockFile -Force -ErrorAction SilentlyContinue
+    }
+}
+
+# Preserve checkpoint file for recovery (do not delete - needed for diagnosis)
+Write-Host "`n  [CHECKPOINT] Preserved at: $checkpointFile" -ForegroundColor Cyan
+Write-Host "  [CHECKPOINT] Operation ID: $operationId" -ForegroundColor Cyan
 
 exit 0

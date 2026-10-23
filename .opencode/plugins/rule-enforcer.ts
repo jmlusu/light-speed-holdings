@@ -29,6 +29,16 @@ interface SessionState {
   verificationPending: boolean
   pivotedAfterError: boolean
   reportedLimitation: boolean
+  // Task lifecycle tracking
+  taskId: string | null
+  taskObjective: string | null
+  taskPhase: "queued" | "running" | "blocked" | "waiting_for_approval" | "failed" | "completed" | "cancelled" | "suspected_stalled" | null
+  taskStartTime: number | null
+  taskLastHeartbeat: number | null
+  taskAgentId: string | null
+  taskParentId: string | null
+  taskBlockers: string[]
+  taskValidationResults: Record<string, "passed" | "failed" | "skipped" | "not_run">
 }
 
 interface ToolCall {
@@ -83,6 +93,44 @@ async function execWithStreams(command: string, cwd?: string): Promise<{ stdout:
   return { stdout: "", stderr: "", exitCode: 0 }
 }
 
+/**
+ * Check task heartbeat freshness and mark stale tasks.
+ * A task is considered "suspected_stalled" if its last heartbeat
+ * is older than TASK_HEARTBEAT_THRESHOLD_MS (default: 5 minutes / 300000ms).
+ * This function should be called on every tool execution
+ * when a task is active.
+ */
+function checkTaskHeartbeat(): void {
+  if (!sessionState.taskId || !sessionState.taskLastHeartbeat) return
+
+  const HEARTBEAT_THRESHOLD_MS = 300000 // 5 minutes
+  const now = Date.now()
+  const timeSinceLastHeartbeat = now - sessionState.taskLastHeartbeat
+
+  if (timeSinceLastHeartbeat > HEARTBEAT_THRESHOLD_MS) {
+    const stalePhase: SessionState["taskPhase"] = "suspected_stalled"
+    // Only transition if not already in a terminal state
+    const terminalPhases: SessionState["taskPhase"][] = [
+      "completed",
+      "cancelled",
+      "failed",
+    ]
+    if (!terminalPhases.includes(sessionState.taskPhase as SessionState["taskPhase"])) {
+      sessionState.taskPhase = stalePhase
+      sessionState.taskValidationResults = {
+        ...sessionState.taskValidationResults,
+        heartbeat: "failed",
+      }
+      saveSessionState(sessionState)
+      logger.info(
+        `Task ${sessionState.taskId} marked suspected_stalled: no heartbeat for ${Math.round(
+          timeSinceLastHeartbeat / 1000,
+        )}s`,
+      )
+    }
+  }
+}
+
 function checkPathPatterns(filePath: string, patterns: string[]): boolean {
   const normalized = filePath.replace(/\\/g, "/")
   return patterns.some(p => {
@@ -111,6 +159,16 @@ export default Plugin.define({
       verificationPending: false,
       pivotedAfterError: false,
       reportedLimitation: false,
+      // Task lifecycle tracking
+      taskId: null,
+      taskObjective: null,
+      taskPhase: null,
+      taskStartTime: null,
+      taskLastHeartbeat: null,
+      taskAgentId: null,
+      taskParentId: null,
+      taskBlockers: [],
+      taskValidationResults: {},
     }
 
     // Load rules from file
@@ -223,6 +281,11 @@ export default Plugin.define({
           sessionState.toolHistory = sessionState.toolHistory.slice(-50)
         }
 
+        // Task lifecycle: update heartbeat on every tool execution
+        if (sessionState.taskId) {
+          sessionState.taskLastHeartbeat = Date.now()
+        }
+
         saveSessionState(sessionState)
         return output
       },
@@ -277,6 +340,16 @@ export default Plugin.define({
           verificationPending: false,
           pivotedAfterError: false,
           reportedLimitation: false,
+          // Task lifecycle tracking
+          taskId: null,
+          taskObjective: null,
+          taskPhase: null,
+          taskStartTime: null,
+          taskLastHeartbeat: null,
+          taskAgentId: null,
+          taskParentId: null,
+          taskBlockers: [],
+          taskValidationResults: {},
         }
         saveSessionState(sessionState)
 
@@ -297,6 +370,14 @@ export default Plugin.define({
         sessionState.sameErrorCounts = {}
         sessionState.pivotedAfterError = false
         sessionState.reportedLimitation = false
+        // Reset task lifecycle state
+        sessionState.taskId = null
+        sessionState.taskObjective = null
+        sessionState.taskPhase = null
+        sessionState.taskStartTime = null
+        sessionState.taskLastHeartbeat = null
+        sessionState.taskBlockers = []
+        sessionState.taskValidationResults = {}
         saveSessionState(sessionState)
 
         await ctx.client.app.log({
@@ -329,10 +410,10 @@ async function checkRule(
       // Strip string literals to avoid false positives on operators inside quotes
       const normalizedCommand = stripStringLiterals(command)
 
-      // Special handling for ps-no-chaining: don't flag -and/-or as &&
+      // Special handling for ps-no-chaining: don't flag -and/-or as &&/||
       if (rule.id === "ps-no-chaining") {
         // Only flag && and || when they're not part of PowerShell comparison operators
-        const hasAmpersandChain = /\&\&/.test(normalizedCommand) && !isPowerShellComparisonOperator(normalizedCommand)
+        const hasAmpersandChain = /&&/.test(normalizedCommand) && !isPowerShellComparisonOperator(normalizedCommand)
         const hasPipeChain = /\|\|/.test(normalizedCommand) && !isPowerShellComparisonOperator(normalizedCommand)
         if (hasAmpersandChain || hasPipeChain) {
           return {

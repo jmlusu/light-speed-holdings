@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import contextlib
 import logging
+import os
 import shlex
 import subprocess
 from collections.abc import Iterator
@@ -762,12 +763,13 @@ class ToolRunner:
 
         # ── Execute safely ───────────────────────────────────────────────
         logger.info("Executing allowed command: %s", command)
+        timeout_val = int(os.getenv("TOOL_RUNNER_TIMEOUT", "120"))
         try:
             result = subprocess.run(
                 tokens,
                 capture_output=True,
                 text=True,
-                timeout=120,
+                timeout=timeout_val,
                 cwd=str(self.project_root),
             )
         except FileNotFoundError:
@@ -783,7 +785,7 @@ class ToolRunner:
                     cmd_tokens,
                     capture_output=True,
                     text=True,
-                    timeout=120,
+                    timeout=timeout_val,
                     cwd=str(self.project_root),
                 )
             else:
