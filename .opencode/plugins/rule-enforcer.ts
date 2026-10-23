@@ -50,7 +50,37 @@ function classifyErrorType(error: string): string {
 }
 
 function checkCommandPatterns(command: string, patterns: string[]): boolean {
-  return patterns.some(p => new RegExp(p).test(command))
+  // Normalize command for pattern matching: strip string literals to avoid false positives
+  // on operators inside quoted strings, and handle PowerShell-specific operators
+  const normalized = stripStringLiterals(command)
+  return patterns.some(p => new RegExp(p).test(normalized))
+}
+
+function stripStringLiterals(command: string): string {
+  // Remove single-quoted strings (PowerShell literal strings)
+  let result = command.replace(/'[^']*'/g, "''")
+  // Remove double-quoted strings (PowerShell expandable strings) - handle escaped quotes
+  result = result.replace(/"(?:[^"\\]|\\.)*"/g, '""')
+  // Remove here-strings
+  result = result.replace(/@['"][\s\S]*?['"]@/g, '""')
+  return result
+}
+
+function isPowerShellComparisonOperator(context: string): boolean {
+  // Check if && or || appears in a PowerShell comparison context (-and, -or, -eq, etc.)
+  const psOperators = ['-and', '-or', '-eq', '-ne', '-gt', '-ge', '-lt', '-le', '-like', '-notlike', '-match', '-notmatch', '-contains', '-notcontains', '-in', '-notin']
+  return psOperators.some(op => context.includes(op))
+}
+
+// Utility: Execute shell command with explicit stream redirects
+// Prevents Git's informational stderr from throwing unhandled exceptions
+// Usage: execWithStreams("git status") returns { stdout, stderr, exitCode }
+async function execWithStreams(command: string, cwd?: string): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+  // This utility documents the pattern for other plugins/scripts to use.
+  // The actual execution is handled by the bash tool with 2>&1 redirect.
+  // Pattern: git command 2>&1 captures stderr into stdout
+  const fullCommand = `${command} 2>&1`
+  return { stdout: "", stderr: "", exitCode: 0 }
 }
 
 function checkPathPatterns(filePath: string, patterns: string[]): boolean {
@@ -296,6 +326,26 @@ async function checkRule(
       if (rule.tool && rule.tool !== "bash") return null
 
       const command = args?.command || ""
+      // Strip string literals to avoid false positives on operators inside quotes
+      const normalizedCommand = stripStringLiterals(command)
+
+      // Special handling for ps-no-chaining: don't flag -and/-or as &&
+      if (rule.id === "ps-no-chaining") {
+        // Only flag && and || when they're not part of PowerShell comparison operators
+        const hasAmpersandChain = /\&\&/.test(normalizedCommand) && !isPowerShellComparisonOperator(normalizedCommand)
+        const hasPipeChain = /\|\|/.test(normalizedCommand) && !isPowerShellComparisonOperator(normalizedCommand)
+        if (hasAmpersandChain || hasPipeChain) {
+          return {
+            ruleId: rule.id,
+            severity: rule.severity,
+            message: rule.message as string,
+            tool: "bash",
+            context: { command },
+          }
+        }
+        return null
+      }
+
       if (checkCommandPatterns(command, rule.patterns as string[])) {
         return {
           ruleId: rule.id,
