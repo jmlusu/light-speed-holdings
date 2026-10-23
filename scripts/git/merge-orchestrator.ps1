@@ -12,6 +12,10 @@ The feature branch to merge.
 If set, automatically stashes dirty states and updates submodules.
 .PARAMETER TestCommand
 Optional script block to execute test suite post-merge.
+.PARAMETER TestTimeout
+Timeout in seconds for test command execution (default: 300).
+.PARAMETER GitOperationTimeout
+Timeout in seconds for git operations (default: 60).
 .EXAMPLE
     .\scripts\git\merge-orchestrator.ps1 -FeatureBranch feature/123-new-ui -AutoFix
 .EXAMPLE
@@ -29,34 +33,6 @@ param (
 )
 
 $ErrorActionPreference = "Stop"
-
-function Write-Header {
-    param ([string]$Message)
-    Write-Host "`n========================================" -ForegroundColor Cyan
-    Write-Host " $Message" -ForegroundColor Cyan
-    Write-Host "========================================" -ForegroundColor Cyan
-}
-
-function Write-Step {
-    param ([string]$Message)
-    Write-Host "`n[CHECK] $Message" -ForegroundColor Yellow
-}
-
-function Write-Pass {
-    param ([string]$Message)
-    Write-Host "  [PASS] $Message" -ForegroundColor Green
-}
-
-function Write-Fix {
-    param ([string]$Message)
-    Write-Host "  [AUTO-FIX] $Message" -ForegroundColor Magenta
-}
-
-function Write-Fail {
-    param ([string]$Message)
-    Write-Host "  [FAIL] $Message" -ForegroundColor Red
-    exit 1
-}
 
 # ==========================================
 # CONCURRENCY GUARD & CHECKPOINT SETUP
@@ -100,6 +76,34 @@ $cleanupLock = {
     }
 }
 Register-EngineEvent -SourceIdentifier PowerShell.Exiting -Action $cleanupLock | Out-Null
+
+function Write-Header {
+    param ([string]$Message)
+    Write-Host "`n========================================" -ForegroundColor Cyan
+    Write-Host " $Message" -ForegroundColor Cyan
+    Write-Host "========================================" -ForegroundColor Cyan
+}
+
+function Write-Step {
+    param ([string]$Message)
+    Write-Host "`n[CHECK] $Message" -ForegroundColor Yellow
+}
+
+function Write-Pass {
+    param ([string]$Message)
+    Write-Host "  [PASS] $Message" -ForegroundColor Green
+}
+
+function Write-Fix {
+    param ([string]$Message)
+    Write-Host "  [AUTO-FIX] $Message" -ForegroundColor Magenta
+}
+
+function Write-Fail {
+    param ([string]$Message)
+    Write-Host "  [FAIL] $Message" -ForegroundColor Red
+    exit 1
+}
 
 # ==========================================
 # PHASE 1: PRE-MERGE AUDIT & AUTO-FIX
@@ -156,6 +160,8 @@ Write-Pass "Checkpoint recorded at: $checkpointFile"
 Write-Host "  [CHECKPOINT] Operation ID: $operationId" -ForegroundColor Cyan
 Write-Host "  [CHECKPOINT] Original branch: $originalBranch" -ForegroundColor Cyan
 Write-Host "  [CHECKPOINT] Original SHA: $originalSha" -ForegroundColor Cyan
+
+# 3. Submodule Audit & Auto-Sync
 Write-Step "Checking git submodules..."
 $submoduleStatus = git submodule status 2>$null
 if ($LASTEXITCODE -eq 0 -and $submoduleStatus) {
@@ -179,7 +185,7 @@ if ($LASTEXITCODE -eq 0 -and $submoduleStatus) {
     Write-Pass "No submodules present or submodule check skipped."
 }
 
-# 3. Fetch Remote References
+# 4. Fetch Remote References
 Write-Step "Fetching latest remote references..."
 git fetch --all --prune | Out-Null
 if ($LASTEXITCODE -ne 0) {
@@ -187,7 +193,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Pass "Remote references updated."
 
-# 4. Divergence & Ancestry Audit
+# 5. Divergence & Ancestry Audit
 Write-Step "Validating branch ancestry and divergence..."
 $mergeBase = git merge-base $TargetBranch $FeatureBranch 2>$null
 if ($LASTEXITCODE -ne 0 -or -not $mergeBase) {
@@ -200,7 +206,7 @@ $aheadCount = (git rev-list --count "$TargetBranch..$FeatureBranch" 2>$null).Tri
 $behindCount = (git rev-list --count "$FeatureBranch..$TargetBranch" 2>$null).Trim()
 Write-Host "  [INFO] '$FeatureBranch' is $aheadCount commit(s) ahead and $behindCount commit(s) behind '$TargetBranch'." -ForegroundColor Yellow
 
-# 5. Divergence Graph (guideline: map divergence before complex merge)
+# 6. Divergence Graph (guideline: map divergence before complex merge)
 Write-Step "Displaying divergence graph for reference..."
 git log --oneline -n 20 --all --graph -- "$TargetBranch" "$FeatureBranch" | Select-Object -First 30
 
@@ -260,7 +266,7 @@ if ($mergeExitCode -ne 0) {
     Write-Host "$mergeOutput" -ForegroundColor Gray
     Write-Host "`n  [ACTION REQUIRED] Please resolve conflicts in your editor." -ForegroundColor Yellow
     Write-Host "  After resolving conflicts, stage files with 'git add <file>' and run:" -ForegroundColor Yellow
-    Write-Host "    git commit -m \"merge: integrate $FeatureBranch into $TargetBranch\"" -ForegroundColor Yellow
+    Write-Host "    git commit -m `"merge: integrate $FeatureBranch into $TargetBranch`"" -ForegroundColor Yellow
     if ($stashCreated) {
         Write-Host "`n  [REMINDER] Your pre-merge changes were stashed as '$stashName'." -ForegroundColor Cyan
         Write-Host "  To restore them after resolving conflicts, run:" -ForegroundColor Cyan
@@ -278,16 +284,95 @@ if ($mergeExitCode -ne 0) {
 # ==========================================
 Write-Header "PHASE 4: POST-MERGE VALIDATION"
 
+$testPassed = $false
 if ($TestCommand) {
-    Write-Step "Executing test suite..."
-    & $TestCommand
-    if ($LASTEXITCODE -eq 0) {
-        Write-Pass "Test suite completed successfully."
+    Write-Step "Executing test suite (timeout: ${TestTimeout}s)..."
+    # Use Start-Job with timeout for reliable cancellation
+    $testJob = Start-Job -ScriptBlock {
+        param($cmd)
+        & $cmd 2>&1
+    } -ArgumentList $TestCommand
+
+    $completed = Wait-Job -Job $testJob -Timeout $TestTimeout
+
+    if ($completed) {
+        $testOutput = Receive-Job -Job $testJob
+        Remove-Job -Job $testJob -Force
+        $testExitCode = if ($?) { 0 } else { 1 }
+
+        if ($testExitCode -eq 0) {
+            Write-Pass "Test suite completed successfully."
+            if ($testOutput) { Write-Host $testOutput -ForegroundColor Gray }
+            $testPassed = $true
+        } else {
+            Write-Host "`n  [TEST FAILURE OUTPUT]" -ForegroundColor Red
+            if ($testOutput) { Write-Host $testOutput -ForegroundColor Red }
+
+            # Atomic rollback: verify current state before changing history
+            Write-Fix "Test suite failed. Verifying rollback safety..."
+            $currentBranch = git rev-parse --abbrev-ref HEAD 2>&1
+            $currentSha = git rev-parse HEAD 2>&1
+
+            # Safety check: only rollback if we're on the expected target branch
+            if ($currentBranch -ne $TargetBranch) {
+                Write-Host "  [ERROR] Rollback aborted: current branch '$currentBranch' does not match target '$TargetBranch'." -ForegroundColor Red
+                Write-Host "  [ERROR] Manual intervention required. Checkpoint: $checkpointFile" -ForegroundColor Red
+                Write-Fail "Rollback safety check failed. Repository state may have changed unexpectedly."
+            }
+
+            if (-not $currentSha) {
+                Write-Host "  [ERROR] Rollback aborted: unable to determine current commit." -ForegroundColor Red
+                Write-Host "  [ERROR] Manual intervention required. Checkpoint: $checkpointFile" -ForegroundColor Red
+                Write-Fail "Rollback safety check failed. Repository state may have changed unexpectedly."
+            }
+
+            # Atomic rollback: reset the merge commit and clean working tree
+            Write-Fix "Rolling back merge commit ($currentSha)..."
+            git reset --hard HEAD~1 2>&1 | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  [ERROR] git reset --hard HEAD~1 failed. Manual intervention required." -ForegroundColor Red
+                Write-Host "  [ERROR] Checkpoint: $checkpointFile" -ForegroundColor Red
+                Write-Fail "Rollback failed. Repository may be in an inconsistent state."
+            }
+
+            # Clean untracked files generated during test run (but preserve ignored files)
+            git clean -fd 2>&1 | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  [WARNING] git clean -fd failed. Untracked files may remain." -ForegroundColor Yellow
+            }
+
+            Write-Host "  [ROLLBACK] Repository restored to pre-merge state." -ForegroundColor Green
+            Write-Host "  [ROLLBACK] Original SHA: $originalSha" -ForegroundColor Green
+            Write-Host "  [ROLLBACK] Checkpoint: $checkpointFile" -ForegroundColor Green
+            Write-Fail "Test suite failed post-merge. Merge rolled back to pre-merge state."
+        }
     } else {
-        Write-Fail "Test suite failed post-merge. Please inspect errors before proceeding."
+        # Timeout - stop the job
+        Stop-Job -Job $testJob -ErrorAction SilentlyContinue
+        Remove-Job -Job $testJob -Force -ErrorAction SilentlyContinue
+
+        Write-Host "`n  [TIMEOUT] Test suite exceeded ${TestTimeout}s. Terminating..." -ForegroundColor Red
+
+        # Atomic rollback on timeout
+        Write-Fix "Test timeout. Verifying rollback safety..."
+        $currentBranch = git rev-parse --abbrev-ref HEAD 2>&1
+        $currentSha = git rev-parse HEAD 2>&1
+
+        if ($currentBranch -eq $TargetBranch -and $currentSha) {
+            Write-Fix "Rolling back merge commit ($currentSha)..."
+            git reset --hard HEAD~1 2>&1 | Out-Null
+            git clean -fd 2>&1 | Out-Null
+            Write-Host "  [ROLLBACK] Repository restored to pre-merge state." -ForegroundColor Green
+        } else {
+            Write-Host "  [ERROR] Rollback safety check failed. Manual intervention required." -ForegroundColor Red
+            Write-Host "  [ERROR] Checkpoint: $checkpointFile" -ForegroundColor Red
+        }
+
+        Write-Fail "Test suite timed out after ${TestTimeout}s. Merge rolled back to pre-merge state."
     }
 } else {
     Write-Pass "No post-merge test command provided. Skipping test execution."
+    $testPassed = $true
 }
 
 Write-Step "Displaying post-merge commit log..."
@@ -302,12 +387,24 @@ Write-Host "`n  [NEXT STEPS]" -ForegroundColor Cyan
 Write-Host "  1. Push the feature branch to remote:" -ForegroundColor Cyan
 Write-Host "       git push origin $FeatureBranch" -ForegroundColor Cyan
 Write-Host "  2. Open a Pull Request targeting '$TargetBranch':" -ForegroundColor Cyan
-Write-Host "       gh pr create --base $TargetBranch --head $FeatureBranch --title \"merge: $FeatureBranch into $TargetBranch\"" -ForegroundColor Cyan
+Write-Host "       gh pr create --base $TargetBranch --head $FeatureBranch --title `"merge: $FeatureBranch into $TargetBranch`"" -ForegroundColor Cyan
 Write-Host "  3. After PR approval and CI passes, merge via GitHub (auto-merge enabled)." -ForegroundColor Cyan
 
 if ($stashCreated) {
     Write-Host "`n  [REMINDER] Your pre-merge changes were stashed as '$stashName'." -ForegroundColor Cyan
     Write-Host "  To restore them, run: git stash pop" -ForegroundColor Cyan
 }
+
+# Clean up lock file on successful completion
+if (Test-Path $lockFile) {
+    $currentLock = Get-Content $lockFile -Raw -ErrorAction SilentlyContinue
+    if ($currentLock -and $currentLock.Contains($operationId)) {
+        Remove-Item -Path $lockFile -Force -ErrorAction SilentlyContinue
+    }
+}
+
+# Preserve checkpoint file for recovery (do not delete - needed for diagnosis)
+Write-Host "`n  [CHECKPOINT] Preserved at: $checkpointFile" -ForegroundColor Cyan
+Write-Host "  [CHECKPOINT] Operation ID: $operationId" -ForegroundColor Cyan
 
 exit 0
