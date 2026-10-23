@@ -23,7 +23,9 @@ param (
     [Parameter(Mandatory=$true)]
     [string]$FeatureBranch,
     [switch]$AutoFix,
-    [scriptblock]$TestCommand = $null
+    [scriptblock]$TestCommand = $null,
+    [int]$TestTimeout = 300,
+    [int]$GitOperationTimeout = 60
 )
 
 $ErrorActionPreference = "Stop"
