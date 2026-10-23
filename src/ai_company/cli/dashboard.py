@@ -60,6 +60,36 @@ def dashboard(
         )
         raise typer.Exit(1)
 
+    _validate_launch(port, host)
+    _serve(port, host, no_open)
+
+
+def _validate_launch(port: int, host: str) -> None:
+    """Validate dashboard launch parameters (ADR-012 + G-2 guards)."""
+    import os
+
+    from ai_company.dashboard.app import is_loopback_host
+
+    if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open" and not is_loopback_host(host):
+        typer.echo(
+            "Error: DASHBOARD_AUTH_MODE=open is only allowed on loopback hosts "
+            "(127.0.0.1 / ::1). Refusing to start.",
+            err=True,
+        )
+        raise typer.Exit(1)
+
+    if port in (1440, 1441):
+        typer.echo(
+            f"Error: port {port} belongs to the Marketing Site (Vite), "
+            "not the CEO Dashboard. Use 8420 (prod) or 8421 (dev/staging). "
+            "Refusing to start.",
+            err=True,
+        )
+        raise typer.Exit(1)
+
+
+def _serve(port: int, host: str, no_open: bool) -> None:
+    """Run the CEO dashboard uvicorn server."""
     import uvicorn
 
     if not no_open:
@@ -73,6 +103,50 @@ def dashboard(
         port=port,
         log_level="info",
     )
+
+
+def _ensure_executor_daemon() -> None:
+    """Start the executor daemon if it is not already running (US-A09)."""
+    from ai_company.cli.executor import _resolve_budgets, _start_daemon
+    from ai_company.executor.daemon import ExecutorDaemon
+
+    if ExecutorDaemon.is_daemon_running():
+        typer.echo("Executor daemon already running - skipping start.")
+        return
+
+    daily_cap, task_cap, do_suspend = _resolve_budgets(
+        None, None, False, "config/company/guardrails.yaml"
+    )
+    _start_daemon(
+        poll_interval=5.0,
+        config="company/models.yaml",
+        registry="company/agent-registry.json",
+        pid_dir="logs",
+        log_dir="logs",
+        kpi_snapshot_interval=3600.0,
+        governance_interval=86400.0,
+        routine_interval=900.0,
+        db_path=None,
+        daily_budget_usd=daily_cap,
+        task_budget_usd=task_cap,
+        auto_suspend=do_suspend,
+    )
+
+
+@app.command("autonomous")
+def autonomous(
+    port: int = typer.Option(8420, help="Port to serve on"),
+    host: str = typer.Option("127.0.0.1", help="Host to bind to"),
+    no_open: bool = typer.Option(False, "--no-open", help="Don't auto-open browser"),
+    no_executor: bool = typer.Option(
+        False, "--no-executor", help="Serve only; don't start the executor daemon"
+    ),
+) -> None:
+    """Start the executor daemon, then serve the CEO dashboard (US-A09)."""
+    _validate_launch(port, host)
+    if not no_executor:
+        _ensure_executor_daemon()
+    _serve(port, host, no_open)
 
 
 @app.command("backfill")

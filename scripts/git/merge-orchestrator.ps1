@@ -57,6 +57,49 @@ function Write-Fail {
 }
 
 # ==========================================
+# CONCURRENCY GUARD & CHECKPOINT SETUP
+# ==========================================
+$lockFile = Join-Path (git rev-parse --git-dir 2>$null) "merge-orchestrator.lock"
+$checkpointFile = Join-Path (git rev-parse --git-dir 2>$null) "merge-checkpoint.json"
+
+# Check for existing lock
+if (Test-Path $lockFile) {
+    $lockContent = Get-Content $lockFile -Raw -ErrorAction SilentlyContinue
+    Write-Host "`n  [ERROR] Another merge-orchestrator instance may be running." -ForegroundColor Red
+    Write-Host "  Lock file: $lockFile" -ForegroundColor Red
+    if ($lockContent) {
+        Write-Host "  Lock content: $lockContent" -ForegroundColor Red
+    }
+    Write-Host "  If you are certain no other instance is running, remove the lock file:" -ForegroundColor Yellow
+    Write-Host "    Remove-Item '$lockFile'" -ForegroundColor Yellow
+    Write-Host "  Do NOT remove the lock if another orchestrator process is active." -ForegroundColor Yellow
+    exit 1
+}
+
+# Create lock file with operation metadata
+$operationId = [guid]::NewGuid().ToString()
+$lockData = @{
+    operationId = $operationId
+    pid = $PID
+    startTime = (Get-Date).ToUniversalTime().ToString("o")
+    targetBranch = $TargetBranch
+    featureBranch = $FeatureBranch
+    host = $env:COMPUTERNAME
+} | ConvertTo-Json -Compress
+$lockData | Set-Content -Path $lockFile -Encoding UTF8
+
+# Ensure lock is cleaned up on exit (even on error)
+$cleanupLock = {
+    if (Test-Path $lockFile) {
+        $currentLock = Get-Content $lockFile -Raw -ErrorAction SilentlyContinue
+        if ($currentLock -and $currentLock.Contains($operationId)) {
+            Remove-Item -Path $lockFile -Force -ErrorAction SilentlyContinue
+        }
+    }
+}
+Register-EngineEvent -SourceIdentifier PowerShell.Exiting -Action $cleanupLock | Out-Null
+
+# ==========================================
 # PHASE 1: PRE-MERGE AUDIT & AUTO-FIX
 # ==========================================
 Write-Header "PHASE 1: PRE-MERGE AUDIT & REPOSITORY PREPARATION"
@@ -69,11 +112,11 @@ $stashName = ""
 
 if ($dirtyStatus) {
     if ($AutoFix) {
-        $stashName = "autostash_pre_merge_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
+        $stashName = "autostash_pre_merge_$(Get-Date -Format 'yyyyMMdd_HHmmss')_${TargetBranch}"
         Write-Fix "Uncommitted changes detected. Auto-stashing as '$stashName'..."
-        git stash push -m $stashName | Out-Null
+        git stash push -u -m $stashName | Out-Null
         $stashCreated = $true
-        Write-Pass "Working directory stashed successfully."
+        Write-Pass "Working directory stashed successfully (including untracked files)."
     } else {
         Write-Fail "Working directory has uncommitted changes. Run with -AutoFix or stash manually."
     }
@@ -81,7 +124,36 @@ if ($dirtyStatus) {
     Write-Pass "Working directory is clean."
 }
 
-# 2. Submodule Audit & Auto-Sync
+# 2. Record Checkpoint (before any destructive operations)
+Write-Step "Recording pre-operation checkpoint..."
+$originalBranch = git rev-parse --abbrev-ref HEAD 2>&1
+$originalSha = git rev-parse HEAD 2>&1
+$submoduleCommits = git submodule status 2>$null
+$mergeBaseSha = git merge-base $TargetBranch $FeatureBranch 2>$null
+$targetSha = git rev-parse $TargetBranch 2>$null
+$featureSha = git rev-parse $FeatureBranch 2>$null
+
+$checkpoint = @{
+    operationId = $operationId
+    timestamp = (Get-Date).ToUniversalTime().ToString("o")
+    originalBranch = $originalBranch
+    originalSha = $originalSha
+    targetBranch = $TargetBranch
+    targetSha = $targetSha
+    featureBranch = $FeatureBranch
+    featureSha = $featureSha
+    mergeBase = $mergeBaseSha
+    stashCreated = $stashCreated
+    stashName = $stashName
+    submoduleCommits = if ($submoduleCommits) { $submoduleCommits -join "`n" } else { "" }
+    workingTreeDirty = ($dirtyStatus -ne $null)
+} | ConvertTo-Json -Depth 3
+
+$checkpoint | Set-Content -Path $checkpointFile -Encoding UTF8
+Write-Pass "Checkpoint recorded at: $checkpointFile"
+Write-Host "  [CHECKPOINT] Operation ID: $operationId" -ForegroundColor Cyan
+Write-Host "  [CHECKPOINT] Original branch: $originalBranch" -ForegroundColor Cyan
+Write-Host "  [CHECKPOINT] Original SHA: $originalSha" -ForegroundColor Cyan
 Write-Step "Checking git submodules..."
 $submoduleStatus = git submodule status 2>$null
 if ($LASTEXITCODE -eq 0 -and $submoduleStatus) {
@@ -89,7 +161,8 @@ if ($LASTEXITCODE -eq 0 -and $submoduleStatus) {
     if ($dirtySubmodules) {
         if ($AutoFix) {
             Write-Fix "Submodules have dirty state. Running hard reset and clean before sync..."
-            git submodule foreach --recursive "git reset --hard HEAD; git clean -fdx" 2>&1 | Out-Null
+            # Use -fd (not -fdx) to preserve ignored files like .env in submodules
+            git submodule foreach --recursive "git reset --hard HEAD; git clean -fd" 2>&1 | Out-Null
             Write-Fix "Submodules hard-reset. Synchronizing and updating recursively..."
             git submodule sync --recursive | Out-Null
             git submodule update --init --recursive | Out-Null
@@ -203,36 +276,16 @@ if ($mergeExitCode -ne 0) {
 # ==========================================
 Write-Header "PHASE 4: POST-MERGE VALIDATION"
 
-$testPassed = $false
 if ($TestCommand) {
     Write-Step "Executing test suite..."
-    # Capture stdout/stderr cleanly to prevent premature termination
-    $testOutput = & $TestCommand 2>&1
-    $testExitCode = $LASTEXITCODE
-
-    if ($testExitCode -eq 0) {
+    & $TestCommand
+    if ($LASTEXITCODE -eq 0) {
         Write-Pass "Test suite completed successfully."
-        if ($testOutput) { Write-Host $testOutput -ForegroundColor Gray }
-        $testPassed = $true
     } else {
-        Write-Host "`n  [TEST FAILURE OUTPUT]" -ForegroundColor Red
-        if ($testOutput) { Write-Host $testOutput -ForegroundColor Red }
-
-        # Atomic rollback: reset the merge commit and clean working tree
-        Write-Fix "Test suite failed. Rolling back merge commit..."
-        git reset --hard HEAD~1 2>&1 | Out-Null
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "  [WARNING] git reset --hard HEAD~1 failed. Manual intervention required." -ForegroundColor Yellow
-        }
-        git clean -fd 2>&1 | Out-Null
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "  [WARNING] git clean -fd failed. Manual intervention required." -ForegroundColor Yellow
-        }
-        Write-Fail "Test suite failed post-merge. Merge rolled back to pre-merge state."
+        Write-Fail "Test suite failed post-merge. Please inspect errors before proceeding."
     }
 } else {
     Write-Pass "No post-merge test command provided. Skipping test execution."
-    $testPassed = $true
 }
 
 Write-Step "Displaying post-merge commit log..."
