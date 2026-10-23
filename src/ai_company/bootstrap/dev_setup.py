@@ -346,7 +346,7 @@ class DevBootstrap:
             "environment",
             False,
             f"missing {len(missing)}/{len(self.required_env_vars)} required variables: "
-            f"{', '.join(missing)}; copy {DEFAULT_ENV_TEMPLATE} to {self.env_file.name} and fill in values",
+            f"missing {len(missing)}/{len(self.required_env_vars)} required variables: {chr(34)}; copy {DEFAULT_ENV_TEMPLATE} to {self.env_file.name} and fill in values",
             severity="fail",
             details=details,
         )

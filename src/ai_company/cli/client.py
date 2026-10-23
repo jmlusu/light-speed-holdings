@@ -79,7 +79,7 @@ def register(
     typer.echo(f"  1. Set governance gates: ai-company client gate --client-id {client_id}")
     typer.echo(f"  2. Check readiness:       ai-company client check-gates --client-id {client_id}")
     typer.echo(
-        f"  3. Create engagement:     ai-company client engage --client-id {client_id} --offer offer_a"
+        f"  3. Create engagement:     ai-company client engage --client-id {client_id} \\\n    --offer offer_a"
     )
 
 
@@ -264,7 +264,7 @@ def list_engagements() -> None:
         typer.echo(f"  {eng['task_id'][:8]} | {eng['client']} | {eng['offer']}")
         typer.echo(f"    {eng['description'][:80]}")
         typer.echo(
-            f"    Approval: {'required' if eng['requires_approval'] else 'auto'} | Priority: {eng['priority']}"
+            f"    Approval: {'required' if eng['requires_approval'] else 'auto'}  |  Priority: {eng['priority']}"
         )
     typer.echo("")
 
