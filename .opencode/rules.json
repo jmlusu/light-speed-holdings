@@ -253,6 +253,33 @@
       "severity": "error",
       "condition": "!agents_md_read && tool != read",
       "message": "AGENTS.md must be read first. Use read tool on AGENTS.md."
+    },
+    {
+      "id": "git-stash-descriptive-label",
+      "type": "command_pattern",
+      "description": "Require descriptive label for git stash push",
+      "severity": "warn",
+      "tool": "bash",
+      "patterns": ["git stash push(?!.*-m)"],
+      "message": "Stash requires descriptive label. Use 'git stash push -m \"description_of_work\"'. See AGENTS.md §Git & Repository Management Hygiene."
+    },
+    {
+      "id": "git-submodule-audit-before-merge",
+      "type": "command_pattern",
+      "description": "Require submodule audit before git merge",
+      "severity": "warn",
+      "tool": "bash",
+      "patterns": ["git merge(?!.*submodule)"],
+      "message": "Repository has submodules. Run 'git submodule status' and 'git submodule update --init --recursive' before merging. See AGENTS.md §Git & Repository Management Hygiene."
+    },
+    {
+      "id": "git-no-direct-push-protected-branches",
+      "type": "command_pattern",
+      "description": "Block direct push to protected branches",
+      "severity": "warn",
+      "tool": "bash",
+      "patterns": ["git push.*origin.*(main|develop)"],
+      "message": "Direct push to protected branch (main/develop). Use PR flow: push feature branch, then 'gh pr create'. See AGENTS.md §5 and constitution 11-GIT-STANDARDS.md."
     }
   ]
 }
