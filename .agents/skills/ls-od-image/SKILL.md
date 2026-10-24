@@ -114,7 +114,7 @@ workflow.
 - Never recolor, redraw, or approximate the logo. Use the official asset.
 - Cyan is an intentional brand accent, not the generic cyan-on-dark AI tell.
   Give it one role and keep it out of large fills.
-- Check the result against the official logo files in `brand/logos/` and the
+- Check the result against the official logo files in `brand/logo/` and the
   brand tokens when the asset carries identity.
 - At thumbnail size the subject must still read; if it does not, simplify the
   composition rather than adding contrast filters.

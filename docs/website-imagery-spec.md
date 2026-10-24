@@ -65,7 +65,7 @@ ls-creative-director (brief intake)
 
 ### Logo Rules
 
-- **Never recreate** — use official files in `brand/logos/`
+- **Never recreate** — use official files in `brand/logo/`
 - Clear space = 1× "L" height on all sides
 - Vector (SVG/PDF/EPS) for print; transparent PNG on dark backgrounds
 - `™` on first mention: "LightSpeed Holdings Limited™"
@@ -105,7 +105,7 @@ ls-creative-director (brief intake)
 
 #### Brand Check
 
-- [ ] Logo top-left (`brand/logos/fulllogo/fulllogo.png`), clear space respected
+- [ ] Logo top-left (`brand/logo/logo-full.png`), clear space respected
 - [ ] Type on brand scale (36/18/16pt)
 - [ ] Palette: navy/red/cyan only
 - [ ] 4px grid spacing (48px vertical rhythm between elements)
@@ -710,7 +710,7 @@ uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.
 ```bash
 # Implement components in src/components/
 # Use brand tokens via CSS variables (brand/tokens/brand-tokens.css)
-# Import logos from brand/logos/ (canonical) or static/brand/logos/ (mirror)
+# Import logos from brand/logo/ (canonical) or static/brand/logo/ (mirror)
 # Build: bun run build
 # Lint: bun run lint
 # Visual QA: Playwright screenshots via ls-artifact-qa visual_check.js

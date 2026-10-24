@@ -93,44 +93,6 @@ async function execWithStreams(command: string, cwd?: string): Promise<{ stdout:
   return { stdout: "", stderr: "", exitCode: 0 }
 }
 
-/**
- * Check task heartbeat freshness and mark stale tasks.
- * A task is considered "suspected_stalled" if its last heartbeat
- * is older than TASK_HEARTBEAT_THRESHOLD_MS (default: 5 minutes / 300000ms).
- * This function should be called on every tool execution
- * when a task is active.
- */
-function checkTaskHeartbeat(): void {
-  if (!sessionState.taskId || !sessionState.taskLastHeartbeat) return
-
-  const HEARTBEAT_THRESHOLD_MS = 300000 // 5 minutes
-  const now = Date.now()
-  const timeSinceLastHeartbeat = now - sessionState.taskLastHeartbeat
-
-  if (timeSinceLastHeartbeat > HEARTBEAT_THRESHOLD_MS) {
-    const stalePhase: SessionState["taskPhase"] = "suspected_stalled"
-    // Only transition if not already in a terminal state
-    const terminalPhases: SessionState["taskPhase"][] = [
-      "completed",
-      "cancelled",
-      "failed",
-    ]
-    if (!terminalPhases.includes(sessionState.taskPhase as SessionState["taskPhase"])) {
-      sessionState.taskPhase = stalePhase
-      sessionState.taskValidationResults = {
-        ...sessionState.taskValidationResults,
-        heartbeat: "failed",
-      }
-      saveSessionState(sessionState)
-      logger.info(
-        `Task ${sessionState.taskId} marked suspected_stalled: no heartbeat for ${Math.round(
-          timeSinceLastHeartbeat / 1000,
-        )}s`,
-      )
-    }
-  }
-}
-
 function checkPathPatterns(filePath: string, patterns: string[]): boolean {
   const normalized = filePath.replace(/\\/g, "/")
   return patterns.some(p => {
