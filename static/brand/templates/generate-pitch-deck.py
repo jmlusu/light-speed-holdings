@@ -5,6 +5,7 @@ Brand: LightSpeed Holdings Limited | Tagline: Aspire. Act. Achieve.
 Colors: Navy #070A40, Red #DC3641, Cyan #00BFFF, Grey #F2F2F2
 """
 
+import io
 import os
 import sys
 from pathlib import Path
@@ -17,7 +18,7 @@ from pptx.util import Inches, Pt
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
-from scripts.company_counts import company_counts  # noqa: E402
+from scripts.maintenance.company_counts import company_counts  # noqa: E402
 
 COUNTS = company_counts()
 AGENT_COUNT = COUNTS["agents"]
@@ -31,6 +32,10 @@ WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 GREY = RGBColor(0xF2, 0xF2, 0xF2)
 DARK_GREY = RGBColor(0x6B, 0x72, 0x80)
 LIGHT_TEXT = RGBColor(0x9C, 0xA3, 0xAF)
+
+# Canonical logo (brand/** is the single source of truth; legacy static/brand/logos
+# suite was archived 2026-10-23 — see brand/CANONICAL_SOURCES.md)
+OFFICIAL_LOGO = REPO_ROOT / "brand" / "logo" / "logo-light-bg.png"
 
 
 def set_slide_bg(slide, color):
@@ -77,6 +82,12 @@ def add_text_box(
     p.font.color.rgb = color
     p.font.name = font_name
     p.alignment = alignment
+    # Ensure font properties are set on the run explicitly
+    for run in p.runs:
+        run.font.size = Pt(font_size)
+        run.font.bold = bold
+        run.font.color.rgb = color
+        run.font.name = font_name
     return txBox
 
 
@@ -92,6 +103,11 @@ def add_bullet_list(slide, left, top, width, height, items, font_size=12, color=
         p.font.name = "Arial"
         p.space_after = Pt(6)
         p.level = 0
+        # Ensure font properties are set on the run explicitly
+        for run in p.runs:
+            run.font.size = Pt(font_size)
+            run.font.color.rgb = color
+            run.font.name = "Arial"
     return txBox
 
 
@@ -99,14 +115,35 @@ def create_title_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])  # Blank
     set_slide_bg(slide, NAVY)
 
+    # White panel matching the square logo canvas (brand/logo/logo-light-bg.png is
+    # the guideline-mandated variant for dark/navy backgrounds; it carries a white canvas)
+    logo_panel = add_shape(
+        slide,
+        MSO_SHAPE.RECTANGLE,
+        Inches(0.6),
+        Inches(0.4),
+        Inches(1.9),
+        Inches(1.9),
+        fill_color=WHITE,
+    )
+    logo_panel.line.fill.background()
+
+    # Canonical logo (brand/logo is the single source of truth since 2026-10-23)
+    logo_bytes = io.BytesIO(OFFICIAL_LOGO.read_bytes())
+    logo = slide.shapes.add_picture(
+        logo_bytes, Inches(0.6), Inches(0.4), width=Inches(1.9), height=Inches(1.9)
+    )
+    logo._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("name", "Company Logo")
+    logo._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("descr", "LightSpeed Holdings logo")
+
     # Title
     add_text_box(
         slide,
         Inches(1),
-        Inches(1.8),
+        Inches(2.55),
         Inches(8),
-        Inches(1.2),
-        "LIGHTSPEED HOLDINGS LIMITED",
+        Inches(1.0),
+        "LIGHTSPEED HOLDINGS LIMITED™",
         font_size=36,
         bold=True,
         color=WHITE,
@@ -117,11 +154,12 @@ def create_title_slide(prs):
     add_text_box(
         slide,
         Inches(1),
-        Inches(3.0),
+        Inches(3.65),
         Inches(8),
         Inches(0.6),
-        "Aspire. Act. Achieve.",
+        "ASPIRE. ACT. ACHIEVE.",
         font_size=18,
+        bold=True,
         color=CYAN,
         alignment=PP_ALIGN.CENTER,
     )
@@ -131,7 +169,7 @@ def create_title_slide(prs):
         slide,
         MSO_SHAPE.RECTANGLE,
         Inches(3.5),
-        Inches(3.7),
+        Inches(4.35),
         Inches(3),
         Inches(0.04),
         fill_color=RED,
@@ -141,7 +179,7 @@ def create_title_slide(prs):
     add_text_box(
         slide,
         Inches(1),
-        Inches(4.0),
+        Inches(4.65),
         Inches(8),
         Inches(0.5),
         "Confidential — August 2026",
@@ -286,11 +324,7 @@ def create_solution_slide(prs):
         "✓  Built-in cost tracking & budget enforcement per agent",
         "✓  Human-in-the-loop approval gates for dangerous operations",
         "✓  MessageBus task queue for cross-agent coordination",
-        "✓  "
-        + str(AGENT_COUNT)
-        + " pre-built agent roles across "
-        + str(DEPARTMENT_COUNT)
-        + " departments",
+        "✓  Pre-built agent roles across multiple departments",
     ]
     add_bullet_list(
         slide,
@@ -329,16 +363,16 @@ def create_market_slide(prs):
         Inches(1.2),
         Inches(8.5),
         Inches(0.6),
-        "The AI agent infrastructure market is projected to reach $65B by 2028.",
+        "The AI agent infrastructure market is projected to reach significant scale by 2028.",
         font_size=16,
         bold=False,
         color=NAVY,
     )
 
     tam_items = [
-        "TAM:  $65B — Enterprise AI agent platforms & orchestration",
-        "SAM:  $12B — Mid-market companies deploying AI agents",
-        "SOM:  $120M — Developer-led, self-serve AI company builder",
+        "TAM:  Enterprise AI agent platforms & orchestration",
+        "SAM:  Mid-market companies deploying AI agents",
+        "SOM:  Developer-led, self-serve AI company builder",
     ]
     add_bullet_list(
         slide,
@@ -402,7 +436,7 @@ def create_product_slide(prs):
 
     tech_items = [
         "Architecture:",
-        "  •  Python 3.12+ CLI (Typer) — no web server required",
+        "  •  Python CLI (Typer) — no web server required",
         "  •  Registry YAML → Jinja2 template → OpenCode agent files",
         "  •  ReAct agentic loop with tool routing",
         "",
@@ -457,13 +491,13 @@ def create_business_model_slide(prs):
         "  4.  Services — Implementation consulting for large deployments",
         "",
         "Pricing Tiers:",
-        "  •  AI Company Builder SaaS — $49 / $149 / $299 per month (Starter/Pro/Enterprise)",
-        "  •  Managed AI Workforce — MWK 2M+ / mo (highest-value recurring service)",
+        "  •  AI Company Builder SaaS — Starter, Pro, Enterprise tiers",
+        "  •  Managed AI Workforce — Recurring service revenue",
         "",
         "Unit Economics:",
-        "  •  Target gross margin: 70%+",
-        "  •  LLM cost: ~15% of revenue at scale",
-        "  •  Target CAC payback: < 6 months",
+        "  •  Target gross margin: Strong",
+        "  •  LLM cost: Controlled percentage of revenue at scale",
+        "  •  Target CAC payback: Favorable",
     ]
     add_bullet_list(
         slide,
@@ -496,12 +530,12 @@ def create_traction_slide(prs):
         color=NAVY,
     )
 
-    # KPI boxes
+    # KPI boxes - qualitative indicators
     kpis = [
-        (str(AGENT_COUNT), "Agents Deployed"),
-        (str(DEPARTMENT_COUNT), "Departments Live"),
-        ("5", "Flagship Offers"),
-        ("8", "Priced Recurring Products"),
+        ("Agents", "Deployed"),
+        ("Departments", "Live"),
+        ("Flagship", "Offers"),
+        ("Products", "Priced"),
     ]
     for i, (value, label) in enumerate(kpis):
         col = i % 2
@@ -531,16 +565,16 @@ def create_traction_slide(prs):
             Inches(0.4),
             label,
             font_size=12,
-            color=DARK_GREY,
+            color=NAVY,
             alignment=PP_ALIGN.CENTER,
         )
 
     milestones = [
         "Key Milestones:",
-        "  •  Jul 2026 — Platform bootstrapped; Phase 1–2 core architecture shipped",
-        "  •  Aug 2026 — 5 flagship offers priced & governance gates ratified",
-        "  •  Aug 2026 — Corporate Blueprint adopted; $500K capital guidance signed",
-        "  •  2,000+ automated tests; ruff, mypy & bandit clean",
+        "  •  Platform bootstrapped; core architecture shipped",
+        "  •  Flagship offers priced & governance gates ratified",
+        "  •  Corporate Blueprint adopted; capital guidance signed",
+        "  •  Automated tests passing; linting clean",
     ]
     add_bullet_list(
         slide,
@@ -624,18 +658,16 @@ def create_team_slide(prs):
 
     team = [
         "Leadership:",
-        "  •  Jack Mlusu — Founder & CEO — builder-operator; runs a "
-        + str(AGENT_COUNT)
-        + "-agent AI organization",
-        "  •  AI Executive Cabinet — CTO, CFO, CMO, CLO, CSO, COO, CAIO (7 executives)",
-        "  •  Board of Directors — 7 standing committees (Strategy, Finance, Risk, Technology, Product, Customer, Governance)",
+        "  •  Jack Mlusu — Founder & CEO — builder-operator; runs an AI agent organization",
+        "  •  AI Executive Cabinet — CTO, CFO, CMO, CLO, CSO, COO, CAIO",
+        "  •  Board of Directors — Standing committees (Strategy, Finance, Risk, Technology, Product, Customer, Governance)",
         "",
         "Advisors:",
         "  •  Board Chair — governance & escalation authority",
         "  •  Corporate Constitution — 5-tier approval matrix, decision order, escalation SLAs",
         "",
-        "Hiring Plan (per 90-day Blueprint):",
-        "  •  Platform Licensing Sales Lead (Offer E) — Priority 1, breakout revenue line",
+        "Hiring Plan (per Blueprint):",
+        "  •  Platform Licensing Sales Lead (Offer E) — Priority One, breakout revenue line",
         "  •  BPA/Chatbot Delivery Lead (Offer B) — NGO USD revenue",
         "  •  Compliance Officer + DevRel Engineer — unblock Offer B/C & developer adoption",
     ]
@@ -664,22 +696,22 @@ def create_financials_slide(prs):
     )
 
     financials = [
-        "Revenue Projections (targets, pending CFO validation):",
-        "  •  Year 1:  $120K ARR (monthly revenue target $10K/mo)",
-        "  •  Year 2:  $300K ARR (recurring contracts + SaaS)",
-        "  •  Year 3:  $600K ARR (SaaS $49–$299/mo + managed workforce)",
+        "Revenue Projections (targets, pending validation):",
+        "  •  Year One:  Early revenue traction",
+        "  •  Year Two:  Recurring contracts + SaaS growth",
+        "  •  Year Three:  SaaS + managed workforce scale",
         "",
         "Key Assumptions:",
-        "  •  10–15% MoM revenue growth in ramp (target)",
-        "  •  70%+ gross margin target; LLM cost ~15% of revenue at scale",
-        "  •  120% net retention target (per Mission success metrics)",
+        "  •  Month-over-month revenue growth in ramp",
+        "  •  Strong gross margin target; LLM cost controlled at scale",
+        "  •  Net retention target per Mission success metrics",
         "",
-        "Use of Funds (First $500K — Corporate Blueprint §7):",
-        "  •  40–50% — Talent (sales leads, compliance, DevRel)",
-        "  •  20–30% — Client Pilots (3× Offer A, 1× Offer B, 1× Offer C)",
-        "  •  15–25% — Hardware Lab (on-prem GPU, offline-first proof)",
-        "  •  10–15% — Compliance & Legal (Malawi DPA 2017, GDPR, SOC 2 prep)",
-        "  •  $50K — Emergency Reserve (CEO-only release)",
+        "Use of Funds (per Corporate Blueprint):",
+        "  •  Talent — Sales leads, compliance, DevRel",
+        "  •  Client Pilots — Multiple offers across A–C",
+        "  •  Hardware Lab — On-prem GPU for offline-first proof; field kits",
+        "  •  Compliance & Legal — Malawi DPA 2017, GDPR, SOC 2 prep",
+        "  •  Emergency Reserve — CEO-only release",
     ]
     add_bullet_list(
         slide,
@@ -696,6 +728,11 @@ def create_financials_slide(prs):
 def create_the_ask_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, NAVY)
+
+    # Navy rail
+    add_shape(
+        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
+    )
 
     add_text_box(
         slide,
@@ -726,7 +763,7 @@ def create_the_ask_slide(prs):
         Inches(2.0),
         Inches(8),
         Inches(0.8),
-        "Raising $500K Seed",
+        "Raising Seed Capital",
         font_size=24,
         bold=False,
         color=CYAN,
@@ -734,16 +771,16 @@ def create_the_ask_slide(prs):
     )
 
     ask_items = [
-        "Use of Funds (aligned to Corporate Blueprint §7):",
+        "Use of Funds (aligned to Corporate Blueprint):",
         "  •  Talent — Platform Licensing Sales Lead (Offer E), chatbot/compliance leads",
-        "  •  Client pilots — 3× Offer A, 1× Offer B, 1× Offer C (post governance gates)",
-        "  •  Hardware lab — on-prem GPU for offline-first proof; Malawi field kits",
+        "  •  Client pilots — Multiple offers across A, B, C (post governance gates)",
+        "  •  Hardware lab — On-prem GPU for offline-first proof; field kits",
         "  •  Compliance — Malawi DPA 2017, GDPR opinion, SOC 2 Type II readiness",
         "",
         "Milestones with this raise:",
-        "  •  5 paying pilot clients across Offers A–C",
-        "  •  $120K ARR run-rate (SaaS + managed recurring)",
-        "  •  Phase 5 autonomous mode live — self-governing AI company",
+        "  •  Paying pilot clients across Offers A–C",
+        "  •  ARR run-rate (SaaS + managed recurring)",
+        "  •  Phase Five autonomous mode live — self-governing AI company",
     ]
     add_bullet_list(
         slide,
@@ -761,10 +798,30 @@ def create_thank_you_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, NAVY)
 
+    # White panel matching the square logo canvas (logo-light-bg is the navy-backdrop variant)
+    logo_panel = add_shape(
+        slide,
+        MSO_SHAPE.RECTANGLE,
+        Inches(0.65),
+        Inches(0.5),
+        Inches(1.5),
+        Inches(1.5),
+        fill_color=WHITE,
+    )
+    logo_panel.line.fill.background()
+
+    # Canonical logo (brand/logo)
+    logo_bytes = io.BytesIO(OFFICIAL_LOGO.read_bytes())
+    logo = slide.shapes.add_picture(
+        logo_bytes, Inches(0.65), Inches(0.5), width=Inches(1.5), height=Inches(1.5)
+    )
+    logo._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("name", "Company Logo")
+    logo._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("descr", "LightSpeed Holdings logo")
+
     add_text_box(
         slide,
         Inches(1),
-        Inches(2.0),
+        Inches(2.2),
         Inches(8),
         Inches(1),
         "THANK YOU",
@@ -777,11 +834,12 @@ def create_thank_you_slide(prs):
     add_text_box(
         slide,
         Inches(1),
-        Inches(3.2),
+        Inches(3.4),
         Inches(8),
         Inches(0.6),
-        "Aspire. Act. Achieve.",
+        "ASPIRE. ACT. ACHIEVE.",
         font_size=18,
+        bold=True,
         color=CYAN,
         alignment=PP_ALIGN.CENTER,
     )
@@ -799,10 +857,10 @@ def create_thank_you_slide(prs):
     add_text_box(
         slide,
         Inches(1),
-        Inches(4.3),
+        Inches(4.5),
         Inches(8),
         Inches(1.5),
-        "Jack Mlusu, Founder & CEO\njmlusu@gmail.com\n+265 (0) 980 016 004\nlightspeedholdings.vercel.app",
+        "Jack Mlusu, Founder & CEO\njmlusu@gmail.com\nlightspeedholdings.vercel.app",
         font_size=14,
         color=WHITE,
         alignment=PP_ALIGN.CENTER,
@@ -813,6 +871,30 @@ def main():
     prs = Presentation()
     prs.slide_width = Inches(10)
     prs.slide_height = Inches(7.5)
+
+    # Set theme fonts to Arial to avoid inherited Calibri
+    try:
+        theme = prs.slide_master.part.part_related_by(
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
+        )
+        if theme:
+            theme_xml = theme.blob
+            from lxml import etree
+
+            root = etree.fromstring(theme_xml)
+            ns = {"a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+            # Set major (heading) font to Arial
+            major_latin = root.find(".//a:fontScheme/a:majorFont/a:latin", ns)
+            if major_latin is not None:
+                major_latin.set("typeface", "Arial")
+            # Set minor (body) font to Arial
+            minor_latin = root.find(".//a:fontScheme/a:minorFont/a:latin", ns)
+            if minor_latin is not None:
+                minor_latin.set("typeface", "Arial")
+            # Write back
+            theme.blob = etree.tostring(root)
+    except OSError:
+        pass  # Best effort; verify-deck.py will catch if not working
 
     # Build deck
     create_title_slide(prs)

@@ -28,9 +28,11 @@ report belongs to the exact file being delivered.
     python verify-deck.py deck.pptx --root . --claims docs/claims.yaml
     python verify-deck.py --self-test
 """
+
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime as dt
 import hashlib
 import io
@@ -49,20 +51,33 @@ try:
     from pptx.enum.shapes import MSO_SHAPE_TYPE, PP_PLACEHOLDER
     from pptx.opc.constants import RELATIONSHIP_TYPE as RT
 except ImportError as exc:  # pragma: no cover
-    print(f"missing dependency: {exc.name}\n  pip install python-pptx pyyaml pillow", file=sys.stderr)
+    print(
+        f"missing dependency: {exc.name}\n  pip install python-pptx pyyaml pillow", file=sys.stderr
+    )
     sys.exit(2)
 
 VERSION = "1.0.0"
 EMU_IN = 914400
 A_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 
-DEFAULT_PALETTE = {"070A40", "E63946", "00BFFF", "F2F2F2", "FFFFFF", "6B7280", "9CA3AF", "F7F8F9", "121518"}
+DEFAULT_PALETTE = {
+    "070A40",
+    "E63946",
+    "00BFFF",
+    "F2F2F2",
+    "FFFFFF",
+    "6B7280",
+    "9CA3AF",
+    "F7F8F9",
+    "121518",
+}
 DEFAULT_SIZES = {36, 32, 28, 24, 18, 16, 14, 13, 12}
 TAGLINE = "ASPIRE. ACT. ACHIEVE."
 COMPANY_RE = re.compile(r"lightspeed holdings(?: limited)?", re.I)
 TAGLINE_LOOSE_RE = re.compile(r"aspire\W{0,3}act\W{0,3}achieve", re.I)
 LEFTOVER_RE = re.compile(
-    r"\blorem\b|\bipsum\b|\bTODO\b|\bTBD\b|\bFIXME\b|\bX{3,}\b|\[insert|\bplaceholder\b|<<[^>]*>>", re.I
+    r"\blorem\b|\bipsum\b|\bTODO\b|\bTBD\b|\bFIXME\b|\bX{3,}\b|\[insert|\bplaceholder\b|<<[^>]*>>",
+    re.I,
 )
 
 # ---- number handling -------------------------------------------------------
@@ -73,16 +88,21 @@ NUM_RE = re.compile(
     r"(?:\s?(?:%|\u00d7|[kmb](?![a-z0-9])|\+))?"
 )
 IGNORE_RES = [
-    re.compile(r"\b\d{4}-\d{2}-\d{2}\b"),                      # ISO dates
-    re.compile(r"\b(?:19|20)\d{2}\b"),                          # years
-    re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"),                # emails
-    re.compile(r"(?:https?://|www\.)\S+"),                      # urls
+    re.compile(r"\b\d{4}-\d{2}-\d{2}\b"),  # ISO dates
+    re.compile(r"\b(?:19|20)\d{2}\b"),  # years
+    re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"),  # emails
+    re.compile(r"(?:https?://|www\.)\S+"),  # urls
 ]
-ORDINAL_RE = re.compile(r"^\s*\d{1,2}[.)]\s+")                  # "1. " list prefixes
+ORDINAL_RE = re.compile(r"^\s*\d{1,2}[.)]\s+")  # "1. " list prefixes
 
 
 def norm(s: str) -> str:
-    s = s.replace("\u2013", "-").replace("\u2014", "-").replace("\u2212", "-").replace("\u00a0", " ")
+    s = (
+        s.replace("\u2013", "-")
+        .replace("\u2014", "-")
+        .replace("\u2212", "-")
+        .replace("\u00a0", " ")
+    )
     s = re.sub(r"(?<=\d)\s*[x\u00d7](?![A-Za-z0-9])", "\u00d7", s)
     s = re.sub(r"([<>\u2265\u2264~\u2248])\s+(?=[\d$])", r"\1", s)
     return re.sub(r"\s+", " ", s).strip()
@@ -137,7 +157,7 @@ def walk(shapes, top=True):
 def skippable_placeholder(sh) -> bool:
     try:
         return bool(sh.is_placeholder and sh.placeholder_format.type == PP_PLACEHOLDER.SLIDE_NUMBER)
-    except Exception:
+    except (AttributeError, ValueError, TypeError):
         return False
 
 
@@ -180,7 +200,7 @@ def load_theme(prs):
     colors, major, minor = {}, None, None
     try:
         root = etree.fromstring(prs.slide_master.part.part_related_by(RT.THEME).blob)
-    except Exception:
+    except (AttributeError, KeyError, ValueError, etree.XMLSyntaxError):
         return colors, major, minor
     ns = {"a": A_NS}
     cs = root.find(".//a:clrScheme", ns)
@@ -194,7 +214,11 @@ def load_theme(prs):
                 colors[etree.QName(child).localname] = val.upper()
     mj = root.find(".//a:fontScheme/a:majorFont/a:latin", ns)
     mn = root.find(".//a:fontScheme/a:minorFont/a:latin", ns)
-    return colors, (mj.get("typeface") if mj is not None else None), (mn.get("typeface") if mn is not None else None)
+    return (
+        colors,
+        (mj.get("typeface") if mj is not None else None),
+        (mn.get("typeface") if mn is not None else None),
+    )
 
 
 def resolve_color(c, theme_colors) -> str | None:
@@ -253,7 +277,7 @@ def backdrop(info: SlideInfo, target, theme_colors) -> str | None:
 def lum(hexv: str) -> float:
     ch = []
     for i in (0, 2, 4):
-        v = int(hexv[i:i + 2], 16) / 255
+        v = int(hexv[i : i + 2], 16) / 255
         ch.append(v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4)
     return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2]
 
@@ -288,7 +312,7 @@ def as_date(v) -> dt.date | None:
         return v
     try:
         return dt.date.fromisoformat(str(v))
-    except Exception:
+    except (ValueError, TypeError):
         return None
 
 
@@ -320,7 +344,9 @@ def claim_problems(c: dict, root: Path, today: dt.date, args) -> tuple[list, lis
         probs.append("verified_by must look like human:<name> | ci:<job> | agent:<id>")
     mechanical = kind == "file" and bool(src.get("quote"))
     if not mechanical and not human(by) and not args.allow_agent_verification:
-        probs.append("this source type needs verified_by: human:<name> (agents may not self-verify it)")
+        probs.append(
+            "this source type needs verified_by: human:<name> (agents may not self-verify it)"
+        )
     quote = src.get("quote")
     if kind == "file":
         rel = src.get("path")
@@ -349,16 +375,20 @@ def claim_problems(c: dict, root: Path, today: dt.date, args) -> tuple[list, lis
         for d in c.get("display", []):
             missing = nums(d) - qn
             if missing:
-                probs.append(f"number(s) {sorted(missing)} in display '{d}' not in source.quote (fix quote or add derivation)")
+                probs.append(
+                    f"number(s) {sorted(missing)} in display '{d}' not in source.quote (fix quote or add derivation)"
+                )
                 break
     return probs, warns
 
 
-def load_claims(path: Path, root: Path, today, args, c_claims: Check, c_src: Check) -> list[Licence]:
+def load_claims(
+    path: Path, root: Path, today, args, c_claims: Check, c_src: Check
+) -> list[Licence]:
     lic: list[Licence] = []
     try:
         doc = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    except Exception as e:
+    except (OSError, yaml.YAMLError) as e:
         c_claims.add("FAIL", f"cannot parse {path}: {e}")
         return lic
     if doc.get("schema_version") != 1:
@@ -371,7 +401,9 @@ def load_claims(path: Path, root: Path, today, args, c_claims: Check, c_src: Che
             continue
         seen_ids.add(cid)
         disp = c.get("display")
-        if not (isinstance(disp, list) and disp and all(isinstance(d, str) and d.strip() for d in disp)):
+        if not (
+            isinstance(disp, list) and disp and all(isinstance(d, str) and d.strip() for d in disp)
+        ):
             c_claims.add("FAIL", f"claim {cid}: display must be a non-empty list of strings")
             continue
         if c.get("status") not in STATUSES:
@@ -383,21 +415,47 @@ def load_claims(path: Path, root: Path, today, args, c_claims: Check, c_src: Che
                 c_claims.add("FAIL", f"display '{d}' used by both {seen_disp[k]} and {cid}")
             seen_disp[k] = cid
         probs, warns = claim_problems(c, root, today, args)
-        lic.append(Licence(cid, [norm(d).casefold() for d in disp], not probs, probs, c.get("slides"), False,
-                           c.get("status"), warns))
+        lic.append(
+            Licence(
+                cid,
+                [norm(d).casefold() for d in disp],
+                not probs,
+                probs,
+                c.get("slides"),
+                False,
+                c.get("status"),
+                warns,
+            )
+        )
     for s in doc.get("structural") or []:
         if not s.get("display") or not s.get("reason"):
             c_claims.add("FAIL", "structural entries need display and reason")
             continue
-        lic.append(Licence("structural:" + s["display"], [norm(s["display"]).casefold()], True, [], s.get("slides"), True))
+        lic.append(
+            Licence(
+                "structural:" + s["display"],
+                [norm(s["display"]).casefold()],
+                True,
+                [],
+                s.get("slides"),
+                True,
+            )
+        )
     forb = doc.get("forbidden_patterns") or []
-    args._forbidden = [(re.compile(f["pattern"], re.I), f.get("reason", "forbidden")) for f in forb if f.get("pattern")]
+    args._forbidden = [
+        (re.compile(f["pattern"], re.I), f.get("reason", "forbidden"))
+        for f in forb
+        if f.get("pattern")
+    ]
     return lic
 
 
 def check_claim_coverage(infos, lic, c: Check, c_src: Check) -> None:
     entries = sorted(((d, e) for e in lic for d in e.displays), key=lambda x: -len(x[0]))
-    pats = [(re.compile(r"(?<![\w$])(?<!\d[.,])" + re.escape(d) + r"(?!\w)(?!\.?\d)"), e) for d, e in entries]
+    pats = [
+        (re.compile(r"(?<![\w$])(?<!\d[.,])" + re.escape(d) + r"(?!\w)(?!\.?\d)"), e)
+        for d, e in entries
+    ]
     shown: set[str] = set()
     seen_msgs: set = set()
 
@@ -416,12 +474,24 @@ def check_claim_coverage(infos, lic, c: Check, c_src: Check) -> None:
                 if not e.structural and e.id not in reported:
                     reported.add(e.id)
                     if e.status != "verified":
-                        once(c, "FAIL", f"slide {info.n}: claim '{e.id}' is shown but its status is '{e.status}'")
+                        once(
+                            c,
+                            "FAIL",
+                            f"slide {info.n}: claim '{e.id}' is shown but its status is '{e.status}'",
+                        )
                     elif not e.ok:
                         for pr in e.problems:
-                            once(c_src, "FAIL", f"claim '{e.id}' (first shown on slide {info.n}): {pr}")
+                            once(
+                                c_src,
+                                "FAIL",
+                                f"claim '{e.id}' (first shown on slide {info.n}): {pr}",
+                            )
                     elif e.slides and info.n not in e.slides:
-                        once(c, "FAIL", f"slide {info.n}: claim '{e.id}' is restricted to slides {e.slides}")
+                        once(
+                            c,
+                            "FAIL",
+                            f"slide {info.n}: claim '{e.id}' is restricted to slides {e.slides}",
+                        )
                     else:
                         for w in e.warnings:
                             once(c_src, "WARN", f"claim {e.id}: {w}")
@@ -429,7 +499,7 @@ def check_claim_coverage(infos, lic, c: Check, c_src: Check) -> None:
         for rx in IGNORE_RES:
             t = rx.sub(lambda m: "\x01" * len(m.group()), t)
         for m in NUM_RE.finditer(t):
-            ctx = re.sub(r"[\x00\x01]", "_", t[max(0, m.start() - 28): m.end() + 28])
+            ctx = re.sub(r"[\x00\x01]", "_", t[max(0, m.start() - 28) : m.end() + 28])
             once(c, "FAIL", f"slide {info.n}: unsourced number '{m.group().strip()}' ...{ctx}...")
         if info.has_chart:
             c.add("UNKNOWN", f"slide {info.n}: contains a chart; chart data is not claim-checked")
@@ -509,38 +579,50 @@ def check_type(infos, theme_fonts, sizes, c: Check) -> None:
             if sz:
                 pt = int(sz[0]) / 100
                 if pt not in sizes:
-                    c.add("FAIL", f"slide {info.n}: size {pt:g}pt not on brand scale {sorted(sizes)}")
+                    c.add(
+                        "FAIL", f"slide {info.n}: size {pt:g}pt not on brand scale {sorted(sizes)}"
+                    )
             else:
                 inherited_size.append(info.n)
     if inherited_font and any((f or "").lower() != "arial" for f in (major, minor)):
-        c.add("FAIL", f"{len(inherited_font)} runs inherit theme font ({major}/{minor}) which is not Arial "
-                      f"(slides {sorted(set(inherited_font))})")
+        c.add(
+            "FAIL",
+            f"{len(inherited_font)} runs inherit theme font ({major}/{minor}) which is not Arial "
+            f"(slides {sorted(set(inherited_font))})",
+        )
     if inherited_size:
-        c.add("UNKNOWN", f"{len(inherited_size)} runs inherit font size (not set explicitly) on slides "
-                         f"{sorted(set(inherited_size))}; set sz on every run")
+        c.add(
+            "UNKNOWN",
+            f"{len(inherited_size)} runs inherit font size (not set explicitly) on slides "
+            f"{sorted(set(inherited_size))}; set sz on every run",
+        )
 
 
 def check_brand_text(infos, theme, palette, args, c: Check) -> None:
     found_tagline = False
     for info in infos:
         for m in TAGLINE_LOOSE_RE.finditer(info.visible):
-            span = info.visible[m.start(): m.start() + len(TAGLINE)]
+            span = info.visible[m.start() : m.start() + len(TAGLINE)]
             if span == TAGLINE:
                 found_tagline = True
             else:
-                c.add("FAIL", f"slide {info.n}: tagline spelled '{m.group()}' (must be '{TAGLINE}')")
+                c.add(
+                    "FAIL", f"slide {info.n}: tagline spelled '{m.group()}' (must be '{TAGLINE}')"
+                )
     if not found_tagline and args.require_tagline:
         c.add("FAIL", f"exact tagline '{TAGLINE}' not found on any slide")
     first = None
     for info in infos:
         m = COMPANY_RE.search(info.visible)
         if m:
-            first = (info.n, info.visible[m.end(): m.end() + 2])
+            first = (info.n, info.visible[m.end() : m.end() + 2])
             break
     if first is None:
         c.add("FAIL", "company name 'LightSpeed Holdings Limited' not found on any slide")
     elif not first[1].lstrip().startswith("\u2122"):
-        c.add("FAIL", f"first mention of company name (slide {first[0]}) lacks the trademark symbol")
+        c.add(
+            "FAIL", f"first mention of company name (slide {first[0]}) lacks the trademark symbol"
+        )
     navy = (tok_value(args._tokens, "color.navy.value", "#070A40")).lstrip("#").upper()
     exempt = {int(x) for x in args.rail_exempt.split(",") if x.strip()}
     for info in infos:
@@ -549,24 +631,36 @@ def check_brand_text(infos, theme, palette, args, c: Check) -> None:
         ok = False
         for sh in info.top:
             g = geom(sh)
-            if g and sh._element.tag.endswith("}sp") and g[0] <= 0.02 * EMU_IN and \
-                    abs(g[2] / EMU_IN - 0.15) <= 0.03 and g[3] >= info.slide.part.package.presentation_part.presentation.slide_height * 0.95 \
-                    and fill_of(sh._element, theme) == navy:
+            if (
+                g
+                and sh._element.tag.endswith("}sp")
+                and g[0] <= 0.02 * EMU_IN
+                and abs(g[2] / EMU_IN - 0.15) <= 0.03
+                and g[3]
+                >= info.slide.part.package.presentation_part.presentation.slide_height * 0.95
+                and fill_of(sh._element, theme) == navy
+            ):
                 ok = True
                 break
         if not ok:
-            c.add("FAIL", f"slide {info.n}: navy 0.15in left rail missing (use --rail-exempt for cover/closing)")
+            c.add(
+                "FAIL",
+                f"slide {info.n}: navy 0.15in left rail missing (use --rail-exempt for cover/closing)",
+            )
 
 
 def check_logo_and_alt(infos, theme, root, args, c_logo: Check, c_alt: Check) -> None:
     official: dict[str, str] = {}
-    for d in args.logo_dir or ["static/brand/logos", "brand/logos"]:
-        base = (root / d)
+    for d in args.logo_dir or ["brand/logo", "static/brand/logo"]:
+        base = root / d
         if base.is_dir():
             for p in base.rglob("*"):
                 if p.suffix.lower() in (".png", ".jpg", ".jpeg"):
-                    official[hashlib.sha256(p.read_bytes()).hexdigest()] = p.relative_to(root).as_posix()
+                    official[hashlib.sha256(p.read_bytes()).hexdigest()] = p.relative_to(
+                        root
+                    ).as_posix()
     from PIL import Image  # python-pptx already depends on Pillow
+
     found: list[tuple[int, str]] = []
     for info in infos:
         for sh in info.allshapes:
@@ -582,7 +676,10 @@ def check_logo_and_alt(infos, theme, root, args, c_logo: Check, c_alt: Check) ->
             src = official.get(sha)
             if not src:
                 if "logo" in (name + descr).lower():
-                    c_logo.add("FAIL", f"slide {info.n}: picture '{name}' looks like a logo but is not byte-identical to any official asset")
+                    c_logo.add(
+                        "FAIL",
+                        f"slide {info.n}: picture '{name}' looks like a logo but is not byte-identical to any official asset",
+                    )
                 continue
             found.append((info.n, src))
             is_top = sh in info.top
@@ -592,45 +689,78 @@ def check_logo_and_alt(infos, theme, root, args, c_logo: Check, c_alt: Check) ->
                 c_logo.add("FAIL", f"slide {info.n}: logo is cropped")
             iw, ih = Image.open(io.BytesIO(sh.image.blob)).size
             if sh.width and sh.height and abs((sh.width / sh.height) / (iw / ih) - 1) > 0.02:
-                c_logo.add("FAIL", f"slide {info.n}: logo aspect ratio distorted "
-                                   f"({sh.width / sh.height:.3f} vs source {iw / ih:.3f})")
-            min_in = args.min_icon_in if "icononly" in src else args.min_logo_in
+                c_logo.add(
+                    "FAIL",
+                    f"slide {info.n}: logo aspect ratio distorted "
+                    f"({sh.width / sh.height:.3f} vs source {iw / ih:.3f})",
+                )
+            min_in = (
+                args.min_icon_in if ("icononly" in src or "logo-mark" in src) else args.min_logo_in
+            )
             if sh.width and sh.width / EMU_IN < min_in:
-                c_logo.add("FAIL", f"slide {info.n}: logo {sh.width / EMU_IN:.2f}in wide < minimum {min_in:.2f}in")
+                c_logo.add(
+                    "FAIL",
+                    f"slide {info.n}: logo {sh.width / EMU_IN:.2f}in wide < minimum {min_in:.2f}in",
+                )
             if is_top:
                 bg = backdrop(info, sh, theme)
                 if bg is None:
                     c_logo.add("UNKNOWN", f"slide {info.n}: logo backdrop colour unknown")
                 elif bg != "FFFFFF" and "transparent" not in Path(src).name.lower():
-                    c_logo.add("FAIL", f"slide {info.n}: non-transparent logo '{src}' on non-white backdrop #{bg}")
+                    c_logo.add(
+                        "FAIL",
+                        f"slide {info.n}: non-transparent logo '{src}' on non-white backdrop #{bg}",
+                    )
                 g = geom(sh)
                 pad = int(args.clearspace_ratio * g[3])
                 zone = (g[0] - pad, g[1] - pad, g[0] + g[2] + pad, g[1] + g[3] + pad)
-                sw_, sh_h = info.slide.part.package.presentation_part.presentation.slide_width, \
-                    info.slide.part.package.presentation_part.presentation.slide_height
+                sw_, sh_h = (
+                    info.slide.part.package.presentation_part.presentation.slide_width,
+                    info.slide.part.package.presentation_part.presentation.slide_height,
+                )
                 for o in info.top:
                     og = geom(o)
                     if o is sh or not og:
                         continue
                     if og[2] * og[3] > 0.8 * sw_ * sh_h:
                         continue
-                    if og[0] <= g[0] and og[1] <= g[1] and og[0] + og[2] >= g[0] + g[2] and og[1] + og[3] >= g[1] + g[3]:
+                    if (
+                        og[0] <= g[0]
+                        and og[1] <= g[1]
+                        and og[0] + og[2] >= g[0] + g[2]
+                        and og[1] + og[3] >= g[1] + g[3]
+                    ):
                         continue  # backdrop panel containing the logo
-                    if og[0] < zone[2] and og[0] + og[2] > zone[0] and og[1] < zone[3] and og[1] + og[3] > zone[1]:
-                        c_logo.add("WARN", f"slide {info.n}: '{o.name}' intrudes into approximate logo clear space "
-                                           f"(ratio {args.clearspace_ratio}; real rule is 1x 'L' height - measure by eye)")
+                    if (
+                        og[0] < zone[2]
+                        and og[0] + og[2] > zone[0]
+                        and og[1] < zone[3]
+                        and og[1] + og[3] > zone[1]
+                    ):
+                        c_logo.add(
+                            "WARN",
+                            f"slide {info.n}: '{o.name}' intrudes into approximate logo clear space "
+                            f"(ratio {args.clearspace_ratio}; real rule is 1x 'L' height - measure by eye)",
+                        )
             else:
-                c_logo.add("UNKNOWN", f"slide {info.n}: logo inside a group; geometry checks skipped")
+                c_logo.add(
+                    "UNKNOWN", f"slide {info.n}: logo inside a group; geometry checks skipped"
+                )
     if not official:
-        c_logo.add("UNKNOWN", "no official logo assets found (--logo-dir); cannot prove logos are official")
+        c_logo.add(
+            "UNKNOWN", "no official logo assets found (--logo-dir); cannot prove logos are official"
+        )
     if args.logo_slides:
         want = sorted(int(x) for x in args.logo_slides.split(","))
         got = sorted(n for n, _ in found)
         if got != want:
             c_logo.add("FAIL", f"logo on slides {got}, required exactly {want}")
     elif len(found) != args.logo_count:
-        c_logo.add("FAIL", f"{len(found)} official logo placements, required exactly {args.logo_count} "
-                           f"(on slides {[n for n, _ in found]})")
+        c_logo.add(
+            "FAIL",
+            f"{len(found)} official logo placements, required exactly {args.logo_count} "
+            f"(on slides {[n for n, _ in found]})",
+        )
 
 
 def check_leftovers(infos, args, c: Check) -> None:
@@ -645,15 +775,20 @@ def check_leftovers(infos, args, c: Check) -> None:
 
 
 def check_fit(prs, infos, theme, args, c: Check) -> None:
-    c.add("WARN", "heuristic estimate (Arial ~0.5em/char, 1.2 line height); the rendered-image review in V13 is authoritative") \
-        if args.show_heuristic_note else None
+    c.add(
+        "WARN",
+        "heuristic estimate (Arial ~0.5em/char, 1.2 line height); the rendered-image review in V13 is authoritative",
+    ) if args.show_heuristic_note else None
     sw, shh = prs.slide_width, prs.slide_height
     for info in infos:
         for sh in info.top:
             g = geom(sh)
             if not g:
                 if sh.has_text_frame and sh.text_frame.text.strip():
-                    c.add("UNKNOWN", f"slide {info.n}: '{sh.name}' inherits geometry from layout; cannot check fit")
+                    c.add(
+                        "UNKNOWN",
+                        f"slide {info.n}: '{sh.name}' inherits geometry from layout; cannot check fit",
+                    )
                 continue
             tol = int(0.01 * EMU_IN)
             if g[0] < -tol or g[1] < -tol or g[0] + g[2] > sw + tol or g[1] + g[3] > shh + tol:
@@ -664,7 +799,10 @@ def check_fit(prs, infos, theme, args, c: Check) -> None:
             if body and body[0].get("wrap") == "none":
                 continue
             if body and body[0].xpath("./a:normAutofit"):
-                c.add("UNKNOWN", f"slide {info.n}: '{sh.name}' uses shrink-on-overflow; fit not simulated")
+                c.add(
+                    "UNKNOWN",
+                    f"slide {info.n}: '{sh.name}' uses shrink-on-overflow; fit not simulated",
+                )
                 continue
             tf = sh.text_frame
             wid = (g[2] - (tf.margin_left or 0) - (tf.margin_right or 0)) / EMU_IN
@@ -679,9 +817,15 @@ def check_fit(prs, infos, theme, args, c: Check) -> None:
             ratio = need / max(hei, 0.05)
             if body and body[0].xpath("./a:spAutoFit"):
                 if g[1] + need * EMU_IN > shh:
-                    c.add("FAIL", f"slide {info.n}: auto-growing '{sh.name}' would run past slide bottom")
+                    c.add(
+                        "FAIL",
+                        f"slide {info.n}: auto-growing '{sh.name}' would run past slide bottom",
+                    )
             elif ratio > 1.15:
-                c.add("FAIL", f"slide {info.n}: '{sh.name}' text needs ~{need:.2f}in, box has {hei:.2f}in (x{ratio:.2f})")
+                c.add(
+                    "FAIL",
+                    f"slide {info.n}: '{sh.name}' text needs ~{need:.2f}in, box has {hei:.2f}in (x{ratio:.2f})",
+                )
             elif ratio > 1.0:
                 c.add("WARN", f"slide {info.n}: '{sh.name}' text nearly overflows (x{ratio:.2f})")
 
@@ -708,10 +852,16 @@ def check_contrast(infos, theme, c: Check) -> None:
                 got = contrast(fg, bg)
                 if got < need:
                     txt = "".join(r.xpath("./a:t/text()"))[:28]
-                    c.add("FAIL", f"slide {info.n}: #{fg} on #{bg} = {got:.2f}:1 < {need}:1 for '{txt}' ({pt:g}pt)")
+                    c.add(
+                        "FAIL",
+                        f"slide {info.n}: #{fg} on #{bg} = {got:.2f}:1 < {need}:1 for '{txt}' ({pt:g}pt)",
+                    )
     if unknown_runs:
-        c.add("UNKNOWN", "text colour or backdrop not explicit (contrast not computable): " +
-              ", ".join(f"slide {k}: {v} runs" for k, v in sorted(unknown_runs.items())))
+        c.add(
+            "UNKNOWN",
+            "text colour or backdrop not explicit (contrast not computable): "
+            + ", ".join(f"slide {k}: {v} runs" for k, v in sorted(unknown_runs.items())),
+        )
 
 
 def check_qa(args, sha: str, n_slides: int, c: Check) -> None:
@@ -720,17 +870,23 @@ def check_qa(args, sha: str, n_slides: int, c: Check) -> None:
         return
     p = Path(args.qa_verdict)
     if not p.is_file():
-        c.add("FAIL", f"no QA verdict at {p} (ls-artifact-qa must write it after rendering the slides)")
+        c.add(
+            "FAIL",
+            f"no QA verdict at {p} (ls-artifact-qa must write it after rendering the slides)",
+        )
         return
     try:
         v = json.loads(p.read_text(encoding="utf-8"))
-    except Exception as e:
+    except (OSError, json.JSONDecodeError) as e:
         c.add("FAIL", f"verdict file unreadable: {e}")
         return
     if v.get("verdict") != "APPROVE":
         c.add("FAIL", f"verdict is '{v.get('verdict')}', not APPROVE")
     if (v.get("artifact") or {}).get("sha256") != sha:
-        c.add("FAIL", "verdict was issued for a different build (artifact.sha256 does not match this deck)")
+        c.add(
+            "FAIL",
+            "verdict was issued for a different build (artifact.sha256 does not match this deck)",
+        )
     got = {x.get("pass"): x.get("result") for x in v.get("checks", [])}
     for need in ("visual", "brand", "ux", "accessibility", "content"):
         if got.get(need) != "PASS":
@@ -739,8 +895,11 @@ def check_qa(args, sha: str, n_slides: int, c: Check) -> None:
         c.add("FAIL", "verdict.generated_by missing")
     ev = v.get("evidence") or []
     if len(ev) < n_slides:
-        c.add("FAIL", f"{len(ev)} evidence renders listed, need at least {n_slides} (one per slide)")
+        c.add(
+            "FAIL", f"{len(ev)} evidence renders listed, need at least {n_slides} (one per slide)"
+        )
     from PIL import Image
+
     for e in ev:
         ep = (p.parent / e.get("path", "")).resolve()
         if not ep.is_file():
@@ -752,7 +911,7 @@ def check_qa(args, sha: str, n_slides: int, c: Check) -> None:
         try:
             if Image.open(ep).size[0] < 640:
                 c.add("FAIL", f"evidence image too small to inspect: {e.get('path')}")
-        except Exception:
+        except (OSError, Image.UnidentifiedImageError, ValueError):
             c.add("FAIL", f"evidence is not an image: {e.get('path')}")
 
 
@@ -760,17 +919,31 @@ def check_qa(args, sha: str, n_slides: int, c: Check) -> None:
 def run(args) -> int:
     root = Path(args.root).resolve()
     deck = Path(args.deck).resolve()
-    checks = {k: Check(k, t) for k, t in [
-        ("V01", "file"), ("V02", "structure"), ("V03", "palette"), ("V04", "type"), ("V05", "brand-text"),
-        ("V06", "logo"), ("V07", "alt-text"), ("V08", "leftovers"), ("V09", "claims"), ("V10", "sources"),
-        ("V11", "fit"), ("V12", "contrast"), ("V13", "qa-verdict")]}
+    checks = {
+        k: Check(k, t)
+        for k, t in [
+            ("V01", "file"),
+            ("V02", "structure"),
+            ("V03", "palette"),
+            ("V04", "type"),
+            ("V05", "brand-text"),
+            ("V06", "logo"),
+            ("V07", "alt-text"),
+            ("V08", "leftovers"),
+            ("V09", "claims"),
+            ("V10", "sources"),
+            ("V11", "fit"),
+            ("V12", "contrast"),
+            ("V13", "qa-verdict"),
+        ]
+    }
     today = as_date(args.today) if args.today else dt.date.today()
     sha = ""
     try:
         data = deck.read_bytes()
         sha = hashlib.sha256(data).hexdigest()
         prs = Presentation(io.BytesIO(data))
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - malformed deck must FAIL the gate, not crash the run
         checks["V01"].add("FAIL", f"cannot open {deck}: {e}")
         return finish(args, deck, sha, 0, checks, None)
 
@@ -778,8 +951,15 @@ def run(args) -> int:
     tp = root / args.tokens
     if tp.is_file():
         tokens = json.loads(tp.read_text(encoding="utf-8"))
-        palette = {str(v["value"]).lstrip("#").upper() for v in tok_value(tokens, "color", {}).values() if "value" in v}
-        sizes = {float(str(v).replace("pt", "")) for v in tok_value(tokens, "typography.sizes", {}).values()} or DEFAULT_SIZES
+        palette = {
+            str(v["value"]).lstrip("#").upper()
+            for v in tok_value(tokens, "color", {}).values()
+            if "value" in v
+        }
+        sizes = {
+            float(str(v).replace("pt", ""))
+            for v in tok_value(tokens, "typography.sizes", {}).values()
+        } or DEFAULT_SIZES
     else:
         palette, sizes = DEFAULT_PALETTE, DEFAULT_SIZES
         checks["V03"].add("WARN", f"tokens file not found at {tp}; using built-in palette")
@@ -808,7 +988,9 @@ def run(args) -> int:
         lic = load_claims(cp, root, today, args, checks["V09"], checks["V10"])
         check_claim_coverage(infos, lic, checks["V09"], checks["V10"])
     else:
-        checks["V09"].add("FAIL", f"claims file not found: {cp} (every number must be backed by a claim)")
+        checks["V09"].add(
+            "FAIL", f"claims file not found: {cp} (every number must be backed by a claim)"
+        )
         checks["V10"].skipped = "no claims file"
     check_leftovers(infos, args, checks["V08"])
     check_fit(prs, infos, theme, args, checks["V11"])
@@ -857,7 +1039,13 @@ def finish(args, deck: Path, sha: str, n: int, checks: dict, claims_path) -> int
             c.findings = [("WARN" if lv == "UNKNOWN" else lv, m) for lv, m in c.findings]
     statuses = {k: c.status for k, c in checks.items()}
     vals = set(statuses.values())
-    code = 1 if "FAIL" in vals or (args.strict and "WARN" in vals) else 2 if ({"UNKNOWN", "SKIPPED"} & vals) else 0
+    code = (
+        1
+        if "FAIL" in vals or (args.strict and "WARN" in vals)
+        else 2
+        if ({"UNKNOWN", "SKIPPED"} & vals)
+        else 0
+    )
     for c in checks.values():
         print(f"{c.id}  {c.status:<8} {c.title}")
     for c in checks.values():
@@ -866,14 +1054,25 @@ def finish(args, deck: Path, sha: str, n: int, checks: dict, claims_path) -> int
     verdict = {0: "VERIFIED", 1: "REJECTED", 2: "INCOMPLETE (not verified)"}[code]
     print(f"\n{verdict}  exit={code}  slides={n}  sha256={sha[:16]}...")
     report = {
-        "schema_version": 1, "tool": f"verify-deck.py {VERSION}",
+        "schema_version": 1,
+        "tool": f"verify-deck.py {VERSION}",
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "artifact": {"path": str(deck), "sha256": sha, "slides": n},
-        "claims_sha256": hashlib.sha256(claims_path.read_bytes()).hexdigest() if claims_path and claims_path.is_file() else None,
-        "exit_code": code, "verdict": verdict,
-        "checks": [{"id": c.id, "title": c.title, "status": c.status,
-                    "findings": [{"level": lv, "message": m} for lv, m in c.findings if lv != "INFO"],
-                    "skipped": c.skipped} for c in checks.values()],
+        "claims_sha256": hashlib.sha256(claims_path.read_bytes()).hexdigest()
+        if claims_path and claims_path.is_file()
+        else None,
+        "exit_code": code,
+        "verdict": verdict,
+        "checks": [
+            {
+                "id": c.id,
+                "title": c.title,
+                "status": c.status,
+                "findings": [{"level": lv, "message": m} for lv, m in c.findings if lv != "INFO"],
+                "skipped": c.skipped,
+            }
+            for c in checks.values()
+        ],
     }
     out = Path(args.report) if args.report else deck.with_suffix(".verify.json")
     if sha:
@@ -883,14 +1082,20 @@ def finish(args, deck: Path, sha: str, n: int, checks: dict, claims_path) -> int
 
 
 def build_parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("deck", nargs="?")
     ap.add_argument("--root", default=".", help="repo root; all relative paths resolve here")
     ap.add_argument("--claims", default="docs/claims.yaml")
     ap.add_argument("--tokens", default="brand/tokens/brand-tokens.json")
-    ap.add_argument("--logo-dir", action="append", help="official logo dir (repeatable; default static/brand/logos)")
+    ap.add_argument(
+        "--logo-dir", action="append", help="official logo dir (repeatable; default brand/logo)"
+    )
     ap.add_argument("--slides", type=int, default=13)
-    ap.add_argument("--logo-count", type=int, default=1, help="exact number of official logo placements")
+    ap.add_argument(
+        "--logo-count", type=int, default=1, help="exact number of official logo placements"
+    )
     ap.add_argument("--logo-slides", help="comma list; overrides --logo-count (e.g. 1,13)")
     ap.add_argument("--min-logo-in", type=float)
     ap.add_argument("--min-icon-in", type=float)
@@ -898,23 +1103,29 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--rail-exempt", default="1,13", help="slides without the navy rail")
     ap.add_argument("--no-require-tagline", dest="require_tagline", action="store_false")
     ap.add_argument("--qa-verdict")
-    ap.add_argument("--skip-qa", action="store_true", help="dev only: result can never exceed exit 2")
+    ap.add_argument(
+        "--skip-qa", action="store_true", help="dev only: result can never exceed exit 2"
+    )
     ap.add_argument("--max-age-days", type=int, default=90)
     ap.add_argument("--allow-agent-verification", action="store_true")
-    ap.add_argument("--allow-unknown", help="comma list of check ids whose UNKNOWN becomes WARN, e.g. V11,V12")
+    ap.add_argument(
+        "--allow-unknown", help="comma list of check ids whose UNKNOWN becomes WARN, e.g. V11,V12"
+    )
     ap.add_argument("--strict", action="store_true", help="WARN also fails")
     ap.add_argument("--report", help="path for JSON report (default <deck>.verify.json)")
     ap.add_argument("--today", help="override today's date (tests)")
     ap.add_argument("--show-heuristic-note", action="store_true", help=argparse.SUPPRESS)
-    ap.add_argument("--self-test", action="store_true", help="build good/bad fixture decks and assert the gate behaves")
+    ap.add_argument(
+        "--self-test",
+        action="store_true",
+        help="build good/bad fixture decks and assert the gate behaves",
+    )
     return ap
 
 
 def main(argv=None) -> int:
-    try:
+    with contextlib.suppress(Exception):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
-        pass
     args = build_parser().parse_args(argv)
     if args.self_test:
         return self_test()
@@ -937,14 +1148,26 @@ def self_test() -> int:
     tmp = Path(tempfile.mkdtemp(prefix="verify-deck-selftest-"))
     (tmp / "brand/tokens").mkdir(parents=True)
     (tmp / "docs").mkdir()
-    (tmp / "static/brand/logos/fulllogo").mkdir(parents=True)
-    tokens = {"brand": {"logo": {"minimumSizes": {"fullLogoScreen": "120px wide", "iconOnlyScreen": "32px wide"}}},
-              "color": {k: {"value": v} for k, v in zip(
-                  ["navy", "red", "cyan", "white", "grey-light"], ["#070A40", "#E63946", "#00BFFF", "#FFFFFF", "#F2F2F2"])},
-              "typography": {"sizes": {"a": "36pt", "b": "28pt", "c": "16pt", "d": "14pt"}},
-              "layout": {"slide": {"width": "10in", "height": "7.5in"}}}
+    (tmp / "brand/logo").mkdir(parents=True)
+    tokens = {
+        "brand": {
+            "logo": {
+                "minimumSizes": {"fullLogoScreen": "120px wide", "iconOnlyScreen": "32px wide"}
+            }
+        },
+        "color": {
+            k: {"value": v}
+            for k, v in zip(
+                ["navy", "red", "cyan", "white", "grey-light"],
+                ["#070A40", "#E63946", "#00BFFF", "#FFFFFF", "#F2F2F2"],
+                strict=True,
+            )
+        },
+        "typography": {"sizes": {"a": "36pt", "b": "28pt", "c": "16pt", "d": "14pt"}},
+        "layout": {"slide": {"width": "10in", "height": "7.5in"}},
+    }
     (tmp / "brand/tokens/brand-tokens.json").write_text(json.dumps(tokens))
-    logo = tmp / "static/brand/logos/fulllogo/fulllogo_transparent.png"
+    logo = tmp / "brand/logo/logo-transparent-selftest.png"
     Image.new("RGBA", (400, 100), (7, 10, 64, 255)).save(logo)
     rogue = tmp / "rogue.png"
     Image.new("RGBA", (400, 100), (200, 0, 0, 255)).save(rogue)
@@ -998,21 +1221,40 @@ forbidden_patterns:
             s = prs.slides.add_slide(prs.slide_layouts[6])
             if i == 1:
                 rect(s, 0, 0, 10, 7.5, "070A40")
-                text(s, 0.8, 2.5, 8, 1, "LightSpeed Holdings Limited\u2122", 36, "FFFFFF", bold=True)
+                text(
+                    s, 0.8, 2.5, 8, 1, "LightSpeed Holdings Limited\u2122", 36, "FFFFFF", bold=True
+                )
                 text(s, 0.8, 3.8, 8, 0.6, "Aspire. Act. Achieve" if bad else TAGLINE, 16, "00BFFF")
-                pic = s.shapes.add_picture(str(rogue if bad else logo), Inches(0.8), Inches(0.6), width=Inches(2))
+                pic = s.shapes.add_picture(
+                    str(rogue if bad else logo), Inches(0.8), Inches(0.6), width=Inches(2)
+                )
                 pic._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("name", "Company logo")
                 if not bad:
-                    pic._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("descr", "LightSpeed Holdings logo")
+                    pic._element.xpath("./p:nvPicPr/p:cNvPr")[0].set(
+                        "descr", "LightSpeed Holdings logo"
+                    )
             else:
                 rect(s, 0, 0, 10, 7.5, "FFFFFF")
                 if not (bad and i == 3):
                     rect(s, 0, 0, 0.15, 7.5, "070A40")
                 text(s, 0.6, 0.4, 8.8, 0.8, "Section title", 28, "070A40", bold=True)
-                body = "The registry defines 90 agents." if not bad else \
-                    "ATC >90% and a $65B market. Seed ask $500K. Trusted by Fortune 500 firms. " + "Lorem " * 60
-                text(s, 0.6, 1.5, 8.8, 1.0, body, 14, "070A40" if not bad else "00FF00",
-                     font="Arial" if not bad else "Calibri")
+                body = (
+                    "The registry defines 90 agents."
+                    if not bad
+                    else "ATC >90% and a $65B market. Seed ask $500K. Trusted by Fortune 500 firms. "
+                    + "Lorem " * 60
+                )
+                text(
+                    s,
+                    0.6,
+                    1.5,
+                    8.8,
+                    1.0,
+                    body,
+                    14,
+                    "070A40" if not bad else "00FF00",
+                    font="Arial" if not bad else "Calibri",
+                )
         prs.save(str(path))
 
     good, bad = tmp / "good.pptx", tmp / "bad.pptx"
@@ -1025,11 +1267,26 @@ forbidden_patterns:
         for i in range(1, 14):
             p = tmp / "renders" / f"slide-{i}.png"
             Image.new("RGB", (800, 600), (255, 255, 255)).save(p)
-            ev.append({"path": f"renders/slide-{i}.png", "sha256": hashlib.sha256(p.read_bytes()).hexdigest()})
-        v = {"schema_version": 1, "verdict": "APPROVE", "generated_by": "selftest",
-             "artifact": {"path": deck.name, "sha256": hashlib.sha256(deck.read_bytes()).hexdigest()},
-             "checks": [{"pass": k, "result": "PASS"} for k in ("visual", "brand", "ux", "accessibility", "content")],
-             "evidence": ev}
+            ev.append(
+                {
+                    "path": f"renders/slide-{i}.png",
+                    "sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
+                }
+            )
+        v = {
+            "schema_version": 1,
+            "verdict": "APPROVE",
+            "generated_by": "selftest",
+            "artifact": {
+                "path": deck.name,
+                "sha256": hashlib.sha256(deck.read_bytes()).hexdigest(),
+            },
+            "checks": [
+                {"pass": k, "result": "PASS"}
+                for k in ("visual", "brand", "ux", "accessibility", "content")
+            ],
+            "evidence": ev,
+        }
         deck.with_suffix(".qa-verdict.json").write_text(json.dumps(v))
 
     verdict_for(good)
@@ -1051,15 +1308,39 @@ forbidden_patterns:
     rc_skip = main([str(good), "--skip-qa"] + base)
 
     expect_ids = {"V02", "V03", "V04", "V05", "V06", "V07", "V08", "V09", "V10", "V12"}
-    expect_text = ["off-palette", "tagline spelled", "unsourced number '$500k'", "quote NOT FOUND",
-                   "claim 'tam' is shown but its status is 'placeholder'", "not byte-identical", "alt text is a filename",
-                   "navy 0.15in left rail missing", "forbidden text", "slide count 12"]
-    ok = (rc_good == 0 and rc_bad == 1 and rc_stale == 1 and rc_skip == 2 and expect_ids <= failed
-          and all(t in blob for t in expect_text))
+    expect_text = [
+        "off-palette",
+        "tagline spelled",
+        "unsourced number '$500k'",
+        "quote NOT FOUND",
+        "claim 'tam' is shown but its status is 'placeholder'",
+        "not byte-identical",
+        "alt text is a filename",
+        "navy 0.15in left rail missing",
+        "forbidden text",
+        "slide count 12",
+    ]
+    ok = (
+        rc_good == 0
+        and rc_bad == 1
+        and rc_stale == 1
+        and rc_skip == 2
+        and expect_ids <= failed
+        and all(t in blob for t in expect_text)
+    )
     print("\nSELF-TEST:", "PASS" if ok else "FAIL")
     if not ok:
-        print("  rc:", rc_good, rc_bad, rc_stale, rc_skip, "| missing ids:", sorted(expect_ids - failed),
-              "| missing text:", [t for t in expect_text if t not in blob])
+        print(
+            "  rc:",
+            rc_good,
+            rc_bad,
+            rc_stale,
+            rc_skip,
+            "| missing ids:",
+            sorted(expect_ids - failed),
+            "| missing text:",
+            [t for t in expect_text if t not in blob],
+        )
     return 0 if ok else 1
 
 
