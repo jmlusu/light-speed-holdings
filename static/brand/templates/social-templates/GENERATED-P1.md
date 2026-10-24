@@ -61,9 +61,7 @@ slot.
 - **Thread header**: red THREAD indicator bar; part counter top-right;
   subtitle y computed from the *actual* wrapped title height (16px rhythm for
   both 1- and 2-line titles).
-- **Logos**: canonical `brand/logos/**` resolved first, then the
-  `static/brand/logos/**` mirror (same pattern as `generate-social-assets.py`).
-  Icon logo on navy surfaces; full logo on the white stat card.
+- **Logos**: canonical `brand/logo/**` (new logo system; legacy suite archived). Icon logo on navy surfaces; full logo on the white stat card.
 - No emojis in on-image copy (brand rule).
 
 ## QA results (final)

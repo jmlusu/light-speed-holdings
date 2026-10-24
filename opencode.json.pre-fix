@@ -1,0 +1,103 @@
+{
+  "$schema": "https://opencode.ai/config.schema.json",
+  "smallModel": "opencode/gpt-5.1-codex",
+  "plugin": [
+    "@omniroute/opencode-plugin"
+  ],
+  "mcp": {
+    "resend": {
+      "type": "remote",
+      "url": "https://mcp.resend.com/mcp",
+      "enabled": true
+    },
+    "open-design": {
+      "type": "local",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\apps\\daemon\\dist\\cli.js",
+        "mcp",
+        "--daemon-url",
+        "http://127.0.0.1:7456"
+      ],
+      "enabled": true,
+      "environment": {
+        "OD_DATA_DIR": "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\.od"
+      }
+    }
+  },
+  "provider": {
+    "omniroute": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "OmniRoute",
+      "options": {
+        "baseURL": "http://127.0.0.1:20128/v1"
+      }
+    },
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1"
+      },
+      "models": {
+        "llama3.2:latest": {
+          "name": "Llama 3.2 (Local)",
+          "limit": { "context": 131072, "output": 8192 }
+        },
+        "llama3.1-8b-32k:latest": {
+          "name": "Llama 3.1 8B 32K (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "qwen2.5-coder-7b-32k:latest": {
+          "name": "Qwen 2.5 Coder 7B 32K (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "deepseek-r1-64k:latest": {
+          "name": "DeepSeek R1 64K (Local)",
+          "limit": { "context": 8192, "output": 16384 }
+        },
+        "deepseek-r1:7b": {
+          "name": "DeepSeek R1 7B (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "gemma4-12b-32k:latest": {
+          "name": "Gemma 4 12B 32K (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "mistral-7b-32k:latest": {
+          "name": "Mistral 7B 32K (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        }
+      }
+    },
+    "llamacpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:8088/v1"
+      },
+      "models": {
+        "llama3.1-8b-32k": {
+          "name": "Llama 3.1 8B (llama.cpp)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "qwen2.5-coder-7b-32k": {
+          "name": "Qwen 2.5 Coder 7B (llama.cpp)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "deepseek-r1-64k": {
+          "name": "DeepSeek R1 64K (llama.cpp)",
+          "limit": { "context": 8192, "output": 16384 }
+        },
+        "gemma2-9b-q5": {
+          "name": "Gemma 2 9B Q5 (llama.cpp)",
+          "limit": { "context": 8192, "output": 8192 }
+        },
+        "mistral-7b-32k": {
+          "name": "Mistral 7B (llama.cpp)",
+          "limit": { "context": 16384, "output": 8192 }
+        }
+      }
+    }
+  }
+}

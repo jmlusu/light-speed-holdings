@@ -41,7 +41,7 @@ The brand system is well-defined and machine-readable. The only gap is that Phas
   - `github-profile.png`
   - `avatar-1024.png`
   - `facebook-cover-3.svg`, `facebook-cover-3.pdf`
-- **`static/brand/templates/generate-social-assets.py`** — Pillow-based Python generator. Produces LinkedIn (400x400 profile, 1584x396 banner), Twitter/X (400x400 profile, 1500x500 header), GitHub (400x400), and general avatar (1024x1024). Uses correct brand colors. The script reads from `static/brand/logos/` and writes to `static/brand/social/`.
+- **`static/brand/templates/generate-social-assets.py`** — Pillow-based Python generator. Produces LinkedIn (400x400 profile, 1584x396 banner), Twitter/X (400x400 profile, 1500x500 header), GitHub (400x400), and general avatar (1024x1024). Uses correct brand colors. The script reads from `brand/logo/` (new logo system) and writes to `static/brand/social/`.
 - **`static/brand/templates/social-templates/TEMPLATE_SPECS.md`** — 281-line detailed specification for 12 social media templates (LinkedIn carousel, video thumbnail, Reels/Shorts cover, quote card, stat card, thread header, lower-third, hook card, end-screen CTA, YouTube chapter marker, Facebook Group cover, email newsletter header). Includes exact dimensions, color assignments per brand tokens, typography scale, layout structure, and quality checklist.
 - **`static/brand/templates/`** — Also contains `pitch-deck.pptx`, `board-meeting.pptx`, `one-pager.html`, `investor-update-email.html`, `email-signature.html` — all branded templates.
 
