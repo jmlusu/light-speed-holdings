@@ -610,7 +610,7 @@ Required variants (canonical filenames in `brand/logo/`):
 3. **Never** use a different logo per page — one system, chosen variant only
 4. On-surface only from the palette: white on navy/red/dark imagery; navy on white/mist
 5. **™** appears at first mention per `brand/tokens.md` checklist
-6. Source logos from `brand/logo/` (fallback: `brand/logos/` official suite per `brand/CANONICAL_SOURCES.md`) — never redraw
+6. Source logos from `brand/logo/` — never redraw (the legacy `brand/logos/` suite is archived; see `brand/CANONICAL_SOURCES.md`)
 
 ---
 

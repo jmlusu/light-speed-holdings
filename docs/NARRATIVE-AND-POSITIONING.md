@@ -65,7 +65,7 @@ ASPIRE. ACT. ACHIEVE.
 
 ### 3.6 Logo Usage
 
-- Always use official vector assets from `static/brand/logos/fulllogo/vector/print.svg` (print) or transparent PNGs for digital (logo-usage rules, brand-guidelines.md §64-70).
+- Always use official vector assets from `brand/logo/logo-full.svg` (print) or the transparent PNG variants for digital (logo-usage rules, brand-guidelines.md §3).
 - Never recreate, stretch, rotate, or distort the logo.
 - Never change logo colors or introduce new colors without a recorded brand decision.
 - Clear space: maintain 1× "L" height on all sides of the emblem (clear-space rule, brand-guidelines.md §67).

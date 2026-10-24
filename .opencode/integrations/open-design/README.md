@@ -166,7 +166,7 @@ open-design create --model claude-sonnet-4.5 --prompt "Design a SADC landing pag
 ## Brand Compliance Checklist
 
 - [ ] Colors resolve to `brand-tokens.json` values only
-- [ ] Logo is an official asset (path under `brand/logos/`)
+- [ ] Logo is an official asset (path under `brand/logo/`)
 - [ ] Type sizes are on the brand scale
 - [ ] Spacing follows the 4px base scale
 - [ ] Template used where one exists

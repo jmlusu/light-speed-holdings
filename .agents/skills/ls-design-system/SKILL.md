@@ -28,7 +28,7 @@ pick it up.
 | Brand tokens (CSS) | `brand/tokens/brand-tokens.css` | **canonical-only — not mirrored** (deleted 2026-10-13; loaded once via `src/index.css`) |
 | Brand guidelines (this system) | `brand/guidelines/brand-guidelines.md` | `static/brand/guidelines/brand-guidelines.md` |
 | Quick reference | `brand/CANONICAL_SOURCES.md` | `static/brand/BRAND_GUIDELINES.md` |
-| Logo suite | `brand/logos/**` | `static/brand/logos/**` |
+| Logo system | `brand/logo/**` | `static/brand/logo/**` |
 | Print masters | `brand/print/**` | `static/brand/print/**` |
 | Digital/social covers | `brand/digital/**` | `static/brand/digital/**` |
 | Pre-built templates | `static/brand/templates/**` | mirror-only (no canonical) |
@@ -65,7 +65,7 @@ pick it up.
 
 ## Logo Rules (Never Break)
 
-1. **Never recreate the logo** — always use official files in `brand/logos/` (canonical; mirrors at `static/brand/logos/`).
+1. **Never recreate the logo** — always use official files in `brand/logo/` (canonical; mirrors at `static/brand/logo/` and `public/brand/logo/`).
 2. Never stretch, rotate, distort, or recolor the logo.
 3. Clear space = 1× "L" height on all sides.
 4. Vector (SVG/PDF/EPS) for print; transparent PNG on dark backgrounds.
@@ -107,7 +107,7 @@ The CEO Dashboard (`src/ai_company/dashboard/`) uses the J.A.R.V.I.S. theme with
 ## On-Brand Confidence Check
 
 - [ ] Colors resolve to `brand-tokens.json` values only
-- [ ] Logo is an official asset (path under `brand/logos/`)
+- [ ] Logo is an official asset (path under `brand/logo/`)
 - [ ] Type sizes are on the brand scale
 - [ ] Spacing follows the 4px base scale
 - [ ] Template used where one exists

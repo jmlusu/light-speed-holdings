@@ -90,21 +90,24 @@ Every rendered `<img>` or media container **must** carry these attributes for QA
 
 ## 3. Sourcing Rules — Where Assets Come From
 
-### 3.1 Canonical Brand Files (6 Core Assets)
+### 3.1 Canonical Brand Logo System (8 Variants)
 
-**Source:** `brand/logos/fulllogo/`, `brand/logos/icononly/`, `brand/logos/grayscale/`, `brand/logos/textonly/`
-**Mirror (read-only at runtime):** `public/brand/logos/**` (served at `/brand/logos/...`)
+**Source:** `brand/logo/` (SVG + PNG per variant)
+**Mirror (read-only at runtime):** `public/brand/logo/**` (served at `/brand/logo/...`)
+> The legacy `brand/logos/` suite (fulllogo/icononly/textonly/grayscale) is **archived** at `.archive/legacy-logo-suite-2026-10-23/`. Do not reference it.
 
 | Asset | Canonical Path | Runtime Path | Use Case |
 |-------|----------------|--------------|----------|
-| Full Logo (Primary) | `brand/logos/fulllogo/Logo3_transparent.svg` | `/brand/logos/fulllogo/Logo3_transparent.svg` | Headers, covers, hero brand-mark |
-| Full Logo (No Buffer) | `brand/logos/fulllogo/Logo3_transparent_nobuffer.svg` | `/brand/logos/fulllogo/Logo3_transparent_nobuffer.svg` | Tight layouts |
-| Icon Only | `brand/logos/icononly/icononly_transparent.svg` | `/brand/logos/icononly/icononly_transparent.svg` | Avatars, favicons, thumbnails |
-| Icon Only (No Buffer) | `brand/logos/icononly/icononly_transparent_nobuffer.svg` | `/brand/logos/icononly/icononly_transparent_nobuffer.svg` | Tight layouts |
-| Text Only | `brand/logos/textonly/textonly_transparent.svg` | `/brand/logos/textonly/textonly_transparent.svg` | When icon already present |
-| Grayscale | `brand/logos/grayscale/grayscale_transparent.svg` | `/brand/logos/grayscale/grayscale_transparent.svg` | B&W print, legal docs |
+| Full Logo (light bg) | `brand/logo/logo-full.png` / `.svg` | `/brand/logo/logo-full.*` | Headers, covers, hero brand-mark (light backgrounds) |
+| Full Logo (dark bg) | `brand/logo/logo-light-bg.png` / `.svg` | `/brand/logo/logo-light-bg.*` | Navy/dark backgrounds, overlays |
+| Full Logo (darker bg) | `brand/logo/logo-dark-bg.png` / `.svg` | `/brand/logo/logo-dark-bg.*` | Darker textured backgrounds |
+| Mark | `brand/logo/logo-mark.png` / `.svg` | `/brand/logo/logo-mark.*` | Bare speed-mark where wordmark present |
+| Mark (mono) | `brand/logo/logo-mark-mono.png` / `.svg` | `/brand/logo/logo-mark-mono.*` | Single-colour / one-colour print |
+| Avatar | `brand/logo/logo-avatar.png` / `.svg` | `/brand/logo/logo-avatar.*` | Square crops, social avatars |
+| Favicon | `brand/logo/logo-favicon.png` / `.svg` | `/brand/logo/logo-favicon.*` | Browser tabs, favicons |
+| Open Graph | `brand/logo/logo-og.png` / `.svg` | `/brand/logo/logo-og.*` | 1200×630 social/OG share cards |
 
-**Rule:** Never recreate, resize, or recolor logos in code. Use official SVG assets. Minimum screen sizes: Full logo 120px wide, Icon only 32px wide (per `brand-tokens.json`).
+**Rule:** Never recreate, resize, or recolor logos in code. Use official SVG assets. Select variant by background (light `logo-full` / dark `logo-light-bg`). Minimum screen sizes: Full logo 120px wide, Icon/Mark 32px wide (per `brand-tokens.json`).
 
 ### 3.2 Fresh Playwright Screenshots (`screenshot` kind)
 
@@ -410,7 +413,7 @@ return (
 - [ ] Ensure `alt` quality per §2.3
 
 ### Pipeline
-- [ ] Run `pwsh scripts/build/sync-brand.ps1` — verify `public/brand/logos/**` populated
+- [ ] Run `pwsh scripts/build/sync-brand.ps1` — verify `public/brand/logo/**` populated
 - [ ] Generate Playwright screenshots for all 7 pages at 3 viewports
 - [ ] Generate/commission illustrations for hero slots
 - [ ] Configure `VITE_CONTENT_MEDIA_ENABLED` in Cloudflare Pages (staging → prod)

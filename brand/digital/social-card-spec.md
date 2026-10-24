@@ -23,7 +23,7 @@
 
 ### 1.3 Logo Usage
 - **Primary logo variant for social cards**: **Icon-only logo** — **MANDATORY**
-  - Source: `static/brand/logos/icononly/icononly.png` (canonical); mirror at `static/brand/logos/icononly/`
+  - Source: `brand/logo/logo-favicon.png` or `brand/logo/logo-mark.png` (canonical; mirrors at `static/brand/logo/`)
   - Clear space: 1× "L" height on all sides (per brand guidelines §4)
   - Minimum display width: 40 px at 1200×630 canvas scale
   - Position: top-left, aligned to 4px grid, 32 px margin from top and left edges
@@ -82,7 +82,7 @@
 - [ ] Red `#E63946` used as accent only (~10% coverage)
 - [ ] Cyan `#00BFFF` used as accent only (~10% coverage)
 - [ ] White `#FFFFFF` used for text on navy background
-- [ ] Icon-only logo from `static/brand/logos/icononly/` (never recreated)
+- [ ] Icon-only logo from `brand/logo/` (never recreated)
 - [ ] Clear space respected (1× "L" height on all sides)
 - [ ] Arial type scale used exclusively
 - [ ] Type sizes from brand scale only (no invented sizes)
@@ -108,7 +108,7 @@
 
 ### 2.2 Color Treatment
 - All favicon assets use **navy `#070A40`** as primary color
-- **Icon-only logo** from `static/brand/logos/icononly/` scaled and cropped to each size
+- **Icon-only logo** from `brand/logo/` scaled and cropped to each size
 - No red or cyan coloring at these sizes (details lose clarity below 32 px)
 - If any color is visible at 16 px, limit to navy only for maximum recognizability
 - Transparent background where supported (all listed formats)
@@ -131,7 +131,7 @@
 
 ### 2.3 Brand Compliance Checklist (favicon)
 - [ ] All favicon assets use navy `#070A40` as primary color
-- [ ] Icon-only logo from `static/brand/logos/icononly/` is the visual element
+- [ ] Icon-only logo from `brand/logo/` is the visual element
 - [ ] No off-palette colors (red/cyan excluded at small sizes for clarity)
 - [ ] Transparent background where format supports it
 - [ ] All five asset types listed above are present
@@ -172,7 +172,7 @@ See `ls-artifact-qa` skill for full five-pass checklist. Key highlights for this
 
 ### Brand QA
 - [ ] Palette: navy #070A40 / red #E63946 / cyan #00BFFF / white ONLY
-- [ ] Logo: official icon-only from `static/brand/logos/icononly/`
+- [ ] Logo: official icon-only from `brand/logo/`
 - [ ] Type: Arial scale only, sizes from brand palette
 - [ ] "LightSpeed Holdings Limited™" on first mention with ™
 - [ ] Tagline "ASPIRE. ACT. ACHIEVE." exact spelling

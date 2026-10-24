@@ -1,0 +1,250 @@
+# docs/claims.yaml - the ONLY place a number may come from.
+# Rule: if a figure is on a slide (or in speaker notes) it must match a `display` string below
+# AND that claim must be status: verified with a source verify-deck.py can check.
+#
+# Seeded from the figures found in the first generated deck. Everything starts UNVERIFIED so the
+# gate fails until a human decides each one is real. Copy display strings from:
+#     markitdown deck.pptx
+schema_version: 1
+
+claims:
+  # --- derived from a script run: needs a human to confirm before it can be used --------------
+  - id: agents-total
+    display: ["90 agents"]
+    statement: "Number of agents defined in company-registry.yaml."
+    type: count
+    status: unverified          # promote to verified once confirmed (see template at bottom)
+    source:
+      kind: command
+      command: "python scripts/maintenance/company_counts.py"
+      recorded_output: "agents: 90"
+      recorded_on: "2026-10-23"
+    notes: "Recorded from the generation session; not re-run by the gate. A human must confirm."
+
+  - id: departments-total
+    display: ["20 departments"]
+    statement: "Number of departments defined in company-registry.yaml."
+    type: count
+    status: unverified
+    source:
+      kind: command
+      command: "python scripts/maintenance/company_counts.py"
+      recorded_output: "departments: 20"
+      recorded_on: "2026-10-23"
+    notes: "Recorded from the generation session; not re-run by the gate. A human must confirm."
+
+  # --- the misattribution seen in the session ------------------------------------------------
+  # AGENTS.md says company-registry.yaml holds the ATC / velocity / capital-efficiency KPIs, but the
+  # registry text the agent read contained no such figures. Find the REAL source or delete the claim.
+  - id: atc-rate
+    display: ["ATC >90%"]
+    statement: "Agent task completion rate across pilot workflows."
+    type: percentage
+    status: unverified
+    notes: "No source located. Do not show on slides until a source file + exact quote exist."
+
+  # --- template-script inherited figures (not backed by spec or registry) --------------------
+  - id: tam-65b
+    display: ["$65B"]
+    type: market-size
+    status: placeholder
+    notes: "Came from generate-pitch-deck.py template. Needs a cited market report (kind: document)."
+
+  - id: sam-12b
+    display: ["$12B"]
+    type: market-size
+    status: placeholder
+    notes: "Came from generate-pitch-deck.py template. Needs a cited market report (kind: document)."
+
+  - id: som-120m
+    display: ["$120M"]
+    type: market-size
+    status: placeholder
+    notes: "Came from generate-pitch-deck.py template. Needs a cited market report (kind: document)."
+
+  - id: price-starter
+    display: ["$49/mo"]
+    type: price
+    status: placeholder
+    notes: "Pricing is a decision; attest it or remove it."
+
+  - id: price-pro
+    display: ["$149/mo"]
+    type: price
+    status: placeholder
+    notes: "Pricing is a decision; attest it or remove it."
+
+  - id: price-enterprise
+    display: ["$299/mo"]
+    type: price
+    status: placeholder
+    notes: "Pricing is a decision; attest it or remove it."
+
+  - id: seed-ask
+    display: ["$500K"]
+    type: currency
+    status: placeholder
+    notes: "A business decision, not a fact: record it in the decision register and use kind: attestation."
+
+  - id: capital-efficiency-3-5x
+    display: ["3–5×"]
+    type: multiple
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: capital-efficiency-3x
+    display: ["3×"]
+    type: multiple
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: capital-efficiency-4-2x
+    display: ["4.2×"]
+    type: multiple
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: velocity-mvp-60d
+    display: ["<60d"]
+    type: duration
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: velocity-mvp-45d
+    display: ["<45d"]
+    type: duration
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: correction-ratio
+    display: ["8 per 1,000"]
+    type: count
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: offer-lines-pilot
+    display: ["3 offer lines"]
+    type: count
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: priced-products
+    display: ["8"]
+    type: count
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: design-partners
+    display: ["5+"]
+    type: count
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: arr-120k
+    display: ["$120K"]
+    type: currency
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: arr-600k
+    display: ["$600K"]
+    type: currency
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: gross-margin-70
+    display: ["70%+"]
+    type: percentage
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: llm-cost-15
+    display: ["~15%"]
+    type: percentage
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: cac-payback-6m
+    display: ["< 6 months"]
+    type: duration
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: pilot-clients-15
+    display: ["15+"]
+    type: count
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: enterprise-clients-50
+    display: ["50+"]
+    type: count
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: spinout-companies-3
+    display: ["3 spinout companies"]
+    type: count
+    status: placeholder
+    notes: "Came from template. Needs a cited source or attestation."
+
+  - id: agents-90-departments-20
+    display: ["90 agents across 20 departments"]
+    type: count
+    status: unverified
+    notes: "Derived from agents-total and departments-total. Use structural if this is just a layout constant."
+
+  - id: exec-breakdown
+    display: ["Executive: 5, Technology: 13, AI Research: 7 (+6 Pharos), Operations: 6, Security: 7, Marketing: 9, Board: 7"]
+    type: count
+    status: placeholder
+    notes: "Detailed department breakdown. Needs a cited source or attestation."
+
+# Layout / spec constants that are not factual claims. Every entry needs a reason a reviewer can check.
+structural:
+  - display: "90-day"
+    reason: "Roadmap horizon label on slide 10; not a measurable KPI."
+    slides: [10]
+  - display: "6-MONTH"
+    reason: "Roadmap horizon label on slide 10; not a measurable KPI."
+    slides: [10]
+  - display: "1-YEAR"
+    reason: "Roadmap horizon label on slide 10; not a measurable KPI."
+    slides: [10]
+  - display: "5-tier"
+    reason: "Approval matrix tier count defined in architecture docs."
+    slides: [4, 8, 9, 10]
+  - display: "5-tier approval matrix"
+    reason: "Approval matrix tier count defined in architecture docs."
+    slides: [4, 8, 9, 10]
+  - display: "canonical 7 tools"
+    reason: "Tool vocabulary defined in AGENTS.md §8."
+    slides: [8]
+  - display: "SOC 2"
+    reason: "Security compliance standard name referenced on slide 11."
+    slides: [11]
+  - display: "GDPR"
+    reason: "Data protection regulation name referenced on slide 11."
+    slides: [11]
+
+forbidden_patterns:
+  - pattern: "Fortune\\s*\\d+"
+    reason: "Client-tier claims need a verified, publishable reference first."
+  - pattern: "\\btestimonial\\b"
+    reason: "No testimonials without written consent on file."
+
+# ---- templates: copy, fill, and set status: verified ONLY after checking the source yourself -----
+# - id: example-file-claim
+#   display: ["20 departments"]
+#   type: count
+#   status: verified
+#   verified_on: 2026-10-23
+#   verified_by: ci:claims-check            # mechanical: the quote is grepped in the file
+#   source: {kind: file, path: company-registry.yaml, quote: "departments: 20"}
+#
+# - id: example-attestation
+#   display: ["$500K"]
+#   status: verified
+#   verified_on: 2026-10-23
+#   verified_by: human:jack.mlusu           # agents cannot self-verify this source type
+#   source: {kind: attestation, attested_by: "human:jack.mlusu", record: "decision-register D-0xx"}

@@ -23,7 +23,6 @@ digital masters.
 | Mirror path | Purpose | Sync source |
 |-------------|---------|-------------|
 | `static/brand/logo/**` | New logo system, runtime builds | `brand/logo/**` |
-| `static/brand/logos/**` | Runtime builds, image imports (legacy) | `brand/logos/**` |
 | `static/brand/print/**` | Print asset copies | `brand/print/**` |
 | `static/brand/guidelines/**` | Guideline copies | `brand/guidelines/**` |
 | `static/brand/digital/**` | Digital asset copies | `brand/digital/**` |
@@ -43,7 +42,7 @@ Mirror-only content that has no canonical source (kept in mirrors):
 | Design tokens (JSON) | `brand/tokens/brand-tokens.json` | Full palette, type scale, spacing, logo specs. Canonical-only — **not mirrored** (loaded once via `src/index.css`). |
 | Design tokens (CSS) | `brand/tokens/brand-tokens.css` | Web/runtime variables. Canonical-only — **not mirrored**. |
 | Brand guidelines | `brand/guidelines/brand-guidelines.md` | Human-readable system |
-| Logo suite (legacy, deprecated) | `brand/logos/fulllogo/**`, `brand/logos/icononly/**`, `brand/logos/grayscale/**`, `brand/logos/textonly/**` | Official legacy files only; kept until site references migrate to `brand/logo/`. Never recreate. |
+| Logo suite (legacy, **archived 2026-10-23**) | `.archive/legacy-logo-suite-2026-10-23/{canonical,static-mirror,public-mirror}/**` | Former `brand/logos/` + `static|public/brand/logos/` suites. Retired — do not reference in live artifacts. |
 | Archived logo explorations | `.archive/brand/logos/**` | Style explorations (Glassmorphism, Skeuomorphism, Analog Nostalgia, icononly experiments) removed from `brand/logos/` + mirrors on 2026-10-05. Historical only. |
 | Print masters | `brand/print/**` | Letterheads, business cards, signatures |
 | Digital/social covers | `brand/digital/**` | SVG/PDF masters |
@@ -59,8 +58,8 @@ pwsh scripts/build/sync-brand.ps1 -Prune   # delete mirror-only files in sync di
 pwsh scripts/build/sync-brand.ps1 -Verify  # hash-compare mirrors vs canonical (exit 1 on drift)
 ```
 
-Sync dirs: `logo`, `guidelines`, `logos`, `print`, `digital`.
-(`tokens` removed from sync dirs 2026-10-13 — do not re-create `public|static/brand/tokens/`.)
+Sync dirs: `logo`, `guidelines`, `print`, `digital`.
+(`logos` removed from sync dirs 2026-10-23 — legacy suite archived; `tokens` removed 2026-10-13. Do not re-create `public|static/brand/{tokens,logos}/`.)
 
 Run after adding/changing any canonical asset, then verify with
 `git status` that the mirrors picked up the change.
