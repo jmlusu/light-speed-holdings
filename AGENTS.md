@@ -25,7 +25,6 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 | CLI Entry | `src/ai_company/cli/main.py` | Typer app, 37 subcommands registered here |
 | Task System | `src/ai_company/orchestrator/message_bus.py` | JSON-based task queue at `.opencode/inbox.json` |
 | Domain Models | `src/ai_company/models/models.py` | Pydantic models: Executive, Specialist, Department, Company |
-| Known issues | `docs/known-issues.md` | Historical issues, observations, and fixes |
 
 ## 3 Where To Work
 
@@ -111,23 +110,6 @@ Staging dashboard runs on host port **8421** (maps to container 8420; production
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/maintenance/lint-ecl.ps1` |
 
-**Performance gate rules (from auto-evolve 2026-10-21):**
-- Use **median** over warm-up + 20 samples, not P95/P99 over 10 samples (P95 over 10 = maximum).
-- Define **per-endpoint budgets** calibrated at 3-5x headroom from measured medians; endpoints differ by 10x in latency.
-- Keep a **hard ceiling** (e.g., 2000 ms) for pathological cases the original gate caught.
-- Cache invalidation keyed on **file revision (path + mtime + size)**, not TTL — registry written by another process; TTL shows stale data.
-
-**CI gate scope = pre-commit scope:**
-- Pre-commit hooks can be bypassed with `--no-verify`; server-side CI gate must cover all owned directories (not just `src/`/`tests/`).
-- Example: deck tooling in `scripts/presentation/` must be in `Lint (ruff)` job scope.
-
-**Negative control validation required for archive gates:**
-- Test pre-fix artifact to confirm gates catch the defect (e.g., deck-qa: pre-fix deck 2/11 checks failed, 3 render checks failed).
-- Document negative control outcome in `validation_results`.
-
-**Shared constants module > duplicated hardcoded values:**
-- Single source of truth for lockup placement, logo crop box, clear-space invariant prevents stale expectations across generator/verifier/render-gate.
-
 ## 7 Safety Boundaries
 
 - Agents may modify business/application code when the user's task requires it.
@@ -159,13 +141,6 @@ The canonical runtime tool vocabulary for all agent cards (OpenCode v2 permissio
 - `code_interpreter` → **removed** (not an alias; rejected at runtime)
 
 Agent generators must emit only the canonical 7 tools. ToolRunner validates against this list; unknown tools return an error.
-
-**Cache / content-addressing pattern (from auto-evolve 2026-10-21):**
-- Key caches on **content identity (SHA-256)**, not mtime — prevents silent stale-cache failures from backup restore, artifact copy, or build-step timestamp changes.
-- Decouple cache key from artifact identity: cache file name must not leak into artifact (e.g., deck picture description). Set `descr` explicitly after `add_picture`; stable name `ai-venture-studio-lockup-880x713.png`.
-
-**Reject invasive fixes when minimal fix exists (from auto-evolve 2026-10-21):**
-- Vite MIME bug: removed 15 redundant imports (global load via `src/index.css` existed) rather than deleting `public/brand/tokens/`, changing `vite.config`, or path-alias tricks.
 
 ## 9 Governance Rules
 
@@ -316,11 +291,7 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 | Support | `ls-diagramming`, `ls-documentation-engineering`, `ls-visual-storytelling` | Diagram/graphic/doc-IA assets used inside produced artifacts |
 | Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes Playwright visual checks via `ls-artifact-qa` skill (see `.agents/skills/ls-artifact-qa/`) |
 
-**Open Design render layer (`ls-od-*` skills):** For artifacts rendered through the Open Design daemon (prototypes, live artifacts/dashboards, HTML decks, images, HyperFrames video), a nine-skill layer sits under the production skills: `ls-od-runtime`, `ls-od-catalogue`, `ls-od-brand`, `ls-od-project`, `ls-od-prototype`, `ls-od-live-artifact`, `ls-od-deck`, `ls-od-image`, `ls-od-video` (all in `.agents/skills/`). The bindings to 12 existing agents are specified in `specs/open-design-integration.md`; no agents were added (roster baseline unchanged, §9.4). Production skills delegate rendering to the matching `ls-od-*` skill; `ls-artifact-qa` still gates delivery last. Full guide: `docs/OPEN-DESIGN.md`.
-
 **Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.
-
-**Imagery:** AI-generated imagery is permitted for every non-person surface (see `docs/adr/027-ai-generated-imagery-policy.md`). Generated people, faces, figures and avatars are prohibited — human imagery is only real, consented, commissioned photography with a release. Generated rasters are typed `illustration` with `generated: true` and are never `screenshot`; promoters must be vendors allow-listed in `docs/APPROVED-VENDORS.md`, and prompts are subject to the third-party transmission ban in `docs/SKILL_CURATION_POLICY.md`.
 
 ## 15 Evidence, Honesty and Execution Integrity Policy
 
@@ -355,341 +326,58 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 
 ## 16 Known Issues Tracker (Permanent Record)
 
-Moved to `docs/known-issues.md`. Add new entries there; do not remove existing entries without a replacement fix.
+**Purpose:** This section explicitly documents known issues and their fixes to prevent the recurring pattern of documentation being lost. Add new entries below; do not remove existing entries without a replacement fix.
+
+| Issue | Fix | Date Identified | Date Fixed | Status |
+|-------|-----|-----------------|------------|--------|
+| **Dev cold-start probe timeout** — First `npm run dev` request exceeds 15s timeout while Vite optimizes the dependency graph (~1676 modules). Cold start: port binds ~2.5s, first request ~6.3s. | Documented tolerance: automated health checks must retry once after `VITE ready in ...` log line, allow ≥30s timeout. No code change required. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **Port conflict / server startup failure** — Leftover `node.exe` processes bind ports 1440/1441, causing Vite to fall back or fail. | Always kill lingering `node.exe` processes (`taskkill /F /IM node.exe`) before restarting. Verify ports free with `netstat -an | findstr "1440 1441"`. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **Dashboard port conflict (staging)** — Host 8421 held by `athena-frontend-staging` (separate project), staging dashboard published on 8422. | Assigned development port remains 8421 — restore default mapping when Athena no longer needs 8421. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **CEO Dashboard vs Vite/React boundary** — Two independent applications with separate ports, runtimes, and health checks. | Hard port assignment: dashboard production=8420, development=8421. Vite/React uses 1440/1441. Never serve one on the other's port. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
+| **Local/remote main divergence (squash-merge ancestry break)** — Local `main` diverged from `origin/main` after PR #433 squash-merge (`794e793b`): local main had 7 unmerged commits (junk files, ECL fixes, brand collage) whose content landed via squash but whose SHAs did not. `git pull`/`git merge` would have conflicted; `git reset --hard origin/main` required. Junk files (`tmp.txt`, `website-stabilization-mission.md`) landed on main via #430. | After squash-merge: `git fetch && git reset --hard origin/main`. Salvage PR `chore/post-reconciliation-cleanup` removes junk, salvages unique branch content (BUG-*.md, verify-port-bindings.ps1, test_scorers.py, ceo-memo, MISSION.md, Solutions PNG), deletes stale branches. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **Vercel ignoreCommand ENOENT (script stripped by `.vercelignore`)** — PR #449's skip-filter shipped `ignoreCommand: bash scripts/deploy/vercel-ignore-build.sh` but `.vercelignore` excluded the whole `scripts/` tree. Vercel runs `ignoreCommand` inside the filtered working copy → exit 127 ENOENT on every deploy. PR #450's bare `!/scripts/deploy/...` negation was inert (gitignore cannot re-include under an excluded parent dir). | Parent-chain pattern in `.vercelignore` (`/scripts/*`, `!/scripts/deploy/`, `/scripts/deploy/*`, `!/scripts/deploy/vercel-ignore-build.sh`). Guard extended in `scripts/test/check-vercelignore.py` (STATIC_REQUIRED / STATIC_EXCLUDED). Live-verified on `dpl_HxUdMUNLCpGsdSdD4Qv8LUoWVVGi` (#452 merge → BUILD → READY). | 2026-10-12 | 2026-10-13 | ✅ Fixed |
+| **Vercel ignoreCommand exit-code inversion** — Script used Unix intuition (exit 0=build, 1=skip); Vercel contract is **exit 0=skip (CANCELED), exit ≥1=build**. Masked by the ENOENT (exit 127 always builds) until #452's parent-chain fix let the script run; first live run `dpl_EzKiYqykZhC8dJSnc4T9DCgwq2ed` exited 0 with a "building." message and was CANCELED. Vercel KB + Academy call the inversion "the most common mistake." | Flipped all three exit points in `scripts/deploy/vercel-ignore-build.sh` (no-PREV→1, site-changed→1, no-changes→0); corrected `docs/DEPLOYMENT.md` §7. Local 3-path verification + live production proof: build on #452 merge, skip (CANCELED) on #453 docs-only merge (`2e7c9512`). Safe default under `set -euo pipefail` remains "build." | 2026-10-13 | 2026-10-13 | ✅ Fixed |
+
+**Rules for this section:**
+- Entries are tracked by date and status; do not delete without replacement
+- New issues must be added as new rows, not appended to existing entries
+- Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
+- Before removing any entry, a replacement fix must be documented
 
 ## 17 Tool Usage Issues (Session Records)
 
-Moved to `docs/tool-usage-issues.md`. Add new entries there; do not remove existing entries without a replacement fix.
+| Issue | Fix | Date Identified | Date Fixed | Status |
+|-------|-----|-----------------|------------|--------|
+| **PowerShell Select-Object validation** — `$input | Select-Object -First $n` fails with "Cannot validate argument on parameter 'First'. The -30 argument is less than the minimum allowed range 0". PowerShell 5.1 does not accept negative numbers for `-First`/`-Last` parameters. | Use positive numbers only, or avoid `-First`/`-Last` and pipe through other means. | 2026-10-11 | 🟡 In Progress |
+| **PowerShell `&&` token not valid separator** — `cd "path" && command` fails in PowerShell 5.1 with "The token '&&' is not a valid statement separator in this version". Known limitation, not a bug; this row merges the duplicate "(manual test)" entry, which listed the same issue with a contradictory status. | Run commands separately, or use `pwsh -Command "cd 'path'; & command"`. | 2026-10-11 | 2026-10-12 | ⚠️ Workaround |
+| **Git cherry-pick stuck in conflict state** — Cherry-pick of commit `3d37314c` (logo v2) got stuck showing "all conflicts fixed: run git cherry-pick --continue" but wouldn't complete. | Use `git cherry-pick --continue` after ensuring all conflict resolutions are staged, or abort and use merge instead. | 2026-10-11 | 🟡 In Progress |
+| **Git merge conflicts in FloatingNav.tsx** — PR #431 merge blocked due to FloatingNav.tsx TS1128 error from merge conflict resolution. The governance overlay section was placed outside the `return (` statement during conflict resolution. | Manually restructure JSX to put governance section inside return, then merge the fix branch into main. | 2026-10-11 | ✅ Fixed |
+| **TypeScript check failures after file edits** — After editing FloatingNav.tsx, `npx tsc --noEmit` kept failing on same lines due to duplicate governance sections (unused `governanceOverlay` variable + governance outside return). | Remove unused variables entirely, ensure single governance section inside return statement. | 2026-10-11 | ✅ Fixed |
+| **Bash/PowerShell command execution issues** — Multiple bash tool calls had syntax issues with PowerShell heredocs, line continuations, and string quoting due to different quoting rules between Windows PowerShell 5.1 and bash/cmd. | Use `pwsh -Command` with proper escaping, or break complex commands into simpler steps with careful quoting. | 2026-10-11 | ⚠️ Workaround |
+| **PowerShell `$(...)` expands inside double-quoted `--jq` arguments** — `gh pr view --jq "state=$(.state)"` fails with `(.state) was not recognized` because PowerShell evaluates `$(...)` before `gh` receives the string. Recurred in-session 2026-10-12, so the fix is now a standing directive, not a one-off note. Single-quoting is not sufficient by itself: PS 5.1 does not escape embedded double quotes when building native command lines, so a `--jq` expression containing string literals gets split into multiple arguments (`accepts at most 1 arg(s), received 2`). | **Directive:** write multi-statement PowerShell — or any one-liner containing `$(...)`, `$vars`, or nested quoting — to a temp `.ps1` file and run it with `powershell -File <path>.ps1`. When staying inline, single-quote `gh --jq` expressions (`gh pr view --jq '.state'`) so PowerShell never expands them; keep `--jq` expressions single-field with no string literals, and for expressions that need literals use a `.ps1` file. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **INDEX.json EOL-only phantom diff after reindex** — `harness-change.ps1` `Get-IndexJson` used PS 5.1 `ConvertTo-Json`, which emits CRLF, while `.gitattributes` forces `eol=lf` for `harness/changes/INDEX.json`. After every `reindex`, `git status` shows ` M harness/changes/INDEX.json` with an empty `git diff`. | Fixed at source: `Get-IndexJson` now normalizes `` `r`n `` → `` `n `` before `Write-Text`. `lint-ecl.ps1` unaffected (semantic compare). Until merged, restore with `git checkout -- harness/changes/INDEX.json`. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **Windows `Filename too long` deleting git worktrees** — `git worktree remove` fails (rc 255) on worktrees with deep `node_modules` paths exceeding MAX_PATH 260. | Set `git config --global core.longpaths true` (Git for Windows native fix, one-time). Non-git fallback: `cmd /c rmdir /S /Q "<path>"`. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **INDEX.json unsorted after reindex (sort no-op)** — `Sort-Object id` on the entry list does not sort `[ordered]` hashtables in Windows PowerShell 5.1 (keys resolve unordered), so reindex emitted parking→archive enumeration order while the committed index is globally id-sorted; every reindex produced a full-file diff. | Changed to `Sort-Object { $_.id }` (script-block form sorts OrderedDictionary correctly; verified side-by-side). Complements BUG-93e21736a (Get-ChildItem Name sort within each location). | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+| **`gh pr merge` run from a temp worktree** — branch cleanup (`--delete-branch`) is scoped to the checkout that runs the merge, so the main repo keeps a stale local branch while the worktree branch state diverges from origin after squash-merge. | **Directive:** run `gh pr merge` from the main repo directory (`C:\Users\jmlus\light-speed-holdings`), never from a temp worktree; then delete the remote branch explicitly with `git push origin --delete <branch>` and prune local leftovers with `git fetch --prune` from the main checkout. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
+
+**Rules for this section:**
+- Entries are tracked by date and status; do not delete without replacement
+- New issues must be added as new rows, not appended to existing entries
+- Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
+- Before removing any entry, a replacement fix must be documented
 
 ## Deck Generation Navigation
 
-Moved to `docs/deck-generation.md`. Leading word: generate. One source of truth: company-registry.yaml.
+Pointer: static/brand/templates/generate-pitch-deck.py --- Adapted script that converts ai_venture_studio_client_presentation.md (Part 5) into a 13-slide PPTX using brand tokens from brand/tokens/.
 
-# PowerShell Environment Rules (CRITICAL)
+Branches (trigger reaching):
+- ai_venture_studio_client_presentation.md is present and complete ---> run uv run python static/brand/templates/generate-pitch-deck.py
+- Presentation spec ai_venture_studio_client_presentation_deck_spec.md needs review first ---> read spec, verify slide count (13), then run script
+- Brand compliance check brand/guidelines/brand-guidelines.md Sec. 9 must pass ---> verify navy rail, color palette, type scale before delivery
+- CTO validation: PORTFOLIO D (Consumer Platforms) must appear in Slide 4 ---> confirmed via company-registry.yaml agent roles
 
-The `bash` tool runs **PowerShell 5.1**, NOT bash or CMD. Follow these rules strictly.
+Leading word: generate --- when this word is invoked in a prompt, the agent reaches the pointer and the three resources above.
 
-## NEVER USE THESE PATTERNS:
+One source of truth: company-registry.yaml --- agent roles and KPIs (ATC >90%, velocity <60d, correction ratio, 3x capital efficiency) are the single source of truth; the deck references these but the registry is authoritative.
 
-### Command Chaining
-- ❌ `command1 && command2` → ✅ Use separate tool calls
-- ❌ `command1 || command2` → ✅ Use separate tool calls or `if` statements
-- ❌ `cd /path && ls` → ✅ Use separate `bash` calls for each command
-
-### Unix/Unix-like Syntax
-- ❌ `2>/dev/null` → ✅ Use `2>$null` or omit error suppression
-- ❌ `ls -la`, `ls -l`, `ls -a` → ✅ Use `dir` or `Get-ChildItem` without flags
-- ❌ `head -20`, `tail -20` → ✅ Use `Select-Object -First 20` or `Select-Object -Last 20`
-- ❌ `grep pattern` → ✅ Use `Select-String -Pattern "pattern"`
-- ❌ `find . -name "*.py"` → ✅ Use `Get-ChildItem -Recurse -Filter "*.py"` or the `glob` tool
-- ❌ `cat file.txt` → ✅ Use `Get-Content file.txt` or `type file.txt`
-- ❌ `echo $VAR` → ✅ Use `echo $env:VAR` or `Write-Output $env:VAR`
-
-### CMD Syntax
-- ❌ `if exist file (command)` → ✅ Use `if (Test-Path file) { command }`
-- ❌ `for %f in (*.py) do command` → ✅ Use `foreach ($f in Get-ChildItem *.py) { command }`
-- ❌ `dir /b /s` → ✅ Use `Get-ChildItem -Recurse` or the `glob` tool
-
-### Path Formats
-- ❌ `/c/Users/username/...` (Git Bash style) → ✅ Use `C:\Users\username\...`
-- ❌ `C:/Users/username/...` → ✅ Use `C:\Users\username\...`
-
-## ALWAYS USE:
-
-### For File Operations
-- ✅ Use the `read` tool to read file contents
-- ✅ Use the `glob` tool to find files by pattern
-- ✅ Use `dir` or `Get-ChildItem` to list directory contents
-
-### For Command Execution
-- ✅ Single command per `bash` tool call (no chaining)
-- ✅ `dir` instead of `ls` (without Unix flags)
-- ✅ `Get-Content` or `type` instead of `cat`
-- ✅ `Get-ChildItem -Recurse` instead of `find`
-- ✅ `Select-String` instead of `grep`
-- ✅ `Select-Object -First N` instead of `head -N`
-- ✅ `2>$null` instead of `2>/dev/null`
-
-### For Error Handling
-- ✅ Let errors surface naturally (don't suppress with `2>/dev/null`)
-- ✅ Use `try/catch` blocks for complex error handling
-- ✅ Check `$LASTEXITCODE` for command success
-
-## Examples:
-
-### ❌ BAD (will fail):
-```powershell
-cd /c/Users/jmlus/project && git status
-ollama --version 2>/dev/null || echo "not found"
-ls -la src/ | head -20
-find . -name "*.py" -type f 2>/dev/null
-if exist .env (type .env) else (echo "no .env")
-```
-
-### ✅ GOOD:
-- Call `bash` with command `git status` (the tool already handles `workdir`).
-- Use the `glob` tool with pattern `**/*.py` instead of `find . -name "*.py" | head -20`.
-- Call `bash` with `ollama --version`. If it fails, read the error output.
-
-## If you MUST chain commands or use modern PowerShell syntax
-
-Explicitly invoke PowerShell 7:
-- `pwsh -Command "Get-ChildItem -Recurse -Filter '*.py' | Select-Object -First 20"`
-
-## Python Execution in PowerShell 5.1
-
-When testing Python code, verifying imports, or running scripts, **NEVER chain commands with `&&` or `||`**. PowerShell 5.1 throws a Parser Error and aborts the task.
-
-### ❌ NEVER DO THIS:
-- `python -c "import sys" && echo "Success"`
-- `python test.py || echo "Failed"`
-- `cd src && python main.py`
-
-### ✅ ALWAYS DO THIS INSTEAD:
-
-**Option 1: Single, standalone Python command (best for quick checks)**
-
-Run the Python command by itself. If it fails, the tool returns the Python traceback — all the feedback you need. Do not append success messages.
-```powershell
-python -c "import os; print(os.getenv('EVAL_LLM_PROVIDER'))"
-```
-
-**Option 2: The "Write then Execute" pattern (for anything multi-step)**
-
-1. Use the `write` tool to create a check script:
-   ```python
-   import os
-   from dotenv import load_dotenv
-   load_dotenv()
-   try:
-       from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
-       print("Import successful. EVAL_LLM_PROVIDER is:", os.getenv("EVAL_LLM_PROVIDER"))
-   except ImportError as e:
-       print("Import failed:", e)
-   ```
-2. Run it with a single `bash` call: `python .tmp/test_gemini.py`
-3. Read the clean output.
-
-This gives the agent a safe, deterministic escape hatch: it no longer has to guess how to chain commands, because it has a sanctioned step-by-step procedure guaranteed to work in PowerShell 5.1.
-
-# 🧠 CRITICAL: CONTEXT OPTIMIZATION & STATE MANAGEMENT
-
-To prevent context bloat, preserve cache hits, and avoid infinite retry loops, you MUST adhere to the following context management rules:
-
-## 1. The "Two-Strike" Rule for Tool Failures
-- If a tool call fails **twice** with the same type of error (e.g., PowerShell Parser Error, File Not Found), you MUST STOP trying variations of that command.
-- **Action:** Immediately pivot to a fundamentally different tool (e.g., if `bash` fails twice, switch to `glob` or `read`). Do not attempt a 3rd variation of the same broken pattern.
-
-## 2. The Discovery Hierarchy (Strict Order of Operations)
-When looking for information, you MUST use tools in this exact order of preference. Do not skip to `bash` unless explicitly required.
-1. **`glob`**: For finding files by pattern (e.g., `**/llm/**/*.py`).
-2. **`read`**: For reading file contents OR listing directory contents (passing a directory path to `read` returns a clean, token-efficient list of entries).
-3. **`bash`**: ONLY for single, atomic, verified commands (e.g., `git log --oneline -5`, `ollama --version`). NEVER for file discovery.
-
-## 3. No Broad Directory Dumps
-- ❌ NEVER run `dir`, `ls`, or `find` without highly specific filters.
-- ✅ ALWAYS use `glob` with precise patterns (e.g., `**/*provider*.py`) or pass the specific directory path to the `read` tool to get a clean, truncated entry list.
-
-## 4. Maintain a "Running Findings" State
-Before making a new tool call, briefly summarize what you **already know** in your `<reasoning>` block.
-- Example: *"Known: Ollama is running on 11434, .env has Gemini key, src/ai_company/llm/providers only contains __pycache__. Next step: Check git history for deleted provider files."*
-- This compresses historical context into a dense, token-efficient summary, preventing you from re-exploring dead ends.
-
-## 5. Leverage `todowrite` as Memory Anchors
-- Use the `todowrite` tool not just for planning, but to explicitly mark discoveries as `completed`.
-- Checking off a todo acts as a strong attention anchor for the LLM, signaling "this path is exhausted, move on."
-
-## 6. Truncate Verbose Outputs
-- If a tool returns a massive output (e.g., a 500-line directory listing), do not paste it back into your reasoning. Summarize it: *"Found 42 Python files, primarily in src/ai_company/archify/."*
-
-# TOOL SELECTION PRIORITY (Follow this order strictly)
-
-## File Operations:
-1. **Reading files**: Use `read` tool (NEVER bash `cat`/`type`)
-2. **Finding files**: Use `glob` tool with specific patterns (NEVER bash `find`/`dir /s`)
-3. **Listing directories**: Use `read` tool on directory path (NEVER bash `ls`/`dir`)
-4. **Searching content**: Use `grep` tool if available, otherwise `read` + manual scan
-
-## System Operations:
-1. **Git commands**: Single command only (NO chaining with &&)
-2. **Version checks**: Single command only (e.g., `ollama --version`)
-3. **Process checks**: Use `tasklist | findstr "name"` (single pipeline only)
-4. **Port checks**: Use `netstat -an | findstr "port"` (single pipeline only)
-
-## NEVER USE bash for:
-- File discovery (use `glob`)
-- File reading (use `read`)
-- Directory listing (use `read` on directory)
-- Complex multi-step operations (break into separate tool calls)
-
-# STATE MANAGEMENT (Prevent redundant exploration)
-
-Before making ANY tool call, briefly state in your reasoning:
-- "Known: [what you've already discovered]"
-- "Unknown: [what you need to find]"
-- "Next: [specific action to take]"
-
-Example:
-"Known: Ollama is running on 11434, .env has Gemini key, src/ai_company/llm/providers exists but is empty.
-Unknown: Where are the actual provider implementations?
-Next: Check git history for deleted provider files."
-
-This prevents:
-- Re-reading the same directory multiple times
-- Re-running the same failed commands
-- Losing track of what you've already verified
-
-# PATH HANDLING (Critical for Windows)
-
-## Path Format Rules:
-- NEVER use `/c/Users/...` (Git Bash style) in bash commands
-- ALWAYS use `C:\Users\...` or relative paths
-- When using `read`/`glob` tools, paths may show as `C:\c\Users\...` - this is a display artifact, use the actual path
-
-## Working Directory:
-- The bash tool's `workdir` parameter handles path conversion
-- You do NOT need to `cd` before running commands
-- If you must change directories, use a separate bash call: `cd C:\path`
-
-## Common Mistakes to Avoid:
-❌ `ls /c/Users/jmlus/project`
-✅ `dir C:\Users\jmlus\project` or just `dir` (if workdir is set)
-
-❌ `cat /c/Users/jmlus/project/.env`
-✅ Use `read` tool with path `/c/Users/jmlus/project/.env`
-
-# VERIFICATION PROTOCOL (Prevent silent failures)
-
-After EVERY significant action, verify it worked:
-
-## File Edits:
-1. Use `edit` tool to make change
-2. Immediately use `read` tool to verify the change
-3. Only proceed if verification succeeds
-
-## File Creation:
-1. Use `write` tool to create file
-2. Use `read` tool to verify content
-3. Only proceed if file exists and has correct content
-
-## Command Execution:
-1. Run the command
-2. Check exit code (0 = success)
-3. If non-zero, diagnose before retrying (don't just retry the same command)
-
-## Example:
-❌ BAD: Edit file → immediately move to next task
-✅ GOOD: Edit file → read file to verify → move to next task
-
-# RETRY BUDGET (Prevent infinite loops)
-
-## Maximum Retries:
-- Same command with same syntax: **1 retry** (then change approach)
-- Same command with different syntax: **2 retries** (then switch tools)
-- Same tool with different parameters: **3 retries** (then escalate)
-
-## Escalation Protocol:
-After exhausting retries:
-1. STOP trying the same approach
-2. State clearly: "Tool X failed Y times with error Z"
-3. Switch to a fundamentally different tool or method
-4. If all methods fail, report the limitation and move on
-
-## Example:
-❌ BAD: Try `find` → fails → try `find` with different flags → fails → try `find` again
-✅ GOOD: Try `find` → fails → try `glob` tool → succeeds or report limitation
-
-# TASK DECOMPOSITION (For complex requests)
-
-When given a complex task, break it into atomic steps:
-
-1. **Discovery Phase**: Use `read`/`glob` to understand current state
-2. **Planning Phase**: Use `todowrite` to create checklist
-3. **Execution Phase**: One atomic operation per tool call
-4. **Verification Phase**: Verify each step before proceeding
-5. **Summary Phase**: Report what was done and what remains
-
-## Atomic Operations:
-- Read ONE file
-- Search ONE pattern
-- Edit ONE file
-- Run ONE command
-- Verify ONE change
-
-## Never Combine:
-❌ "Read file and edit it"
-✅ "Read file" → "Edit file" → "Verify edit"
-
-# OUTPUT COMPRESSION (Prevent context bloat)
-
-## When Tool Returns Large Output:
-1. Do NOT paste entire output into reasoning
-2. Summarize key findings in 2-3 sentences
-3. Extract only relevant data points
-4. Reference the full output location if needed
-
-## Examples:
-❌ BAD: "The directory listing shows: [500 lines of files]"
-✅ GOOD: "Found 42 Python files, primarily in src/ai_company/archify/ (3 files) and src/ai_company/llm/ (empty except __pycache__)"
-
-❌ BAD: "The git log shows: [100 commits]"
-✅ GOOD: "Recent commits show: 4f0a4e08 reverted to Ollama, fa4a4c29 added HTTP provider, 4d39675c deleted evals/"
-
-# EARLY EXIT (Know when to stop investigating)
-
-Stop investigating a path when:
-1. **Directory is empty** (only __pycache__) → move to next directory
-2. **File doesn't exist** → check git history or report missing
-3. **Command fails 3 times** → report limitation and move on
-4. **Pattern not found** → try broader pattern or report absence
-5. **Tool consistently fails** → switch to alternative tool
-
-## Red Flags (Stop and Report):
-- "File not found" after checking multiple paths
-- "Directory empty" after checking subdirectories
-- "Command not recognized" after trying alternatives
-- "Permission denied" after verifying paths
-
-## Action:
-State clearly: "Investigation of X yielded no results because Y. Moving to Z."
-
-# TOOL CALL STRATEGY
-
-## Use Parallel Calls (multiple tools in one response) when:
-- Tasks are independent (no dependencies)
-- You're gathering initial information
-- You're verifying multiple unrelated items
-
-Example:
-✅ Read .env, Read models.yaml, Read client.py (all independent)
-
-## Use Sequential Calls (one tool at a time) when:
-- Each step depends on the previous result
-- You're debugging an error
-- You're making edits that need verification
-
-Example:
-✅ Read file → Edit file → Verify edit (each depends on previous)
-
-## Never Mix:
-❌ Read file A, Edit file B, Read file C (editing requires verification first)
-# ENVIRONMENT DETECTION (First 3 tool calls)
-
-At the start of any session, quickly establish:
-
-1. **Shell Type**: Run `echo $PSVersionTable` or `$PSVersionTable.PSVersion`
-   - If PowerShell 5.1: Apply strict syntax rules
-   - If PowerShell 7+: Can use && and ||
-
-2. **Working Directory**: Run `pwd` or `$PWD`
-   - Confirm you're in the right repository
-
-3. **Available Tools**: Check for key tools
-   - `git --version`
-   - `python --version` or `py --version`
-   - `ollama --version` (if relevant)
-
-## Adapt Based on Environment:
-- PowerShell 5.1: Use only single commands, no chaining
-- PowerShell 7+: Can use modern syntax
-- Missing tools: Report and work around limitations
+Cut identity: The brand tokens (navy #070A40, red #E63946, cyan #00BFFF) and compliance checklist (Sec. 9) are also defined in brand/tokens/brand-tokens.json and brand/guidelines/brand-guidelines.md; this pointer directs to the primary references only.

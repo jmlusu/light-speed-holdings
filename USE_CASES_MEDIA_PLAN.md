@@ -18,7 +18,7 @@ Based on `docs/directives/WEBSITE TRANSFORMATION & REPOSITORY CONSOLIDATION DIRE
 - Colors: navy `#070A40` as primary surface/card background; cyan `#00BFFF` for accent lines/links; red `#DC3641` for primary CTA emphasis
 - Typography: Arial 700 for headline, Arial 400 for body; type scale respected (36/32/28/24/18/16/14/13/12 pt)
 - Spacing: 4px base unit; vertical rhythm ≥64px between sections; 12-col grid, 24px gutter, 48px margin, max-width 1200px
-- Logo: official asset imported from `brand/logos/`; `™` on first mention
+- Logo: official asset imported from `brand/logo/`; `™` on first mention
 - No AI slop: real content only, no fake testimonial photos, no dense card walls, contrast ≥4.5:1
 
 **Technical Requirements:**

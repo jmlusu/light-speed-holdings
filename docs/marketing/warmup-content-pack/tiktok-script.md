@@ -24,7 +24,7 @@
 
 - Spoken word count ≈ 80 (fits 30s at natural pace; record a dry run and trim to
   the second).
-- Use the official icon-only logo (`brand/logos/icononly/icononly_transparent.png`
+- Use the official icon-only logo (`brand/logo/logo-mark.png` or `brand/logo/logo-favicon.png`
   or `static/brand/social/avatar-1024.png` mirror) on the end card; navy
   background, red accent, cyan line per `brand/tokens/brand-tokens.json`.
 - When #314 template output lands, use the generated TikTok visual; until then

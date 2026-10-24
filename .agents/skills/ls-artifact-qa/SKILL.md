@@ -36,7 +36,7 @@ Create the inspectable artifact first:
 - [ ] Generated/infographic visuals pass the palette checker (green) before APPROVE — `uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.py <image> --tolerance 3`
 - [ ] Navy dominant (~80%); red/cyan as accents (~10% each)
 - [ ] Type = Arial stack, sizes from the brand scale
-- [ ] Logo = official asset (path under `brand/logos/` canonical or `static/brand/logos/` mirror), never recreated, clear space respected
+- [ ] Logo = official asset (path under `brand/logo/` canonical or `static/brand/logo/` mirror), never recreated, clear space respected
 - [ ] Tagline correct: "ASPIRE. ACT. ACHIEVE."
 - [ ] `™` on first mention: "LightSpeed Holdings Limited™"
 - [ ] Branded template used where one exists

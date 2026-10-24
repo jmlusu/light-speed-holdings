@@ -35,30 +35,22 @@
 
 ## 3. Logo Usage
 
+**Canonical location: `brand/logo/`** (8 variants, each in SVG + PNG; runtime mirrors at `static/brand/logo/` and `public/brand/logo/`). The logo artwork uses its own palette distinct from the UI tokens (navy `#02062F`, speed gradient `#01AFFD`→`#01DFFD`, red `#FD0231`–`#FD315D`) — this is an approved exception (ADR-027). Select the variant by background:
+
 ### Variants
-| Variant | File | Use For |
-|---------|------|---------|
-| Full Logo (Primary) | `static/brand/logos/fulllogo/fulllogo.png` | Headers, covers, presentations |
-| Full Logo (Transparent) | `static/brand/logos/fulllogo/fulllogo_transparent.png` | Dark backgrounds, overlays |
-| Full Logo (No Buffer) | `static/brand/logos/fulllogo/fulllogo_nobuffer.png` | Tight layouts, no padding |
-| Full Logo (No Buffer, Transparent) | `static/brand/logos/fulllogo/fulllogo_transparent_nobuffer.png` | Dark backgrounds, tight layouts |
-| Full Logo (Legacy) | `static/brand/logos/fulllogo/fulllogo_legacy.png` | Previous primary logo |
-| Full Logo Variant 2 | `static/brand/logos/fulllogo/Logo2.png` | Alternative layout, presentations |
-| Full Logo Variant 2 (Transparent) | `static/brand/logos/fulllogo/Logo2_transparent.svg` | Dark backgrounds, overlays |
-| Full Logo Variant 3 | `static/brand/logos/fulllogo/Logo3.png` | Alternative layout, presentations |
-| Full Logo Variant 3 (Transparent) | `static/brand/logos/fulllogo/Logo3_transparent.svg` | Dark backgrounds, overlays |
-| Icon Only | `static/brand/logos/icononly/icononly.png` | Avatars, favicons, small spaces |
-| Icon Only (No Buffer) | `static/brand/logos/icononly/icononly_nobuffer.png` | Tight layouts |
-| Icon Only (Transparent) | `static/brand/logos/icononly/icononly_transparent.png` | Dark backgrounds |
-| Icon Only (Transparent, No Buffer) | `static/brand/logos/icononly/icononly_transparent_nobuffer.png` | Dark backgrounds, tight layouts |
-| Text Only | `static/brand/logos/textonly/textonly.png` | When icon is already present |
-| Text Only (No Buffer) | `static/brand/logos/textonly/textonly_nobuffer.png` | Tight layouts |
-| Grayscale | `static/brand/logos/grayscale/grayscale.png` | B&W print, legal documents |
-| Grayscale (No Buffer) | `static/brand/logos/grayscale/grayscale_nobuffer.png` | Tight layouts |
-| Grayscale (Transparent) | `static/brand/logos/grayscale/grayscale_transparent.png` | Dark backgrounds |
-| Grayscale (Transparent, No Buffer) | `static/brand/logos/grayscale/grayscale_transparent_nobuffer.png` | Dark backgrounds, tight layouts |
-| Vector (Print) | `static/brand/logos/fulllogo/vector/print.svg` | All print materials |
-| Vector (Transparent) | `static/brand/logos/fulllogo/vector/print_transparent.svg` | Print on colored backgrounds |
+| Variant | File (in `brand/logo/`) | Use For |
+|---------|-------------------------|---------|
+| Full Logo | `logo-full.png` / `logo-full.svg` | Light/white backgrounds — headers, covers, presentations |
+| Full Logo (light bg) | `logo-light-bg.png` / `.svg` | Dark or navy backgrounds — wordmark + tagline tuned for contrast |
+| Full Logo (dark bg) | `logo-dark-bg.png` / `.svg` | Darker textured backgrounds |
+| Mark | `logo-mark.png` / `.svg` | Bare speed-mark where the wordmark is already present |
+| Mark (mono) | `logo-mark-mono.png` / `.svg` | Single-colour contexts, embossing, one-colour print |
+| Avatar | `logo-avatar.png` / `.svg` | Square crops, social avatars, round placements |
+| Favicon | `logo-favicon.png` / `.svg` | Browser tabs, small favicons |
+| Open Graph | `logo-og.png` / `.svg` | 1200×630 social/OG share cards |
+
+### Archived Legacy Suite
+The legacy lighthouse-in-shield suite (`fulllogo`, `icononly`, `textonly`, `grayscale`) is **retired** and lives only in `.archive/legacy-logo-suite-2026-10-23/`. Do not reference it in any live artifact. Style explorations are in `.archive/brand/logos/`.
 
 ### Rules
 1. **Never** recreate the logo — always use official assets.

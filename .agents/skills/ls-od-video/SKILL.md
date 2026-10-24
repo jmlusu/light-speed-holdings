@@ -117,7 +117,7 @@ including the cyan-on-dark and pure-white cautions:
 - White text on navy; navy on light; white on red; navy on cyan. Never white
   on cyan. Body copy is 16px/1.5, max about 72ch; secondary text is `#6B7280`.
   Use red only for short emphasis.
-- Use the official lighthouse-in-shield logo from `brand/logos/` with clear
+- Use the official LightSpeed speed-mark logo from `brand/logo/` (e.g. `logo-light-bg.png` on dark, `logo-full.png` on light) with clear
   space equal to the "L" height. Never distort, recolor, or place it on busy
   imagery. Add `™` on the first mention of "LightSpeed Holdings Limited".
 - Charts use navy axes, cyan for the primary series, and red for the single

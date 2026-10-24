@@ -6,7 +6,16 @@
     "tagline": "ASPIRE. ACT. ACHIEVE.",
     "trademarkDomain": "LightSpeed Holdings Limited\u2122",
     "logo": {
-      "symbol": "Lighthouse/shield emblem with signal waves",
+      "symbol": "LightSpeed speed-mark (LS) with gradient sweep",
+      "canonicalLocation": "brand/logo/ (8 variants, SVG + PNG; mirrors at static/brand/logo/ and public/brand/logo/)",
+      "artworkPalette": {
+        "note": "Logo artwork uses its own palette, distinct from UI tokens (ADR-027 exception).",
+        "background": "#02062F",
+        "gradientStart": "#01AFFD",
+        "gradientEnd": "#01DFFD",
+        "redStart": "#FD0231",
+        "redEnd": "#FD315D"
+      },
       "clearSpace": "1x height of the 'L' in 'LIGHTSPEED' on all sides",
       "minimumSizes": {
         "fullLogoPrint": "30mm wide",

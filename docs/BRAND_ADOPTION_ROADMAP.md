@@ -94,7 +94,7 @@ This roadmap tracks the organization-wide adoption of official LightSpeed Holdin
 | 4.1 | Create `brand/` directory at repo root (canonical source of truth) | ✅ Done | Engineering | — |
 | 4.2 | Create `brand/guidelines/brand-guidelines.md` (full document) | ✅ Done | Brand Strategist | 2.9, 2.10 |
 | 4.3 | Create `brand/tokens/brand-tokens.json` (design tokens) | ✅ Done | Product Designer | 2.9 |
-| 4.4 | Import brand assets to `brand/logos/`, `brand/print/`, etc. | ✅ Done | Engineering | 4.1 |
+| 4.4 | Import brand assets to `brand/logo/`, `brand/print/`, etc. | ✅ Done | Engineering | 4.1 |
 | 4.5 | Create symlink from `static/brand/` → `brand/` (or copy in CI) | ✅ Done (copy, #309) | DevOps | 4.1, 4.4 |
 | 4.6 | Update Marketing SOP to reference `brand/` paths | ✅ Done (#309) | CMO | 4.1 |
 | 4.7 | Create press kit ZIP with all brand assets | 🔲 TODO | IR Lead | 4.4 |
@@ -140,7 +140,7 @@ This roadmap tracks the organization-wide adoption of official LightSpeed Holdin
 
 ## Asset Inventory
 
-### Logos (`static/brand/logos/`)
+### Logos (`static/brand/logo/`)
 | Variant | Files | Primary Use |
 |---------|-------|-------------|
 | Full Logo | 6 raster + 6 vector | Headers, covers, presentations |

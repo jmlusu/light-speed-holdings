@@ -84,8 +84,7 @@ slot.
   after rendering — visually identical (every blend is an average of two
   tokens) and the gate reports 100% on-palette. Only the email header applies
   this pass; the larger P2/P3 canvases stay under tolerance natively.
-- **Logos**: canonical `brand/logos/**` resolved first, then the
-  `static/brand/logos/**` mirror. Icon logo on the lower-third + hook card;
+- **Logos**: canonical `brand/logo/**` (new logo system; legacy suite archived). Icon/mark logo on the lower-third + hook card;
   full logo on end-screen CTA / FB group cover / email header. New `_paste_logo`
   positions: `center-right` (lower-third, vertically centered) and `center`
   (bottom-center end-screen logo).

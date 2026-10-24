@@ -89,7 +89,7 @@ uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.
 # do NOT import '../../brand/tokens/brand-tokens.css' in components/pages;
 # in dev Vite serves that path from public/ as raw text/css and the import
 # fails with a MIME error, preventing React from mounting.
-# Import logos from '../../brand/logos/fulllogo/fulllogo.png' (canonical)
+# Import logos from '../../brand/logo/logo-full.png' (canonical)
 # Build & test:
 bun run build
 bun run lint
@@ -104,7 +104,7 @@ node .agents/skills/ls-artifact-qa/scripts/visual_check.js
 
 ### All Assets
 - [ ] Palette: only `#070A40`, `#E63946`, `#00BFFF`, `#F2F2F2`, `#FFFFFF`, `#6B7280`, `#9CA3AF`
-- [ ] Logo: official asset from `brand/logos/`, clear space = 1× "L" height
+- [ ] Logo: official asset from `brand/logo/`, clear space = 1× "L" height
 - [ ] Typography: Arial 700/400 only, sizes from brand scale
 - [ ] Spacing: 4px base grid (4/8/12/16/24/32/48/64/96)
 - [ ] Contrast: ≥ 4.5:1 for all text
