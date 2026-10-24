@@ -12,6 +12,7 @@ from pathlib import Path
 
 from pptx import Presentation
 from pptx.dml.color import RGBColor
+from pptx.enum.dml import MSO_FILL
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
@@ -36,6 +37,11 @@ LIGHT_TEXT = RGBColor(0x9C, 0xA3, 0xAF)
 # Canonical logo (brand/** is the single source of truth; legacy static/brand/logos
 # suite was archived 2026-10-23 — see brand/CANONICAL_SOURCES.md)
 OFFICIAL_LOGO = REPO_ROOT / "brand" / "logo" / "logo-light-bg.png"
+
+# Draft status. docs/claims.yaml has no verified claims, so no figure on this deck
+# is sourced. The deck must stay visibly marked until that changes.
+DRAFT_NOTICE = "INTERNAL DRAFT — NOT FOR EXTERNAL DISTRIBUTION"
+DRAFT_MONTH = "October 2026"
 
 
 def set_slide_bg(slide, color):
@@ -182,7 +188,7 @@ def create_title_slide(prs):
         Inches(4.65),
         Inches(8),
         Inches(0.5),
-        "Confidential — August 2026",
+        "INTERNAL DRAFT — {month}".format(month=DRAFT_MONTH),
         font_size=12,
         color=LIGHT_TEXT,
         alignment=PP_ALIGN.CENTER,
@@ -867,6 +873,52 @@ def create_thank_you_slide(prs):
     )
 
 
+def _slide_bg_rgb(slide):
+    """Return the slide's solid background colour, or None when not explicitly set."""
+    try:
+        fill = slide.background.fill
+        if fill.type is not None and fill.type == MSO_FILL.SOLID:
+            return fill.fore_color.rgb
+    except (AttributeError, ValueError, TypeError):
+        return None
+    return None
+
+
+def mark_internal_draft(prs):
+    """Stamp every slide as an internal draft and record that in document metadata.
+
+    Generated here rather than hand-added so the marking survives regeneration and
+    cannot be forgotten. The deck has no verified figures (docs/claims.yaml), so it
+    must never be mistaken for an investor-ready document.
+    """
+    for slide in prs.slides:
+        bg = _slide_bg_rgb(slide)
+        on_dark = bg is not None and bg != WHITE
+        add_text_box(
+            slide,
+            Inches(0.5),
+            Inches(7.12),
+            Inches(9.0),
+            Inches(0.3),
+            DRAFT_NOTICE,
+            font_size=12,
+            bold=True,
+            color=CYAN if on_dark else NAVY,
+            alignment=PP_ALIGN.RIGHT,
+        )
+
+    props = prs.core_properties
+    props.title = "LightSpeed Holdings — INTERNAL DRAFT pitch deck"
+    props.subject = "Internal draft. Not for external distribution."
+    props.category = "Internal draft"
+    props.keywords = "internal draft; not for external distribution; unverified figures"
+    props.comments = (
+        "DRAFT ONLY. Figures are unsourced and unverified (docs/claims.yaml has no "
+        "verified claims). Do not send to investors until verify-deck.py exits 0 "
+        "with an APPROVE QA verdict."
+    )
+
+
 def main():
     prs = Presentation()
     prs.slide_width = Inches(10)
@@ -910,6 +962,9 @@ def main():
     create_financials_slide(prs)
     create_the_ask_slide(prs)
     create_thank_you_slide(prs)
+
+    # Every slide must carry the draft notice; see module constants.
+    mark_internal_draft(prs)
 
     # Save
     output_path = os.path.join(os.path.dirname(__file__), "..", "templates", "pitch-deck.pptx")
