@@ -171,3 +171,62 @@ in `vite.config.ts`). The retry workflow (§5) is unaffected — it only re-runs
 deployments whose `readyState` is `ERROR`, and skipped builds never reach that state.
 
 <!-- skip-filter verification marker 2026-10-13 -->
+
+## Security headers
+
+Every route gets the same header set from the catch-all rule (`"source": "/(.*)"`) in
+[`vercel.json`](../vercel.json). [`src/__tests__/security-headers.test.ts`](../src/__tests__/security-headers.test.ts)
+parses that file and fails on a missing header, a changed value, a duplicate header key or
+CSP directive, or a CSP origin outside `'self'`, `data:`, and the Turnstile host.
+
+| Header | Value | Enforcement status |
+|--------|-------|--------------------|
+| `X-Content-Type-Options` | `nosniff` | Enforced (browser honours) |
+| `X-Frame-Options` | `SAMEORIGIN` | Enforced (browser honours) |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Enforced (browser honours) |
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | Enforced (browser honours); `preload` has no effect until the domain is accepted onto the HSTS preload list, which has not been requested |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=(), display-capture=(), hid=(), serial=(), bluetooth=(), idle-detection=(), accelerometer=(), gyroscope=(), magnetometer=()` | Enforced (browser honours) |
+| `Cross-Origin-Opener-Policy` | `same-origin` | Enforced (browser honours) |
+| `X-DNS-Prefetch-Control` | `off` | Enforced (browser honours) |
+| `Content-Security-Policy-Report-Only` | `default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://challenges.cloudflare.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; upgrade-insecure-requests` | **Report-only — blocks nothing** |
+
+### Why the CSP is `Report-Only`
+
+The contact form depends on Cloudflare Turnstile. A wrong `script-src` breaks the widget
+silently: the challenge never renders, the form cannot be submitted, and nothing in the
+build or the type-checker notices. So the policy ships as
+`Content-Security-Policy-Report-Only`, which reports violations (if a collector existed —
+see below) but **does not block any resource or inline script**. The site's actual protection
+today comes from the enforced headers above, not from this policy.
+
+### How violations are observed (honest scope)
+
+**No report collector exists.** The header has no `report-uri` and no `report-to` directive,
+so no violation reports are sent anywhere or stored. Observation is entirely manual:
+
+1. **Console scan** of `/`, `/contact`, `/use-cases`, and `/ai-company-builder` at 375, 1024,
+   and 1440 px widths, looking for console messages containing `Content Security Policy`.
+2. **Manual DevTools** inspection of the same routes (Console + Network), on production.
+
+Two directives are inert in Report-Only mode: `frame-ancestors` and
+`upgrade-insecure-requests`. Browsers ignore both when the policy is report-only, so a
+violation of either is neither blocked nor reported. Framing is actually prevented by
+`X-Frame-Options: SAMEORIGIN`.
+
+### Known preview noise
+
+On **preview** deployments only, Vercel's preview toolbar (`vercel.live`) violates
+`script-src 'self'` and produces CSP console noise that production does not. It is
+deliberately **not** allowlisted: widening `script-src` for a Vercel-injected preview-only
+script would weaken the production policy. Disregard `vercel.live` reports when scanning
+previews, and confirm the production scan is clean.
+
+### Deferred
+
+- **Enforcement flip** — switching `Content-Security-Policy-Report-Only` to an enforcing
+  `Content-Security-Policy`. Target **2026-11-01**, contingent on a clean observation window
+  on the four routes above (and on Turnstile still working in an enforcing policy).
+- **`style-src-attr` narrowing** — the site sets React inline styles directly (99
+  `style={{ ... }}` occurrences across 15 files under `src/`, plus Framer Motion writing to
+  `element.style` at runtime), so `style-src` keeps `'unsafe-inline'`. Splitting
+  `style-src-attr` (or migrating the inline styles) would let `style-src` drop it.
