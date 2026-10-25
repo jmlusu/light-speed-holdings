@@ -12,7 +12,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ theme, onRequestBriefing }
      * AGENT TEAM NARRATIVE - AboutPage
      * Content fidelity governed by:
      *   - content-writer | company mission, values, and core narrative
-     *   - hr-owner       | 90-agent workforce roster and organizational culture
+     *   - hr-owner       | 90-role workforce roster and organizational culture
      * Last audited: 2026-10-18
      */}
   return (

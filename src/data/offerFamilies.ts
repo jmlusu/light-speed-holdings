@@ -198,7 +198,7 @@ export const OFFER_FAMILIES: CatalogOfferFamily[] = [
     letter: 'E',
     title: 'Platform Licensing',
     tagline: 'Run your own governed AI workforce self-hosted on your infrastructure.',
-    description: 'The same 90-agent orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce — self-hosted, provider-agnostic, and extensible.',
+    description: 'The same 90-role orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce - self-hosted, provider-agnostic, and extensible.',
     honestyBadge: 'Fieldable in 2026',
     targetClients: ['Tech-Savvy Founders', 'Local Tech Agencies', 'Diaspora Entrepreneurs', 'Software Developers'],
     governanceNote: 'No client data handling; product license only. No G1–G4 blocking.',

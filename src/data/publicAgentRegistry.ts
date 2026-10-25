@@ -1,5 +1,5 @@
 /* LightSpeed Holdings — Public Agent Registry
-    Canonical source: company/agent-registry.json (91 agents)
+    Canonical source: company/agent-registry.json (90 agents)
    This file exposes ONLY approved public fields per MASTER_SPEC §28.
    DO NOT expose: prompts, credentials, internal endpoints, private tool config,
    private memory, security controls, internal orchestration instructions. */

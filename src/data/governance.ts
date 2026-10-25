@@ -128,7 +128,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     owner: 'cto',
     source: 'src/data/metrics.ts',
     category: 'scale',
-    evidence: 'liveTestCount verified by uv run pytest --collect-only -q (2026-10-13).',
+    evidence: 'liveTestCount verified by uv run pytest --collect-only -q (2026-10-25).',
     lastReviewed: '2026-09-28',
   },
   {
@@ -146,7 +146,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     source: 'src/data/public-agent-registry.json',
     category: 'scale',
     evidence:
-      '90 approved agents, canonical count from company-registry.yaml (retired counts: 127/144/152/89).',
+      '90 approved roles (89 AI agents + 1 Human CEO), canonical count from company-registry.yaml (retired counts: 127/144/152).',
     lastReviewed: '2026-09-28',
   },
   {
@@ -181,7 +181,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     owner: 'cto',
     source: 'src/data/public-agent-registry.json',
     category: 'scale',
-    evidence: 'Canonical count of 91 agents; every view must consume this registry, not a hard-coded number.',
+    evidence: 'Canonical count of 90 operating roles (89 AI agents + 1 Human CEO); every view must consume this registry, not a hard-coded number.',
     lastReviewed: '2026-09-28',
   },
   {

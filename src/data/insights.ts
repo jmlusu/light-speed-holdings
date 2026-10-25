@@ -19,6 +19,8 @@ export interface InsightArticle {
   readMins: number;
   publishedAt: string; // ISO date
   source: string; // first-party provenance (honesty grounding)
+  /** Dated correction note rendered above the body; body text stays unchanged for the audit trail. */
+  correction?: { date: string; text: string };
   seo?: { title: string; description: string }; // head metadata; title <=~65ch, description <=~155ch
   blocks: InsightBlock[];
   relatedSolutions: string[]; // solution slugs (siteContent.ts `solutions`)
@@ -41,6 +43,7 @@ export const insightArticles: InsightArticle[] = [
     },
     source:
       'docs/Pharos/research-briefs/2026-10-12-open-source-costs.md · docs/Pharos/research-briefs/2026-10-12-africa-open-source-ecosystem.md · pyproject.toml · package-lock.json · src/ai_company/llm/providers/ · src/ai_company/llm/cost_tracker.py · src/ai_company/llm/client.py · docs/adr/004-multi-provider-llm.md · docs/ARCHITECTURE_REMOTE_RUNTIME.md · docs/Pharos/case-study-pipeline.md',
+    correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
         kind: 'p',
@@ -164,6 +167,7 @@ export const insightArticles: InsightArticle[] = [
     },
     source:
       'docs/Pharos/research-briefs/2026-10-12-ai-economics-sadc.md · docs/client-facing/USE-CASE-CATALOG.md · docs/marketing/competitive-landscape.md · content/drafts/faq.md · results/pestel-lightspeed-2026.md · src/data/insights.ts · docs/venture-studio/12-T3-call-scripts.md · docs/Pharos/articles/h-a-o-m-t-g-v-seven-layers.md · docs/Pharos/roadmap.md · docs/Pharos/case-study-pipeline.md',
+    correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
         kind: 'p',
@@ -261,6 +265,7 @@ export const insightArticles: InsightArticle[] = [
     },
     source:
       'src/ai_company/orchestrator/tier_rules.py · src/ai_company/executor/hitl_gate.py · src/ai_company/orchestrator/approval.py · docs/Pharos/pillars/02-5-tier-human-in-the-loop.md · docs/APPROVAL-UX-SPEC.md',
+    correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
         kind: 'p',
@@ -355,6 +360,7 @@ export const insightArticles: InsightArticle[] = [
     },
     source:
       'company-registry.yaml · src/ai_company/orchestrator/tier_rules.py · src/ai_company/orchestrator/approval.py · src/ai_company/orchestrator/message_bus.py · docs/Pharos/pillars/01-built-a-90-agent-company.md · docs/APPROVAL-UX-SPEC.md',
+    correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
         kind: 'p',
@@ -692,6 +698,7 @@ export const insightArticles: InsightArticle[] = [
     },
     source:
       'docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · pillars/01-built-a-90-agent-company.md · company-registry.yaml (91 agents / 20 departments)',
+    correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
         kind: 'p',
@@ -746,6 +753,7 @@ export const insightArticles: InsightArticle[] = [
     },
     source:
       'docs/Pharos/linkedin-series/post-01 (draft-v1, feed-v1) · pillars/01-built-a-90-agent-company.md · docs/client-facing/USE-CASE-CATALOG.md',
+    correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
         kind: 'quote',

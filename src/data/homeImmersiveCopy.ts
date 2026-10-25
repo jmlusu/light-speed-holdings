@@ -21,7 +21,7 @@ export const homeImmersiveCopy: HomeImmersiveCopy = {
   heroTitle: 'The AI-native company builder',
   heroTitleAccent: 'that ships.',
   heroLead:
-    'Agentic AI systems based in Malawi, building for Africa. 91 agents, 20 departments, five-tier human approval.',
+    'Agentic AI systems based in Malawi, building for Africa. 89 AI agents + 1 Human CEO, 20 departments, five-tier human approval.',
   heroCta: CTAS.primary.label,
   chapters: [
     { id: 'haomtgv', num: '01', label: 'HAOMTGV' },

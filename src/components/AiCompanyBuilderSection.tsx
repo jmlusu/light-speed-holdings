@@ -17,7 +17,7 @@ const JOURNEY_STEPS = [
   { num: '01', title: 'Opportunity', desc: 'Identify where AI creates value. Diagnose the gap between current state and AI-native potential.' },
   { num: '02', title: 'Strategy', desc: 'Define the operating model, governance framework, and measurable outcomes for transformation.' },
   { num: '03', title: 'Architecture', desc: 'Design the modular agent topology, data pipelines, and integration points for your stack.' },
-  { num: '04', title: 'Agents', desc: 'Configure role-scoped agents from the 90-agent registry, each with explicit permissions and approval thresholds.' },
+  { num: '04', title: 'Agents', desc: 'Configure role-scoped agents from the 90-role registry, each with explicit permissions and approval thresholds.' },
   { num: '05', title: 'Workflows', desc: 'Orchestrate agent coordination with human-in-the-loop gates, automated where safe and gated where consequential.' },
   { num: '06', title: 'Deployment', desc: 'Ship working systems with append-only audit trails, circuit breakers, and 30 days of included support.' },
   { num: '07', title: 'Governance', desc: 'Establish the five-tier approval matrix, risk classification, and expiry sweeps that make autonomy safe.' },
@@ -28,7 +28,7 @@ const JOURNEY_STEPS = [
 const PRINCIPLES = [
   { title: 'Human-led', desc: 'Every decision has a clear owner. AI augments judgment; it does not replace it.' },
   { title: 'AI-native', desc: 'Systems designed as agentic operating layers from day one, not AI bolted onto legacy software.' },
-  { title: 'Agentic', desc: '90 specialized agents coordinate across 20 departments, each with explicit role definitions.' },
+  { title: 'Agentic', desc: '89 AI agents coordinate across 20 departments, each with explicit role definitions.' },
   { title: 'Governed', desc: 'Five-tier human approval, append-only audit trails, and regional compliance are the architecture.' },
   { title: 'Data-informed', desc: 'Every claim carries its honesty status. We never blur proven vs. planned.' },
   { title: 'Modular', desc: 'Role-scoped agents configured in a registry, each component can be replaced independently.' },
@@ -105,8 +105,8 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
         <SectionHeading
           theme={theme}
           eyebrow="OPERATING MODEL"
-          title="90 Agents, 1 Human CEO"
-          lead="The canonical LightSpeed operating model uses 90 AI agents across 20 departments. Each agent has explicit role definitions, approval thresholds, and five-tier human approval. High-impact decisions require human sign-off."
+          title="89 AI Agents, 1 Human CEO"
+          lead="The canonical LightSpeed operating model is 90 operating roles: 89 AI agents plus one Human CEO, across 20 departments. Each agent has explicit role definitions, approval thresholds, and five-tier human approval. High-impact decisions require human sign-off."
         />
         <div className={`rounded-3xl p-8 sm:p-10 border shadow-xl ${
           isLight ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy' : 'bg-ls-navy border-ls-white/15 text-ls-white'
@@ -121,7 +121,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
             <div className="space-y-4">
               <h4 className="font-display font-bold text-lg">Agent Workforce</h4>
               <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                90 specialized agents across strategy, research, product, operations, governance, content, and finance, each configured with explicit permissions and audit trails.
+                89 AI agents across strategy, research, product, operations, governance, content, and finance, each configured with explicit permissions and audit trails.
               </p>
             </div>
             <div className="space-y-4">

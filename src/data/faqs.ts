@@ -13,7 +13,7 @@ export const faqs: readonly Faq[] = [
     id: 'what-is-acb',
     question: 'What is the AI Company Builder?',
     answer:
-      'A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable; no client-facing deliverable ships without human sign-off.',
+      'A governed multi-agent orchestration platform where 89 AI agents and 1 Human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable; no client-facing deliverable ships without human sign-off.',
   },
   {
     id: 'human-in-the-loop',
