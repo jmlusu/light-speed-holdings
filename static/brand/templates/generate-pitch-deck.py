@@ -1,8 +1,24 @@
 """
 LightSpeed Holdings — Pitch Deck Template Generator
-Creates a 14-slide investor pitch deck using python-pptx.
+Creates an 11-slide investor pitch deck using python-pptx.
 Brand: LightSpeed Holdings Limited | Tagline: Aspire. Act. Achieve.
-Colors: Navy #070A40, Red #DC3641, Cyan #00BFFF, Grey #F2F2F2
+Colors: Navy #070A40, Red #E63946, Cyan #00BFFF, Grey #F2F2F2
+
+Structure (11 slides, down from 13):
+    cover - problem - solution - why now - market - product & business model
+    - traction - competition - team - the ask - risks
+
+Structural decisions:
+  * The agenda slide was removed; it repeated the section list and spent a slide
+    of an investor's attention on navigation.
+  * Product/architecture and business model were merged: both described the same
+    product and neither needed a full slide.
+  * Financials were merged into The Ask, which already duplicated "Use of Funds".
+  * "Why now" and "Risks" were added: the deck had no urgency argument and no
+    statement of what could go wrong.
+  * No business figures appear anywhere. docs/claims.yaml has zero verified
+    claims, so any number here would be unsourced. Numbers land once the CEO
+    settles the open pricing/revenue/ask questions and the claims are verified.
 """
 
 import io
@@ -12,6 +28,7 @@ from pathlib import Path
 
 from pptx import Presentation
 from pptx.dml.color import RGBColor
+from pptx.enum.dml import MSO_FILL
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
@@ -36,6 +53,9 @@ LIGHT_TEXT = RGBColor(0x9C, 0xA3, 0xAF)
 # Canonical logo (brand/** is the single source of truth; legacy static/brand/logos
 # suite was archived 2026-10-23 — see brand/CANONICAL_SOURCES.md)
 OFFICIAL_LOGO = REPO_ROOT / "brand" / "logo" / "logo-light-bg.png"
+
+DRAFT_NOTICE = "INTERNAL DRAFT — NOT FOR EXTERNAL DISTRIBUTION"
+DRAFT_MONTH = "October 2026"
 
 
 def set_slide_bg(slide, color):
@@ -103,6 +123,16 @@ def add_bullet_list(slide, left, top, width, height, items, font_size=12, color=
         p.font.name = "Arial"
         p.space_after = Pt(6)
         p.level = 0
+        # Hanging indents so a wrapped line aligns under its own text instead of
+        # falling back to the left margin (which made sub-points read as new bullets).
+        body = item.lstrip(" ")
+        is_sub = item.startswith("  ")
+        if body.startswith("•"):
+            p._p.get_or_add_pPr().set("marL", str(int(Inches(0.24))))
+            p._p.get_or_add_pPr().set("indent", str(int(-Inches(0.24))))
+        elif is_sub:
+            p._p.get_or_add_pPr().set("marL", str(int(Inches(0.44))))
+            p._p.get_or_add_pPr().set("indent", str(int(-Inches(0.22))))
         # Ensure font properties are set on the run explicitly
         for run in p.runs:
             run.font.size = Pt(font_size)
@@ -111,6 +141,136 @@ def add_bullet_list(slide, left, top, width, height, items, font_size=12, color=
     return txBox
 
 
+def _slide_bg_rgb(slide):
+    """Return the slide's solid background colour, or None when not explicitly set."""
+    try:
+        fill = slide.background.fill
+        if fill.type is not None and fill.type == MSO_FILL.SOLID:
+            return fill.fore_color.rgb
+    except (AttributeError, ValueError, TypeError):
+        return None
+    return None
+
+
+def mark_internal_draft(prs):
+    """Stamp every slide as an internal draft and record that in document metadata.
+
+    Generated here rather than hand-added so the marking survives regeneration and
+    cannot be forgotten. The deck has no verified figures (docs/claims.yaml), so it
+    must never be mistaken for an investor-ready document.
+    """
+    for slide in prs.slides:
+        bg = _slide_bg_rgb(slide)
+        on_dark = bg is not None and bg != WHITE
+        add_text_box(
+            slide,
+            Inches(0.5),
+            Inches(7.12),
+            Inches(9.0),
+            Inches(0.3),
+            DRAFT_NOTICE,
+            font_size=12,
+            bold=True,
+            color=CYAN if on_dark else NAVY,
+            alignment=PP_ALIGN.RIGHT,
+        )
+
+    props = prs.core_properties
+    props.title = "LightSpeed Holdings — INTERNAL DRAFT pitch deck"
+    props.subject = "Internal draft. Not for external distribution."
+    props.category = "Internal draft"
+    props.keywords = "internal draft; not for external distribution; unverified figures"
+    props.comments = (
+        "DRAFT ONLY. Figures are unsourced and unverified (docs/claims.yaml has no "
+        "verified claims). Do not send to investors until verify-deck.py exits 0 "
+        "with an APPROVE QA verdict."
+    )
+
+
+def _section_rail(slide):
+    """Full-height navy rail on the left edge, used by every light content slide."""
+    add_shape(
+        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
+    )
+
+
+def _slide_title(slide, text):
+    add_text_box(
+        slide,
+        Inches(0.5),
+        Inches(0.4),
+        Inches(9),
+        Inches(0.7),
+        text,
+        font_size=28,
+        bold=True,
+        color=NAVY,
+    )
+
+
+def _card_row(slide, cards, top, height=1.85, left=0.8, width=2.75, gap=0.2):
+    """Three side-by-side cards. Used where a bullet list alone would leave the lower
+    half of a slide empty."""
+    for i, (heading, body) in enumerate(cards):
+        x = Inches(left + i * (width + gap))
+        add_shape(
+            slide,
+            MSO_SHAPE.ROUNDED_RECTANGLE,
+            x,
+            Inches(top),
+            Inches(width),
+            Inches(height),
+            fill_color=GREY,
+        )
+        add_text_box(
+            slide,
+            x + Inches(0.2),
+            Inches(top + 0.15),
+            Inches(width - 0.4),
+            Inches(0.35),
+            heading,
+            font_size=14,
+            bold=True,
+            color=NAVY,
+        )
+        add_text_box(
+            slide,
+            x + Inches(0.2),
+            Inches(top + 0.5),
+            Inches(width - 0.4),
+            Inches(height - 0.6),
+            body,
+            font_size=12,
+            color=NAVY,
+        )
+
+
+def _summary_band(slide, top, text, height=1.05, font_size=12):
+    """Full-width closing note. Used where a two-column slide would otherwise trail
+    off into empty space at the bottom."""
+    add_shape(
+        slide,
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(0.55),
+        Inches(top),
+        Inches(8.9),
+        Inches(height),
+        fill_color=GREY,
+    )
+    add_text_box(
+        slide,
+        Inches(0.8),
+        Inches(top + 0.18),
+        Inches(8.4),
+        Inches(height - 0.3),
+        text,
+        font_size=font_size,
+        bold=False,
+        color=NAVY,
+    )
+
+
+# --------------------------------------------------------------------------- 1
 def create_title_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])  # Blank
     set_slide_bg(slide, NAVY)
@@ -136,13 +296,13 @@ def create_title_slide(prs):
     logo._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("name", "Company Logo")
     logo._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("descr", "LightSpeed Holdings logo")
 
-    # Title
+    # Company name — 34pt in a 9.2in box keeps it on one line
     add_text_box(
         slide,
-        Inches(1),
-        Inches(2.55),
-        Inches(8),
-        Inches(1.0),
+        Inches(0.4),
+        Inches(2.7),
+        Inches(9.2),
+        Inches(0.8),
         "LIGHTSPEED HOLDINGS LIMITED™",
         font_size=36,
         bold=True,
@@ -154,9 +314,9 @@ def create_title_slide(prs):
     add_text_box(
         slide,
         Inches(1),
-        Inches(3.65),
+        Inches(3.6),
         Inches(8),
-        Inches(0.6),
+        Inches(0.5),
         "ASPIRE. ACT. ACHIEVE.",
         font_size=18,
         bold=True,
@@ -169,98 +329,50 @@ def create_title_slide(prs):
         slide,
         MSO_SHAPE.RECTANGLE,
         Inches(3.5),
-        Inches(4.35),
+        Inches(4.3),
         Inches(3),
         Inches(0.04),
         fill_color=RED,
     )
 
-    # Subtitle
+    # Draft notice in place of the old, stale "Confidential — August 2026" line
     add_text_box(
         slide,
         Inches(1),
-        Inches(4.65),
+        Inches(4.62),
         Inches(8),
-        Inches(0.5),
-        "Confidential — August 2026",
+        Inches(0.3),
+        "INTERNAL DRAFT — {month}".format(month=DRAFT_MONTH),
         font_size=12,
+        bold=True,
         color=LIGHT_TEXT,
         alignment=PP_ALIGN.CENTER,
     )
 
 
-def create_agenda_slide(prs):
+# --------------------------------------------------------------------------- 2
+def create_problem_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
+    _section_rail(slide)
+    _slide_title(slide, "THE PROBLEM")
 
-    # Section bar
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
-    )
-
-    add_text_box(
-        slide,
-        Inches(0.5),
-        Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "AGENDA",
-        font_size=28,
-        bold=True,
-        color=NAVY,
-    )
-
-    agenda_items = [
-        "1.  The Problem",
-        "2.  Our Solution",
-        "3.  Market Opportunity",
-        "4.  Product & Technology",
-        "5.  Business Model",
-        "6.  Traction & Metrics",
-        "7.  Competitive Landscape",
-        "8.  Team",
-        "9.  Financials",
-        "10. The Ask",
+    problems = [
+        "•  Deploying AI agents at scale means custom integration, monitoring and governance for every one",
+        "•  Existing tools are either too simple (chatbots) or too complex (enterprise ML platforms)",
+        "•  No turnkey way exists to stand up an entire AI-powered organization",
+        "•  Cost tracking, human oversight and multi-provider management are afterthoughts",
+        "•  Governance arrives late, if at all: approvals, audit trails and escalation rules live outside the tooling",
     ]
     add_bullet_list(
         slide,
         Inches(0.8),
-        Inches(1.2),
-        Inches(8),
-        Inches(5.5),
-        agenda_items,
-        font_size=16,
+        Inches(1.35),
+        Inches(8.5),
+        Inches(3.6),
+        problems,
+        font_size=14,
         color=NAVY,
-    )
-
-
-def create_problem_slide(prs):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
-    set_slide_bg(slide, WHITE)
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
-    )
-
-    add_text_box(
-        slide,
-        Inches(0.5),
-        Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "THE PROBLEM",
-        font_size=28,
-        bold=True,
-        color=NAVY,
-    )
-
-    problems = [
-        "•  Organizations struggle to deploy AI agents at scale — each requires custom integration, monitoring, and governance",
-        "•  Existing tools are either too simple (chatbots) or too complex (enterprise ML platforms)",
-        "•  No turnkey solution exists for building an entire AI-powered organization",
-        "•  Cost tracking, human oversight, and multi-provider management are afterthoughts",
-    ]
-    add_bullet_list(
-        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4), problems, font_size=14, color=NAVY
     )
 
     # Pain point callout
@@ -268,17 +380,17 @@ def create_problem_slide(prs):
         slide,
         MSO_SHAPE.ROUNDED_RECTANGLE,
         Inches(1),
-        Inches(5.2),
+        Inches(5.15),
         Inches(8),
-        Inches(1.2),
+        Inches(1.15),
         fill_color=GREY,
     )
     add_text_box(
         slide,
         Inches(1.3),
-        Inches(5.4),
+        Inches(5.35),
         Inches(7.4),
-        Inches(0.9),
+        Inches(0.8),
         '"Building an AI-native company shouldn\'t require a team of ML engineers."',
         font_size=14,
         bold=True,
@@ -287,471 +399,504 @@ def create_problem_slide(prs):
     )
 
 
+# --------------------------------------------------------------------------- 3
 def create_solution_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
-    )
-
-    add_text_box(
-        slide,
-        Inches(0.5),
-        Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "OUR SOLUTION",
-        font_size=28,
-        bold=True,
-        color=NAVY,
-    )
+    _section_rail(slide)
+    _slide_title(slide, "OUR SOLUTION")
 
     add_text_box(
         slide,
         Inches(0.8),
         Inches(1.2),
         Inches(8.5),
-        Inches(0.8),
-        "AI Company Builder — a CLI platform that generates, orchestrates, and manages complete AI agent organizations.",
+        Inches(0.75),
+        "AI Company Builder — a CLI platform that generates, orchestrates and manages "
+        "complete AI agent organizations.",
         font_size=16,
         bold=False,
         color=NAVY,
     )
 
     features = [
-        "✓  Registry-driven: Define agents in YAML, generate OpenCode-compatible markdown files",
-        "✓  Multi-provider LLM routing: OpenAI, Anthropic, DeepSeek, Gemini with automatic fallback",
-        "✓  Built-in cost tracking & budget enforcement per agent",
-        "✓  Human-in-the-loop approval gates for dangerous operations",
+        "✓  Registry-driven: define agents in YAML, generate OpenCode-compatible markdown",
+        "✓  Multi-provider LLM routing — OpenAI, Anthropic, DeepSeek, Gemini — with fallback",
+        "✓  Per-agent cost tracking and budget enforcement",
+        "✓  Human-in-the-loop approval gates for irreversible actions",
         "✓  MessageBus task queue for cross-agent coordination",
-        "✓  Pre-built agent roles across multiple departments",
+        "✓  Pre-built agent roles across every department",
     ]
     add_bullet_list(
         slide,
         Inches(0.8),
         Inches(2.2),
         Inches(8.5),
-        Inches(4.5),
+        Inches(2.0),
         features,
         font_size=13,
         color=NAVY,
     )
 
+    # How it works in practice: define -> generate -> run. Three boxes use the lower
+    # half of the slide instead of leaving it blank.
+    steps = [
+        (
+            "1.  Define",
+            "One YAML registry lists every role, tool and permission the organization is "
+            "allowed to use.",
+        ),
+        (
+            "2.  Generate",
+            "The CLI renders agent cards, permissions and prompts, so the organization is "
+            "version-controlled like code.",
+        ),
+        (
+            "3.  Run",
+            "Work moves through a task queue under approval gates, with per-agent budgets "
+            "and a full audit trail.",
+        ),
+    ]
+    _card_row(slide, steps, 4.45)
 
-def create_market_slide(prs):
+
+# --------------------------------------------------------------------------- 4
+def create_why_now_slide(prs):
+    """New slide. The deck previously jumped from solution to market size with no
+    argument for why this is worth doing now rather than in three years."""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
-    )
-
-    add_text_box(
-        slide,
-        Inches(0.5),
-        Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "MARKET OPPORTUNITY",
-        font_size=28,
-        bold=True,
-        color=NAVY,
-    )
+    _section_rail(slide)
+    _slide_title(slide, "WHY NOW")
 
     add_text_box(
         slide,
         Inches(0.8),
-        Inches(1.2),
+        Inches(1.15),
         Inches(8.5),
-        Inches(0.6),
-        "The AI agent infrastructure market is projected to reach significant scale by 2028.",
-        font_size=16,
+        Inches(0.55),
+        "Three shifts make an AI-native organization buildable today but not two years ago:",
+        font_size=14,
         bold=False,
         color=NAVY,
     )
 
-    tam_items = [
-        "TAM:  Enterprise AI agent platforms & orchestration",
-        "SAM:  Mid-market companies deploying AI agents",
-        "SOM:  Developer-led, self-serve AI company builder",
+    reasons = [
+        (
+            "Capability",
+            "Long-horizon tool use is now reliable enough to run multi-step work, not just "
+            "answer questions.",
+        ),
+        (
+            "Cost",
+            "Inference has fallen far enough that per-agent budgets are a control problem, "
+            "not a blocker.",
+        ),
+        (
+            "Expectation",
+            "Clients now ask how AI changes how they operate, not whether it will.",
+        ),
     ]
-    add_bullet_list(
+    _card_row(slide, reasons, 1.95, height=2.0)
+
+    _summary_band(
         slide,
-        Inches(0.8),
-        Inches(2.0),
-        Inches(8.5),
-        Inches(2.5),
-        tam_items,
-        font_size=14,
-        color=NAVY,
+        4.5,
+        "Why us: we run this ourselves. The company operates on the same registry, "
+        "governance gates and cost controls we sell — built for low-bandwidth, "
+        "offline-capable deployment in Malawi and the wider SADC region.",
+        height=1.4,
     )
 
-    # Target segments
+
+# --------------------------------------------------------------------------- 5
+def create_market_slide(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    _section_rail(slide)
+    _slide_title(slide, "MARKET OPPORTUNITY")
+
     add_text_box(
         slide,
         Inches(0.8),
-        Inches(4.0),
+        Inches(1.15),
         Inches(8.5),
-        Inches(0.5),
+        Inches(0.7),
+        "Bottom-up sizing: accounts we can actually reach with each offer, priced from "
+        "our own rate card. Market totals are pending a cited report.",
+        font_size=14,
+        bold=False,
+        color=NAVY,
+    )
+
+    sizing = [
+        "TAM:  Enterprises and consultancies adopting agentic AI operations",
+        "SAM:  Mid-market firms in Malawi and SADC reachable from Lilongwe",
+        "SOM:  Clients we can serve in the next four quarters",
+    ]
+    add_bullet_list(
+        slide, Inches(0.8), Inches(2.05), Inches(8.5), Inches(1.5), sizing, font_size=14, color=NAVY
+    )
+
+    add_text_box(
+        slide,
+        Inches(0.8),
+        Inches(3.4),
+        Inches(8.5),
+        Inches(0.4),
         "TARGET SEGMENTS",
         font_size=14,
         bold=True,
         color=RED,
     )
     segments = [
-        "•  Startups building AI-native products",
-        "•  SMBs automating operations with AI agents",
         "•  Enterprises deploying internal AI agent fleets",
+        "•  SMBs automating operations",
         "•  AI consultancies building client agent systems",
+        "•  NGOs and development programs needing offline-capable tooling",
     ]
     add_bullet_list(
         slide,
         Inches(0.8),
-        Inches(4.5),
+        Inches(3.85),
         Inches(8.5),
-        Inches(2.5),
+        Inches(1.9),
         segments,
         font_size=13,
         color=NAVY,
     )
 
-
-def create_product_slide(prs):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
-    set_slide_bg(slide, WHITE)
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
+    _summary_band(
+        slide,
+        5.4,
+        "We do not need the whole market. Paid delivery work from clients reachable from "
+        "Lilongwe funds the platform, and the platform is what makes that delivery "
+        "repeatable rather than bespoke.",
     )
 
+
+# --------------------------------------------------------------------------- 6
+def create_product_model_slide(prs):
+    """Merged from the former separate Product and Business Model slides."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    _section_rail(slide)
+    _slide_title(slide, "PRODUCT & BUSINESS MODEL")
+
+    # Left column — what it does
     add_text_box(
         slide,
-        Inches(0.5),
+        Inches(0.55),
+        Inches(1.15),
+        Inches(4.3),
         Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "PRODUCT & TECHNOLOGY",
-        font_size=28,
+        "What it does",
+        font_size=16,
         bold=True,
         color=NAVY,
     )
-
     tech_items = [
-        "Architecture:",
-        "  •  Python CLI (Typer) — no web server required",
-        "  •  Registry YAML → Jinja2 template → OpenCode agent files",
-        "  •  ReAct agentic loop with tool routing",
-        "",
-        "Core Components:",
-        "  •  AgentLoop — Multi-turn reasoning with tool execution",
-        "  •  CostTracker — Real-time LLM spend monitoring",
-        "  •  HITLGate — Human approval for irreversible actions",
-        "  •  MessageBus — JSON task queue for agent coordination",
-        "  •  ModelRouter — Provider fallback chain (OpenAI → Anthropic → DeepSeek → Gemini)",
-        "",
-        "Security:",
-        "  •  Bandit static analysis, pre-commit hooks",
-        "  •  Principle-of-least-privilege agent permissions",
-        "  •  Encrypted credential storage",
+        "Python CLI — no web server required",
+        "Registry YAML → template → agent files",
+        "ReAct loop with tool routing",
+        "AgentLoop, CostTracker, HITLGate",
+        "MessageBus task queue",
+        "ModelRouter with provider fallback",
+        "Least-privilege agent permissions",
+        "Bandit static analysis, pre-commit hooks",
     ]
     add_bullet_list(
         slide,
-        Inches(0.8),
-        Inches(1.2),
-        Inches(8.5),
-        Inches(5.5),
+        Inches(0.55),
+        Inches(1.65),
+        Inches(4.35),
+        Inches(4.6),
         tech_items,
         font_size=12,
         color=NAVY,
     )
 
-
-def create_business_model_slide(prs):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
-    set_slide_bg(slide, WHITE)
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
-    )
-
+    # Right column — how it earns
     add_text_box(
         slide,
-        Inches(0.5),
+        Inches(5.2),
+        Inches(1.15),
+        Inches(4.3),
         Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "BUSINESS MODEL",
-        font_size=28,
+        "How it earns",
+        font_size=16,
         bold=True,
         color=NAVY,
     )
-
     model_items = [
-        "Revenue Streams:",
-        "  1.  SaaS Subscription — Monthly/annual plans for platform access",
-        "  2.  Usage-Based — LLM token pass-through + margin",
-        "  3.  Enterprise — Custom deployment, SLAs, dedicated support",
-        "  4.  Services — Implementation consulting for large deployments",
+        "SaaS subscription — platform access",
+        "Usage — LLM pass-through plus margin",
+        "Enterprise — deployment, SLA, support",
+        "Services — implementation engagements",
         "",
-        "Pricing Tiers:",
-        "  •  AI Company Builder SaaS — Starter, Pro, Enterprise tiers",
-        "  •  Managed AI Workforce — Recurring service revenue",
-        "",
-        "Unit Economics:",
-        "  •  Target gross margin: Strong",
-        "  •  LLM cost: Controlled percentage of revenue at scale",
-        "  •  Target CAC payback: Favorable",
+        "Unit economics targets:",
+        "  •  Gross margin — pending CFO model",
+        "  •  LLM cost — pending CFO model",
+        "  •  CAC payback — pending CFO model",
     ]
     add_bullet_list(
         slide,
-        Inches(0.8),
-        Inches(1.2),
-        Inches(8.5),
-        Inches(5.5),
+        Inches(5.2),
+        Inches(1.65),
+        Inches(4.35),
+        Inches(4.6),
         model_items,
         font_size=12,
         color=NAVY,
     )
 
+    _summary_band(
+        slide,
+        4.75,
+        "One product, three ways to buy it: a subscription for platform access, usage billed "
+        "on top, and an implementation engagement where the client wants delivery as well as "
+        "software. The same system runs this company.",
+    )
 
+
+# --------------------------------------------------------------------------- 7
 def create_traction_slide(prs):
+    """No KPI cards. The former slide showed four grey boxes whose value slot held
+    a word ("Agents / Deployed"), which read as a broken template. There is no
+    external traction to quantify yet, so this states what exists and what does not."""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
+    _section_rail(slide)
+    _slide_title(slide, "TRACTION & STATUS")
+
+    add_text_box(
+        slide,
+        Inches(0.55),
+        Inches(1.15),
+        Inches(4.3),
+        Inches(0.4),
+        "Built and working",
+        font_size=16,
+        bold=True,
+        color=NAVY,
+    )
+    built = [
+        "•  Platform built, running this company internally",
+        "•  Multi-provider routing with cost enforcement",
+        "•  Human approval gates enforced in code",
+        "•  Audit trail and test suite in place",
+        "•  Corporate Blueprint adopted",
+    ]
+    add_bullet_list(
+        slide, Inches(0.55), Inches(1.65), Inches(4.3), Inches(3.2), built, font_size=12, color=NAVY
     )
 
     add_text_box(
         slide,
-        Inches(0.5),
+        Inches(5.2),
+        Inches(1.15),
+        Inches(4.3),
         Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "TRACTION & METRICS",
-        font_size=28,
+        "Not yet",
+        font_size=16,
         bold=True,
-        color=NAVY,
+        color=RED,
     )
-
-    # KPI boxes - qualitative indicators
-    kpis = [
-        ("Agents", "Deployed"),
-        ("Departments", "Live"),
-        ("Flagship", "Offers"),
-        ("Products", "Priced"),
-    ]
-    for i, (value, label) in enumerate(kpis):
-        col = i % 2
-        row = i // 2
-        x = Inches(1 + col * 4)
-        y = Inches(1.3 + row * 1.8)
-        add_shape(
-            slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, Inches(3.5), Inches(1.4), fill_color=GREY
-        )
-        add_text_box(
-            slide,
-            x + Inches(0.2),
-            y + Inches(0.2),
-            Inches(3.1),
-            Inches(0.6),
-            value,
-            font_size=28,
-            bold=True,
-            color=NAVY,
-            alignment=PP_ALIGN.CENTER,
-        )
-        add_text_box(
-            slide,
-            x + Inches(0.2),
-            y + Inches(0.8),
-            Inches(3.1),
-            Inches(0.4),
-            label,
-            font_size=12,
-            color=NAVY,
-            alignment=PP_ALIGN.CENTER,
-        )
-
-    milestones = [
-        "Key Milestones:",
-        "  •  Platform bootstrapped; core architecture shipped",
-        "  •  Flagship offers priced & governance gates ratified",
-        "  •  Corporate Blueprint adopted; capital guidance signed",
-        "  •  Automated tests passing; linting clean",
+    not_yet = [
+        "•  No paying clients",
+        "•  No signed pilots",
+        "•  No revenue",
+        "•  No external validation of the model",
     ]
     add_bullet_list(
         slide,
-        Inches(0.8),
-        Inches(5.0),
-        Inches(8.5),
-        Inches(2),
-        milestones,
+        Inches(5.2),
+        Inches(1.65),
+        Inches(4.3),
+        Inches(2.4),
+        not_yet,
         font_size=12,
         color=NAVY,
     )
 
+    _summary_band(
+        slide,
+        4.6,
+        "This raise funds the first paid pilots. Progress is measured by signed pilots, "
+        "not by features shipped — so the next version of this slide should be a list of "
+        "clients, not a list of capabilities.",
+    )
 
+
+# --------------------------------------------------------------------------- 8
 def create_competition_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
-    )
+    _section_rail(slide)
+    _slide_title(slide, "COMPETITIVE LANDSCAPE")
 
     add_text_box(
         slide,
-        Inches(0.5),
+        Inches(0.55),
+        Inches(1.15),
+        Inches(4.3),
         Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "COMPETITIVE LANDSCAPE",
-        font_size=28,
+        "Who else is in the space",
+        font_size=16,
         bold=True,
         color=NAVY,
     )
-
     competitors = [
-        "Direct Competitors:",
-        "  •  Agent frameworks (LangGraph, CrewAI) — dev tools, no org layer or governance",
-        "  •  Workflow automation (n8n, Zapier) — task pipelines, not multi-agent organizations",
-        "  •  Single-assistant SaaS (ChatGPT Business, Copilot) — no role hierarchy or cost control",
-        "",
-        "Indirect Alternatives:",
-        "  •  Custom-built agent frameworks (high engineering cost)",
-        "  •  ChatGPT/Claude for single tasks (no orchestration)",
-        "  •  Enterprise ML platforms (overkill for most orgs)",
-        "",
-        "Our Differentiation:",
-        "  ✓  AI-native company structure (not just a tool)",
-        "  ✓  Built-in cost transparency & budget enforcement",
-        "  ✓  Human-in-the-loop safety gates",
-        "  ✓  Multi-provider with automatic fallback",
-        "  ✓  Local-first option (Ollama) for zero-cost inference",
+        "Agent frameworks (LangGraph, CrewAI) — developer tools, no organization layer or governance",
+        "Workflow automation (n8n, Zapier) — task pipelines, not agent organizations",
+        "Assistant SaaS (ChatGPT Business, Copilot) — single assistant, no role hierarchy or cost control",
+        "Custom builds — high engineering cost, no reusable control plane",
     ]
     add_bullet_list(
         slide,
-        Inches(0.8),
-        Inches(1.2),
-        Inches(8.5),
-        Inches(5.5),
+        Inches(0.55),
+        Inches(1.65),
+        Inches(4.35),
+        Inches(4.4),
         competitors,
         font_size=12,
         color=NAVY,
     )
 
+    add_text_box(
+        slide,
+        Inches(5.2),
+        Inches(1.15),
+        Inches(4.3),
+        Inches(0.4),
+        "What we do differently",
+        font_size=16,
+        bold=True,
+        color=RED,
+    )
+    differentiation = [
+        "✓  Organization structure, not a single agent",
+        "✓  Cost transparency and budget enforcement built in",
+        "✓  Human approval gates as a first-class feature",
+        "✓  Multi-provider, with automatic fallback",
+        "✓  Local-first inference for low-connectivity settings",
+        "✓  Governance and escalation rules shipped as code",
+    ]
+    add_bullet_list(
+        slide,
+        Inches(5.2),
+        Inches(1.65),
+        Inches(4.35),
+        Inches(4.4),
+        differentiation,
+        font_size=12,
+        color=NAVY,
+    )
 
+    _summary_band(
+        slide,
+        4.85,
+        "We are not competing on model access — the models are commodities and anyone can "
+        "call them. We compete on the control plane around them: who may act, what it "
+        "costs, and who signs off.",
+    )
+
+
+# --------------------------------------------------------------------------- 9
 def create_team_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
-    )
+    _section_rail(slide)
+    _slide_title(slide, "TEAM")
 
     add_text_box(
         slide,
-        Inches(0.5),
+        Inches(0.55),
+        Inches(1.15),
+        Inches(4.3),
         Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "TEAM",
-        font_size=28,
+        "Leadership",
+        font_size=16,
         bold=True,
         color=NAVY,
     )
-
     team = [
-        "Leadership:",
-        "  •  Jack Mlusu — Founder & CEO — builder-operator; runs an AI agent organization",
-        "  •  AI Executive Cabinet — CTO, CFO, CMO, CLO, CSO, COO, CAIO",
-        "  •  Board of Directors — Standing committees (Strategy, Finance, Risk, Technology, Product, Customer, Governance)",
+        "Jack Mlusu — Founder & CEO",
+        "  Builder-operator; runs the company on the platform it sells",
         "",
-        "Advisors:",
-        "  •  Board Chair — governance & escalation authority",
-        "  •  Corporate Constitution — 5-tier approval matrix, decision order, escalation SLAs",
+        "AI Executive Cabinet",
+        "  CTO, CFO, CMO, CLO, CSO, COO, CAIO — operating agents under human approval gates",
         "",
-        "Hiring Plan (per Blueprint):",
-        "  •  Platform Licensing Sales Lead (Offer E) — Priority One, breakout revenue line",
-        "  •  BPA/Chatbot Delivery Lead (Offer B) — NGO USD revenue",
-        "  •  Compliance Officer + DevRel Engineer — unblock Offer B/C & developer adoption",
+        "Board of Directors",
+        "  Standing committees: Strategy, Finance, Risk, Technology, Product, Customer, Governance",
     ]
     add_bullet_list(
-        slide, Inches(0.8), Inches(1.2), Inches(8.5), Inches(5.5), team, font_size=13, color=NAVY
-    )
-
-
-def create_financials_slide(prs):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
-    set_slide_bg(slide, WHITE)
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
+        slide, Inches(0.55), Inches(1.65), Inches(4.35), Inches(4.4), team, font_size=12, color=NAVY
     )
 
     add_text_box(
         slide,
-        Inches(0.5),
+        Inches(5.2),
+        Inches(1.15),
+        Inches(4.3),
         Inches(0.4),
-        Inches(9),
-        Inches(0.6),
-        "FINANCIALS",
-        font_size=28,
+        "Hiring with this raise",
+        font_size=16,
         bold=True,
-        color=NAVY,
+        color=RED,
     )
-
-    financials = [
-        "Revenue Projections (targets, pending validation):",
-        "  •  Year One:  Early revenue traction",
-        "  •  Year Two:  Recurring contracts + SaaS growth",
-        "  •  Year Three:  SaaS + managed workforce scale",
+    hiring = [
+        "•  Platform Licensing Sales Lead — priority one",
+        "•  Delivery Lead for chatbot and compliance offers",
+        "•  Compliance Officer",
+        "•  Developer Relations Engineer",
         "",
-        "Key Assumptions:",
-        "  •  Month-over-month revenue growth in ramp",
-        "  •  Strong gross margin target; LLM cost controlled at scale",
-        "  •  Net retention target per Mission success metrics",
-        "",
-        "Use of Funds (per Corporate Blueprint):",
-        "  •  Talent — Sales leads, compliance, DevRel",
-        "  •  Client Pilots — Multiple offers across A–C",
-        "  •  Hardware Lab — On-prem GPU for offline-first proof; field kits",
-        "  •  Compliance & Legal — Malawi DPA 2017, GDPR, SOC 2 prep",
-        "  •  Emergency Reserve — CEO-only release",
+        "Human hires, not agent seats: clients buy from people.",
     ]
     add_bullet_list(
         slide,
-        Inches(0.8),
-        Inches(1.2),
-        Inches(8.5),
-        Inches(5.5),
-        financials,
-        font_size=13,
+        Inches(5.2),
+        Inches(1.65),
+        Inches(4.35),
+        Inches(4.0),
+        hiring,
+        font_size=12,
         color=NAVY,
     )
 
+    _summary_band(
+        slide,
+        5.15,
+        "The operating model already exists: a five-tier approval matrix, named escalation "
+        "routes and an audit trail, applied to agents as well as people. The hiring plan "
+        "adds the human roles that sell and deliver.",
+    )
 
-def create_the_ask_slide(prs):
+
+# -------------------------------------------------------------------------- 10
+def create_ask_slide(prs):
+    """Financials and The Ask merged — both previously listed the same Use of Funds."""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, NAVY)
-
-    # Navy rail
-    add_shape(
-        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
-    )
+    _section_rail(slide)
 
     add_text_box(
         slide,
         Inches(1),
-        Inches(0.8),
+        Inches(0.55),
         Inches(8),
-        Inches(0.8),
+        Inches(0.7),
         "THE ASK",
         font_size=32,
         bold=True,
         color=WHITE,
         alignment=PP_ALIGN.CENTER,
     )
-
     add_shape(
         slide,
         MSO_SHAPE.RECTANGLE,
         Inches(3.5),
-        Inches(1.7),
+        Inches(1.35),
         Inches(3),
         Inches(0.04),
         fill_color=RED,
@@ -760,111 +905,178 @@ def create_the_ask_slide(prs):
     add_text_box(
         slide,
         Inches(1),
-        Inches(2.0),
+        Inches(1.55),
         Inches(8),
-        Inches(0.8),
-        "Raising Seed Capital",
+        Inches(0.55),
+        "Raising seed capital",
         font_size=24,
         bold=False,
         color=CYAN,
         alignment=PP_ALIGN.CENTER,
     )
 
-    ask_items = [
-        "Use of Funds (aligned to Corporate Blueprint):",
-        "  •  Talent — Platform Licensing Sales Lead (Offer E), chatbot/compliance leads",
-        "  •  Client pilots — Multiple offers across A, B, C (post governance gates)",
-        "  •  Hardware lab — On-prem GPU for offline-first proof; field kits",
-        "  •  Compliance — Malawi DPA 2017, GDPR opinion, SOC 2 Type II readiness",
-        "",
-        "Milestones with this raise:",
-        "  •  Paying pilot clients across Offers A–C",
-        "  •  ARR run-rate (SaaS + managed recurring)",
-        "  •  Phase Five autonomous mode live — self-governing AI company",
+    # Amount is intentionally absent: the raise size is an open decision (the
+    # registry's figure is a spend cap, not a raise). See docs/claims.yaml.
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(2.15),
+        Inches(8),
+        Inches(0.45),
+        "Amount, instrument and runway: pending board decision — not stated in this draft.",
+        font_size=12,
+        bold=True,
+        color=LIGHT_TEXT,
+        alignment=PP_ALIGN.CENTER,
+    )
+
+    add_text_box(
+        slide,
+        Inches(1.0),
+        Inches(2.85),
+        Inches(3.8),
+        Inches(0.4),
+        "Use of funds",
+        font_size=14,
+        bold=True,
+        color=WHITE,
+    )
+    use_of_funds = [
+        "Talent — sales, delivery, compliance, DevRel",
+        "Client pilots — Offers A, B and C",
+        "Hardware lab — on-prem GPU, field kits",
+        "Compliance — DPA 2024 alignment, GDPR opinion, SOC 2 prep",
+        "Emergency reserve",
     ]
     add_bullet_list(
         slide,
-        Inches(1.5),
+        Inches(1.0),
+        Inches(3.3),
+        Inches(3.9),
         Inches(3.2),
-        Inches(7),
-        Inches(3.5),
-        ask_items,
+        use_of_funds,
+        font_size=12,
+        color=WHITE,
+    )
+
+    add_text_box(
+        slide,
+        Inches(5.3),
+        Inches(2.85),
+        Inches(3.8),
+        Inches(0.4),
+        "Milestones this buys",
         font_size=14,
+        bold=True,
+        color=WHITE,
+    )
+    milestones = [
+        "Signed paying pilots across Offers A–C",
+        "Recurring revenue run-rate established",
+        "Governance gates live with tamper-evident audit trail",
+        "Repeatable delivery playbook per offer",
+    ]
+    add_bullet_list(
+        slide,
+        Inches(5.3),
+        Inches(3.3),
+        Inches(3.9),
+        Inches(3.2),
+        milestones,
+        font_size=12,
         color=WHITE,
     )
 
-
-def create_thank_you_slide(prs):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
-    set_slide_bg(slide, NAVY)
-
-    # White panel matching the square logo canvas (logo-light-bg is the navy-backdrop variant)
-    logo_panel = add_shape(
-        slide,
-        MSO_SHAPE.RECTANGLE,
-        Inches(0.65),
-        Inches(0.5),
-        Inches(1.5),
-        Inches(1.5),
-        fill_color=WHITE,
-    )
-    logo_panel.line.fill.background()
-
-    # Canonical logo (brand/logo)
-    logo_bytes = io.BytesIO(OFFICIAL_LOGO.read_bytes())
-    logo = slide.shapes.add_picture(
-        logo_bytes, Inches(0.65), Inches(0.5), width=Inches(1.5), height=Inches(1.5)
-    )
-    logo._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("name", "Company Logo")
-    logo._element.xpath("./p:nvPicPr/p:cNvPr")[0].set("descr", "LightSpeed Holdings logo")
-
-    add_text_box(
-        slide,
-        Inches(1),
-        Inches(2.2),
-        Inches(8),
-        Inches(1),
-        "THANK YOU",
-        font_size=36,
-        bold=True,
-        color=WHITE,
-        alignment=PP_ALIGN.CENTER,
-    )
-
-    add_text_box(
-        slide,
-        Inches(1),
-        Inches(3.4),
-        Inches(8),
-        Inches(0.6),
-        "ASPIRE. ACT. ACHIEVE.",
-        font_size=18,
-        bold=True,
-        color=CYAN,
-        alignment=PP_ALIGN.CENTER,
-    )
-
+    # Closing statement. No amount: the raise size is an open board decision, and the
+    # deck must not imply a number that has not been approved.
     add_shape(
         slide,
         MSO_SHAPE.RECTANGLE,
-        Inches(3.5),
-        Inches(4.0),
-        Inches(3),
-        Inches(0.04),
-        fill_color=RED,
+        Inches(2.5),
+        Inches(5.55),
+        Inches(5),
+        Inches(0.03),
+        fill_color=CYAN,
     )
-
     add_text_box(
         slide,
         Inches(1),
-        Inches(4.5),
+        Inches(5.75),
         Inches(8),
-        Inches(1.5),
-        "Jack Mlusu, Founder & CEO\njmlusu@gmail.com\nlightspeedholdings.vercel.app",
+        Inches(0.9),
+        "We are asking for a first institutional round to fund paying pilots across "
+        "Offers A, B and C, and to make the four hires above.",
         font_size=14,
+        bold=True,
         color=WHITE,
         alignment=PP_ALIGN.CENTER,
     )
+
+
+# -------------------------------------------------------------------------- 11
+def create_risks_slide(prs):
+    """New slide. A deck that lists no risks reads as either naive or evasive."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    _section_rail(slide)
+    _slide_title(slide, "RISKS & HOW WE MITIGATE THEM")
+
+    risks = [
+        (
+            "Dependence on third-party models",
+            "Multi-provider routing with automatic fallback; local inference option",
+        ),
+        (
+            "Regulatory and data-protection exposure",
+            "Built to DPA 2024 and GDPR-grade handling; SOC 2 planned, not certified",
+        ),
+        (
+            "Single-founder execution risk",
+            "Named hiring plan; agent cabinet under human approval gates",
+        ),
+        (
+            "Selling ahead of proof",
+            "Pilots capped in scope and budget; no scale claims before delivery",
+        ),
+        (
+            "Cost overrun on inference",
+            "Per-agent budgets and cost enforcement, not after-the-fact reporting",
+        ),
+        ("Concentration in one market", "SADC-first, with offers designed for remote delivery"),
+    ]
+    y = 1.3
+    for risk, mitigation in risks:
+        add_shape(
+            slide,
+            MSO_SHAPE.ROUNDED_RECTANGLE,
+            Inches(0.55),
+            Inches(y),
+            Inches(8.9),
+            Inches(0.78),
+            fill_color=GREY,
+        )
+        add_text_box(
+            slide,
+            Inches(0.75),
+            Inches(y + 0.08),
+            Inches(3.3),
+            Inches(0.6),
+            risk,
+            font_size=12,
+            bold=True,
+            color=NAVY,
+        )
+        add_text_box(
+            slide,
+            Inches(4.15),
+            Inches(y + 0.08),
+            Inches(5.1),
+            Inches(0.6),
+            mitigation,
+            font_size=12,
+            color=NAVY,
+        )
+        y += 0.9
 
 
 def main():
@@ -896,20 +1108,21 @@ def main():
     except OSError:
         pass  # Best effort; verify-deck.py will catch if not working
 
-    # Build deck
-    create_title_slide(prs)
-    create_agenda_slide(prs)
-    create_problem_slide(prs)
-    create_solution_slide(prs)
-    create_market_slide(prs)
-    create_product_slide(prs)
-    create_business_model_slide(prs)
-    create_traction_slide(prs)
-    create_competition_slide(prs)
-    create_team_slide(prs)
-    create_financials_slide(prs)
-    create_the_ask_slide(prs)
-    create_thank_you_slide(prs)
+    # Build deck — 11 slides
+    create_title_slide(prs)  # 1
+    create_problem_slide(prs)  # 2
+    create_solution_slide(prs)  # 3
+    create_why_now_slide(prs)  # 4  (new)
+    create_market_slide(prs)  # 5
+    create_product_model_slide(prs)  # 6  (merged from two slides)
+    create_traction_slide(prs)  # 7
+    create_competition_slide(prs)  # 8
+    create_team_slide(prs)  # 9
+    create_ask_slide(prs)  # 10 (financials merged in)
+    create_risks_slide(prs)  # 11 (new)
+
+    # Every slide must carry the draft notice; see module constants.
+    mark_internal_draft(prs)
 
     # Save
     output_path = os.path.join(os.path.dirname(__file__), "..", "templates", "pitch-deck.pptx")
