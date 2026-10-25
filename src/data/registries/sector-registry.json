@@ -168,7 +168,7 @@
         "Local Ollama model deployment for zero-API-cost operations"
       ],
       "honestyBadge": "PROVEN IN-HOUSE",
-      "honestyNote": "The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and append-only SHA-256 sealed audit trails verified by 2,566 automated regression tests. LightSpeed Holdings is its own first customer.",
+      "honestyNote": "The AI Company Builder platform itself: a 90-role registry, 5-tier approval matrix, and append-only SHA-256 sealed audit trails verified by 2,684 automated regression tests. LightSpeed Holdings is its own first customer.",
       "iconName": "Cpu",
       "region": ["Malawi", "SADC", "Global"],
       "relevantSolutions": ["ai-company-builder", "ai-company-builder-deployment", "enterprise-deployment", "intelligent-automation"]

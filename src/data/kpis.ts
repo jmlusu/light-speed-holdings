@@ -20,7 +20,7 @@ export const kpis: KPI[] = [
     label: 'Agents in Operation',
     value: 90,
     delta: '+0% (baseline canonical model)',
-    description: '90 specialized agents across 20 departments, each with explicit role definitions and permission sets.',
+    description: '89 AI agents across 20 departments, each with explicit role definitions and permission sets.',
   },
   {
     label: 'Departments Covered',

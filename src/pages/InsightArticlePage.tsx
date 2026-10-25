@@ -115,6 +115,23 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         </div>
       </PageIntro>
 
+      {/* Dated correction note (honesty policy: body text stays unchanged) */}
+      {article.correction && (
+        <section aria-label="Correction" className="px-4 sm:px-8 max-w-3xl mx-auto w-full pt-6">
+          <div
+            role="note"
+            className={`rounded-2xl border px-4 py-3 font-body text-[11px] leading-relaxed ${
+              isLight
+                ? 'border-ls-red/40 bg-ls-white text-ls-grey-dark'
+                : 'border-ls-red/50 bg-ls-navy/80 text-ls-grey-light-text'
+            }`}
+          >
+            <span className="font-bold tracking-widest text-ls-red">CORRECTION </span>
+            {article.correction.text}
+          </div>
+        </section>
+      )}
+
       {/* Article body */}
       <article className="px-4 sm:px-8 max-w-3xl mx-auto w-full pt-6 pb-4 space-y-5">
         {article.blocks.map(renderBlock)}
