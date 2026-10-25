@@ -153,6 +153,10 @@ export function PrimaryCta({ onClick, children }: PrimaryCtaProps) {
 - Introduce unsupported commercial, partnership, deployment or performance claims
 - Force every page into the same layout — reuse design primitives while giving each page a layout appropriate to its purpose
 
+## FAQ evidence
+
+Every FAQ answer carries an evidence entry — either a claim id from `src/data/registries/claims-registry.json` or a `repo/relative/path#literal anchor text` pair that a reader can open. An answer that no source supports must be marked `status: "unknown"` with a `note` explaining the gap; an honest unknown is preferred over a `verified` label that cannot be reproduced. `src/data/registries/faq-registry.json` is the canonical 28-entry set, while `src/data/faqs.ts` holds the 6 answers the site actually renders. `src/__tests__/faq-evidence.test.ts` enforces the rule for both collections, including the negative check that no `verified` entry points at a missing file, a missing anchor, or a claim classified `UNVERIFIED`.
+
 ## Success Criteria
 
 1. Current repository state and all changes are documented (gap register, implementation plan)
