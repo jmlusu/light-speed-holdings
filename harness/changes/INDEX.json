@@ -1992,5 +1992,61 @@
         "phase":  "validate",
         "spec_review":  "approved",
         "session_id":  "0ae3f812-5907-4363-b033-4470d7c36b00"
+    },
+    {
+        "id":  "2026-10-25-site-claims-nav-sitemap-next-session",
+        "title":  "site-claims-nav-sitemap-next-session",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "website",
+                        "src",
+                        "public",
+                        "docs/website"
+                    ],
+        "files":  [
+                      "src/components/FloatingNav.tsx",
+                      "src/components/SiteFooter.tsx",
+                      "src/components/AiCompanyBuilderSection.tsx",
+                      "src/components/HeroSection.tsx",
+                      "src/components/PublicAgentRegistry.tsx",
+                      "src/components/home/HAOMTGVSection.tsx",
+                      "src/components/home/HighLevelOverviewSection.tsx",
+                      "src/components/home/VisitorPathsSection.tsx",
+                      "src/components/home/WorkforceSection.tsx",
+                      "src/data/metrics.ts",
+                      "src/data/insights.ts",
+                      "src/data/siteContent.ts",
+                      "src/data/faqs.ts",
+                      "src/data/registries/metrics-registry.json",
+                      "src/data/registries/claims-registry.json",
+                      "src/data/registries/faq-registry.json",
+                      "src/pages/SectorsPage.tsx",
+                      "src/pages/UseCasesPage.tsx",
+                      "src/pages/InsightArticlePage.tsx",
+                      "public/sitemap.xml",
+                      "src/__tests__/claims.test.ts",
+                      "src/__tests__/sitemap.test.ts",
+                      "src/__tests__/metrics.test.ts",
+                      "src/__tests__/nav/FloatingNav.test.tsx"
+                  ],
+        "tags":  [
+                     "site",
+                     "claims",
+                     "nav",
+                     "sitemap",
+                     "metrics",
+                     "a11y"
+                 ],
+        "decisions":  [
+
+                      ],
+        "validation_status":  "pass",
+        "slug":  "site-claims-nav-sitemap-next-session",
+        "path":  "harness/changes/archive/2026-10-25-site-claims-nav-sitemap-next-session",
+        "updated_at":  "2026-10-25",
+        "phase":  "validate",
+        "spec_review":  "approved",
+        "session_id":  "fc6a0f75-fab2-413d-a625-48ccb74c1e51"
     }
 ]
