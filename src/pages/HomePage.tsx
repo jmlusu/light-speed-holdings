@@ -45,7 +45,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       <SolutionsSection theme={theme} />
       {/* 5. AI Company Builder: Opportunity → Design → Build → Deploy → Govern → Measure */}
       <AICompanyBuilderSection theme={theme} />
-      {/* 6. 90-Agent Workforce */}
+      {/* 6. 90-Role Workforce */}
       <WorkforceSection theme={theme} />
       {/* 7. Sectors + Use Cases (combined, evidence-status vocabulary) */}
       <UseCasesSection theme={theme} />

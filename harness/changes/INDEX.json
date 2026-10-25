@@ -1992,5 +1992,115 @@
         "phase":  "validate",
         "spec_review":  "approved",
         "session_id":  "0ae3f812-5907-4363-b033-4470d7c36b00"
+    },
+    {
+        "id":  "2026-10-25-site-claims-nav-sitemap-next-session",
+        "title":  "site-claims-nav-sitemap-next-session",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "website",
+                        "src",
+                        "public",
+                        "docs/website"
+                    ],
+        "files":  [
+                      "src/components/FloatingNav.tsx",
+                      "src/components/SiteFooter.tsx",
+                      "src/components/AiCompanyBuilderSection.tsx",
+                      "src/components/HeroSection.tsx",
+                      "src/components/PublicAgentRegistry.tsx",
+                      "src/components/home/HAOMTGVSection.tsx",
+                      "src/components/home/HighLevelOverviewSection.tsx",
+                      "src/components/home/VisitorPathsSection.tsx",
+                      "src/components/home/WorkforceSection.tsx",
+                      "src/data/metrics.ts",
+                      "src/data/insights.ts",
+                      "src/data/siteContent.ts",
+                      "src/data/faqs.ts",
+                      "src/data/registries/metrics-registry.json",
+                      "src/data/registries/claims-registry.json",
+                      "src/data/registries/faq-registry.json",
+                      "src/pages/SectorsPage.tsx",
+                      "src/pages/UseCasesPage.tsx",
+                      "src/pages/InsightArticlePage.tsx",
+                      "public/sitemap.xml",
+                      "src/__tests__/claims.test.ts",
+                      "src/__tests__/sitemap.test.ts",
+                      "src/__tests__/metrics.test.ts",
+                      "src/__tests__/nav/FloatingNav.test.tsx"
+                  ],
+        "tags":  [
+                     "site",
+                     "claims",
+                     "nav",
+                     "sitemap",
+                     "metrics",
+                     "a11y"
+                 ],
+        "decisions":  [
+
+                      ],
+        "validation_status":  "pass",
+        "slug":  "site-claims-nav-sitemap-next-session",
+        "path":  "harness/changes/archive/2026-10-25-site-claims-nav-sitemap-next-session",
+        "updated_at":  "2026-10-25",
+        "phase":  "validate",
+        "spec_review":  "approved",
+        "session_id":  "fc6a0f75-fab2-413d-a625-48ccb74c1e51"
+    },
+    {
+        "id":  "2026-10-25-site-p1-evidence-security-headers",
+        "title":  "site P1 evidence security headers",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "website",
+                        "src",
+                        "public",
+                        "docs",
+                        "vercel"
+                    ],
+        "files":  [
+                      "vercel.json",
+                      "docs/DEPLOYMENT.md",
+                      "src/__tests__/security-headers.test.ts",
+                      "src/data/faqs.ts",
+                      "src/data/registries/faq-registry.json",
+                      "src/__tests__/faq-evidence.test.ts",
+                      "docs/website/SPEC.md",
+                      "src/data/registries/media-registry.json",
+                      "src/__tests__/media-registry.test.ts",
+                      "src/components/SiteFooter.tsx",
+                      "src/__tests__/footer-disclosure.test.tsx",
+                      "docs/marketing/digital-asset-register.md",
+                      ".gitignore",
+                      "AGENTS.md"
+                  ],
+        "tags":  [
+                     "site",
+                     "security-headers",
+                     "csp",
+                     "faq",
+                     "evidence",
+                     "media",
+                     "honesty",
+                     "governance"
+                 ],
+        "decisions":  [
+                          "- **CSP is Report-Only.** The contact form depends on Cloudflare Turnstile; a wrong `script-src` breaks it silently and no build step notices. Enforcing is a dated follow-up (2026-11-01) after production observation.",
+                          "- **No CSP report collector.** The CISO\u0027s blocker (\"Report-Only without a collector observes nothing\") was resolved by narrowing the claim, not by adding an endpoint: a public log sink is its own abuse surface. Observation is an automated console scan of four routes plus manual DevTools, documented in `docs/DEPLOYMENT.md`.",
+                          "- **HSTS declared explicitly** (`max-age=63072000; includeSubDomains; preload`) rather than left as a Vercel default, so the guard protects it. `preload` has no effect until the domain is submitted.",
+                          "- **FAQ evidence shape** `{ source, status, note? }`; `verified` requires a claim id whose classification is publishable, or `path#anchor` literally present in the file. Seven answers are marked `unknown` rather than promoted.",
+                          "- **Media registry scope is the live reference set**, not the brand tree. `favicon.ico` and `og-default.png` are `origin: unknown` (no authoring record exists); `hero-background.jpg` is `kind: \"missing\"`.",
+                          "- **Worktrees moved inside the repository** to `.worktrees/`. The native `worktree_create` tool places them at `%LOCALAPPDATA%\\..\\opencode\\worktree\\\u003chash\u003e\\\u003cname\u003e` (observed), which cannot satisfy the CEO\u0027s requirement, so placement uses `git worktree add .worktrees/\u003cname\u003e`."
+                      ],
+        "validation_status":  "pass",
+        "slug":  "site-p1-evidence-security-headers",
+        "path":  "harness/changes/archive/2026-10-25-site-p1-evidence-security-headers",
+        "updated_at":  "2026-10-25",
+        "phase":  "validate",
+        "spec_review":  "approved",
+        "session_id":  "4ba27b38-e001-4583-a268-99c12d32653a"
     }
 ]

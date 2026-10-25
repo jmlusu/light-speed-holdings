@@ -38,7 +38,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         theme={theme}
         eyebrow="WHAT WE DO"
         title="Enterprise AI Systems Built for Real Constraints"
-        lead="LightSpeed Holdings delivers modular AI services and custom agent architectures for organizations in Malawi, across Africa and beyond. One human CEO directs 90 specialized AI agents to deliver software, automation, and reporting at accessible regional pricing."
+        lead="LightSpeed Holdings delivers modular AI services and custom agent architectures for organizations in Malawi, across Africa and beyond. One Human CEO directs 89 specialized AI agents to deliver software, automation, and reporting at accessible regional pricing."
       >
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button

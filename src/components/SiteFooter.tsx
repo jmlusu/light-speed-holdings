@@ -25,6 +25,8 @@ const COLUMNS: FooterColumn[] = [
   {
     heading: 'INSIGHTS & ABOUT',
     links: [
+      { name: 'Use Cases', to: '/use-cases' },
+      { name: 'Sectors', to: '/sectors' },
       { name: 'Insights', to: '/insights' },
       { name: 'About', to: '/about' },
       { name: 'FAQ', to: '/#faq' },
@@ -107,7 +109,10 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
       </div>
 
       <div className={`mt-12 pt-6 border-t flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-body ${borderCls} ${textClsMuted}`}>
-        <span>LightSpeed Holdings Limited. All rights reserved.</span>
+        <div className="flex flex-col gap-1 text-center sm:text-left">
+          <span>LightSpeed Holdings Limited. All rights reserved.</span>
+          <span>Illustrations on this site are original vector artwork created in-house.</span>
+        </div>
         <span className="font-bold tracking-wider">AI-NATIVE COMPANIES.</span>
       </div>
     </footer>

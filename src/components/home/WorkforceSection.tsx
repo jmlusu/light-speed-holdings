@@ -18,7 +18,7 @@ export const WorkforceSection: React.FC<WorkforceSectionProps> = ({ theme }) => 
         theme={theme}
         eyebrow="THE AGENTIC OPERATING MODEL"
         title="Specialized AI. Human Direction. Governed Execution."
-        lead="LightSpeed operates through a governed digital workforce: 91 agents across 20 departments, each with explicit role definitions and approval thresholds. Human direction, audited execution."
+        lead="LightSpeed operates through a governed digital workforce: 89 AI agents and one Human CEO (90 operating roles) across 20 departments, each with explicit role definitions and approval thresholds. Human direction, audited execution."
       />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[

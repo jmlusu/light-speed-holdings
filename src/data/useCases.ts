@@ -37,7 +37,7 @@ export const useCases: UseCase[] = [
     id: 'department-distribution',
     title: 'Department‑Wide Agent Distribution',
     problem: 'Scaling AI across 20+ departments requires role-scoped permissions that are simultaneously granular and governable.',
-    outcome: '90 specialized agents configured across 20 departments with explicit permission sets reduced deployment time from months to weeks and eliminated unauthorized model access.',
+    outcome: '89 AI agents configured across 20 departments with explicit permission sets reduced deployment time from months to weeks and eliminated unauthorized model access.',
     illustration: 'public/assets/catalog/department-distribution.svg',
     color: 'navy',
   },

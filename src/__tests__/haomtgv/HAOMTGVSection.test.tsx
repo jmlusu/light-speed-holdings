@@ -1,24 +1,32 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { HAOMTGVSection } from '../../components/home/HAOMTGVSection';
+
+const renderSection = (theme: 'light' | 'dark') =>
+  render(
+    <MemoryRouter>
+      <HAOMTGVSection theme={theme} />
+    </MemoryRouter>,
+  );
 
 describe('HAOMTGVSection', () => {
   it('renders section with id="haomtgv"', () => {
-    render(<HAOMTGVSection theme="dark" />);
+    renderSection('dark');
     const section = screen.getByRole('region', { name: /h-a-o-m-t-g-v operating philosophy/i });
     expect(section).toBeInTheDocument();
     expect(section.getAttribute('id')).toBe('haomtgv');
   });
 
   it('renders SectionHeading with correct eyebrow and title', () => {
-    render(<HAOMTGVSection theme="light" />);
+    renderSection('light');
     expect(screen.getByText('OPERATING PHILOSOPHY')).toBeInTheDocument();
     expect(screen.getByText('H-A-O-M-T-G-V')).toBeInTheDocument();
   });
 
   it('renders all 7 pillar cards', () => {
-    render(<HAOMTGVSection theme="dark" />);
+    renderSection('dark');
     const pillars = ['Human', 'Agents', 'Orchestration', 'Memory', 'Tools', 'Governance', 'Value'];
     pillars.forEach((pillar) => {
       expect(screen.getByText(pillar)).toBeInTheDocument();
@@ -26,26 +34,26 @@ describe('HAOMTGVSection', () => {
   });
 
   it('renders Lucide icons for each pillar', () => {
-    render(<HAOMTGVSection theme="light" />);
+    renderSection('light');
     // Each pillar should have an icon (svg element)
     const svgs = document.querySelectorAll('svg');
     expect(svgs.length).toBeGreaterThanOrEqual(7);
   });
 
   it('applies governance ring accent on Governance pillar', () => {
-    render(<HAOMTGVSection theme="dark" />);
+    renderSection('dark');
     const governanceCard = screen.getByText('Governance').closest('article');
     expect(governanceCard).toHaveClass('ring-1');
     expect(governanceCard).toHaveClass('ring-ls-red/30');
   });
 
   it('renders governance callout paragraph', () => {
-    render(<HAOMTGVSection theme="light" />);
+    renderSection('light');
     expect(screen.getByText(/Human direction is not a checkpoint at the end/)).toBeInTheDocument();
   });
 
   it('applies correct theme classes for light mode', () => {
-    render(<HAOMTGVSection theme="light" />);
+    renderSection('light');
     const firstCard = screen.getByText('Human').closest('article');
     expect(firstCard).toHaveClass('bg-ls-white/95');
     expect(firstCard).toHaveClass('border-ls-grey-dark');
@@ -53,7 +61,7 @@ describe('HAOMTGVSection', () => {
   });
 
   it('applies correct theme classes for dark mode', () => {
-    render(<HAOMTGVSection theme="dark" />);
+    renderSection('dark');
     const firstCard = screen.getByText('Human').closest('article');
     expect(firstCard).toHaveClass('bg-ls-navy/80');
     expect(firstCard).toHaveClass('border-ls-white/15');
@@ -61,7 +69,7 @@ describe('HAOMTGVSection', () => {
   });
 
   it('renders pillar descriptions', () => {
-    render(<HAOMTGVSection theme="dark" />);
+    renderSection('dark');
     expect(screen.getByText(/People set intent, own outcomes, and hold final decision authority/)).toBeInTheDocument();
     expect(screen.getByText(/Specialized AI roles with explicit scopes/)).toBeInTheDocument();
     expect(screen.getByText(/Deterministic routing of tasks, data, and decisions/)).toBeInTheDocument();
@@ -72,7 +80,7 @@ describe('HAOMTGVSection', () => {
   });
 
   it('uses Reveal component for staggered animation', () => {
-    render(<HAOMTGVSection theme="dark" />);
+    renderSection('dark');
     // Reveal wraps each article - verify articles exist with proper structure
     const articles = document.querySelectorAll('article');
     expect(articles.length).toBe(7);

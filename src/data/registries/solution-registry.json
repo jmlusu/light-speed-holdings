@@ -9,7 +9,7 @@
       "description": "Build governed multi-agent orchestration platforms where AI agents execute specialized roles across departments, with human CEO oversight, append-only SHA-256 sealed audit trails, and deterministic routing.",
       "eyebrow": "AI OPERATING MODEL",
       "capabilities": [
-        "Multi-Agent Orchestration (90 agents, 20 departments)",
+        "Multi-Agent Orchestration (89 AI agents + 1 Human CEO, 20 departments)",
         "5-Tier Human-in-the-Loop Approval Matrix",
         "Append-Only SHA-256 Sealed Audit Trails",
         "Agent Registry & Role Definitions",
@@ -167,7 +167,7 @@
     {
       "slug": "ai-company-builder-deployment",
       "title": "AI Company Builder Deployment",
-      "description": "License and deploy the same 90-agent orchestration engine that runs LightSpeed Holdings on your infrastructure: self-hosted, provider-agnostic, with one-on-one onboarding and support.",
+      "description": "License and deploy the same 90-role orchestration engine that runs LightSpeed Holdings on your infrastructure: self-hosted, provider-agnostic, with one-on-one onboarding and support.",
       "eyebrow": "PLATFORM LICENSING",
       "capabilities": [
         "AI Company Builder License (E1): Self-Hosted on Your Laptop/VPS",

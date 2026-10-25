@@ -1,147 +1,502 @@
 {
   "version": "1.0",
-  "description": "Canonical FAQ registry per Directive §18. 28 evidence-controlled questions and answers.",
-  "lastUpdated": "2026-10-05",
+  "description": "Canonical FAQ registry per Directive 18. 28 evidence-controlled questions and answers: all 28 entries carry evidence entries (65 verified, 7 unknown).",
+  "lastUpdated": "2026-10-25",
   "faqs": [
     {
       "id": "faq-01",
       "question": "What is LightSpeed Holdings?",
-      "answer": "LightSpeed Holdings Limited is an AI-native company builder and operating company based in Lilongwe, Malawi. We design, build, and govern AI-native businesses, intelligent workflows, and agentic systems for organisations across Africa and beyond. Our tagline: ASPIRE. ACT. ACHIEVE. Our positioning: The AI-native company builder for Africa."
+      "answer": "LightSpeed Holdings Limited is an AI-native company builder and operating company based in Lilongwe, Malawi. We design, build, and govern AI-native businesses, intelligent workflows, and agentic systems for organisations across Africa and beyond. Our tagline: ASPIRE. ACT. ACHIEVE. Our positioning: The AI-native company builder for Africa.",
+      "evidence": [
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#AI-native company builder headquartered in Lilongwe, Malawi",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/siteContent.ts#tagline: 'ASPIRE. ACT. ACHIEVE.',",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/siteContent.ts#in Malawi, across Africa and beyond.",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-02",
       "question": "What is the AI Company Builder?",
-      "answer": "A governed multi-agent orchestration platform where 90 AI agents and 1 human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable. No client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and append-only SHA-256 sealed audit trails for every action."
+      "answer": "A governed multi-agent orchestration platform where 89 AI agents and 1 Human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable. No client-facing deliverable ships without human sign-off. The platform enforces 5-tier human-in-the-loop approvals, 4 governance gates (Contract, DPA, Compliance, Security), and append-only SHA-256 sealed audit trails for every action.",
+      "evidence": [
+        {
+          "source": "claim.agent-count",
+          "status": "verified"
+        },
+        {
+          "source": "claim.department-count",
+          "status": "verified"
+        },
+        {
+          "source": "claim.five-tier-approval",
+          "status": "verified"
+        },
+        {
+          "source": "claim.four-governance-gates",
+          "status": "verified"
+        },
+        {
+          "source": "claim.append-only-audit-trails",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-03",
       "question": "How many agents does LightSpeed have?",
-      "answer": "LightSpeed's operating model contains 90 roles: 89 AI agents plus one Human CEO. The Human CEO agent acts at the explicit direction of the actual Human CEO/founder. Never describe LightSpeed as operating without human authority. The canonical technical explanation: \"89 AI agents + 1 Human CEO across 20 departments.\""
+      "answer": "LightSpeed's operating model contains 90 roles: 89 AI agents plus one Human CEO. The Human CEO agent acts at the explicit direction of the actual Human CEO/founder. Never describe LightSpeed as operating without human authority. The canonical technical explanation: \"89 AI agents + 1 Human CEO across 20 departments.\"",
+      "evidence": [
+        {
+          "source": "claim.agent-count",
+          "status": "verified",
+          "note": "Supports 90 roles = 89 AI agents + 1 Human CEO across 20 departments. The phrasing that the Human CEO agent acts \"at the explicit direction of the actual Human CEO/founder\" is not written verbatim in any repo source."
+        }
+      ]
     },
     {
       "id": "faq-04",
       "question": "What does the Human CEO do?",
-      "answer": "The Human CEO sets company vision, mission, and long-term strategy; makes final decisions on high-stakes matters; represents the company externally to stakeholders and media; hires, manages, and evaluates the executive team; communicates with the Board of Directors; approves major budgets and investments; establishes and maintains company culture and values; resolves executive-level conflicts; authorizes production deployments and critical releases; and drives organizational growth and market expansion. The Human CEO has final authority. AI executes, humans decide."
+      "answer": "The Human CEO sets company vision, mission, and long-term strategy; makes final decisions on high-stakes matters; represents the company externally to stakeholders and media; hires, manages, and evaluates the executive team; communicates with the Board of Directors; approves major budgets and investments; establishes and maintains company culture and values; resolves executive-level conflicts; authorizes production deployments and critical releases; and drives organizational growth and market expansion. The Human CEO has final authority. AI executes, humans decide.",
+      "evidence": [
+        {
+          "source": "./company-registry.yaml#Authorize production deployments and critical releases.",
+          "status": "verified"
+        },
+        {
+          "source": "./company-registry.yaml#Resolve executive-level conflicts and disputes.",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#Agents execute; the human CEO owns the outcome.",
+          "status": "verified"
+        },
+        {
+          "source": "./company-registry.yaml#Make final decisions on high-stakes matters.",
+          "status": "verified",
+          "note": "The closing line \"AI executes, humans decide\" is a slogan; the repo states the same idea as \"Agents execute; the human CEO owns the outcome.\""
+        }
+      ]
     },
     {
       "id": "faq-05",
       "question": "Does LightSpeed replace employees?",
-      "answer": "No. Agents execute tasks; people own outcomes. Every engagement runs through 5-tier human-in-the-loop approvals, so your team keeps decision authority while the platform carries the workload. The principle is: \"Agents execute. The Human CEO owns operational intent and final decision authority.\" LightSpeed augments teams; it does not replace human judgment or accountability."
+      "answer": "No. Agents execute tasks; people own outcomes. Every engagement runs through 5-tier human-in-the-loop approvals, so your team keeps decision authority while the platform carries the workload. The principle is: \"Agents execute. The Human CEO owns operational intent and final decision authority.\" LightSpeed augments teams; it does not replace human judgment or accountability.",
+      "evidence": [
+        {
+          "source": "claim.five-tier-approval",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#Agents execute; the human CEO owns the outcome.",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-06",
       "question": "What is H-A-O-M-T-G-V?",
-      "answer": "H-A-O-M-T-G-V is LightSpeed's core intellectual and architectural framework: H: HUMAN (operational intent and final decision authority); A: AGENTS (90 specialized operating roles: 89 AI agents + 1 Human CEO); O: ORCHESTRATION (deterministic routing of data, tasks, and decisions across workflows); M: MEMORY (persistent contextual data storage across long-running tasks); T: TOOLS (isolated execution environments for API integrations and actions); G: GOVERNANCE (five-tier approval controls and append-only sealed logging); V: VALUE (measurable reductions in cost and operational latency). The Human layer remains above the system; Value is the business outcome."
+      "answer": "H-A-O-M-T-G-V is LightSpeed's core intellectual and architectural framework: H: HUMAN (operational intent and final decision authority); A: AGENTS (90 specialized operating roles: 89 AI agents + 1 Human CEO); O: ORCHESTRATION (deterministic routing of data, tasks, and decisions across workflows); M: MEMORY (persistent contextual data storage across long-running tasks); T: TOOLS (isolated execution environments for API integrations and actions); G: GOVERNANCE (five-tier approval controls and append-only sealed logging); V: VALUE (measurable reductions in cost and operational latency). The Human layer remains above the system; Value is the business outcome.",
+      "evidence": [
+        {
+          "source": "src/components/home/HAOMTGVSection.tsx#People set intent, own outcomes, and hold final decision authority.",
+          "status": "verified"
+        },
+        {
+          "source": "src/components/home/HAOMTGVSection.tsx#Deterministic routing of tasks, data, and decisions across workflows",
+          "status": "verified"
+        },
+        {
+          "source": "src/components/home/HAOMTGVSection.tsx#Persistent contextual state across long-running work",
+          "status": "verified"
+        },
+        {
+          "source": "claim.agent-count",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-07",
       "question": "How does human approval work?",
-      "answer": "Every agent action is risk-classified and routed through a 5-tier approval matrix: Tier 1 (Auto): fully autonomous within defined boundaries; Tier 2 (Lead): department/lead approval; Tier 3 (Executive): C-level approval; Tier 4 (CEO): Human CEO sign-off; Tier 5 (Board): board-level decisions. Pending approvals expire on a periodic sweep instead of queueing forever. Risk-classified actions require tiered approval mapped to a 5×5 likelihood × impact matrix."
+      "answer": "Every agent action is risk-classified and routed through a 5-tier approval matrix: Tier 1 (Auto): fully autonomous within defined boundaries; Tier 2 (Lead): department/lead approval; Tier 3 (Executive): C-level approval; Tier 4 (CEO): Human CEO sign-off; Tier 5 (Board): board-level decisions. Pending approvals expire on a periodic sweep instead of queueing forever. Risk-classified actions require tiered approval mapped to a 5Ã—5 likelihood Ã— impact matrix.",
+      "evidence": [
+        {
+          "source": "claim.five-tier-approval",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/registries/use-case-registry.json#Tier 2 (Department Lead) for procurement triggers; Tier 1 (Auto) for monitoring and alerts",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#Twenty-five distinct actions are risk-gated in the approval matrix.",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-08",
       "question": "What does five-tier governance mean?",
-      "answer": "Five-tier governance means every consequential action passes through a risk-classified approval chain with five levels of human oversight (Auto → Lead → Executive → CEO → Board), four mandatory governance gates (Contract, Data Processing Agreement, Compliance Review, Security Assessment) before work begins, append-only SHA-256 sealed audit trails for every action, and expiry sweeps that prevent stale approvals from blocking work indefinitely. It ensures accountability at every level."
+      "answer": "Five-tier governance means every consequential action passes through a risk-classified approval chain with five levels of human oversight (Auto â†’ Lead â†’ Executive â†’ CEO â†’ Board), four mandatory governance gates (Contract, Data Processing Agreement, Compliance Review, Security Assessment) before work begins, append-only SHA-256 sealed audit trails for every action, and expiry sweeps that prevent stale approvals from blocking work indefinitely. It ensures accountability at every level.",
+      "evidence": [
+        {
+          "source": "claim.five-tier-approval",
+          "status": "verified"
+        },
+        {
+          "source": "claim.four-governance-gates",
+          "status": "verified"
+        },
+        {
+          "source": "claim.append-only-audit-trails",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/siteContent.ts#stale approvals expire instead of queueing forever",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-09",
       "question": "How are actions audited?",
-      "answer": "Every agent action generates an append-only JSONL audit event: correlated, queryable, and never overwritten. Each event is cryptographically sealed with SHA-256, making the trail tamper-evident. The audit log captures prompts, tool invocations, outputs, approval decisions, and escalation events. This is not optional logging; it is the platform's operating substrate."
+      "answer": "Every agent action generates an append-only JSONL audit event: correlated, queryable, and never overwritten. Each event is cryptographically sealed with SHA-256, making the trail tamper-evident. The audit log captures prompts, tool invocations, outputs, approval decisions, and escalation events. This is not optional logging; it is the platform's operating substrate.",
+      "evidence": [
+        {
+          "source": "claim.append-only-audit-trails",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#Every action generates an append-only JSONL audit event",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-10",
       "question": "What is the role of memory?",
-      "answer": "Memory is a 6-type persistent store (episodic, semantic, procedural, relational, temporal, aggregate) that integrates with the executor recall loop. Agents recall before they act: memory is queryable and attributable. Consolidation and forgetting policies bound growth. Memory recall latency stays within executor budgets. It enables long-running tasks, context preservation across sessions, and organizational learning."
+      "answer": "Memory is a 6-type persistent store (episodic, semantic, procedural, relational, temporal, aggregate) that integrates with the executor recall loop. Agents recall before they act: memory is queryable and attributable. Consolidation and forgetting policies bound growth. Memory recall latency stays within executor budgets. It enables long-running tasks, context preservation across sessions, and organizational learning.",
+      "evidence": [
+        {
+          "source": "src/data/registries/capabilities-registry.json#6-type memory store (episodic, semantic, procedural, relational, temporal, aggregate) with recall-before-execute.",
+          "status": "verified"
+        },
+        {
+          "source": "src/ai_company/cli/memory.py#episodic, semantic, procedural, relational, temporal, aggregate",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/registries/capabilities-registry.json#with recall-before-execute.",
+          "status": "unknown",
+          "note": "The 6-type store and recall-before-execute are documented, but no source measures \"recall latency stays within executor budgets\"; that sentence is unsupported."
+        }
+      ]
     },
     {
       "id": "faq-11",
       "question": "What tools can agents use?",
-      "answer": "Agents use a canonical tool vocabulary of 7 tools: read (file contents), edit (exact string replacement), grep (regex search), list (directory entries), bash (shell commands), webfetch (HTTP/HTTPS fetch), and task (launch sub-agent). Legacy aliases (write→edit, execute→bash, delegate→task, web_search→webfetch) are accepted for backward compatibility. The ToolRunner validates against the canonical list; unknown tools return an error. Agents do not have unrestricted shell access; tools are isolated execution environments."
+      "answer": "Agents use a canonical tool vocabulary of 7 tools: read (file contents), edit (exact string replacement), grep (regex search), list (directory entries), bash (shell commands), webfetch (HTTP/HTTPS fetch), and task (launch sub-agent). Legacy aliases (writeâ†’edit, executeâ†’bash, delegateâ†’task, web_searchâ†’webfetch) are accepted for backward compatibility. The ToolRunner validates against the canonical list; unknown tools return an error. Agents do not have unrestricted shell access; tools are isolated execution environments.",
+      "evidence": [
+        {
+          "source": "./AGENTS.md#Agent generators must emit only the canonical 7 tools.",
+          "status": "verified"
+        },
+        {
+          "source": "./AGENTS.md#Alias policy (backward-compatible only)",
+          "status": "verified"
+        },
+        {
+          "source": "./AGENTS.md#ToolRunner validates against this list; unknown tools return an error.",
+          "status": "unknown",
+          "note": "The canonical 7 tools, aliases, and ToolRunner validation are sourced. The added sentence \"Agents do not have unrestricted shell access\" is not stated in the tool-vocabulary section."
+        }
+      ]
     },
     {
       "id": "faq-12",
       "question": "What models does LightSpeed use?",
-      "answer": "LightSpeed uses a model-agnostic, provider-agnostic routing architecture with 9 LLM providers configured. The routing principle: OPEN/LOCAL FIRST → OPEN-WEIGHT MODELS → LOCAL INFERENCE → SELF-HOSTED/LOW-COST INFRASTRUCTURE → COMMERCIAL MODELS WHEN THEY PROVIDE A MATERIAL QUALITY/LATENCY/CAPABILITY ADVANTAGE → GOVERNED MODEL ROUTING. Local Ollama models (free) handle routine classification, extraction, summarization, embeddings, and repetitive workflows. Mid-tier models handle reasoning, planning, synthesis. Premium models handle exceptional reasoning, complex generation, difficult edge cases. Human handles decisions, approvals, accountability. We do not present commercial proprietary models as the default for every task."
+      "answer": "LightSpeed uses a model-agnostic, provider-agnostic routing architecture with 9 LLM providers configured. The routing principle: OPEN/LOCAL FIRST â†’ OPEN-WEIGHT MODELS â†’ LOCAL INFERENCE â†’ SELF-HOSTED/LOW-COST INFRASTRUCTURE â†’ COMMERCIAL MODELS WHEN THEY PROVIDE A MATERIAL QUALITY/LATENCY/CAPABILITY ADVANTAGE â†’ GOVERNED MODEL ROUTING. Local Ollama models (free) handle routine classification, extraction, summarization, embeddings, and repetitive workflows. Mid-tier models handle reasoning, planning, synthesis. Premium models handle exceptional reasoning, complex generation, difficult edge cases. Human handles decisions, approvals, accountability. We do not present commercial proprietary models as the default for every task.",
+      "evidence": [
+        {
+          "source": "claim.9-llm-providers",
+          "status": "verified",
+          "note": "claims-registry and this FAQ say nine providers; USE-CASE-CATALOG.md says \"Ten LLM providers are configured\". The discrepancy is unresolved, so the count should not be treated as settled."
+        }
+      ]
     },
     {
       "id": "faq-13",
       "question": "Why does LightSpeed prioritize open and open-weight models?",
-      "answer": "Open-source and open-weight AI is a cornerstone of LightSpeed's operating philosophy and business model: designed for African cost realities, constrained infrastructure, intermittent connectivity, data sovereignty, local deployment, low-bandwidth environments, local compute where appropriate, open model portability, provider independence, and avoiding unnecessary API costs. The architecture follows: use the least expensive model that can reliably do the job. We distinguish accurately between open-source software, open-weight models, commercially licensed models, and hosted APIs."
+      "answer": "Open-source and open-weight AI is a cornerstone of LightSpeed's operating philosophy and business model: designed for African cost realities, constrained infrastructure, intermittent connectivity, data sovereignty, local deployment, low-bandwidth environments, local compute where appropriate, open model portability, provider independence, and avoiding unnecessary API costs. The architecture follows: use the least expensive model that can reliably do the job. We distinguish accurately between open-source software, open-weight models, commercially licensed models, and hosted APIs.",
+      "evidence": [
+        {
+          "source": "docs/directives/WEBSITE TRANSFORMATION & REPOSITORY CONSOLIDATION DIRECTIVE.md#African cost realities",
+          "status": "verified"
+        },
+        {
+          "source": "docs/directives/WEBSITE TRANSFORMATION & REPOSITORY CONSOLIDATION DIRECTIVE.md#Use the least expensive model that can reliably do the job.",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-14",
       "question": "Can LightSpeed operate without expensive API calls?",
-      "answer": "Yes. The platform is engineered for local-first operation with free local models via Ollama for budget-constrained deployments. Routine tasks (classification, extraction, summarization, embeddings, repetitive workflows) run on local open-weight models at near-zero marginal cost. Commercial APIs are only routed when they provide a material quality/latency/capability advantage. This is not theoretical. LightSpeed itself operates this way daily."
+      "answer": "Yes. The platform is engineered for local-first operation with free local models via Ollama for budget-constrained deployments. Routine tasks (classification, extraction, summarization, embeddings, repetitive workflows) run on local open-weight models at near-zero marginal cost. Commercial APIs are only routed when they provide a material quality/latency/capability advantage. This is not theoretical. LightSpeed itself operates this way daily.",
+      "evidence": [
+        {
+          "source": "claim.sovereign-offline-first",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#This is the \"proven in-house\" rung of the honesty ladder",
+          "status": "verified"
+        },
+        {
+          "source": "claim.9-llm-providers",
+          "status": "unknown",
+          "note": "Local Ollama routing is documented, but \"near-zero marginal cost\" is not measured anywhere in the repo. Treat it as an expectation, not a measured result."
+        }
+      ]
     },
     {
       "id": "faq-15",
       "question": "Can LightSpeed run locally?",
-      "answer": "Yes. The platform supports offline-first operation on local infrastructure with a Zero-Cloud Boundary option for state, health, and financial data. The AI Company Builder license (E1) runs on your laptop or VPS: self-hosted, provider-agnostic, and extensible. Local Ollama models provide free inference for routine tasks. Data never leaves your infrastructure unless you configure cloud routing."
+      "answer": "Yes. The platform supports offline-first operation on local infrastructure with a Zero-Cloud Boundary option for state, health, and financial data. The AI Company Builder license (E1) runs on your laptop or VPS: self-hosted, provider-agnostic, and extensible. Local Ollama models provide free inference for routine tasks. Data never leaves your infrastructure unless you configure cloud routing.",
+      "evidence": [
+        {
+          "source": "claim.sovereign-offline-first",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#running on your laptop/VPS",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-16",
       "question": "Can LightSpeed operate in low-bandwidth environments?",
-      "answer": "Yes. The architecture is engineered for African infrastructure realities: intermittent connectivity, low bandwidth, and constrained compute. Local-first inference, offline-first sync, and model routing that prefers local models mean the platform functions without persistent high-speed connectivity. WhatsApp-native workflows operate on 2G/3G networks. This is a design principle, not an afterthought."
+      "answer": "Yes. The architecture is engineered for African infrastructure realities: intermittent connectivity, low bandwidth, and constrained compute. Local-first inference, offline-first sync, and model routing that prefers local models mean the platform functions without persistent high-speed connectivity. WhatsApp-native workflows operate on 2G/3G networks. This is a design principle, not an afterthought.",
+      "evidence": [
+        {
+          "source": "claim.sovereign-offline-first",
+          "status": "verified",
+          "note": "Supports local-first operation engineered for low-bandwidth environments. The specific claim that WhatsApp workflows \"operate on 2G/3G networks\" is not sourced anywhere in the repo."
+        }
+      ]
     },
     {
       "id": "faq-17",
       "question": "How does LightSpeed approach data sovereignty?",
-      "answer": "Data sovereignty is a default posture, not a feature flag. The platform offers a Zero-Cloud Boundary option for state, health, and financial data, meaning data never leaves your infrastructure. Malawi Data Protection Act 2017/2024 compliance and GDPR-level handling apply from day one for donor and UN data flows. Cross-border LLM transfer requires explicit consent workflows. Every engagement clears 4 governance gates (Contract, DPA, Compliance, Security) before work begins."
+      "answer": "Data sovereignty is a default posture, not a feature flag. The platform offers a Zero-Cloud Boundary option for state, health, and financial data, meaning data never leaves your infrastructure. Malawi Data Protection Act 2017/2024 compliance and GDPR-level handling apply from day one for donor and UN data flows. Cross-border LLM transfer requires explicit consent workflows. Every engagement clears 4 governance gates (Contract, DPA, Compliance, Security) before work begins.",
+      "evidence": [
+        {
+          "source": "claim.data-protection-act-compliance",
+          "status": "verified"
+        },
+        {
+          "source": "claim.sovereign-offline-first",
+          "status": "verified"
+        },
+        {
+          "source": "claim.four-governance-gates",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-18",
       "question": "What sectors does LightSpeed work with?",
-      "answer": "LightSpeed targets 10 sectors across Africa and beyond: Financial Services (proven), Healthcare & Public Health (future), Agriculture & Agritech (pilot), Education & Academia (pilot), Government & Public Sector (current capability), Regulators & Standards Institutions (demonstration), Research & Universities (demonstration), SMEs & Private Enterprise (fieldable), Development & Nonprofit Organizations (pilot), Technology & Digital Businesses (proven in-house). Each sector carries an explicit honesty badge: we do not claim experience we do not have."
+      "answer": "LightSpeed targets 10 sectors across Africa and beyond: Financial Services (proven), Healthcare & Public Health (future), Agriculture & Agritech (pilot), Education & Academia (pilot), Government & Public Sector (current capability), Regulators & Standards Institutions (demonstration), Research & Universities (demonstration), SMEs & Private Enterprise (fieldable), Development & Nonprofit Organizations (pilot), Technology & Digital Businesses (proven in-house). Each sector carries an explicit honesty badge: we do not claim experience we do not have.",
+      "evidence": [
+        {
+          "source": "src/data/registries/sector-registry.json#10 target sectors with evidence classification",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/registries/sector-registry.json#CURRENT CAPABILITY",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-19",
       "question": "Does LightSpeed work with universities?",
-      "answer": "Yes, in active development. LightSpeed is building University & Talent Capacity Building programs in partnership with Malawian universities (MUBAS, UNIMA) to build a sovereign agentic-AI talent pipeline across Africa. The National AI Strategy consultation submission advocates for governing agentic AI alongside generative AI. We do not claim formal signed partnerships; this work is in active development and we say so honestly."
+      "answer": "Yes, in active development. LightSpeed is building University & Talent Capacity Building programs in partnership with Malawian universities (MUBAS, UNIMA) to build a sovereign agentic-AI talent pipeline across Africa. The National AI Strategy consultation submission advocates for governing agentic AI alongside generative AI. We do not claim formal signed partnerships; this work is in active development and we say so honestly.",
+      "evidence": [
+        {
+          "source": "claim.university-capacity-building",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/registries/sector-registry.json#University & Talent Capacity Building in active development.",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-20",
       "question": "Does LightSpeed work with regulators?",
-      "answer": "Yes, in active development. The SADC Agentic AI Governance Framework was authored by CEO Jack Mlusu and submitted to digital ministers, MACRA, CRASA, central banks, and regional development banks, aligned with the AU Continental AI Strategy. LightSpeed engages regulators through policy submissions and framework development. We do not claim formal regulatory endorsements or approvals; this is policy work in progress."
+      "answer": "Yes, in active development. The SADC Agentic AI Governance Framework was authored by CEO Jack Mlusu and submitted to digital ministers, MACRA, CRASA, central banks, and regional development banks, aligned with the AU Continental AI Strategy. LightSpeed engages regulators through policy submissions and framework development. We do not claim formal regulatory endorsements or approvals; this is policy work in progress.",
+      "evidence": [
+        {
+          "source": "claim.sadc-governance-framework",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/registries/sector-registry.json#SADC Agentic AI Governance Framework authored by CEO Jack Mlusu",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-21",
       "question": "What is Pharos?",
-      "answer": "Pharos is LightSpeed's in-house thought-leadership team, not a generic blog. Pharos turns LightSpeed's engineering, research, experimentation, and field observations into public intellectual work covering: Agentic AI, AI Company Building, African AI, Open/Open-Weight AI, AI Economics, AI Governance, AI Policy, AI Regulation, AI Safety, Digital Transformation, Data Architecture, AI Use Cases, Research, Universities, Academia, SADC Technology, Malawi Technology, Sovereign AI, and Resource-Constrained AI Deployment. Every major insight links back to Use Cases, Solutions, Sectors, AI Company Builder, and Contact/engagement."
+      "answer": "Pharos is LightSpeed's in-house thought-leadership team, not a generic blog. Pharos turns LightSpeed's engineering, research, experimentation, and field observations into public intellectual work covering: Agentic AI, AI Company Building, African AI, Open/Open-Weight AI, AI Economics, AI Governance, AI Policy, AI Regulation, AI Safety, Digital Transformation, Data Architecture, AI Use Cases, Research, Universities, Academia, SADC Technology, Malawi Technology, Sovereign AI, and Resource-Constrained AI Deployment. Every major insight links back to Use Cases, Solutions, Sectors, AI Company Builder, and Contact/engagement.",
+      "evidence": [
+        {
+          "source": "docs/directives/WEBSITE TRANSFORMATION & REPOSITORY CONSOLIDATION DIRECTIVE.md#Pharos is the in-house LightSpeed thought-leadership team.",
+          "status": "verified"
+        },
+        {
+          "source": "src/components/home/InsightsSection.tsx#Pharos is LightSpeed's thought-leadership practice",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-22",
       "question": "What is a Use Case?",
-      "answer": "A Use Case answers \"What can LightSpeed actually do?\" Each Use Case communicates: problem, workflow, agents involved, inputs, orchestration, tools, human approval, output, business value, sector, solution, and readiness/evidence status. Status labels: LIVE, PROVEN IN-HOUSE, PILOT, DEMONSTRATION, FIELDABLE, FUTURE. We never fabricate customer evidence, imply paying clients unless verified, or invent testimonials, logos, contracts, deployments, metrics, partnerships, government approvals, university partnerships, or regulator endorsements."
+      "answer": "A Use Case answers \"What can LightSpeed actually do?\" Each Use Case communicates: problem, workflow, agents involved, inputs, orchestration, tools, human approval, output, business value, sector, solution, and readiness/evidence status. Status labels: LIVE, PROVEN IN-HOUSE, PILOT, DEMONSTRATION, FIELDABLE, FUTURE. We never fabricate customer evidence, imply paying clients unless verified, or invent testimonials, logos, contracts, deployments, metrics, partnerships, government approvals, university partnerships, or regulator endorsements.",
+      "evidence": [
+        {
+          "source": "docs/directives/WEBSITE TRANSFORMATION & REPOSITORY CONSOLIDATION DIRECTIVE.md#What can LightSpeed actually do?",
+          "status": "verified"
+        },
+        {
+          "source": "docs/directives/WEBSITE TRANSFORMATION & REPOSITORY CONSOLIDATION DIRECTIVE.md#readiness/evidence status",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-23",
       "question": "What does 'Proven In-House' mean?",
-      "answer": "'Proven In-House' means the capability, workflow, or outcome has been verified running inside LightSpeed Holdings' own operations, not delivered to an external paying client. Examples: the 5-tier approval matrix, SHA-256 audit trails, 4 governance gates, RBAC with 90-day key rotation, canonical registry numbers (90 agents, 20 departments, test counts), and sovereign offline-first operation are all proven in-house because LightSpeed uses them daily to run itself."
+      "answer": "'Proven In-House' means the capability, workflow, or outcome has been verified running inside LightSpeed Holdings' own operations, not delivered to an external paying client. Examples: the 5-tier approval matrix, SHA-256 audit trails, 4 governance gates, RBAC with 90-day key rotation, canonical registry numbers (90 agents, 20 departments, test counts), and sovereign offline-first operation are all proven in-house because LightSpeed uses them daily to run itself.",
+      "evidence": [
+        {
+          "source": "docs/CLAIMS_GOVERNANCE.md#Running in LightSpeed operations, validated by internal systems/tests",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#This is the \"proven in-house\" rung of the honesty ladder",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-24",
       "question": "Is every Use Case a paying-client deployment?",
-      "answer": "Honestly: no. Nothing has been delivered to paying clients: all offers are fieldable in 2026, in pilot, or in active development, and every proof point on this site carries an explicit honesty badge. We would rather show you exactly where we are than invent a track record. Use Cases include: LIVE (J&S StopOver Bar), PROVEN IN-HOUSE (LightSpeed meta use case), PILOT (agricultural cooperative, university student management, health M&E, VSLA, Chichewa AI), DEMONSTRATION (enterprise automation, consulting firm scale, non-profit ops, government compliance, e-commerce, healthcare admin, financial services), FIELDABLE (SME digital presence), FUTURE (healthcare deployment)."
+      "answer": "Honestly: no. Nothing has been delivered to paying clients: all offers are fieldable in 2026, in pilot, or in active development, and every proof point on this site carries an explicit honesty badge. We would rather show you exactly where we are than invent a track record. Use Cases include: LIVE (J&S StopOver Bar), PROVEN IN-HOUSE (LightSpeed meta use case), PILOT (agricultural cooperative, university student management, health M&E, VSLA, Chichewa AI), DEMONSTRATION (enterprise automation, consulting firm scale, non-profit ops, government compliance, e-commerce, healthcare admin, financial services), FIELDABLE (SME digital presence), FUTURE (healthcare deployment).",
+      "evidence": [
+        {
+          "source": "claim.no-paying-clients",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#Nothing in this document has been delivered to paying clients.",
+          "status": "verified"
+        }
+      ]
     },
     {
       "id": "faq-25",
       "question": "How do we engage LightSpeed?",
-      "answer": "Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help, and exactly what it takes to start. Qualified enquiries get a response within two business days. The engagement path: Brief → AI Readiness Assessment → Governance Gates (G1-G4) → Scoped Proposal → Deployment. No hidden steps, no surprise costs."
+      "answer": "Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help, and exactly what it takes to start. Qualified enquiries get a response within two business days. The engagement path: Brief â†’ AI Readiness Assessment â†’ Governance Gates (G1-G4) â†’ Scoped Proposal â†’ Deployment. No hidden steps, no surprise costs.",
+      "evidence": [
+        {
+          "source": "src/lib/enquiry.ts#We respond to qualified enquiries within two business days.",
+          "status": "verified"
+        },
+        {
+          "source": "claim.four-governance-gates",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/registries/cta-registry.json#REQUEST AN AI READINESS ASSESSMENT",
+          "status": "verified"
+        },
+        {
+          "source": "claim.four-governance-gates",
+          "status": "unknown",
+          "note": "The G1-G4 gates and the two-business-day response are sourced, but the ordered path \"Brief -> Assessment -> Gates -> Scoped Proposal -> Deployment\" is not written verbatim anywhere."
+        }
+      ]
     },
     {
       "id": "faq-26",
       "question": "What does an AI Readiness Assessment involve?",
-      "answer": "A structured discovery engagement that evaluates your organization's data maturity, infrastructure readiness, governance capacity, team skills, and use-case viability for AI deployment. Deliverables: assessment report with gap analysis, prioritized use-case roadmap, governance requirements, infrastructure recommendations, and phased engagement plan. Priced for regional markets: accessible pricing in local currency rather than foreign-currency consultancy rates."
+      "answer": "A structured discovery engagement that evaluates your organization's data maturity, infrastructure readiness, governance capacity, team skills, and use-case viability for AI deployment. Deliverables: assessment report with gap analysis, prioritized use-case roadmap, governance requirements, infrastructure recommendations, and phased engagement plan. Priced for regional markets: accessible pricing in local currency rather than foreign-currency consultancy rates.",
+      "evidence": [
+        {
+          "source": "src/data/registries/solution-registry.json#AI Readiness Assessment",
+          "status": "unknown",
+          "note": "The repo names the AI Readiness Assessment as an offering but documents none of the deliverables listed here (gap analysis, prioritised use-case roadmap, governance requirements, infrastructure recommendations, phased plan). The \"priced for regional markets\" sentence is supported elsewhere; the assessment scope is not."
+        }
+      ]
     },
     {
       "id": "faq-27",
       "question": "What does LightSpeed cost?",
-      "answer": "Engagements are scoped per brief and priced for regional markets: accessible pricing in local currency (MWK) rather than foreign-currency consultancy rates. There is no public rate card; start a conversation and we will tell you plainly what your project takes. Example offer pricing (from catalog): Business Website MWK 800,000 (~$450), E-Commerce MWK 1,800,000 (~$1,000), AI Company Builder License MWK 3,500,000 (~$2,000) + support retainer. International NGO engagements quoted in USD. 50% upfront / 50% on delivery for one-off projects."
+      "answer": "Engagements are scoped per brief and priced for regional markets: accessible pricing in local currency (MWK) rather than foreign-currency consultancy rates. There is no public rate card; start a conversation and we will tell you plainly what your project takes. Example offer pricing (from catalog): Business Website MWK 800,000 (~$450), E-Commerce MWK 1,800,000 (~$1,000), AI Company Builder License MWK 3,500,000 (~$2,000) + support retainer. International NGO engagements quoted in USD. 50% upfront / 50% on delivery for one-off projects.",
+      "evidence": [
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#MWK 800,000",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#MWK 3,500,000",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/offerFamilies.ts#50% upfront / 50% on delivery for all one-off projects.",
+          "status": "verified"
+        },
+        {
+          "source": "docs/client-facing/USE-CASE-CATALOG.md#Pricing is to be validated with 2-3 real prospects before publishing.",
+          "status": "unknown",
+          "note": "The figures exist in offerFamilies.ts and the catalog, but the catalog itself flags them as offer language pending prospect validation. They are published prices, not validated market prices."
+        }
+      ]
     },
     {
       "id": "faq-28",
       "question": "How quickly can an engagement begin?",
-      "answer": "Qualified enquiries receive a response within two business days. AI Readiness Assessments can begin within one week of agreement. Platform licensing (E1) setup takes 1-2 weeks. Pilot engagements typically start within 2-3 weeks after governance gates clear. The bottleneck is governance (G1-G4), not capacity: we prioritize doing it right over doing it fast."
+      "answer": "Qualified enquiries receive a response within two business days. AI Readiness Assessments can begin within one week of agreement. Platform licensing (E1) setup takes 1-2 weeks. Pilot engagements typically start within 2-3 weeks after governance gates clear. The bottleneck is governance (G1-G4), not capacity: we prioritize doing it right over doing it fast.",
+      "evidence": [
+        {
+          "source": "src/lib/enquiry.ts#We respond to qualified enquiries within two business days.",
+          "status": "verified"
+        },
+        {
+          "source": "docs/Pharos/whitepaper/resource-constrained-deployment-playbook.md#One-off; setup 1-2 weeks",
+          "status": "verified"
+        },
+        {
+          "source": "src/data/registries/solution-registry.json#AI Readiness Assessment",
+          "status": "unknown",
+          "note": "No source states that an assessment can begin within one week of agreement, or that pilots start within 2-3 weeks after gates clear. Only the E1 setup window and the response SLA are sourced."
+        }
+      ]
     }
   ]
 }
