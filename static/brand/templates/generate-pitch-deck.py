@@ -681,9 +681,9 @@ def create_traction_slide(prs):
         color=NAVY,
     )
     built = [
-        "•  Platform shipped; agent registry in production",
+        "•  Platform built, running this company internally",
         "•  Multi-provider routing with cost enforcement",
-        "•  Human approval gates ratified",
+        "•  Human approval gates enforced in code",
         "•  Audit trail and test suite in place",
         "•  Corporate Blueprint adopted",
     ]
@@ -945,7 +945,7 @@ def create_ask_slide(prs):
         "Talent — sales, delivery, compliance, DevRel",
         "Client pilots — Offers A, B and C",
         "Hardware lab — on-prem GPU, field kits",
-        "Compliance — Malawi DPA 2017, GDPR, SOC 2 readiness",
+        "Compliance — DPA 2024 alignment, GDPR opinion, SOC 2 prep",
         "Emergency reserve",
     ]
     add_bullet_list(
@@ -973,7 +973,7 @@ def create_ask_slide(prs):
     milestones = [
         "Signed paying pilots across Offers A–C",
         "Recurring revenue run-rate established",
-        "Governance gates operating under audit",
+        "Governance gates live with tamper-evident audit trail",
         "Repeatable delivery playbook per offer",
     ]
     add_bullet_list(
@@ -1028,7 +1028,7 @@ def create_risks_slide(prs):
         ),
         (
             "Regulatory and data-protection exposure",
-            "Malawi DPA 2017 controls, GDPR opinion, SOC 2 readiness",
+            "Built to DPA 2024 and GDPR-grade handling; SOC 2 planned, not certified",
         ),
         (
             "Single-founder execution risk",
