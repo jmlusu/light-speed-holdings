@@ -1,0 +1,109 @@
+{
+  "run_id": "40184679558",
+  "date": "2026-10-25",
+  "mode": "full",
+  "probe_count": 19,
+  "probes": [
+    {
+      "name": "registry.parse",
+      "status": "ok",
+      "detail": "agents=90"
+    },
+    {
+      "name": "cards.reconcile",
+      "status": "ok",
+      "detail": "registry=90 live=90 bak=0 orphan=[] missing=[]"
+    },
+    {
+      "name": "cards.tools",
+      "status": "ok",
+      "detail": "non-canonical tools: []"
+    },
+    {
+      "name": "ruff.check",
+      "status": "ok",
+      "detail": "All checks passed!"
+    },
+    {
+      "name": "pytest.collect",
+      "status": "ok",
+      "detail": "tests/unit/test_write_through.py::TestMessageBusWriteThrough::test_without_database_writes_file_only | tests/unit/test_write_through.py::TestAuditWriterWriteThrough::test_write_mirrors_to_sqlite | tests/unit/test_write_through.py::TestAuditWriterWriteThrough::test_write_batch_mirrors_to_sqlite | tests/unit/test_write_through.py::TestAuditWriterWriteThrough::test_without_database_writes_file_only | tests/unit/test_write_through.py::TestCostTrackerWriteThrough::test_record_usage_mirrors_to_sqlite "
+    },
+    {
+      "name": "pytest.collect",
+      "status": "ok",
+      "detail": "tests/unit/test_validate_opencode.py::test_valid_v2_card_has_no_errors"
+    },
+    {
+      "name": "drift.manifest",
+      "status": "ok",
+      "detail": "{ |   \"drifts\": [], |   \"warnings\": [], |   \"timestamp\": \"2026-10-25T10:25:45.4516024+00:00\", |   \"checked\": 87, |   \"status\": \"clean\" | }"
+    },
+    {
+      "name": "drift.manifest",
+      "status": "ok",
+      "detail": "drifts=0 checked=87"
+    },
+    {
+      "name": "cards.generated_drift",
+      "status": "ok",
+      "detail": "no drift after regeneration"
+    },
+    {
+      "name": "tree.departments",
+      "status": "ok",
+      "detail": "company=20 config=20 only_company=[] only_config=[]"
+    },
+    {
+      "name": "tree.data_etl",
+      "status": "ok",
+      "detail": "data/etl present"
+    },
+    {
+      "name": "tree.prompts",
+      "status": "ok",
+      "detail": "prompts/*.md=29"
+    },
+    {
+      "name": "gitignore.data.orchestrator.scheduler.yaml",
+      "status": "ok",
+      "detail": "data/orchestrator/scheduler.yaml ignored while required by cli/validate.py"
+    },
+    {
+      "name": "gitignore.data.orchestrator.escalation.yaml",
+      "status": "ok",
+      "detail": "data/orchestrator/escalation.yaml ignored while required by cli/validate.py"
+    },
+    {
+      "name": "gitignore..playwright-cli",
+      "status": "ok",
+      "detail": ".playwright-cli/ present"
+    },
+    {
+      "name": "gitignore.screenshots",
+      "status": "ok",
+      "detail": "screenshots/ present"
+    },
+    {
+      "name": "gitignore.results",
+      "status": "ok",
+      "detail": "results/ present"
+    },
+    {
+      "name": "ci.registry_gate",
+      "status": "ok",
+      "detail": "ci.yml never validates agent registry"
+    },
+    {
+      "name": "ecl.active",
+      "status": "warn",
+      "detail": "active change files=0"
+    }
+  ],
+  "severity_totals": {
+    "critical": 0,
+    "major": 0,
+    "minor": 0
+  },
+  "generated_at": "2026-10-25T10:25:48Z"
+}
