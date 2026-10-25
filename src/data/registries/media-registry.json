@@ -1,0 +1,115 @@
+{
+  "version": "1.0",
+  "description": "Registry of every image the public site renders, with origin, licence and disclosure status.",
+  "lastUpdated": "2026-10-25",
+  "assets": [
+    {
+      "id": "glyph-agents",
+      "path": "/assets/diagrams/micro-illustrations/glyph-agents.svg",
+      "kind": "illustration",
+      "origin": "Authored SVG in repo (public/assets/diagrams/micro-illustrations/glyph-agents.svg): hand-authored 64x64 line-art paths, no embedded raster and no editor metadata; data/media/registry.ts records attribution 'LightSpeed Holdings Design Team' and honestyTier 'proven-in-house'.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "glyph-governance",
+      "path": "/assets/diagrams/micro-illustrations/glyph-governance.svg",
+      "kind": "illustration",
+      "origin": "Authored SVG in repo (public/assets/diagrams/micro-illustrations/glyph-governance.svg): hand-authored 64x64 line-art paths, no embedded raster and no editor metadata; data/media/registry.ts records attribution 'LightSpeed Holdings Design Team' and honestyTier 'proven-in-house'.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "glyph-human",
+      "path": "/assets/diagrams/micro-illustrations/glyph-human.svg",
+      "kind": "illustration",
+      "origin": "Authored SVG in repo (public/assets/diagrams/micro-illustrations/glyph-human.svg): hand-authored 64x64 line-art paths, no embedded raster and no editor metadata; data/media/registry.ts records attribution 'LightSpeed Holdings Design Team' and honestyTier 'proven-in-house'.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "glyph-memory",
+      "path": "/assets/diagrams/micro-illustrations/glyph-memory.svg",
+      "kind": "illustration",
+      "origin": "Authored SVG in repo (public/assets/diagrams/micro-illustrations/glyph-memory.svg): hand-authored 64x64 line-art paths, no embedded raster and no editor metadata; data/media/registry.ts records attribution 'LightSpeed Holdings Design Team' and honestyTier 'proven-in-house'.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "glyph-orchestration",
+      "path": "/assets/diagrams/micro-illustrations/glyph-orchestration.svg",
+      "kind": "illustration",
+      "origin": "Authored SVG in repo (public/assets/diagrams/micro-illustrations/glyph-orchestration.svg): hand-authored 64x64 line-art paths, no embedded raster and no editor metadata; data/media/registry.ts records attribution 'LightSpeed Holdings Design Team' and honestyTier 'proven-in-house'.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "glyph-tools",
+      "path": "/assets/diagrams/micro-illustrations/glyph-tools.svg",
+      "kind": "illustration",
+      "origin": "Authored SVG in repo (public/assets/diagrams/micro-illustrations/glyph-tools.svg): hand-authored 64x64 line-art paths, no embedded raster and no editor metadata; data/media/registry.ts records attribution 'LightSpeed Holdings Design Team' and honestyTier 'proven-in-house'.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "glyph-value",
+      "path": "/assets/diagrams/micro-illustrations/glyph-value.svg",
+      "kind": "illustration",
+      "origin": "Authored SVG in repo (public/assets/diagrams/micro-illustrations/glyph-value.svg): hand-authored 64x64 line-art paths, no embedded raster and no editor metadata; data/media/registry.ts records attribution 'LightSpeed Holdings Design Team' and honestyTier 'proven-in-house'.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "logo-full-v2",
+      "path": "/logo-full-v2.svg",
+      "kind": "logo",
+      "origin": "Authored SVG in repo (public/logo-full-v2.svg): vector paths only (75 path elements, no embedded raster), titled 'LightSpeed Holdings - favicon'; byte-identical (SHA-256 c29b6da8fd28...) to public/logo-icon-v2.svg and public/favicon.svg.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none",
+      "note": "Recorded as observed: the 'full' variant is byte-identical to the icon variant, so it carries no separate wordmark lockup. Renaming or re-exporting is a brand-tree change, not part of this registry."
+    },
+    {
+      "id": "logo-icon-v2",
+      "path": "/logo-icon-v2.svg",
+      "kind": "logo",
+      "origin": "Authored SVG in repo (public/logo-icon-v2.svg): vector paths only (75 path elements, no embedded raster), titled 'LightSpeed Holdings - favicon'; byte-identical (SHA-256 c29b6da8fd28...) to public/logo-full-v2.svg and public/favicon.svg.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "favicon-svg",
+      "path": "/favicon.svg",
+      "kind": "logo",
+      "origin": "Authored SVG in repo (public/favicon.svg): vector paths only (75 path elements, no embedded raster), titled 'LightSpeed Holdings - favicon'; byte-identical (SHA-256 c29b6da8fd28...) to public/logo-full-v2.svg and public/logo-icon-v2.svg.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "favicon-ico",
+      "path": "/favicon.ico",
+      "kind": "logo",
+      "origin": "unknown",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none",
+      "note": "Raster ICO containing six embedded PNG sizes (16 to 256 px) that render the LightSpeed mark on navy. No generator, export or authoring record exists in the repo, so origin is recorded as unknown rather than guessed; the licence position is based on the depicted content (company mark only) and should be confirmed by Marketing."
+    },
+    {
+      "id": "og-default",
+      "path": "/og-default.png",
+      "kind": "social-card",
+      "origin": "unknown",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none",
+      "note": "1200x630 PNG Open Graph card showing only the LightSpeed mark, wordmark and 'ASPIRE. ACT. ACHIEVE.' tagline; no embedded text metadata. It matches the dimensions and content of the canonical card public/brand/logo/logo-og.png but is not byte-identical, and no generation record exists in the repo, so origin is recorded as unknown rather than guessed. Licence position is based on depicted content (company marks only); confirm provenance with Marketing."
+    },
+    {
+      "id": "hero-background",
+      "path": "/hero-background.jpg",
+      "kind": "missing",
+      "origin": "unknown",
+      "licence": "unknown",
+      "disclosure": "none",
+      "note": "Absent from the tree: public/hero-background.jpg does not exist. Referenced only by src/components/home/ClosingCTASection.tsx (a CSS background url), and nothing imports that component. Do not delete the reference here: adding the file later must replace this entry with a real origin, licence and kind, which the media-registry test enforces."
+    }
+  ]
+}
