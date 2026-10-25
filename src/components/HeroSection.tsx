@@ -134,7 +134,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
             </div>
             <div>
               <span className={`text-[11px] font-body font-bold block ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Regression Tests</span>
-              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}>{liveTestCount.toLocaleString('en-US')} Passing</span>
+              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}>{liveTestCount.toLocaleString('en-US')} tests collected</span>
             </div>
             <div>
               <span className={`text-[11px] font-body font-bold block ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Operating Departments</span>
@@ -165,7 +165,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
             <div className="space-y-3">
               <p className={`text-justify text-base sm:text-lg font-bold leading-relaxed ${isLight ? 'text-ls-navy' : 'text-ls-white'
                 }`}>
-                <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds AI-native companies: 91 agents, 20 departments, five-tier human approval, every decision auditable.
+                <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds AI-native companies: 90 operating roles (89 AI agents + 1 Human CEO), 20 departments, five-tier human approval, every decision auditable.
               </p>
               <p className={`text-justify text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'
                 }`}>

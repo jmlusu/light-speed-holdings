@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Brain, Bot, GitBranch, HardDrive, Wrench, ShieldCheck, TrendingUp, type LucideIcon } from 'lucide-react';
 import { SectionHeading } from '../site/SectionHeading';
 import { Reveal } from '../Reveal';
@@ -116,6 +117,14 @@ export const HAOMTGVSection: React.FC<HAOMTGVSectionProps> = ({ theme }) => {
       <p className={`mt-6 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
         Human direction is not a checkpoint at the end. It is present at every layer. Governance (G) is how that authority stays enforceable when agents act at scale.
       </p>
+      <div className="mt-4">
+        <Link
+          to="/haomtgv"
+          className="inline-flex items-center gap-1.5 font-body text-[11px] font-bold tracking-widest uppercase text-ls-red transition-colors hover:text-ls-red/80"
+        >
+          Explore the full framework →
+        </Link>
+      </div>
     </HomeSection>
   );
 };

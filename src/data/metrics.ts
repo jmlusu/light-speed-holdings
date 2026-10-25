@@ -8,8 +8,8 @@ export const metrics = {
   /** Number of agents in the canonical operating model. */
   agentCount: 90,
 
-  /** Verified count of vitest unit tests (post-Step 1 strip). */
-  testCount: 17,
+  /** Verified count of vitest unit tests (npx vitest run, 2026-10-25). */
+  testCount: 109,
 
   /** Number of departments in the model registry. */
   departments: 20,
@@ -30,8 +30,8 @@ export const metrics = {
   caseStudyMeta: 3,
 };
 
-/* Live pytest collection count (uv run pytest --collect-only -q, 2026-10-13).
-   Display code must use `metrics.testCount` (vitest, 17) or `metrics.agentCount`
+/* Live pytest collection count (uv run pytest --collect-only -q, 2026-10-25).
+   Display code must use `metrics.testCount` (vitest, 109) or `metrics.agentCount`
    (90) rather than this number; this is the Python suite size for the hero
-   "passing tests" figure. */
-export const liveTestCount = 2586;
+   "tests collected" figure. */
+export const liveTestCount = 2684;

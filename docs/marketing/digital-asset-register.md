@@ -16,3 +16,11 @@
 | Threads | @lightspeedholdings | @lightspeedholdings | info.lightspeedholdings@gmail.com | Account (claimed/activated) | Yes | Live | https://www.threads.net/@lightspeedholdings | 2026-10-03 | avatar-1024.png | N/A | Founder | Founder | Company | Master description | lightspeedholdings.vercel.app | N/A | Live | 2026-10-03 - public URL https://www.threads.net/@lightspeedholdings - admin role confirmed - verified by human |
 | Substack | LightSpeed Holdings | TBD | info.lightspeedholdings@gmail.com | Publication | Yes | Pending (#194) | - | TBD | avatar-1024.png | N/A | social_media_manager | Founder | Publication | Notes/insights | lightspeedholdings.vercel.app | N/A | Draft | - |
 | Resend | LightSpeed Holdings (sending) | N/A | info.lightspeedholdings@gmail.com | Email delivery | Yes | Pending (#194/#192) | - | TBD | N/A | N/A | social_media_manager | Founder | Sending | Domain parked until settled | N/A | N/A | Blocked | - |
+
+## Site imagery
+
+`src/data/registries/media-registry.json` is the authoritative record of every image the public site renders: path, kind (`logo | illustration | diagram | photograph | ai-generated | missing`), origin, licence and disclosure status. It is the register for site imagery; this document remains the register for social accounts and their profile/cover assets.
+
+- **Disclosure:** ADR-027 (`docs/adr/027-ai-generated-imagery-policy.md`) applies to every entry. AI-generated imagery is permitted for non-person subjects, generated people and avatars are prohibited, and disclosure is required wherever generated imagery is used. The footer carries the one claim the current asset set proves — that the illustrations are original in-house vector artwork.
+- **Unknown is a valid value.** When the repository does not prove an asset's origin or licence, the entry says `unknown` rather than naming a source. Those entries are the queue for provenance follow-up with Marketing.
+- **Enforced, not aspirational.** `src/__tests__/media-registry.test.ts` pins the entry count, fails on any unregistered image reference in site source, and fails if a registered path and the file system disagree (a `missing` entry whose file appears must become a real entry).

@@ -1,6 +1,6 @@
 /* Leadership registry — MASTER_SPEC §15.
  * Canonical source: MISSION_AND_VISION (v2.0, Sep 2026).
- * Consumed by AboutSection. One human CEO oversees the 90-agent operation. */
+ * Consumed by AboutSection. One Human CEO oversees the 90-role operation. */
 
 export interface Leader {
   id: string;
