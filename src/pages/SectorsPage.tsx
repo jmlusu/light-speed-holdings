@@ -158,6 +158,12 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
                     ))}
                   </div>
                 )}
+                <Link
+                  to={`/sectors/${sector.id}`}
+                  className="inline-flex items-center gap-1.5 font-body text-[11px] font-bold tracking-widest uppercase text-ls-red transition-colors hover:text-ls-red/80"
+                >
+                  View sector →
+                </Link>
               </div>
             </Reveal>
           ))}

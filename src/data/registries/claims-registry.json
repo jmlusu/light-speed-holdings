@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "description": "Canonical claims registry per Directive §23. Every public claim classified with evidence governance. Classifications: VERIFIED, PROVEN IN-HOUSE, PILOT, DEMONSTRATION, FIELDABLE, FUTURE, HISTORICAL, UNVERIFIED (DO NOT PUBLISH).",
-  "lastUpdated": "2026-10-05",
+  "lastUpdated": "2026-10-25",
   "classifications": {
     "VERIFIED": "Independently verified by third party or audited source",
     "PROVEN_IN_HOUSE": "Verified running inside LightSpeed Holdings' own operations",
@@ -33,11 +33,11 @@
     },
     {
       "id": "claim.test-count",
-      "text": "The platform is verified by 2,586 automated regression tests.",
+      "text": "The platform is verified by 2,684 automated regression tests collected.",
       "classification": "PROVEN_IN_HOUSE",
-      "evidenceRef": "src/data/metrics.ts (liveTestCount: 2586); uv run pytest --collect-only -q (2026-10-13)",
+      "evidenceRef": "src/data/metrics.ts (liveTestCount: 2684); uv run pytest --collect-only -q (2026-10-25; 2684/2751 collected, 67 deselected). Vitest: 109 passing (npx vitest run, 2026-10-25)",
       "owner": "cto",
-      "lastVerified": "2026-10-13",
+      "lastVerified": "2026-10-25",
       "expiryDate": "2026-12-28"
     },
     {

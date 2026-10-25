@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { PageContainer } from '../layouts/PageContainer';
 import { Section } from '@lightspeed/design-system';
@@ -18,7 +18,6 @@ import { Badge } from '@lightspeed/design-system';
 import { BadgeVariant } from '@lightspeed/design-system';
 import { Stack } from '@lightspeed/design-system';
 import { Grid } from '@lightspeed/design-system';
-import { Button } from '@lightspeed/design-system';
 import { tokens } from '@lightspeed/design-system/tokens';
 import { useCasesRegistry, getUseCasesByStatus, getUseCasesBySector, getUseCasesBySolution, getUseCasesByProblemCategory, getFeaturedUseCases, UseCase, UseCaseStatus, ProblemCategory, SolutionCategory } from '../data/use-cases/registry';
 import { sectorsRegistry } from '../data/sectors/registry';
@@ -268,7 +267,6 @@ const STATUS_BADGE_VARIANTS: Record<UseCaseStatus, BadgeVariant> = {
 
 const UseCaseCard: React.FC<UseCaseCardProps> = ({ useCase }) => {
   const isDark = document.documentElement.classList.contains('dark');
-  const navigate = useNavigate();
   const sector = sectorsRegistry.find(s => s.id === useCase.sector[0]);
 
   return (
@@ -312,14 +310,13 @@ const UseCaseCard: React.FC<UseCaseCardProps> = ({ useCase }) => {
             <Text variant="caption" secondary>
               {useCase.businessValue}
             </Text>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate(`/use-cases/${useCase.slug}`)}
+            <Link
+              to={`/use-cases/${useCase.slug}`}
+              className="inline-flex items-center gap-1 text-xs font-bold text-ls-red transition-colors hover:text-ls-red/80 hover:underline"
             >
               View Details
               <ChevronRight size={14} aria-hidden="true" />
-            </Button>
+            </Link>
           </Stack>
         </div>
       </Stack>
