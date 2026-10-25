@@ -214,3 +214,6 @@ company/athena/
 *.log
 output/
 output/marketing-site/
+
+# Isolated git worktrees (project-local, never committed)
+.worktrees/
