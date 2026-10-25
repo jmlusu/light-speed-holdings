@@ -123,7 +123,7 @@ export const sectors: Sector[] = [
     description:
       'AI-native operating models, agentic workflows, and governance frameworks for tech firms.',
     status: SECTOR_TIERS.proven,
-    evidence: `The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and append-only audit trails verified by ${liveTestCount.toLocaleString('en-US')} automated regression tests.`,
+    evidence: `The AI Company Builder platform itself: a 90-role registry, 5-tier approval matrix, and append-only audit trails verified by ${liveTestCount.toLocaleString('en-US')} automated regression tests.`,
     region: ['Malawi', 'Africa', 'Global'],
   },
 ];

@@ -41,7 +41,7 @@
       {
         "id": "multi-agent-orchestration",
         "title": "Multi-Agent Orchestration",
-        "description": "90 agents, 20 departments, each with explicit role definitions and approval thresholds."
+        "description": "90 operating roles (89 AI agents + 1 Human CEO), 20 departments, each with explicit role definitions and approval thresholds."
       },
       {
         "id": "approval-matrix",
@@ -56,7 +56,7 @@
       {
         "id": "agent-registry",
         "title": "Agent Registry & Role Definitions",
-        "description": "Canonical YAML registry with 90 agents, schema validation, reference resolution."
+        "description": "Canonical YAML registry with 90 operating roles, schema validation, reference resolution."
       },
       {
         "id": "model-routing",
