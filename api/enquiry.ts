@@ -69,6 +69,12 @@ export async function POST(req: Request): Promise<Response> {
       return json({ error: { code: 'verification_failed' } }, 403);
     }
     const verified = await verifyTurnstile(fields.turnstileToken, ip, action);
+    if (typeof verified === 'string') {
+      // The reason stays in the server log: it names our own configuration
+      // state (e.g. invalid-input-secret) and must not reach the browser.
+      console.error(`[enquiry] turnstile rejected: ${verified}`);
+      return json({ error: { code: 'verification_failed' } }, 403);
+    }
     if (!verified) {
       return json({ error: { code: 'verification_failed' } }, 403);
     }
@@ -139,9 +145,9 @@ function rateLimited(ip: string): boolean {
   return false;
 }
 
-async function verifyTurnstile(token: string, ip: string, expectedAction: string): Promise<boolean> {
+async function verifyTurnstile(token: string, ip: string, expectedAction: string): Promise<boolean | string> {
   if (typeof token !== 'string' || token.length === 0 || token.length > 2048) {
-    return false;
+    return 'invalid_token';
   }
   try {
     const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
@@ -149,18 +155,25 @@ async function verifyTurnstile(token: string, ip: string, expectedAction: string
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ secret: TURNSTILE_SECRET_KEY ?? '', response: token, remoteip: ip })
     });
-    if (!response.ok) return false;
-    const data = (await response.json()) as {
+    const data = (await response.json().catch(() => null)) as {
       success?: boolean;
       action?: string;
       hostname?: string;
-    };
-    if (data.success !== true) return false;
-    if (data.action !== expectedAction) return false;
-    if (ALLOWED_HOSTNAMES.length > 0 && !ALLOWED_HOSTNAMES.includes(data.hostname ?? '')) return false;
+      'error-codes'?: string[];
+    } | null;
+    if (!data) return `http_error_${response.status}`;
+    if (data.success !== true) {
+      // Cloudflare returns 200 for a rejected token and 400 for a bad secret,
+      // but the error-codes are what actually name the cause (e.g.
+      // invalid-input-secret), so surface them instead of the status code.
+      const codes = (data['error-codes'] ?? []).join(',') || `http_${response.status}`;
+      return `verify_failed: ${codes}`;
+    }
+    if (data.action !== expectedAction) return 'action_mismatch';
+    if (ALLOWED_HOSTNAMES.length > 0 && !ALLOWED_HOSTNAMES.includes(data.hostname ?? '')) return 'hostname_mismatch';
     return true;
-  } catch {
-    return false;
+  } catch (e) {
+    return `fetch_error: ${String(e)}`;
   }
 }
 

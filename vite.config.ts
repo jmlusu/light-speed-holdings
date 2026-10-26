@@ -2,6 +2,7 @@ import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
+import { devApiShim } from './src/dev/vite-api-shim';
 
 // Cloudflare site keys are public, but we refuse anything that is not a bare
 // key: values containing '=', whitespace, or pasted env blocks (which can
@@ -30,16 +31,32 @@ function dashboardPortGuard(): Plugin {
   };
 }
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const rawSiteKey = env.VITE_TURNSTILE_SITE_KEY ?? '';
   const turnstileSiteKey = TURNSTILE_SITE_KEY_RE.test(rawSiteKey) ? rawSiteKey : '';
 
+  // Vercel injects function env vars; `vite` does not. Mirror .env into
+  // process.env in serve mode so api/*.ts reads the same configuration it
+  // reads in production (module-level consts capture it at import time).
+  const serving = command === 'serve';
+  if (serving) {
+    for (const [key, value] of Object.entries(env)) {
+      if (process.env[key] === undefined) process.env[key] = value;
+    }
+  }
+
   return {
-    plugins: [react(), tailwindcss(), dashboardPortGuard()],
+    plugins: serving
+      ? [react(), tailwindcss(), dashboardPortGuard(), devApiShim()]
+      : [react(), tailwindcss(), dashboardPortGuard()],
     resolve: {
       alias: [
         { find: '@', replacement: path.resolve(__dirname, './src') },
+        // Serve mode only: never send real email from a local submission.
+        ...(serving
+          ? [{ find: 'nodemailer', replacement: path.resolve(__dirname, './src/dev/nodemailer-stub.ts') }]
+          : []),
         {
           find: '@lightspeed/design-system/tokens',
           replacement: path.resolve(__dirname, './packages/design-system/src/tokens'),
@@ -69,6 +86,28 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       port: 1441,
       allowedHosts: true,
+      // Worktrees and build output sit under the project root. Watching them
+      // made Vite fire 131 full page reloads in ten minutes, interrupting any
+      // form in progress. Keep the watcher on real sources only.
+      watch: {
+        ignored: [
+          '**/.worktrees/**',
+          '**/dist/**',
+          '**/.git/**',
+          '**/node_modules/**',
+          '**/reports/**',
+          '**/open-design/**',
+          '**/lab/**',
+          '**/scrollcraft/**',
+          '**/output/**',
+          '**/tmp/**',
+          '**/research/**',
+          '**/evals/**',
+          '**/knowledge/**',
+          '**/prompts/**',
+          '**/proposal-deliverables/**',
+        ],
+      },
     },
     preview: {
       port: 1440,

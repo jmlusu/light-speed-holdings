@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { ShieldCheck, Clock, Globe2, Send, CheckCircle2, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTurnstile } from '../hooks/useTurnstile';
-import { ENQUIRY_SLA_COPY, ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
+import { ENQUIRY_SLA_COPY, ENQUIRY_GENERIC_ERROR, enquiryErrorMessage, enquiryPayload } from '../lib/enquiry';
 import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
 interface ContactSectionProps {
@@ -111,8 +111,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
         setContactSubmitted(true);
         trackJourneyEvent({ eventType: 'contact_completed', journeyStage: 'conversion' });
       } else {
-        const data = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
-        setSubmitError(data?.error?.message ?? ENQUIRY_GENERIC_ERROR);
+        const data = (await res.json().catch(() => null)) as {
+          error?: { code?: string; message?: string };
+        } | null;
+        setSubmitError(data?.error?.message ?? enquiryErrorMessage(data?.error?.code));
       }
     } catch {
       setSubmitError(ENQUIRY_GENERIC_ERROR);
@@ -264,7 +266,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     tabIndex={-1}
                     autoComplete="off"
                     aria-hidden="true"
-                    className="absolute left-[-9999px] w-px h-px opacity-0"
+                    className="absolute left-[-9999px] w-px h-px opacity-0 hidden"
                   />
 
                   {/* Step 1: DISCOVER */}
