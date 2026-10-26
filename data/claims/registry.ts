@@ -410,7 +410,7 @@ export const claimsRegistry: ClaimRegistryEntry[] = [
   },
   {
     id: 'CLM-023',
-    claim: 'Most Use Cases are not paying-client deployments. Status system is explicit: LIVE=1, PROVEN_IN_HOUSE=multiple, PILOT=multiple, FIELDABLE=multiple, FUTURE=multiple.',
+    claim: 'Most Use Cases are not paying-client deployments. Status system is explicit: LIVE means running in a real organisation (one, unpaid), PROVEN_IN_HOUSE means running in LightSpeed operations, and PILOT, FIELDABLE and FUTURE separate active pilots from roadmaps. Paying clients: zero.',
     status: 'VERIFIED',
     category: 'Outcomes',
     evidence: [

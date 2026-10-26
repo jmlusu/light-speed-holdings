@@ -248,7 +248,7 @@ export const faqsRegistry: FAQ[] = [
   {
     id: 'faq-24',
     question: 'Is every Use Case a paying-client deployment?',
-    answer: 'No. Most Use Cases are not paying-client deployments. Our status system is explicit:\n- LIVE: Paying client, measurable outcomes (currently: compliance automation for regional financial institution)\n- PROVEN_IN_HOUSE: Running in LightSpeed operations (audit trails, approval matrix, model routing)\n- PILOT: Active pilot with real users, composing evidence (agricultural cooperatives, donor reporting)\n- DEMONSTRATION: Working demo, no live users\n- FIELDABLE: Technically ready, awaiting client\n- FUTURE: Roadmap target, no evidence yet\n\nWe never imply a paying client exists unless verified. The J&S StopOver Bar is a live proof-of-concept, not a paying client engagement.',
+    answer: 'No. Most Use Cases are not paying-client deployments. Our status system is explicit:\n- LIVE: Running in a real organisation\'s operations (currently one: J&S StopOver Bar, unpaid)\n- PROVEN_IN_HOUSE: Running in LightSpeed operations (audit trails, approval matrix, model routing)\n- PILOT: Active pilot with real users, composing evidence (agricultural cooperatives, donor reporting)\n- DEMONSTRATION: Working demo, no live users\n- FIELDABLE: Technically ready, awaiting client\n- FUTURE: Roadmap target, no evidence yet\n\nWe never imply a paying client exists unless verified. The J&S StopOver Bar is a live proof-of-concept, not a paying client engagement.',
     category: 'use-cases',
     tags: ['use-cases', 'evidence', 'paying-client', 'honesty', 'transparency'],
     honestyTier: 'verified',

@@ -190,7 +190,7 @@ export const mediaRegistry: MediaAsset[] = [
     id: 'uc-compliance-automation',
     type: 'USE_CASE_CARDS',
     title: 'Compliance Automation Use Case Card',
-    description: 'Thumbnail for compliance automation use case: regulatory reporting across 14 departments with audit trails.',
+    description: 'Thumbnail for compliance automation use case: regulatory report assembly with audit trails.',
     src: {
       webp: '/assets/use-cases/compliance-automation.webp',
       avif: '/assets/use-cases/compliance-automation.avif',
