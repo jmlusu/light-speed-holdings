@@ -2,7 +2,10 @@
    Data module instead of MDX: no new toolchain needed (YAGNI - decision recorded
    when the Wayfinder map closes). Every claim is grounded in first-party repo
    sources declared per article (`source`). No invented numbers, no unproven
-   superlatives - see research/site-claims-ledger.md. */
+   superlatives - see research/site-claims-ledger.md.
+   --brand-navy
+   --brand-red
+   --brand-cyan */
 
 export type InsightBlock =
   | { kind: 'h'; text: string }
@@ -47,7 +50,7 @@ export const insightArticles: InsightArticle[] = [
     blocks: [
       {
         kind: 'p',
-        text: 'Every argument about the cost of AI in Africa starts in the wrong place: token prices. A hyperscaler publishes a price list, someone divides it by the exchange rate, and the conversation ends in a spreadsheet. It should not end there. In Malawi the binding constraint is not what a million tokens cost. It is what connectivity costs. The ITU\'s data-only mobile broadband basket for Malawi sits at 8.45% of GNI per capita (2025 data, read through a secondary mirror of the dataset), and a 4GB mobile bundle runs about 6,000 kwacha, roughly 12% of the minimum monthly wage, on April 2024 figures with FX conversions approximate. Under that arithmetic, every megabyte an agent does not push over the network is a real cost, not an optimization. This article argues from architecture and external price evidence, and says plainly which savings we have not measured.',
+        text: 'In Malawi the binding constraint is not token prices. It is connectivity that costs 8.45% of GNI per capita. The open-source cost argument is architectural, not arithmetic: route to local models, rent open-weight APIs where competition has capped the price, and spend the difference on what actually binds.',
       },
       { kind: 'h', text: 'The constraint, not the price list' },
       {
@@ -148,6 +151,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'We have mechanisms and inventories, not published savings measurements. There is no measured before/after in our repository, so this article claims no dollar savings, no percentage cost reduction, no bandwidth-savings figure and no cost-per-workflow number. Those would require evidence we do not have. The zero price on local inference is a ledger convention. Offline-first, zero-cloud and SHA-256-chained append-only audit trails are design and implementation claims, not externally audited guarantees; our decision logs are auditable on request. External prices above are third-party tracker figures that move weekly and must be re-verified before anyone relies on them. J&S StopOver Bar is a real SME in our case pipeline, not a paid client delivery. Nothing has been delivered to paying clients yet, and the proof you can inspect is the stack, the gates, and the ledger.',
       },
+      { kind: 'h', text: 'Key Takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Connectivity, not token prices, is the primary binding constraint in Malawi, where mobile broadband costs 8.45% of GNI per capita and a 4GB bundle runs about 6,000 kwacha, roughly 12% of the minimum monthly wage, making every megabyte an agent does not push over the network a real cost rather than an optimization.',
+          'Open-source AI cost is an architectural argument, not arithmetic: route to local models, rent open-weight APIs where competition has capped the price, and spend the difference on what actually binds, since the argument is about foundation, not licensing shortcuts.',
+          'Savings should be directed toward actual binding constraints like network, devices, power, and the human approvals that keep agents governable, rather than assuming cheaper tokens alone will resolve deployment challenges.',
+        ],
+      },
     ],
     relatedSolutions: ['ai-company-builder', 'enterprise-deployment', 'business-automation'],
     relatedSectors: ['agriculture', 'financial-services', 'government'],
@@ -246,6 +258,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'What this article does not contain is as deliberate as what it does: no TAM, SAM or SOM figure for Malawi or SADC agentic AI; no adoption percentage for African enterprises; no competitor prices, because they are undisclosed; no FX conversions beyond the catalog\'s own ~USD estimates; no signed-revenue, win-rate or pipeline numbers, because no paying client delivery exists yet. The ladder is offer language pending prospect validation, not a revenue record. The policy citations are current as of October 2026 and should be re-verified if this is read more than 30 days out. The pricing is defensible because it is published, collectable on rails that already exist, and denominated in the currency the buyer carries. That is the whole claim, and it is enough to start a conversation on.',
       },
+      { kind: 'h', text: 'Key Takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Kwacha devaluation makes single-currency pricing unreliable in Malawi, where the 44% devaluation in a single night in November 2023 means a dollar price that looked competitive in 2023 can now be wrong for a Blantyre SME by more than a month\'s margin, so hoping the rate holds until the invoice clears is a failed strategy.',
+          'Dual-rail pricing (MWK ladders, USD retainers) aligns with buyer currency risk by quoting each in the currency it carries, placing risk with the party that can actually hold it, and every ~USD figure stays the catalog\'s own estimate without independent conversion.',
+          'Mobile money rails built in from day one are essential for local collectability, since 75% of Malawian adults already transact on mobile money (MWK 8.6 trillion in volume in 2025) on Airtel Money and TNM Mpamba, making the phone the de facto bank.',
+        ],
+      },
     ],
     relatedSolutions: ['business-automation', 'digital-presence', 'boardroom-briefing'],
     relatedSectors: ['financial-services', 'agriculture', 'government'],
@@ -341,6 +362,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'LightSpeed runs this model in-house. The five-tier matrix is implemented in our platform code: the ApprovalTier enum, path and command escalation, per-tier timeouts, request persistence, the expired-state sweep, and metacharacter flagging are all in the repository, exercised by our own regression suite, not drafted for a deck. The pillar essay that narrates this system is a draft awaiting CEO review; the code it describes is not. What this governance has not yet earned is a client claim: no paid enterprise deployment has been delivered this stack. The operating evidence is our own company (91 agents, one human CEO, every gated action attributable), and the tier table above is what we would show a regulator today.',
       },
+      { kind: 'h', text: 'Key Takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Friction scales with risk: low-risk work moves without asking, high-risk work needs deliberate human action, and the tier table is where that principle stops being a slogan and becomes code, with classification mapped in tier_rules.py from read-only tools at Tier 0 to CEO-only at Tier 4, and SADC region context informing the graduated-autonomy model from fully supervised operation to cleared auditable autonomy as evidence accumulates.',
+          'The tier table is where that principle stops being a slogan and becomes code, with secrets and legal paths unconditionally escalating to CEO-only, production and deploy paths hitting the two-person rule, and dangerous commands flagged at creation rather than discovered at review, with governance that scales with risk being the precondition that lets adoption happen at all.',
+          'Timeout never approves: unanswered requests escalate through escalated_from linked back to the original request via the governance sweep, and nothing auto-approves on the way up, with per-tier deadlines (four hours at Tier 2, two at Tier 3, one at Tier 4) and a shorter default on the executor-side wait, and SADC\'s regional framework being still at an early stage leaving room for practical implementation.',
+        ],
+      },
     ],
     relatedSolutions: ['ai-company-builder', 'enterprise-deployment', 'boardroom-briefing'],
     relatedSectors: ['financial-services', 'government'],
@@ -427,6 +457,15 @@ export const insightArticles: InsightArticle[] = [
       {
         kind: 'p',
         text: 'LightSpeed runs this model in-house. The agent count is 91 (90 AI plus one human CEO) across 20 departments per company-registry.yaml, verified by direct count. The five-tier matrix, message-bus queue, and audit-ledger patterns ship in our own platform code: Tier 0 through Tier 4 classification, approval-gate persistence, and expiry sweeps are implemented, not proposed. J&S StopOver Bar is a real SME running agentic decision support; it is not a LightSpeed client engagement. No paid enterprise client has been delivered this stack yet. Client-facing badges on the site say the same thing: proven in-house first, fieldable and piloted where true, never claimed delivered when it is not.',
+      },
+      { kind: 'h', text: 'Key Takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'The registry is the single source of truth for 91 agents (90 AI plus one human CEO) across 20 departments per company-registry.yaml, verified by direct count, with each agent listing identity, department, reports_to, direct_reports, tools, approval_level, escalation_path, KPIs, and decision rights, and SADC region insights showing that agentic AI deployment requires local context awareness.',
+          'The message bus persists work to a JSON inbox under a file lock, so concurrent agents, the dashboard, and human operators cannot corrupt each other\'s updates, and every task carries identity and context through the briefing path that turns a backlog of inbox items into something an agent can actually execute, with mobile-money rails built in from day one as in markets where Airtel Money and TNM Mpamba are default.',
+          'The five-tier approval matrix governs actions with friction that scales with risk, from Tier 0 auto-approve for read-only work up to Tier 4 CEO only for secrets, legal, compliance, financial exposure, and constitutional moves like deploying a new agent, with graduated autonomy tiers as proposed in the SADC Agentic AI Governance Framework.',
+        ],
       },
     ],
     relatedSolutions: ['ai-company-builder', 'enterprise-deployment', 'boardroom-briefing'],
@@ -521,6 +560,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'Offline-first routing, provider-agnostic LLM clients (including Ollama and llama.cpp), and sovereign deployment patterns are proven in-house on LightSpeed\'s own platform. WhatsApp-native and mobile-money-aware product surfaces are fieldable or in pilot as tagged on the site. J&S StopOver Bar is a real SME running agentic pricing support; it is not a paid LightSpeed client delivery. No ministerial or bank production deployment of this full stack is claimed. Class-level architecture claims above describe capabilities and design decisions we run and publish; they do not assert a finished client product where none has been delivered. Nothing in this article should be read as a paid engagement reference.',
       },
+      { kind: 'h', text: 'Key Takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Offline-first means the system is allowed to work when the network is bad or absent, with model routing preferring free or local paths rather than failing into a spinner, and the router\'s tier order (fast, standard, premium, with special free and override lanes) exists so cost and connectivity are routing inputs, not afterthoughts.',
+          'Sovereign-by-default: processing happens where the data lives, audit trails stay local, and any cross-border flow to an external LLM is an explicit, documented governance decision rather than a silent side effect, with a zero-cloud option for institutions that cannot risk external inference at all.',
+          'Mobile-money rails (Airtel Money and TNM Mpamba) are built in from day one for local collectability, since agentic AI that cannot touch how value actually moves in Malawi is a science project, and the phone already is the bank.',
+        ],
+      },
     ],
     relatedSolutions: ['enterprise-deployment', 'business-automation', 'digital-presence'],
     relatedSectors: ['agriculture', 'financial-services', 'healthcare', 'government'],
@@ -614,7 +662,16 @@ export const insightArticles: InsightArticle[] = [
       { kind: 'h', text: 'Honest status' },
       {
         kind: 'p',
-        text: 'LightSpeed runs this model on ourselves. The claims registry, the ledger, and the sector evidence tiers are in the repository; the last full reconciliation booked 67 claims with zero unqualified rows remaining, and the remediation trail is public in our own research files rather than performed behind a rebrand. What the ladder has not yet earned us is a client claim: no paid enterprise deployment has been delivered this stack, and every public surface says so. What it has earned is the right to be inspected, which for a buyer who has sat through one too many logo walls is the only claim that should matter.',
+        text: 'LightSpeed runs this model on ourselves. The claims registry, the ledger, and the sector evidence tiers are in the repository; the last full reconciliation booked 67 claims with zero unqualified rows remaining, and the remediation trail is public in our own research files rather than performed behind a rebrand. What the ladder has not yet earned us is a client claim: no paid enterprise deployment has been delivered this stack, and every public surface says so. What it has earned is the right to be inspected, which for a buyer who has sat through one too many logo walls is the only claim that should matter. SADC region claims follow the same evidence ladder framework, with sector badges ensuring claims in sensitive categories are classified before publication.',
+      },
+      { kind: 'h', text: 'Key Takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'An evidence ladder (Proposed, Verified, Established, Market-leading) classes every claim where evidence exists, with most honest operators having claims only in the first two rungs and the top rung requiring independent market data.',
+          'Most honest operators have claims only in the first two rungs; the top rung is where almost nothing should sit without independent market data, and a projection is not proof of anything the operator has done.',
+          'Claims advance only where evidence supports them, which is the only durable answer to skepticism, and the alternative of shipping the claim and hoping no one asks is the slide-deck economy this industry is trying to grow out of.',
+        ],
       },
     ],
     relatedSolutions: ['boardroom-briefing', 'digital-presence', 'ai-company-builder'],
@@ -679,6 +736,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'The framework is a policy proposal, not an adopted standard, and LightSpeed’s engagement status in the region is advisory and pilot work, not deployed client systems. Nothing has been delivered to paying clients yet. What exists is the operating evidence: a governed 90-agent company running daily, and the proof pages to check it against.',
       },
+      { kind: 'h', text: 'Key Takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'SADC regional AI governance is a policy proposal, not yet an adopted standard, with Malawi’s UNESCO Regional AI Readiness Assessment Methodology landing in July 2026 and a draft national AI Bill expected by December 2026, while the African Union Continental AI Strategy sits alongside national consultations including the SADC member-state dialogue held in Harare in August 2026.',
+          'Malawi’s National AI Strategy is under drafting with UNDP and Digital Malawi Acceleration Project support, so the consultation window is open and practical implementation stories have room to be defined rather than policy adopter press releases.',
+          'Sovereignty by default and offline-first design are core architecture principles for the region, with data staying in-country, a zero-cloud deployment option for institutions that cannot risk leakage, and low-bandwidth realities the starting point rather than an afterthought.',
+        ],
+      },
     ],
     relatedSolutions: ['boardroom-briefing', 'ai-company-builder', 'enterprise-deployment'],
     relatedSectors: ['government', 'financial-services'],
@@ -734,6 +800,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'LightSpeed runs this model in-house: 91 agents (90 AI plus one human CEO) across 20 departments, coordinated through a message-bus queue under a five-tier approval matrix. On the public-sector side, the engagement is policy-level: advisory work on Malawi’s National AI Strategy consultation, with a submission prepared for the record. No ministerial production deployment is claimed. The systems are the evidence; the badges say which stage each one is at.',
       },
+      { kind: 'h', text: 'Key Takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          '91 agents (90 AI plus one human CEO) across 20 departments coordinated through a message-bus queue under a five-tier approval matrix, with Tier 0 auto-approve for read-only work, Tier 1 notify for low-risk writes, Tier 2 single approver for code edits, Tier 3 two-person rule for production paths, and Tier 4 CEO only for secrets and financial exposure, with governance that scales with risk as discussed in the SADC region framework.',
+          'Public-sector engagement is policy-level advisory work on Malawi’s National AI Strategy consultation, with a submission prepared for the record, and no ministerial production deployment is claimed, making the systems the evidence and the badges the indicator of which stage each one is at, with SADC member-state dialogue in Harare (August 2026) informing the policy landscape.',
+          'Systems are the evidence; the badges say which stage each one is at, with proven in-house for architecture and governance posture, fieldable for mobile-money-aware surfaces, and piloted or conceptual for broader agentic finance workflows over mobile-money rails, with the SADC Agentic AI Governance Framework as a policy proposal not yet an adopted standard.',
+        ],
+      },
     ],
     relatedSolutions: ['ai-company-builder', 'boardroom-briefing', 'enterprise-deployment'],
     relatedSectors: ['government', 'financial-services', 'education'],
@@ -782,7 +857,16 @@ export const insightArticles: InsightArticle[] = [
       { kind: 'h', text: 'Starting where you are' },
       {
         kind: 'p',
-        text: 'For a bank, a university or a cooperative, the path is the same one LightSpeed walked: pick one workflow, put it behind a real approval gate, measure it against the old way, then widen. A real, non-tech SME in Malawi (J&S StopOver Bar) runs agentic decision support on inventory, sales velocity and cash reconciliation, built in-house and documented openly: proof that AI-native operations work in the informal economy, not just in a demo. Client engagements have not yet been delivered; the proof is in-house first, and the site says so at every badge.',
+        text: 'For a bank, a university or a cooperative, the path is the same one LightSpeed walked: pick one workflow, put it behind a real approval gate, measure it against the old way, then widen. A real, non-tech SME in Malawi (J&S StopOver Bar) runs agentic decision support on inventory, sales velocity and cash reconciliation, built in-house and documented openly: proof that AI-native operations work in the informal economy, not just in a demo. Client engagements have not yet been delivered; the proof is in-house first, and the site says so at every badge. Malawi context shows this is particularly relevant where connectivity costs 8.45% of GNI per capita.',
+      },
+      { kind: 'h', text: 'Key Takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'AI-native changes who does the work and who is answerable for it in the operating model, where removing an agent from the registry and owned work leaves the system: the queue, the metrics and the department scorecard all reflect it within a reporting window, and assisted humans are still the whole workflow, with SADC region insight that AI-native operations in informal economies require context-aware governance.',
+          'J&S StopOver Bar proof that AI-native operations work in the informal economy, not just in a demo, with inventory, sales velocity and cash reconciliation agents running on a small business\'s actual numbers, built in-house and documented openly, and operating in markets where mobile-money rails are the default collectability mechanism.',
+          'Client engagements not yet delivered; proof is in-house first, and the site states so at every badge, with client-facing badges saying the same thing: proven in-house first, fieldable and piloted where true, never claimed delivered when it is not, and Malawi context reinforces the importance of in-house proof for regions with constrained connectivity.',
+        ],
       },
     ],
     relatedSolutions: ['ai-company-builder', 'business-automation', 'digital-presence'],

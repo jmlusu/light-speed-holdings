@@ -266,7 +266,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     tabIndex={-1}
                     autoComplete="off"
                     aria-hidden="true"
-                    className="absolute left-[-9999px] w-px h-px opacity-0 hidden"
+                    className="absolute left-[-9999px] w-px h-px opacity-0 hidden visually-hidden left[-]9999"
                   />
 
                   {/* Step 1: DISCOVER */}

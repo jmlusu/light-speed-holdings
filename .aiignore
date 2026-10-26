@@ -1,0 +1,22 @@
+# ====================================================================
+# LIGHTSPEED HOLDINGS - AI STUDIO SUBDIRECTORY REPO MASK
+# ====================================================================
+
+# 1. Block everything across the entire repository by default
+/*
+
+# 2. Allow root configs and identity metadata
+!.gitignore
+!.aiignore
+!.cursorignore
+!package.json
+
+# 3. Create context tunnel ONLY to the marketing site
+!/marketing_site/
+!/marketing_site/**
+
+# 4. Exclude heavy runtime/build artifacts inside marketing site
+/marketing_site/node_modules/
+/marketing_site/dist/
+/marketing_site/.env*
+/marketing_site/*.log

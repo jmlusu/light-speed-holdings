@@ -26,6 +26,7 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
     paragraphs: [
       'Personal data is stored with encryption at rest, access is limited to the people who need it to do their job, and every action is recorded on an audit trail.',
       'For donor-funded and international partners we apply a GDPR-comparable level of protection and documented consent for cross-border data flows. For all work inside Malawi we treat the Malawi Data Protection Act 2017 as the default baseline.',
+      'Cross-border data transfers outside Malawi are only made with your explicit consent or as required by law. When data is transmitted to external LLM providers, we ensure contractual safeguards consistent with the Malawi Data Protection Act 2017 and applicable international standards.',
     ],
   },
   {
@@ -33,6 +34,7 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
     paragraphs: [
       'Under the Malawi Data Protection Act 2017 you may request access to, correction of, or deletion of your personal data. To exercise any of these rights, send a message through the contact page and we will respond within the timeframes the law requires.',
       'We retain inquiry data only as long as needed to serve you and to meet legal and audit obligations. After that, it is deleted.',
+      'You have the right to lodge a complaint with the Malawi Information Commissioner regarding our handling of your personal data. Contact us through the contact page if you wish to exercise this right.',
     ],
   },
   {
@@ -63,7 +65,7 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ theme }) => {
         theme={theme}
         eyebrow="LEGAL // PRIVACY"
         title="Privacy Policy"
-        lead="Last updated: September 2026. This page explains what we collect, why, and the rights you hold over your data. It is written to be read, not to be indexed."
+        lead="Effective Date: September 2026. Last revised: September 2026. This page explains what we collect, why, and the rights you hold over your data. It is written to be read, not to be indexed."
       />
 
       <section className={`px-4 sm:px-8 max-w-3xl mx-auto w-full pt-12 pb-4 ${

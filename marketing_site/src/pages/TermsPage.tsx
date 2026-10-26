@@ -11,7 +11,7 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
   {
     heading: '1. Who We Are',
     paragraphs: [
-      'This website is operated by LightSpeed Holdings Limited, Lilongwe, Malawi. References to \u201cLightSpeed\u201d, \u201cwe\u201d, or \u201cus\u201d mean LightSpeed Holdings Limited.',
+      'This website is operated by LightSpeed Holdings Limited, Lilongwe, Malawi. References to "LightSpeed", "we", or "us" mean LightSpeed Holdings Limited.',
     ],
   },
   {
@@ -83,7 +83,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ theme }) => {
         theme={theme}
         eyebrow="LEGAL // TERMS"
         title="Terms of Service"
-        lead="Last updated: September 2026. The short version: we ship what we promise, we are transparent about every claim, and your data is yours."
+        lead="Effective Date: September 2026. Last revised: September 2026. The short version: we ship what we promise, we are transparent about every claim, and your data is yours."
       />
 
       <section className={`px-4 sm:px-8 max-w-3xl mx-auto w-full pt-12 pb-4 ${
