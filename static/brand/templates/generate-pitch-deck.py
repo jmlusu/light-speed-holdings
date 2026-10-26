@@ -21,8 +21,15 @@ Structural decisions:
     figures the repo could not support were retracted rather than estimated, so the
     market totals, the achieved ATC rate and the capital-efficiency multiples do not
     appear here at all.
+
+Build modes:
+  * default        internal draft: every slide carries the draft watermark.
+  * --release      the investor build: no watermark, investor metadata. Only ship it
+                   when verify-deck.py exits 0, i.e. an APPROVE QA verdict
+                   (scripts/deck-gate/render-verdict.py) is bound to its sha256.
 """
 
+import argparse
 import io
 import os
 import sys
@@ -57,7 +64,7 @@ LIGHT_TEXT = RGBColor(0x9C, 0xA3, 0xAF)
 OFFICIAL_LOGO = REPO_ROOT / "brand" / "logo" / "logo-light-bg.png"
 
 DRAFT_NOTICE = "INTERNAL DRAFT — NOT FOR EXTERNAL DISTRIBUTION"
-DRAFT_MONTH = "October 2026"
+DECK_MONTH = "October 2026"
 
 
 def set_slide_bg(slide, color):
@@ -154,14 +161,29 @@ def _slide_bg_rgb(slide):
     return None
 
 
-def mark_internal_draft(prs):
-    """Stamp every slide as an internal draft and record that in document metadata.
+def apply_artifact_status(prs, release=False):
+    """Stamp the build as an internal draft, or mark it as the approved release.
 
-    Generated here rather than hand-added so the marking survives regeneration and
-    cannot be forgotten. The figures now trace to verified claims, but the deck has no
-    independent QA verdict yet, so it must never be mistaken for an investor-ready
-    document: verify-deck.py exits 2 until a bound APPROVE verdict exists.
+    The draft stamp is the default because it is the safe default: a build with no QA
+    verdict bound to it must never be mistaken for an investor document. `--release`
+    suppresses it, and the deck gate enforces the pairing from the other side — a
+    release build only passes V13 when an APPROVE verdict is bound to its exact
+    sha256, so a release cannot be claimed, only earned.
     """
+    props = prs.core_properties
+
+    if release:
+        props.title = "LightSpeed Holdings — Investor Presentation"
+        props.subject = "Seed round. Aspire. Act. Achieve."
+        props.category = "Investor presentation"
+        props.keywords = "LightSpeed Holdings; investor presentation; seed round; October 2026"
+        props.comments = (
+            "Release build. Every figure traces to a verified claim in docs/claims.yaml. "
+            "Ships only with an APPROVE QA verdict bound to this file's sha256; "
+            "verify-deck.py exits 2 without one."
+        )
+        return
+
     for slide in prs.slides:
         bg = _slide_bg_rgb(slide)
         on_dark = bg is not None and bg != WHITE
@@ -178,7 +200,6 @@ def mark_internal_draft(prs):
             alignment=PP_ALIGN.RIGHT,
         )
 
-    props = prs.core_properties
     props.title = "LightSpeed Holdings — INTERNAL DRAFT pitch deck"
     props.subject = "Internal draft. Not for external distribution."
     props.category = "Internal draft"
@@ -274,7 +295,7 @@ def _summary_band(slide, top, text, height=1.05, font_size=12):
 
 
 # --------------------------------------------------------------------------- 1
-def create_title_slide(prs):
+def create_title_slide(prs, release=False):
     slide = prs.slides.add_slide(prs.slide_layouts[6])  # Blank
     set_slide_bg(slide, NAVY)
 
@@ -338,14 +359,17 @@ def create_title_slide(prs):
         fill_color=RED,
     )
 
-    # Draft notice in place of the old, stale "Confidential — August 2026" line
+    # Status line in place of the old, stale "Confidential — August 2026" line
     add_text_box(
         slide,
         Inches(1),
         Inches(4.62),
         Inches(8),
         Inches(0.3),
-        "INTERNAL DRAFT — {month}".format(month=DRAFT_MONTH),
+        "{status} — {month}".format(
+            status="INVESTOR PRESENTATION" if release else "INTERNAL DRAFT",
+            month=DECK_MONTH,
+        ),
         font_size=12,
         bold=True,
         color=LIGHT_TEXT,
@@ -1099,7 +1123,21 @@ def create_risks_slide(prs):
         y += 0.9
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description="Generate the 11-slide LightSpeed investor deck.",
+    )
+    parser.add_argument(
+        "--release",
+        action="store_true",
+        help=(
+            "build the investor release (no draft watermark, investor metadata). "
+            "Only valid once an APPROVE QA verdict is bound to the resulting sha256; "
+            "verify-deck.py V13 fails a release build that has no verdict."
+        ),
+    )
+    args = parser.parse_args(argv)
+
     prs = Presentation()
     prs.slide_width = Inches(10)
     prs.slide_height = Inches(7.5)
@@ -1129,7 +1167,7 @@ def main():
         pass  # Best effort; verify-deck.py will catch if not working
 
     # Build deck — 11 slides
-    create_title_slide(prs)  # 1
+    create_title_slide(prs, release=args.release)  # 1
     create_problem_slide(prs)  # 2
     create_solution_slide(prs)  # 3
     create_why_now_slide(prs)  # 4  (new)
@@ -1141,8 +1179,8 @@ def main():
     create_ask_slide(prs)  # 10 (financials merged in)
     create_risks_slide(prs)  # 11 (new)
 
-    # Every slide must carry the draft notice; see module constants.
-    mark_internal_draft(prs)
+    # Draft stamps are applied unless this is the approved release build.
+    apply_artifact_status(prs, release=args.release)
 
     # Save
     output_path = os.path.join(os.path.dirname(__file__), "..", "templates", "pitch-deck.pptx")
