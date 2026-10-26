@@ -16,9 +16,11 @@ Structural decisions:
   * Financials were merged into The Ask, which already duplicated "Use of Funds".
   * "Why now" and "Risks" were added: the deck had no urgency argument and no
     statement of what could go wrong.
-  * No business figures appear anywhere. docs/claims.yaml has zero verified
-    claims, so any number here would be unsourced. Numbers land once the CEO
-    settles the open pricing/revenue/ask questions and the claims are verified.
+  * Every figure on these slides traces to a `verified` claim in docs/claims.yaml.
+    The CEO's ten decisions are recorded in docs/decisions/2026-10-26-deck-decisions.md;
+    figures the repo could not support were retracted rather than estimated, so the
+    market totals, the achieved ATC rate and the capital-efficiency multiples do not
+    appear here at all.
 """
 
 import io
@@ -156,8 +158,9 @@ def mark_internal_draft(prs):
     """Stamp every slide as an internal draft and record that in document metadata.
 
     Generated here rather than hand-added so the marking survives regeneration and
-    cannot be forgotten. The deck has no verified figures (docs/claims.yaml), so it
-    must never be mistaken for an investor-ready document.
+    cannot be forgotten. The figures now trace to verified claims, but the deck has no
+    independent QA verdict yet, so it must never be mistaken for an investor-ready
+    document: verify-deck.py exits 2 until a bound APPROVE verdict exists.
     """
     for slide in prs.slides:
         bg = _slide_bg_rgb(slide)
@@ -179,11 +182,11 @@ def mark_internal_draft(prs):
     props.title = "LightSpeed Holdings — INTERNAL DRAFT pitch deck"
     props.subject = "Internal draft. Not for external distribution."
     props.category = "Internal draft"
-    props.keywords = "internal draft; not for external distribution; unverified figures"
+    props.keywords = "internal draft; not for external distribution; pending QA verdict"
     props.comments = (
-        "DRAFT ONLY. Figures are unsourced and unverified (docs/claims.yaml has no "
-        "verified claims). Do not send to investors until verify-deck.py exits 0 "
-        "with an APPROVE QA verdict."
+        "DRAFT ONLY. Figures trace to verified claims in docs/claims.yaml, but no "
+        "independent QA verdict is bound to this build. Do not send to investors until "
+        "verify-deck.py exits 0 with an APPROVE QA verdict."
     )
 
 
@@ -522,17 +525,18 @@ def create_market_slide(prs):
         Inches(1.15),
         Inches(8.5),
         Inches(0.7),
-        "Bottom-up sizing: accounts we can actually reach with each offer, priced from "
-        "our own rate card. Market totals are pending a cited report.",
+        "Bottom-up sizing from our own rate card. TAM and SAM are shown as open "
+        "questions: we will not print a market total we cannot cite to a report.",
         font_size=14,
         bold=False,
         color=NAVY,
     )
 
+    # D-08: only the capacity-derived SOM is published. TAM ($65B) and SAM ($12B) were
+    # retracted — no source for either exists in the repo.
     sizing = [
-        "TAM:  Enterprises and consultancies adopting agentic AI operations",
-        "SAM:  Mid-market firms in Malawi and SADC reachable from Lilongwe",
-        "SOM:  Clients we can serve in the next four quarters",
+        "TAM / SAM:  Pending a cited report — not guessed",
+        "SOM:  $44-85K — paid delivery we can staff in the next four quarters",
     ]
     add_bullet_list(
         slide, Inches(0.8), Inches(2.05), Inches(8.5), Inches(1.5), sizing, font_size=14, color=NAVY
@@ -629,14 +633,13 @@ def create_product_model_slide(prs):
         color=NAVY,
     )
     model_items = [
-        "SaaS subscription — platform access",
-        "Usage — LLM pass-through plus margin",
-        "Enterprise — deployment, SLA, support",
-        "Services — implementation engagements",
+        "Platform licence — $2,000 setup + $200/mo support",
+        "Firm licence — $15K/yr + $250/mo for consulting firms",
+        "Delivery — implementation engagements, priced per engagement",
         "",
         "Unit economics targets:",
-        "  •  Gross margin — pending CFO model",
-        "  •  LLM cost — pending CFO model",
+        "  •  Gross margin — 70%+ platform, 55-60% services",
+        "  •  LLM and infrastructure — ≤10% of revenue",
         "  •  CAC payback — pending CFO model",
     ]
     add_bullet_list(
@@ -653,9 +656,10 @@ def create_product_model_slide(prs):
     _summary_band(
         slide,
         4.75,
-        "One product, three ways to buy it: a subscription for platform access, usage billed "
-        "on top, and an implementation engagement where the client wants delivery as well as "
-        "software. The same system runs this company.",
+        "Two licences and one service: a platform licence the client runs itself, a firm "
+        "licence for agencies serving their own clients, and implementation work scoped per "
+        f"engagement. The same system runs this company — {DEPARTMENT_COUNT}\u00a0departments, "
+        f"{AGENT_COUNT - 1}\u00a0AI\u00a0agents, one Human CEO.",
     )
 
 
@@ -820,15 +824,18 @@ def create_team_slide(prs):
         bold=True,
         color=NAVY,
     )
+    # D-09: the founder only. The agent cabinet is a product feature (see the product
+    # slide), not a leadership team, and no advisor or director has consented to be
+    # named. Presenting registry entries as a board overstates governance.
     team = [
         "Jack Mlusu — Founder & CEO",
         "  Builder-operator; runs the company on the platform it sells",
         "",
-        "AI Executive Cabinet",
-        "  CTO, CFO, CMO, CLO, CSO, COO, CAIO — operating agents under human approval gates",
+        "The org chart is generated, not hired.",
+        "  Twenty departments exist as registry entries, staffed by agents under human "
+        "approval gates — shown on the product slide, not claimed as a leadership team.",
         "",
-        "Board of Directors",
-        "  Standing committees: Strategy, Finance, Risk, Technology, Product, Customer, Governance",
+        "No advisor, contractor or director is named without their written consent.",
     ]
     add_bullet_list(
         slide, Inches(0.55), Inches(1.65), Inches(4.35), Inches(4.4), team, font_size=12, color=NAVY
@@ -905,25 +912,25 @@ def create_ask_slide(prs):
     add_text_box(
         slide,
         Inches(1),
-        Inches(1.55),
+        Inches(1.5),
         Inches(8),
-        Inches(0.55),
-        "Raising seed capital",
-        font_size=24,
-        bold=False,
+        Inches(0.8),
+        "$650K",
+        font_size=36,
+        bold=True,
         color=CYAN,
         alignment=PP_ALIGN.CENTER,
     )
 
-    # Amount is intentionally absent: the raise size is an open decision (the
-    # registry's figure is a spend cap, not a raise). See docs/claims.yaml.
+    # D-05: the amount is decided; the instrument and the runway are not. The deck
+    # states the gap instead of implying equity, a SAFE, or a runway length.
     add_text_box(
         slide,
         Inches(1),
-        Inches(2.15),
+        Inches(2.3),
         Inches(8),
-        Inches(0.45),
-        "Amount, instrument and runway: pending board decision — not stated in this draft.",
+        Inches(0.4),
+        "Seed round — instrument and runway not yet set.",
         font_size=12,
         bold=True,
         color=LIGHT_TEXT,
@@ -987,13 +994,26 @@ def create_ask_slide(prs):
         color=WHITE,
     )
 
-    # Closing statement. No amount: the raise size is an open board decision, and the
-    # deck must not imply a number that has not been approved.
+    # D-02: the revenue band is a target, and $120K is an exit ARR run-rate — it must
+    # never be read as recognised revenue.
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(5.0),
+        Inches(8),
+        Inches(0.45),
+        "Year-one target: $50-85K gross revenue. Exit ARR run-rate: $120K — not revenue.",
+        font_size=12,
+        bold=True,
+        color=CYAN,
+        alignment=PP_ALIGN.CENTER,
+    )
+
     add_shape(
         slide,
         MSO_SHAPE.RECTANGLE,
         Inches(2.5),
-        Inches(5.55),
+        Inches(5.6),
         Inches(5),
         Inches(0.03),
         fill_color=CYAN,
@@ -1004,8 +1024,8 @@ def create_ask_slide(prs):
         Inches(5.75),
         Inches(8),
         Inches(0.9),
-        "We are asking for a first institutional round to fund paying pilots across "
-        "Offers A, B and C, and to make the four hires above.",
+        "We are asking for $650K to fund paying pilots across Offers A, B and C, and to "
+        "make the four hires above.",
         font_size=14,
         bold=True,
         color=WHITE,

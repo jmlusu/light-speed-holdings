@@ -13,25 +13,41 @@ claims:
     display: ["90 agents"]
     statement: "Number of agents defined in company-registry.yaml."
     type: count
-    status: unverified          # promote to verified once confirmed (see template at bottom)
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: ci:deck-claims
     source:
-      kind: command
-      command: "python scripts/maintenance/company_counts.py"
-      recorded_output: "agents: 90"
-      recorded_on: "2026-10-23"
-    notes: "Recorded from the generation session; not re-run by the gate. A human must confirm."
+      kind: file
+      path: src/data/generated/agent-registry.public.json
+      quote: '"agents": 90'
+    notes: "Generated from company-registry.yaml; regenerated and drift-checked in CI."
+
+  - id: agents-ai-89
+    display: ["89 AI agents"]
+    statement: "AI agents in the registry: 90 operating roles less the one Human CEO."
+    type: count
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: ci:deck-claims
+    source:
+      kind: file
+      path: src/data/generated/agent-registry.public.json
+      quote: '"agents": 90'
+    derivation: "The registry has 90 entries; the one Human CEO entry (company-registry.yaml id human_ceo, emitted as human-ceo) is the human, leaving 89 AI agents."
+    notes: "Matches the canonical public count guard in src/__tests__/claims.test.ts."
 
   - id: departments-total
     display: ["20 departments"]
     statement: "Number of departments defined in company-registry.yaml."
     type: count
-    status: unverified
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: ci:deck-claims
     source:
-      kind: command
-      command: "python scripts/maintenance/company_counts.py"
-      recorded_output: "departments: 20"
-      recorded_on: "2026-10-23"
-    notes: "Recorded from the generation session; not re-run by the gate. A human must confirm."
+      kind: file
+      path: src/data/generated/agent-registry.public.json
+      quote: '"departments": 20'
+    notes: "Generated from company-registry.yaml; regenerated and drift-checked in CI."
 
   # --- the misattribution seen in the session ------------------------------------------------
   # AGENTS.md says company-registry.yaml holds the ATC / velocity / capital-efficiency KPIs, but the
@@ -40,87 +56,125 @@ claims:
     display: ["ATC >90%"]
     statement: "Agent task completion rate across pilot workflows."
     type: percentage
-    status: unverified
-    notes: "No source located. Do not show on slides until a source file + exact quote exist."
+    status: retracted
+    notes: "D-06: no denominator exists (empty database, zero terminal task events). Target only."
 
   # --- template-script inherited figures (not backed by spec or registry) --------------------
   - id: tam-65b
     display: ["$65B"]
     type: market-size
-    status: placeholder
-    notes: "Came from generate-pitch-deck.py template. Needs a cited market report (kind: document)."
+    status: retracted
+    notes: "D-08: no source in the repo. TAM is shown as pending a cited report."
 
   - id: sam-12b
     display: ["$12B"]
     type: market-size
-    status: placeholder
-    notes: "Came from generate-pitch-deck.py template. Needs a cited market report (kind: document)."
+    status: retracted
+    notes: "D-08: no source in the repo. SAM is shown as pending a cited report."
 
   - id: som-120m
     display: ["$120M"]
     type: market-size
-    status: placeholder
-    notes: "Came from generate-pitch-deck.py template. Needs a cited market report (kind: document)."
+    status: retracted
+    notes: "D-08: replaced by a capacity-derived SOM (som-year-one)."
 
-  - id: price-starter
-    display: ["$49/mo"]
-    type: price
-    status: placeholder
-    notes: "Pricing is a decision; attest it or remove it."
+  - id: som-year-one
+    display: ["$44-85K"]
+    statement: "Year-one SOM: what the 20-25 client delivery cap can bill, up to the board's month-12 revenue ceiling."
+    type: market-size
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: human:jack.mlusu
+    source:
+      kind: file
+      path: docs/MISSION_AND_VISION.md
+      quote: "20–25 paid clients"
+    derivation: "Floor: 22 clients (midpoint of the 20–25 cap, MISSION_AND_VISION.md:140) x $2,000 average deal (USE-CASE-CATALOG.md:169) = $44K. Ceiling: the board's $85K gross-revenue target for month 12 (MISSION_AND_VISION.md:139,148)."
+    notes: "D-08. Both endpoints trace to existing sources; no per-deal figure above $2,000 is assumed."
 
-  - id: price-pro
-    display: ["$149/mo"]
+  # D-01: two products, no self-serve tier. The CEO attested the choice; the rate
+  # card behind each figure is named in `notes`.
+  - id: price-platform
+    display: ["$2,000", "$200/mo"]
+    statement: "Platform licence: one-off setup plus a monthly support retainer."
     type: price
-    status: placeholder
-    notes: "Pricing is a decision; attest it or remove it."
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: human:jack.mlusu
+    source:
+      kind: attestation
+      attested_by: human:jack.mlusu
+      record: "docs/decisions/2026-10-26-deck-decisions.md D-01"
+    notes: "Rate card: docs/client-facing/USE-CASE-CATALOG.md:169,176."
+
+  - id: price-firm-licence
+    display: ["$15K/yr", "$250/mo"]
+    statement: "Consulting-firm licence for firms that run their own agent workforce."
+    type: price
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: human:jack.mlusu
+    source:
+      kind: attestation
+      attested_by: human:jack.mlusu
+      record: "docs/decisions/2026-10-26-deck-decisions.md D-01"
+    notes: "Rate card: docs/ai-caas-pricing-model.md:41."
 
   - id: price-enterprise
     display: ["$299/mo"]
     type: price
-    status: placeholder
-    notes: "Pricing is a decision; attest it or remove it."
+    status: retracted
+    notes: "D-01: no self-serve or enterprise SaaS tier exists at this price. Retired."
 
   - id: seed-ask
-    display: ["$500K"]
+    display: ["$650K"]
+    statement: "The round the deck asks for: top of the documented first-spend plan."
     type: currency
-    status: placeholder
-    notes: "A business decision, not a fact: record it in the decision register and use kind: attestation."
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: human:jack.mlusu
+    source:
+      kind: attestation
+      attested_by: human:jack.mlusu
+      record: "docs/decisions/2026-10-26-deck-decisions.md D-05"
+    notes: "Plan arithmetic in docs/CEO-DIRECTIVE-BLUEPRINT-ADOPTION.md:168: 475-650K. $500K was a spend cap, not a raise."
 
+  # D-07: all retracted. Every input is zero or unratified; see the decision record.
   - id: capital-efficiency-3-5x
     display: ["3–5×"]
     type: multiple
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: retracted
+    notes: "D-07: traced to one template phrase, not to a measured ratio."
 
   - id: capital-efficiency-3x
     display: ["3×"]
     type: multiple
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: retracted
+    notes: "D-07: variant of the same unsourced phrase."
 
   - id: capital-efficiency-4-2x
     display: ["4.2×"]
     type: multiple
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: retracted
+    notes: "D-07: variant of the same unsourced phrase."
 
   - id: velocity-mvp-60d
     display: ["<60d"]
     type: duration
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: retracted
+    notes: "D-07: no source anywhere in the repo."
 
   - id: velocity-mvp-45d
     display: ["<45d"]
     type: duration
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: retracted
+    notes: "D-07: no source anywhere in the repo."
 
   - id: correction-ratio
     display: ["8 per 1,000"]
     type: count
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: retracted
+    notes: "D-07: the spec requires a baseline first; no target exists."
 
   - id: offer-lines-pilot
     display: ["3 offer lines"]
@@ -137,14 +191,35 @@ claims:
   - id: design-partners
     display: ["5+"]
     type: count
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: retracted
+    notes: "D-10: no design partners exist; no human has consented to be named."
 
   - id: arr-120k
     display: ["$120K"]
+    statement: "Exit ARR run-rate target. Not recognised revenue."
     type: currency
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: ci:deck-claims
+    source:
+      kind: file
+      path: static/brand/templates/brief.json
+      quote: "$120K ARR run-rate (SaaS + managed recurring)"
+    notes: "D-02 scopes this to a run-rate label; it may never be shown as revenue."
+
+  - id: year-one-revenue
+    display: ["$50-85K"]
+    statement: "Board-approved gross revenue target by month 12."
+    type: currency
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: human:jack.mlusu
+    source:
+      kind: file
+      path: docs/MISSION_AND_VISION.md
+      quote: "MWK 90–150M (~$50K–$85K) gross revenue by month 12"
+    derivation: "The USD conversion is printed in the same table row; the 12-month gross-revenue row is docs/MISSION_AND_VISION.md:148."
+    notes: "D-02. A target, never historical revenue."
 
   - id: arr-600k
     display: ["$600K"]
@@ -154,15 +229,42 @@ claims:
 
   - id: gross-margin-70
     display: ["70%+"]
+    statement: "Platform gross margin target."
     type: percentage
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: human:jack.mlusu
+    source:
+      kind: attestation
+      attested_by: human:jack.mlusu
+      record: "docs/decisions/2026-10-26-deck-decisions.md D-04"
+    notes: "Scoped to platform revenue only; services carry the floor below."
 
-  - id: llm-cost-15
-    display: ["~15%"]
+  - id: gross-margin-services
+    display: ["55-60%"]
+    statement: "Services gross margin floor."
     type: percentage
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: human:jack.mlusu
+    source:
+      kind: attestation
+      attested_by: human:jack.mlusu
+      record: "docs/decisions/2026-10-26-deck-decisions.md D-04"
+    notes: "Target. The floor is the 55% modeled-margin floor in docs/ai-caas-pricing-model.md:102."
+
+  - id: llm-cost-guardrail
+    display: ["≤10%"]
+    statement: "LLM and infrastructure cost guardrail, as a share of revenue."
+    type: percentage
+    status: verified
+    verified_on: 2026-10-26
+    verified_by: human:jack.mlusu
+    source:
+      kind: attestation
+      attested_by: human:jack.mlusu
+      record: "docs/decisions/2026-10-26-deck-decisions.md D-03"
+    notes: "A guardrail, not measured spend: the cost tracker records zero calls."
 
   - id: cac-payback-6m
     display: ["< 6 months"]
@@ -173,14 +275,14 @@ claims:
   - id: pilot-clients-15
     display: ["15+"]
     type: count
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: retracted
+    notes: "D-10: zero paying clients and zero signed pilots."
 
   - id: enterprise-clients-50
     display: ["50+"]
     type: count
-    status: placeholder
-    notes: "Came from template. Needs a cited source or attestation."
+    status: retracted
+    notes: "D-10: zero paying clients, so no client count can be published."
 
   - id: spinout-companies-3
     display: ["3 spinout companies"]
