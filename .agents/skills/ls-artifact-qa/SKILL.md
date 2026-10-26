@@ -19,6 +19,20 @@ Create the inspectable artifact first:
 - **Web/HTML:** serve or open the file. Run the Playwright probe: `node .agents/skills/ls-artifact-qa/scripts/visual_check.js <file-or-url> --viewport 1280x800 --viewport 375x667 --out qa.png --json qa-report.json`. Playwright is a repo devDependency — one-time browser download: `npx playwright install chromium`. Use the report's `horizontalOverflowPx`, `missingAltCount`, `emptyHeadingCount`.
 - **Images/SVG/PNG:** open and inspect visually; confirm dimensions match platform spec.
 - **PPTX/DOCX/PDF:** render to images (e.g., LibreOffice → PDF → image, or python-pptx export) and visually inspect; verify slide counts and text fit.
+- **PPTX under the deck gate:** the verdict is evidence and must never be hand-written. Use the tool, then look at every render:
+
+  ```bash
+  uv run python scripts/deck-gate/render-verdict.py render <deck>.pptx
+  # open every <deck>.renders/slide-*.png and judge the five passes below
+  uv run python scripts/deck-gate/render-verdict.py verdict <deck>.pptx \
+    --reviewed-by "human:<name> + agent:<id>" \
+    --pass visual=PASS --pass brand=PASS --pass ux=PASS \
+    --pass accessibility=PASS --pass content=PASS \
+    --note content="what changed and what was checked"
+  uv run python scripts/deck-gate/verify-deck.py <deck>.pptx ...   # must exit 0
+  ```
+
+  `render` refuses a conversion whose per-slide text does not match the deck (LibreOffice has been seen to lay autofit text out twice), and `verdict` refuses stale renders, so an image set can never outlive the build it describes. Reviewing the PNGs is still mandatory: the guard proves the text is intact, not that the layout is right. Regenerating the deck changes its sha256 and invalidates the verdict until QA re-issues it.
 
 ## The Five QA Passes
 

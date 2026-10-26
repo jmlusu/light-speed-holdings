@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "deck": {
+    "path": "static/brand/templates/pitch-deck.pptx",
+    "sha256": "076959ca537f444e0469609a3dcd041128ac59567745fea478b6926e12684d54"
+  },
+  "rendered_on": "2026-10-26",
+  "renderer": "render-verdict.py:libreoffice+pymupdf (target width 1280px)",
+  "slide_count": 11,
+  "pages": [
+    {
+      "index": 1,
+      "path": "slide-01.png",
+      "sha256": "1b97437aef7fbb89b11888cdc5296a62c0616ddd88e9f20c35e3f386d324b78d",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 2,
+      "path": "slide-02.png",
+      "sha256": "85414b04a20f5854610bfe4753ead981450e523aef744999e2c6105e32d0fc04",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 3,
+      "path": "slide-03.png",
+      "sha256": "c9e849ab4c0b0223a62ce16937fc395ea340c6779a4a511a87e40bf98782eb82",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 4,
+      "path": "slide-04.png",
+      "sha256": "db777d80b9b3e72e4a1253bf2d2fead812f6cfde0b1b9b7bbbd76ccaf589c161",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 5,
+      "path": "slide-05.png",
+      "sha256": "737ee2cbacc407f7840877859df040d1ce5c64b69a278f3930d632a6e468e99e",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 6,
+      "path": "slide-06.png",
+      "sha256": "d794122bf99f88da625a2bb2729c67587d9c929e99a4eee0064a443fc5684d7e",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 7,
+      "path": "slide-07.png",
+      "sha256": "7abf8eb388fcea8dcbb66b689a5e30bd7fb59b9aa0c0bcbbc1c25551fb73d1e4",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 8,
+      "path": "slide-08.png",
+      "sha256": "5a2ab644cf4164cfe4a89b48ac216cc932f4d9c6563c4c555cac5f744bfbda70",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 9,
+      "path": "slide-09.png",
+      "sha256": "e1ef301e78adf3050fbc2daefafd9895f4a8d6f8a9ba46a75e89195d0fdbb191",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 10,
+      "path": "slide-10.png",
+      "sha256": "8ce3764228bda0fe612144b803ab340e24b07e8859e750e2015c76dcfdf52337",
+      "width_px": 1280,
+      "height_px": 960
+    },
+    {
+      "index": 11,
+      "path": "slide-11.png",
+      "sha256": "99426a3705b57d7c30b3b565cc31a841b50da8679ab4576e14d7257c3518617c",
+      "width_px": 1280,
+      "height_px": 960
+    }
+  ]
+}

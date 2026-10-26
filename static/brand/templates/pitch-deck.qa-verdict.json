@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "verdict": "APPROVE",
+  "generated_by": "scripts/deck-gate/render-verdict.py; reviewed_by human:jack.mlusu (approved build 7d9b921c content, 2026-10-26) + agent:opencode/deepseek-v4.1-flash-free (reviewed release renders 076959ca)",
+  "artifact": {
+    "path": "static/brand/templates/pitch-deck.pptx",
+    "sha256": "076959ca537f444e0469609a3dcd041128ac59567745fea478b6926e12684d54"
+  },
+  "checks": [
+    {
+      "pass": "visual",
+      "result": "PASS",
+      "notes": "All 11 renders reviewed at 1280x960. No clipping, overlap or overflow. Minor cosmetic: slide 2 bullet 1 orphans the word one; slides 2 and 7 carry a wide empty band above the bottom summary card. Neither blocks release."
+    },
+    {
+      "pass": "brand",
+      "result": "PASS",
+      "notes": "Navy #070A40, red #E63946, cyan #00BFFF, Arial, official logo on the white logo panel. Red reserved for emphasis headings. V03/V04/V05/V06 pass mechanically."
+    },
+    {
+      "pass": "ux",
+      "result": "PASS",
+      "notes": "11 slides, one idea each, no agenda slide. The ask slide carries the $650K and the three uses of funds. Gaps are stated rather than implied: TAM/SAM pending a cited report, instrument and runway not yet set, explicit Not yet list."
+    },
+    {
+      "pass": "accessibility",
+      "result": "PASS",
+      "notes": "Alt text on every picture (V07 pass). Contrast computed for every text run (V12 pass). Body text at least 12pt, real text rather than rasterised images, no colour-only encoding."
+    },
+    {
+      "pass": "content",
+      "result": "PASS",
+      "notes": "Delta from the approved build 7d9b921c proven by extracted-text diff: only the 11 footer watermark lines, the title status line and 5 metadata fields differ (160 to 149 lines). No figure or body text changed. 12 verified claims, V09 pass. This verdict binds to the release sha256."
+    }
+  ],
+  "evidence": [
+    {
+      "path": "pitch-deck.renders/slide-01.png",
+      "sha256": "1b97437aef7fbb89b11888cdc5296a62c0616ddd88e9f20c35e3f386d324b78d"
+    },
+    {
+      "path": "pitch-deck.renders/slide-02.png",
+      "sha256": "85414b04a20f5854610bfe4753ead981450e523aef744999e2c6105e32d0fc04"
+    },
+    {
+      "path": "pitch-deck.renders/slide-03.png",
+      "sha256": "c9e849ab4c0b0223a62ce16937fc395ea340c6779a4a511a87e40bf98782eb82"
+    },
+    {
+      "path": "pitch-deck.renders/slide-04.png",
+      "sha256": "db777d80b9b3e72e4a1253bf2d2fead812f6cfde0b1b9b7bbbd76ccaf589c161"
+    },
+    {
+      "path": "pitch-deck.renders/slide-05.png",
+      "sha256": "737ee2cbacc407f7840877859df040d1ce5c64b69a278f3930d632a6e468e99e"
+    },
+    {
+      "path": "pitch-deck.renders/slide-06.png",
+      "sha256": "d794122bf99f88da625a2bb2729c67587d9c929e99a4eee0064a443fc5684d7e"
+    },
+    {
+      "path": "pitch-deck.renders/slide-07.png",
+      "sha256": "7abf8eb388fcea8dcbb66b689a5e30bd7fb59b9aa0c0bcbbc1c25551fb73d1e4"
+    },
+    {
+      "path": "pitch-deck.renders/slide-08.png",
+      "sha256": "5a2ab644cf4164cfe4a89b48ac216cc932f4d9c6563c4c555cac5f744bfbda70"
+    },
+    {
+      "path": "pitch-deck.renders/slide-09.png",
+      "sha256": "e1ef301e78adf3050fbc2daefafd9895f4a8d6f8a9ba46a75e89195d0fdbb191"
+    },
+    {
+      "path": "pitch-deck.renders/slide-10.png",
+      "sha256": "8ce3764228bda0fe612144b803ab340e24b07e8859e750e2015c76dcfdf52337"
+    },
+    {
+      "path": "pitch-deck.renders/slide-11.png",
+      "sha256": "99426a3705b57d7c30b3b565cc31a841b50da8679ab4576e14d7257c3518617c"
+    }
+  ]
+}
