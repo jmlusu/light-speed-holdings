@@ -14,14 +14,12 @@ from collections import deque
 from pathlib import Path
 
 import yaml
-
 from PIL import Image
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
-
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
@@ -40,12 +38,6 @@ def claim(id: str) -> str:
     raise KeyError(f"Claim '{id}' not found.")
 
 
-from PIL import Image
-from pptx import Presentation
-from pptx.dml.color import RGBColor
-from pptx.enum.shapes import MSO_SHAPE
-from pptx.enum.text import PP_ALIGN
-from pptx.util import Inches, Pt
 
 # Brand Colors (from brand-tokens.json)
 NAVY = RGBColor(0x07, 0x0A, 0x40)
