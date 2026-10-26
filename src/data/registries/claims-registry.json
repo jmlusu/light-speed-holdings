@@ -113,13 +113,13 @@
       "expiryDate": "2026-12-28"
     },
     {
-      "id": "claim.compliance-automation-40-percent",
-      "text": "Governed multi-agent compliance automation for a regional financial institution cut reporting time by 40% across 14 departments.",
+      "id": "claim.compliance-automation-in-house",
+      "text": "Governed multi-agent compliance automation is proven in LightSpeed's own operations: 5-tier approval gating and SHA-256 sealed audit trails. No client deployment yet.",
       "classification": "PROVEN_IN_HOUSE",
-      "evidenceRef": "src/data/siteContent.ts (useCaseStudies ws-01, outcomeCategories oc-01); src/data/sectors.ts (financial-services evidence)",
+      "evidenceRef": "src/data/registries/use-case-registry.json (ws-01); src/data/sector-registry.ts (financial-services honestyNote)",
       "owner": "consulting-lead",
-      "lastVerified": "2026-09-28",
-      "expiryDate": "2026-12-28"
+      "lastVerified": "2026-10-26",
+      "expiryDate": "2027-01-26"
     },
     {
       "id": "claim.agricultural-cooperative-pilot",

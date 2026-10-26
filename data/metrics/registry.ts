@@ -93,16 +93,6 @@ export const platformMetrics: PlatformMetric[] = [
     lastUpdated: '2026-10-05',
   },
   {
-    id: 'task-success-rate',
-    label: 'Task Completion Rate',
-    value: '97.4%',
-    source: 'orchestrator metrics',
-    category: 'performance',
-    honestyTier: 'proven-in-house',
-    description: 'Percentage of tasks successfully fulfilled by specialists without human intervention',
-    lastUpdated: '2026-09-09',
-  },
-  {
     id: 'agent-uptime',
     label: 'Agent Fleet Availability',
     value: '99.8%',

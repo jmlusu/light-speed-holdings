@@ -194,26 +194,6 @@ export const initialKPIs: KPIDefinition[] = [
     ]
   },
   {
-    id: 'task_success_rate',
-    department: 'Technology',
-    name: 'Task Completion Rate',
-    current: 97.4,
-    target: 95.0,
-    unit: '%',
-    status: 'good',
-    description: 'Percentage of tasks successfully fulfilled by specialists without human intervention.',
-    trend: 'up',
-    history: [
-      { timestamp: 'Sep 03', value: 94.0 },
-      { timestamp: 'Sep 04', value: 95.2 },
-      { timestamp: 'Sep 05', value: 96.1 },
-      { timestamp: 'Sep 06', value: 96.8 },
-      { timestamp: 'Sep 07', value: 97.0 },
-      { timestamp: 'Sep 08', value: 97.1 },
-      { timestamp: 'Sep 09', value: 97.4 }
-    ]
-  },
-  {
     id: 'agent_uptime',
     department: 'Technology',
     name: 'Agent Fleet Availability',

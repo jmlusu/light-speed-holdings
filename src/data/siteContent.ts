@@ -283,14 +283,14 @@ export const GOVERNANCE_SOLUTION = {
 export const proofCaseStudies = [
   {
     id: 'ws-01',
-    title: 'Malawi Central Bank Compliance Automation',
-    description: 'Deployed a governed multi-agent compliance framework for a regional financial institution. The system automated regulatory reporting across 14 departments with full audit trail generation.',
-    text: 'Deployed a governed multi-agent compliance framework for a regional financial institution. The system automated regulatory reporting across 14 departments with full audit trail generation, reducing compliance reporting time by 40%.',
+    title: 'Regulatory Reporting Automation — Proven In-House',
+    description: 'A governed multi-agent compliance framework running in LightSpeed\'s own operations, assembling regulatory reports with full audit trail generation.',
+    text: 'A governed multi-agent compliance framework running in LightSpeed\'s own operations, assembling regulatory reports with full audit trail generation. No client deployment yet.',
     honestyBadge: 'Proven in-house' as const,
     featured: true,
-    period: 'Q2 2026',
-    scope: 'Enterprise Deployment',
-    outcome: '40% reduction in compliance reporting time',
+    period: 'Ongoing',
+    scope: 'In-house capability',
+    outcome: 'Sealed audit trail per figure; no quantified client outcome yet',
     badge: 'Proven in-house',
   },
   {
@@ -353,7 +353,7 @@ export const outcomeCategories = [
   {
     id: 'oc-01',
     title: 'Compliance & Regulatory Reporting',
-    claim: '40% reduction in compliance reporting time for a regional financial institution.',
+    claim: 'Governed compliance automation with sealed audit trails, proven in-house; no quantified client outcome yet.',
     caseStudyId: 'ws-01',
     sector: 'financial-services',
     proof: 'Proven in-house',

@@ -33,11 +33,11 @@ export const sectorsRegistry: Sector[] = [
     title: 'Financial Services',
     description: 'Risk classification, audit trails, and regulatory reporting for banks, microfinance, SACCOs, and mobile-money providers.',
     status: { label: 'PROVEN EXPERIENCE', tone: 'proven' },
-    evidence: 'Governed multi-agent compliance automation for a regional financial institution: regulatory reporting across 14 departments with full audit trails, cutting reporting time by 40%.',
+    evidence: 'Governed multi-agent compliance automation proven in LightSpeed\'s own operations: 5-tier approval gating and SHA-256 sealed audit trails. No client deployment yet.',
     region: ['Malawi', 'SADC'],
     relevantSolutions: ['ai-company-builder', 'enterprise-deployment', 'business-automation', 'ai-governance-policy', 'data-intelligence'],
     useCases: ['compliance-automation', 'risk-classification', 'audit-trail-generation', 'market-intelligence', 'regulatory-monitoring'],
-    keyMetrics: ['40% reporting time reduction', '14 departments automated', 'Zero audit findings'],
+    keyMetrics: ['5-tier approval gating', 'SHA-256 sealed audit trails', 'Proven in-house; no client deployment yet'],
     iconName: 'Building2',
   },
   {

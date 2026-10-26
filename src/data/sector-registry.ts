@@ -51,7 +51,7 @@ export const sectors: Sector[] = [
     description: 'Risk classification, audit trails, and regulatory reporting for banks and microfinance.',
     status: SECTOR_TIERS_CANONICAL.proven,
     evidence:
-      'Governed multi-agent compliance automation for a regional financial institution: regulatory reporting across 14 departments with full audit trails, cutting reporting time by 40%.',
+      'Governed multi-agent compliance automation proven in LightSpeed\'s own operations: 5-tier approval gating and SHA-256 sealed audit trails. No client deployment yet.',
     region: ['Malawi', 'SADC'],
     relevantSolutions: ['ai-company-builder', 'enterprise-deployment', 'business-automation'],
   },
