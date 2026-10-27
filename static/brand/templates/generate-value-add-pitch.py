@@ -10,14 +10,23 @@ Layout discipline: every shape is placed through bounded helpers that clamp to t
 
 import os
 import sys
-import yaml
+from collections import deque
 from pathlib import Path
+
+import yaml
+from PIL import Image
+from pptx import Presentation
+from pptx.dml.color import RGBColor
+from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.text import PP_ALIGN
+from pptx.util import Inches, Pt
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
 
 CLAIMS_FILE = REPO_ROOT / "docs" / "claims.yaml"
 CLAIMS = yaml.safe_load(CLAIMS_FILE.read_text(encoding="utf-8"))["claims"]
+
 
 def claim(id: str) -> str:
     """Returns the first display string of a verified claim."""
@@ -27,13 +36,6 @@ def claim(id: str) -> str:
                 raise ValueError(f"Claim '{id}' is {c.get('status')}, not verified.")
             return c["display"][0]
     raise KeyError(f"Claim '{id}' not found.")
-
-from PIL import Image
-from pptx import Presentation
-from pptx.dml.color import RGBColor
-from pptx.enum.shapes import MSO_SHAPE
-from pptx.enum.text import PP_ALIGN
-from pptx.util import Inches, Pt
 
 
 
@@ -62,8 +64,13 @@ FOOTER_Y = 7.16  # page-number footer baseline
 ASSETS = Path(__file__).resolve().parent / "assets"
 
 # Logo system (brand/logo/)
-LOGO_DARK_BG = REPO_ROOT / "brand" / "logo" / "logo-dark-bg.png" # for navy/dark slides
-LOGO_LIGHT_BG = REPO_ROOT / "brand" / "logo" / "logo-light-bg.png" # for white/light slides
+# logo-dark-bg.png is a broken export — white canvas, white wordmark — so on a navy
+# slide it renders as a white box reading "Speed". logo-full.png carries the real
+# lockup on a baked #02062F canvas; keying that canvas out yields the dark-slide
+# asset, and QA identifies transparency by the filename.
+LOGO_DARK_BG = REPO_ROOT / "brand" / "logo" / "logo-dark-bg-transparent.png"
+LOGO_LIGHT_BG = REPO_ROOT / "brand" / "logo" / "logo-light-bg.png"  # for white/light slides
+LOGO_DARK_SOURCE = REPO_ROOT / "brand" / "logo" / "logo-full.png"
 
 # ── Bounded placement helpers ─────────────────────────────────────────
 
@@ -180,9 +187,56 @@ def add_navy_rail(slide):
     shape.line.fill.background()
 
 
+def _export_dark_logo(dest=LOGO_DARK_BG, source=LOGO_DARK_SOURCE):
+    """Derive the transparent navy-canvas lockup once (idempotent).
+
+    Only the #02062F region reachable from the border is cleared, so the artwork
+    keeps its internal navy detail. Geometry stays 1254x1254 like the source, which
+    keeps the artwork centred and byte-identical to a checked-in brand asset.
+    """
+    if dest.exists():
+        return dest
+    logo = Image.open(source).convert("RGBA")
+    px = logo.load()
+    w, h = logo.size
+
+    def isbg(x, y):
+        r, g, b, a = px[x, y]
+        return a == 0 or (abs(r - 2) <= 10 and abs(g - 6) <= 10 and abs(b - 47) <= 12)
+
+    seen = bytearray(w * h)
+    q = deque()
+    for x in range(w):
+        for y in (0, h - 1):
+            if isbg(x, y) and not seen[y * w + x]:
+                seen[y * w + x] = 1
+                q.append((x, y))
+    for y in range(h):
+        for x in (0, w - 1):
+            if isbg(x, y) and not seen[y * w + x]:
+                seen[y * w + x] = 1
+                q.append((x, y))
+    while q:
+        x, y = q.popleft()
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < w and 0 <= ny < h and not seen[ny * w + nx] and isbg(nx, ny):
+                seen[ny * w + nx] = 1
+                q.append((nx, ny))
+    for y in range(h):
+        row = y * w
+        for x in range(w):
+            if seen[row + x]:
+                r, g, b, _ = px[x, y]
+                px[x, y] = (r, g, b, 0)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    logo.save(dest)
+    return dest
+
+
 def add_logo(slide, left, top, height, dark_bg=True):
     """Place the official full lockup, aspect-preserved, bounds-clamped."""
-    path = LOGO_DARK_BG if dark_bg else LOGO_LIGHT_BG
+    path = _export_dark_logo(LOGO_DARK_BG, LOGO_DARK_SOURCE) if dark_bg else LOGO_LIGHT_BG
     with Image.open(path) as im:
         w, h = im.size
     aspect = w / float(h)
@@ -319,14 +373,14 @@ def create_cover_slide(prs):
         alignment=PP_ALIGN.CENTER,
         auto_fit=False,
     )
-    # Hero lockup centered (no separate title/tagline — the lockup already carries both).
-    add_logo(slide, left=3.1, top=3.15, height=2.3, dark_bg=True)
-    # Thin red accent rule under the lockup.
-    add_shape(slide, MSO_SHAPE.RECTANGLE, 4.3, 5.15, 1.4, 0.04, fill_color=RED)
+    # Hero lockup centred (no separate title/tagline — the lockup already carries both).
+    add_logo(slide, left=(SLIDE_W - 2.3) / 2, top=3.15, height=2.3, dark_bg=True)
+    # Thin red accent rule under the lockup (logo ends at 5.45).
+    add_shape(slide, MSO_SHAPE.RECTANGLE, 4.3, 5.65, 1.4, 0.04, fill_color=RED)
     add_text_box(
         slide,
         MARGIN,
-        5.4,
+        5.85,
         SLIDE_W - 2 * MARGIN,
         0.5,
         "Value Addition Pitch — Investor & Client Review",
@@ -337,7 +391,7 @@ def create_cover_slide(prs):
     add_text_box(
         slide,
         MARGIN,
-        5.95,
+        6.4,
         SLIDE_W - 2 * MARGIN,
         0.4,
         "Date: 2026-10-23",
@@ -703,14 +757,18 @@ def create_traction_slide(prs):
     kw = (CONTENT_W - 0.25) / 2.0
     kh = 1.05
     add_stat_block(slide, CONTENT_LEFT, 1.15, kw, "Active", "Agents Deployed", RED)
-    add_stat_block(
-        slide, CONTENT_LEFT + kw + 0.25, 1.15, kw, "Live", "Departments Live", CYAN
-    )
+    add_stat_block(slide, CONTENT_LEFT + kw + 0.25, 1.15, kw, "Live", "Departments Live", CYAN)
     add_stat_block(
         slide, CONTENT_LEFT, 1.15 + kh + 0.2, kw, "Pilot", "Offer Lines in pilot (A, B, C, D)", NAVY
     )
     add_stat_block(
-        slide, CONTENT_LEFT + kw + 0.25, 1.15 + kh + 0.2, kw, "Ready", "Priced Recurring Products", RED
+        slide,
+        CONTENT_LEFT + kw + 0.25,
+        1.15 + kh + 0.2,
+        kw,
+        "Ready",
+        "Priced Recurring Products",
+        RED,
     )
 
     add_text_box(
@@ -944,7 +1002,7 @@ def create_roadmap_slide(prs):
             cx + 0.1,
             1.85,
             col_w - 0.2,
-            0.4,
+            0.35,
             label,
             font_size=18,
             bold=True,
@@ -955,9 +1013,9 @@ def create_roadmap_slide(prs):
         add_bullet_list(
             slide,
             cx + 0.12,
-            2.0,
+            2.32,
             col_w - 0.24,
-            4.6,
+            4.3,
             ["•  " + it for it in items],
             font_size=12,
             color=NAVY,
@@ -1203,8 +1261,8 @@ def create_closing_slide(prs):
         auto_fit=False,
     )
 
-    # Hero lockup (single element — carries ™ + tagline).
-    add_logo(slide, left=3.55, top=3.95, height=2.5, dark_bg=True)
+    # Hero lockup (single element — carries ™ + tagline), centred on the slide.
+    add_logo(slide, left=(SLIDE_W - 2.5) / 2, top=3.95, height=2.5, dark_bg=True)
     add_footer(slide, 13)
 
 
