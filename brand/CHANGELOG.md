@@ -6,6 +6,71 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.6.0] - 2026-10-27
+
+### Added
+
+- **Transparent variants for every logo concept** - 13 new files in `brand/logo/`,
+  generated from the existing vector masters. No raster tracing, no background
+  keying. The rule applied: create a transparent twin only where the existing
+  file is opaque, which is why `dark-bg`, `light-bg`, `mark` and `mark-mono`
+  get a `-transparent.png` but no `-transparent.svg` (their SVGs never had a
+  background rect).
+  - Transparent SVGs (full-canvas background rect removed):
+    `logo-avatar-transparent.svg` (1024), `logo-favicon-transparent.svg` (512),
+    `logo-full-transparent.svg` (1254), `logo-og-transparent.svg` (1200x630),
+    `logo-no-background.svg` (1024).
+  - Transparent PNGs, rendered from vector at native size:
+    `logo-avatar-transparent.png` (1024), `logo-favicon-transparent.png` (512),
+    `logo-full-transparent.png` (1254), `logo-light-bg-transparent.png` (1254),
+    `logo-mark-transparent.png` (609x388), `logo-mark-mono-transparent.png`
+    (609x388), `logo-og-transparent.png` (1200x630), `logo-no-background.png`
+    (1024).
+- **Real no-background vector** - `logo-no-background.svg` + `.png` supersedes
+  `logo-no-background.jpg`, a JPEG with a transparency checkerboard baked into
+  its pixels (mode RGB, no alpha, light-grey ground at RGB 214,214,214) that
+  could never be transparent. The new vector reproduces its framing: the mark
+  spans 76.27% of a 1024x1024 canvas and is centred. Rendered alpha bbox is
+  (122,264,902,760) against the JPG's (122,262,902,761).
+- **Generator and verifier** - `scripts/build/generate-logo-variants.mjs`
+  gates the renderer against the committed rasters before writing anything, then
+  emits the variants; `scripts/qa/verify-logo-transparency.py` independently
+  asserts alpha channel, corner transparency, size and that no transparent SVG
+  retains a background rect. `sharp` added as a dev dependency.
+
+### Changed
+
+- Nothing. This release is additive: no existing brand asset was modified or
+  deleted. `logo-dark-bg-transparent.png` is unchanged and was not regenerated
+  (the generator refuses to overwrite a tracked file).
+
+### Notes - transparency is not the same as usable everywhere
+
+Each transparent variant keeps the artwork's intended background, so the
+wordmark colour decides where it works. Measured from the rendered pixels:
+
+| Transparent variant | Wordmark colour | Usable on |
+|---------------------|-----------------|-----------|
+| `full`, `og`, `dark-bg` | white | dark backgrounds only |
+| `light-bg` | navy `#070A40` | light backgrounds only |
+| `mark`, `mark-mono`, `avatar`, `favicon`, `no-background` | mark only | light and dark |
+
+`logo-mark-mono-transparent.png` is `#070A40` and therefore invisible on navy -
+that is a property of the mono artwork, not of the transparency. A white mono
+mark does not exist yet; add `logo-mark-mono-white.svg` if one is needed.
+
+### Known discrepancies (not fixed in this release)
+
+- This file contains two concatenated histories with duplicate version headings
+  (`1.1.0` and `1.2.0` each appear twice, at different dates) and the second
+  block ascends while the first descends. Left as-is rather than reordered,
+  because rewriting history entries risks losing provenance.
+- `brand/guidelines/brand-guidelines.md` section 3 describes `logo-full` as for
+  "light/white backgrounds" and `logo-light-bg` as for "dark or navy
+  backgrounds", but the pixels are the opposite way round: `logo-full` is a
+  white wordmark on a navy canvas, and `logo-light-bg` is a navy wordmark on a
+  light canvas. Reported, not silently rewritten.
+
 ## [1.2.0] - 2026-10-05
 
 ### Added
