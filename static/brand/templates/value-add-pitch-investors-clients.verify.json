@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "tool": "verify-deck.py 1.0.0",
-  "generated_at": "2026-10-24T12:26:03+00:00",
+  "generated_at": "2026-10-26T13:59:13+00:00",
   "artifact": {
     "path": "C:\\Users\\jmlus\\light-speed-holdings\\static\\brand\\templates\\value-add-pitch-investors-clients.pptx",
-    "sha256": "f13eab3ccbb425827aa2541d1dd4d5e506588bc638e81235c1ae21ccbf5cc115",
+    "sha256": "bd53aeab42b2f88f5ce039572db2ba5148f59ad3098c722ac94ec2828561cc99",
     "slides": 13
   },
-  "claims_sha256": "9a5a847b6f9b4fdd3a1328165318264145533d04be0334a3a205dd89201b9aea",
+  "claims_sha256": "fe436327ba3b7bd824ff7ba79b0a62e3b16c3c434111ebb72ad69e29c928610c",
   "exit_code": 1,
   "verdict": "REJECTED",
   "checks": [
@@ -49,12 +49,8 @@
     {
       "id": "V06",
       "title": "logo",
-      "status": "FAIL",
+      "status": "WARN",
       "findings": [
-        {
-          "level": "FAIL",
-          "message": "slide 1: non-transparent logo 'brand/logo/logo-dark-bg.png' on non-white backdrop #070A40"
-        },
         {
           "level": "WARN",
           "message": "slide 1: 'TextBox 1' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)"
@@ -62,14 +58,6 @@
         {
           "level": "WARN",
           "message": "slide 1: 'Rectangle 3' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)"
-        },
-        {
-          "level": "WARN",
-          "message": "slide 1: 'TextBox 4' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)"
-        },
-        {
-          "level": "FAIL",
-          "message": "slide 13: non-transparent logo 'brand/logo/logo-dark-bg.png' on non-white backdrop #070A40"
         },
         {
           "level": "WARN",
@@ -110,67 +98,75 @@
       "findings": [
         {
           "level": "WARN",
-          "message": "claim 'agents-total' is not shown on any slide and is not usable (status is 'unverified', not 'verified')"
+          "message": "claim 'agents-total' is not shown on any slide"
         },
         {
           "level": "WARN",
-          "message": "claim 'departments-total' is not shown on any slide and is not usable (status is 'unverified', not 'verified')"
+          "message": "claim 'agents-ai-89' is not shown on any slide"
         },
         {
           "level": "WARN",
-          "message": "claim 'atc-rate' is not shown on any slide and is not usable (status is 'unverified', not 'verified')"
+          "message": "claim 'departments-total' is not shown on any slide"
         },
         {
           "level": "WARN",
-          "message": "claim 'tam-65b' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'atc-rate' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'sam-12b' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'tam-65b' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'som-120m' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'sam-12b' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'price-starter' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'som-120m' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'price-pro' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'som-year-one' is not shown on any slide"
         },
         {
           "level": "WARN",
-          "message": "claim 'price-enterprise' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'price-platform' is not shown on any slide"
         },
         {
           "level": "WARN",
-          "message": "claim 'seed-ask' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'price-firm-licence' is not shown on any slide"
         },
         {
           "level": "WARN",
-          "message": "claim 'capital-efficiency-3-5x' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'price-enterprise' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'capital-efficiency-3x' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'seed-ask' is not shown on any slide"
         },
         {
           "level": "WARN",
-          "message": "claim 'capital-efficiency-4-2x' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'capital-efficiency-3-5x' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'velocity-mvp-60d' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'capital-efficiency-3x' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'velocity-mvp-45d' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'capital-efficiency-4-2x' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'correction-ratio' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'velocity-mvp-60d' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
+        },
+        {
+          "level": "WARN",
+          "message": "claim 'velocity-mvp-45d' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
+        },
+        {
+          "level": "WARN",
+          "message": "claim 'correction-ratio' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
@@ -182,11 +178,15 @@
         },
         {
           "level": "WARN",
-          "message": "claim 'design-partners' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'design-partners' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'arr-120k' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'arr-120k' is not shown on any slide"
+        },
+        {
+          "level": "WARN",
+          "message": "claim 'year-one-revenue' is not shown on any slide"
         },
         {
           "level": "WARN",
@@ -194,11 +194,15 @@
         },
         {
           "level": "WARN",
-          "message": "claim 'gross-margin-70' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'gross-margin-70' is not shown on any slide"
         },
         {
           "level": "WARN",
-          "message": "claim 'llm-cost-15' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'gross-margin-services' is not shown on any slide"
+        },
+        {
+          "level": "WARN",
+          "message": "claim 'llm-cost-guardrail' is not shown on any slide"
         },
         {
           "level": "WARN",
@@ -206,11 +210,11 @@
         },
         {
           "level": "WARN",
-          "message": "claim 'pilot-clients-15' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'pilot-clients-15' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",
-          "message": "claim 'enterprise-clients-50' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')"
+          "message": "claim 'enterprise-clients-50' is not shown on any slide and is not usable (status is 'retracted', not 'verified')"
         },
         {
           "level": "WARN",

@@ -69,6 +69,24 @@ uv.lock
 
 # Brand mirror (build needs /brand/tokens/ only — imports from src/pages & src/components)
 /static/
+!/static/brand/
+!/static/brand/templates/
+!/static/brand/templates/manifest.json
+!/static/brand/templates/generate-pitch-deck.py
+!/static/brand/templates/pitch-deck.pptx
+!/static/brand/templates/pitch-deck.qa-verdict.json
+!/static/brand/templates/pitch-deck.renders/manifest.json
+!/static/brand/templates/pitch-deck.renders/slide-01.png
+!/static/brand/templates/pitch-deck.renders/slide-02.png
+!/static/brand/templates/pitch-deck.renders/slide-03.png
+!/static/brand/templates/pitch-deck.renders/slide-04.png
+!/static/brand/templates/pitch-deck.renders/slide-05.png
+!/static/brand/templates/pitch-deck.renders/slide-06.png
+!/static/brand/templates/pitch-deck.renders/slide-07.png
+!/static/brand/templates/pitch-deck.renders/slide-08.png
+!/static/brand/templates/pitch-deck.renders/slide-09.png
+!/static/brand/templates/pitch-deck.renders/slide-10.png
+!/static/brand/templates/pitch-deck.renders/slide-11.png
 
 # Docs, harness, configs
 /docs/

@@ -4,11 +4,15 @@
   "plugin": [
     "@omniroute/opencode-plugin"
   ],
+  "permission": {
+    "edit": "allow",
+    "bash": "allow"
+  },
   "mcp": {
     "resend": {
       "type": "remote",
       "url": "https://mcp.resend.com/mcp",
-      "enabled": true
+      "enabled": false
     },
     "open-design": {
       "type": "local",
@@ -19,7 +23,7 @@
         "--daemon-url",
         "http://127.0.0.1:7456"
       ],
-      "enabled": true,
+      "enabled": false,
       "environment": {
         "OD_DATA_DIR": "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\.od"
       }
@@ -27,10 +31,152 @@
   },
   "provider": {
     "omniroute": {
-      "npm": "@ai-sdk/openai-compatible",
       "name": "OmniRoute",
+      "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://127.0.0.1:20128/v1"
+        "baseURL": "http://localhost:20128/v1",
+        "apiKey": "{env:OMNIROUTE_API_KEY}"
+      },
+      "models": {
+        "auto": { "name": "Auto (Smart Router)" },
+        "auto/best-free": { "name": "Best Free Model" },
+        "auto/coding": { "name": "Auto Coding" },
+        "auto/fast": { "name": "Auto Fast" },
+        "auto/cheap": { "name": "Auto Cheap" },
+        "auto/smart": { "name": "Auto Smart" },
+        "auto/offline": { "name": "Auto Offline" },
+        "auto/reasoning": { "name": "Auto Reasoning" },
+        "auto/vision": { "name": "Auto Vision" },
+        "oc/claude-opus-5": { "name": "Claude Opus 5 (Free, proprietary)" },
+        "oc/claude-opus-4-8": { "name": "Claude Opus 4.8 (Free, proprietary)" },
+        "oc/claude-opus-4-7": { "name": "Claude Opus 4.7 (Free, proprietary)" },
+        "oc/claude-sonnet-5": { "name": "Claude Sonnet 5 (Free, proprietary)" },
+        "oc/claude-sonnet-4-6": { "name": "Claude Sonnet 4.6 (Free, proprietary)" },
+        "oc/claude-sonnet-4-5": { "name": "Claude Sonnet 4.5 (Free, proprietary)" },
+        "oc/claude-haiku-4-5": { "name": "Claude Haiku 4.5 (Free, proprietary)" },
+        "oc/claude-fable-5": { "name": "Claude Fable 5 (Free, proprietary)" },
+        "oc/gpt-5.6-terra": { "name": "GPT-5.6 Terra (Free, proprietary)" },
+        "oc/gpt-5.6-sol": { "name": "GPT-5.6 Sol (Free, proprietary)" },
+        "oc/gpt-5.6-luna": { "name": "GPT-5.6 Luna (Free, proprietary)" },
+        "oc/gpt-5.5": { "name": "GPT-5.5 (Free, proprietary)" },
+        "oc/gpt-5.4": { "name": "GPT-5.4 (Free, proprietary)" },
+        "oc/gpt-5.4-mini": { "name": "GPT-5.4 Mini (Free, proprietary)" },
+        "oc/gpt-5.4-nano": { "name": "GPT-5.4 Nano (Free, proprietary)" },
+        "oc/gpt-5.3-codex": { "name": "GPT-5.3 Codex (Free, proprietary)" },
+        "oc/gpt-5.1-codex": { "name": "GPT-5.1 Codex (Free, proprietary)" },
+        "oc/gemini-3.1-pro": { "name": "Gemini 3.1 Pro (Free, proprietary)" },
+        "oc/gemini-3.7-flash": { "name": "Gemini 3.7 Flash (Free, proprietary)" },
+        "oc/gemini-3.6-flash": { "name": "Gemini 3.6 Flash (Free, proprietary)" },
+        "oc/gemini-3.5-flash": { "name": "Gemini 3.5 Flash (Free, proprietary)" },
+        "oc/deepseek-v4-flash-free": { "name": "DeepSeek V4 Flash (Free, open-weight)" },
+        "oc/deepseek-v4-pro": { "name": "DeepSeek V4 Pro (Free, open-weight)" },
+        "oc/kimi-k3": { "name": "Kimi K3 (Free, open-weight)" },
+        "oc/kimi-k2.7-code": { "name": "Kimi K2.7 Code (Free, open-weight)" },
+        "oc/glm-5.2": { "name": "GLM 5.2 (Free, open-weight)" },
+        "oc/grok-4.6": { "name": "Grok 4.6 (Free, proprietary)" },
+        "oc/grok-4.5": { "name": "Grok 4.5 (Free, proprietary)" },
+        "oc/minimax-m3": { "name": "MiniMax M3 (Free, open-weight)" },
+        "oc/qwen3.6-plus": { "name": "Qwen 3.6 Plus (Free)" },
+        "oc/nemotron-3-ultra-free": { "name": "Nemotron 3 Ultra (Free, open-weight)" },
+        "oc/nemotron-3.5-lightning-free": { "name": "Nemotron 3.5 Lightning (Free, open-weight)" },
+        "oc/mimo-v2.5-free": { "name": "MiMo V2.5 (Free)" },
+        "oc/hy3-free": { "name": "HY3 Free" },
+        "oc/north-mini-code-free": { "name": "North Mini Code (Free)" },
+        "oc/x-preview-f-free": { "name": "X Preview F (Free)" },
+        "oc/big-pickle": { "name": "Big Pickle (Free)" },
+        "felo/felo-chat": { "name": "Felo Chat (Free)" },
+        "felo/felo-search": { "name": "Felo Search (Free)" },
+        "ddgw/claude-haiku-4-5": { "name": "Claude Haiku 4.5 (DDGW)" },
+        "ddgw/gpt-5.4-mini": { "name": "GPT-5.4 Mini (DDGW)" },
+        "ddgw/gpt-5.4-nano": { "name": "GPT-5.4 Nano (DDGW)" }
+      }
+    },
+    "groq-direct": {
+      "name": "Groq (free tier, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://api.groq.com/openai/v1",
+        "apiKey": "{env:GROQ_API_KEY}"
+      },
+      "models": {
+        "openai/gpt-oss-120b": { "name": "gpt-oss 120B (Groq)" },
+        "openai/gpt-oss-20b": { "name": "gpt-oss 20B (Groq)" },
+        "qwen/qwen3.8-27b": { "name": "Qwen3.8 27B (Groq)" }
+      }
+    },
+    "nvidia-nim-direct": {
+      "name": "NVIDIA NIM (free credits, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://integrate.api.nvidia.com/v1",
+        "apiKey": "{env:NVIDIA_API_KEY}"
+      },
+      "models": {
+        "openai/gpt-oss-20b": { "name": "gpt-oss 20B (NIM)" },
+        "nvidia/nemotron-3.5-lightning-30b-a3b": { "name": "Nemotron 3.5 Lightning 30B (NIM)" },
+        "google/gemma-4-31b-it": { "name": "Gemma 4 31B (NIM)" }
+      }
+    },
+    "mistral-direct": {
+      "name": "Mistral La Plateforme (free tier, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://api.mistral.ai/v1",
+        "apiKey": "{env:MISTRAL_API_KEY}"
+      },
+      "models": {
+        "ministral-8b-latest": { "name": "Ministral 8B (latest)" },
+        "ministral-14b-latest": { "name": "Ministral 14B (latest)" }
+      }
+    },
+    "gemini-studio-direct": {
+      "name": "Google AI Studio (free tier, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://generativelanguage.googleapis.com/v1beta/openai",
+        "apiKey": "{env:GOOGLE_API_KEY}"
+      },
+      "models": {
+        "gemma-4-31b-it": { "name": "Gemma 4 31B (AI Studio)" },
+        "gemma-4-26b-a4b-it": { "name": "Gemma 4 26B-A4B (AI Studio)" },
+        "gemini-3.8-flash": { "name": "Gemini 3.8 Flash (AI Studio)" }
+      }
+    },
+    "cloudflare-direct": {
+      "name": "Cloudflare Workers AI (free tier, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://api.cloudflare.com/client/v4/accounts/{env:CLOUDFLARE_ACCOUNT_ID}/ai/v1",
+        "apiKey": "{env:CLOUDFLARE_API_TOKEN}"
+      },
+      "models": {
+        "@cf/openai/gpt-oss-20b": { "name": "gpt-oss 20B (CF)" },
+        "@cf/meta/llama-4-scout-17b-16e-instruct": { "name": "Llama 4 Scout (CF)" },
+        "@cf/meta/llama-3.3-70b-instruct-fp8-fast": { "name": "Llama 3.3 70B fast (CF)" },
+        "@cf/meta/llama-3.1-8b-instruct-fp8": { "name": "Llama 3.1 8B (CF)" },
+        "@cf/qwen/qwen3.8-27b": { "name": "Qwen3.8 27B (CF)" },
+        "@cf/qwen/qwen3-30b-a3b-fp8": { "name": "Qwen3 30B-A3B (CF)" },
+        "@cf/qwen/qwen2.5-coder-32b-instruct": { "name": "Qwen2.5 Coder 32B (CF)" },
+        "@cf/google/gemma-4-26b-a4b-it": { "name": "Gemma 4 26B-A4B (CF)" },
+        "@cf/mistralai/mistral-small-3.1-24b-instruct": { "name": "Mistral Small 3.1 24B (CF)" },
+        "@cf/nvidia/nemotron-3-120b-a12b": { "name": "Nemotron 3 120B-A12B (CF)" },
+        "@cf/deepseek-ai/deepseek-v4.1-flash-1017": { "name": "DeepSeek V4.1 Flash (CF)" },
+        "@cf/ibm-granite/granite-4.0-h-micro": { "name": "Granite 4.0 H Micro (CF)" }
+      }
+    },
+    "ollama-cloud-direct": {
+      "name": "Ollama Cloud (free plan, direct; IDs from /api/tags, free-plan access untested)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://ollama.com/v1",
+        "apiKey": "{env:OLLAMA_API_KEY}"
+      },
+      "models": {
+        "gpt-oss:120b": { "name": "gpt-oss 120B (Ollama Cloud)" },
+        "gpt-oss:20b": { "name": "gpt-oss 20B (Ollama Cloud)" },
+        "nemotron-3-super": { "name": "Nemotron 3 Super (Ollama Cloud)" },
+        "mistral-large-4": { "name": "Mistral Large 4 (Ollama Cloud, NOT YET AVAILABLE to this account)" },
+        "gemma4:31b": { "name": "Gemma 4 31B (Ollama Cloud)" }
       }
     },
     "ollama": {
@@ -40,33 +186,29 @@
         "baseURL": "http://127.0.0.1:11434/v1"
       },
       "models": {
-        "llama3.2:latest": {
-          "name": "Llama 3.2 (Local)",
-          "limit": { "context": 131072, "output": 8192 }
-        },
-        "llama3.1-8b-32k:latest": {
-          "name": "Llama 3.1 8B 32K (Local)",
+        "gpt-oss:20b": {
+          "name": "gpt-oss 20B (Local)",
           "limit": { "context": 32768, "output": 8192 }
         },
-        "qwen2.5-coder-7b-32k:latest": {
-          "name": "Qwen 2.5 Coder 7B 32K (Local)",
+        "qwen3-coder:30b": {
+          "name": "Qwen3 Coder 30B (Local, ~18 GB, stop other models first)",
           "limit": { "context": 32768, "output": 8192 }
         },
-        "deepseek-r1-64k:latest": {
-          "name": "DeepSeek R1 64K (Local)",
-          "limit": { "context": 8192, "output": 16384 }
+        "phi4-mini:latest": {
+          "name": "Phi-4 Mini 3.8B (Local)",
+          "limit": { "context": 32768, "output": 4096 }
         },
-        "deepseek-r1:7b": {
-          "name": "DeepSeek R1 7B (Local)",
+        "gemma4:e4b": {
+          "name": "Gemma 4 E4B (Local)",
           "limit": { "context": 32768, "output": 8192 }
         },
         "gemma4-12b-32k:latest": {
           "name": "Gemma 4 12B 32K (Local)",
           "limit": { "context": 32768, "output": 8192 }
         },
-        "mistral-7b-32k:latest": {
-          "name": "Mistral 7B 32K (Local)",
-          "limit": { "context": 32768, "output": 8192 }
+        "tev1:4b": {
+          "name": "TEV1 4B (Local, experimental)",
+          "limit": { "context": 8192, "output": 4096 }
         }
       }
     },
@@ -77,25 +219,13 @@
         "baseURL": "http://127.0.0.1:8088/v1"
       },
       "models": {
-        "llama3.1-8b-32k": {
-          "name": "Llama 3.1 8B (llama.cpp)",
-          "limit": { "context": 32768, "output": 8192 }
-        },
         "qwen2.5-coder-7b-32k": {
           "name": "Qwen 2.5 Coder 7B (llama.cpp)",
           "limit": { "context": 32768, "output": 8192 }
         },
         "deepseek-r1-64k": {
           "name": "DeepSeek R1 64K (llama.cpp)",
-          "limit": { "context": 8192, "output": 16384 }
-        },
-        "gemma2-9b-q5": {
-          "name": "Gemma 2 9B Q5 (llama.cpp)",
-          "limit": { "context": 8192, "output": 8192 }
-        },
-        "mistral-7b-32k": {
-          "name": "Mistral 7B (llama.cpp)",
-          "limit": { "context": 16384, "output": 8192 }
+          "limit": { "context": 65536, "output": 16384 }
         }
       }
     }

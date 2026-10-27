@@ -49,7 +49,7 @@ changed=$(
     || true
 )
 
-site_pattern='^(index\.html|vercel\.json|\.vercelignore|package\.json|package-lock\.json|tsconfig[^/]*\.json|vite\.config\.[^/]+|api/|public/|brand/|packages/design-system/|src/|data/[^/]+/registry\.ts)'
+site_pattern='^(index\.html|vercel\.json|\.vercelignore|package\.json|package-lock\.json|tsconfig[^/]*\.json|vite\.config\.[^/]+|api/|public/|brand/|static/brand/|packages/design-system/|src/|data/[^/]+/registry\.ts)'
 
 if printf '%s\n' "$changed" | grep -E -q "$site_pattern"; then
   echo "vercel-ignore-build: site-bundle files changed between ${PREV} and ${HEAD}; building."

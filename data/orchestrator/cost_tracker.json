@@ -1,0 +1,15 @@
+{
+  "total_budget": 15000000.0,
+  "total_spent": 0.0,
+  "llm_spend": 0.0,
+  "total_prompt_tokens": 0,
+  "total_completion_tokens": 0,
+  "total_tokens": 0,
+  "call_count": 0,
+  "by_model": {},
+  "by_agent": {},
+  "daily_trend": [],
+  "by_agent_model": {},
+  "last_updated": "2026-10-24T18:17:06.070719+00:00",
+  "currency": "USD"
+}

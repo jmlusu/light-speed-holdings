@@ -166,25 +166,30 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [1.3.0] - 2026-09-06
+## [1.3.0] - 2026-10-25
 
 ### Added
-- **Alternative Full Logo Variants** — 3 new logo variants (Logo1, Logo2, Logo3) with full format support:
-  - Each variant: PNG, JPG, SVG, SVG (transparent), PDF, PDF (transparent), EPS, EPS (transparent) — 8 files × 3 = 24 files
-  - Canonical location: `brand/logos/fulllogo/` + runtime: `static/brand/logos/fulllogo/`
-  - Source PNGs uploaded as `Logo1.png`, `Logo2.png`, `Logo3.png` (RGBA, transparent backgrounds)
-  - All derived formats generated programmatically (SVG with embedded base64, PDF via fpdf2, EPS wrapper)
+- **Value-add pitch deck** — 13-slide investor/client deck generated from
+  `generate-value-add-pitch.py` with brand-compliant logo system.
+- **Transparent navy-canvas lockup** — `logo-dark-bg-transparent.png` derived from
+  `logo-full.png` via border-connected flood-fill, replacing the broken
+  `logo-dark-bg.png` (white canvas/white wordmark → white box on navy slides).
+- **Generator fixes** — three visual defects corrected:
+  - Slide 1: correct full lockup, no white box; rule at 5.65in, subtitle at 5.85in,
+    date at 6.4in (no overlap).
+  - Slide 10: roadmap labels shifted up (0.35in), bullets moved 2.0→2.32in,
+    height adjusted to end ≤6.6in inside 6.75in card.
+  - Slide 13: hero logo centred at (SLIDE_W−2.5)/2=3.75in; art centre 550.0px
+    vs slide centre 550.0px (was 527.5px).
+- **Gate output** — `check-deck.ps1` `--logo-dir` default corrected from
+  non-existent `brand/logos` to `@("brand/logo","static/brand/logo")`.
 
-### Updated
-- **Brand documentation** — Updated `brand/README.md`, `static/brand/README.md`, `brand/guidelines/brand-guidelines.md`, `static/brand/BRAND_GUIDELINES.md` with new logo variant tables
-- **Logo variant tables** — Added Logo1/2/3 entries with use cases (alternative layouts, presentations)
+### Changed
+- **Clear-space heuristic** — V06 now WARN only (approximate against full 1254px
+  canvas); V13 requires external QA verdict.
 
-### Brand Identity
-- **Tagline:** ASPIRE. ACT. ACHIEVE.
-- **Primary Color:** Dark Navy `#070A40`
-- **Accent — Red:** `#E63946`
-- **Accent — Cyan:** `#00BFFF`
-- **Neutral — Light Grey:** `#F2F2F2`
+### Removed
+- (none)
 
 ---
 
