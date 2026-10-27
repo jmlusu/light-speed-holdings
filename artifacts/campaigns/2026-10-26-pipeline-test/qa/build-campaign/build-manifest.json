@@ -1,0 +1,162 @@
+{
+  "campaign": "2026-10-26-pipeline-test",
+  "generated": "2026-10-27T20:23:06",
+  "state": "TEXT ONLY",
+  "audio_files": [],
+  "media_branch": false,
+  "forced_media": false,
+  "template": "executive-briefing-4pp.html",
+  "target_pages": 4,
+  "rendered_pages": 4,
+  "fit": 1.0,
+  "source_sha256": "75d75d3160e518b3f9f4e81477887783187d6adfb742000e0097ffa373dbd854",
+  "stats": {
+    "words": 1126,
+    "tables": 1,
+    "table_rows": 4,
+    "headings": 5,
+    "paragraphs": 16,
+    "bullets": 12,
+    "blocks": 26,
+    "slug": "2026-10-26-pipeline-test"
+  },
+  "integrity": {
+    "pass": true,
+    "blocks_checked": 49,
+    "missing_count": 0,
+    "missing": []
+  },
+  "checks": {
+    "page_count": {
+      "pass": true,
+      "value": "4 pages (budget 4)"
+    },
+    "a4": {
+      "pass": true,
+      "value": [
+        [
+          595.0,
+          841.9
+        ],
+        [
+          595.0,
+          841.9
+        ],
+        [
+          595.0,
+          841.9
+        ],
+        [
+          595.0,
+          841.9
+        ]
+      ]
+    },
+    "title_present": {
+      "pass": true,
+      "value": "Scaling Agentic AI Architecture"
+    },
+    "text_integrity": {
+      "pass": true,
+      "value": "49 blocks, 0 missing"
+    },
+    "palette_pdf": {
+      "pass": true,
+      "value": "4 page(s) @ 3%"
+    },
+    "css_colours": {
+      "pass": true,
+      "value": []
+    },
+    "linkedin_limit": {
+      "pass": true,
+      "value": "1,538 / 2,800 chars"
+    },
+    "palette_all": {
+      "pass": true,
+      "value": "4 raster(s) @ 3%"
+    },
+    "assets_present": {
+      "pass": true,
+      "value": "2 files",
+      "missing": []
+    }
+  },
+  "palette": [
+    {
+      "file": "page-1.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 2174960; off-palette: 20078 (0.92%)",
+      "result": "PASS: 99.08% of visible pixels on brand palette (0.92% off, tolerance 3%)"
+    },
+    {
+      "file": "page-2.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 2174960; off-palette: 0 (0.00%)",
+      "result": "PASS: 100.00% of visible pixels on brand palette (0.00% off, tolerance 3%)"
+    },
+    {
+      "file": "page-3.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 2174960; off-palette: 0 (0.00%)",
+      "result": "PASS: 100.00% of visible pixels on brand palette (0.00% off, tolerance 3%)"
+    },
+    {
+      "file": "page-4.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 2174960; off-palette: 0 (0.00%)",
+      "result": "PASS: 100.00% of visible pixels on brand palette (0.00% off, tolerance 3%)"
+    }
+  ],
+  "built": [
+    {
+      "path": "open-design/executive-briefing-branded.pdf",
+      "kind": "PDF",
+      "detail": "4 pages, A4, unabridged",
+      "size": "248 KB",
+      "palette": "PASS"
+    },
+    {
+      "path": "text/linkedin-primary.md",
+      "kind": "Copy",
+      "detail": "1,824 chars",
+      "size": "2 KB",
+      "palette": "n/a"
+    }
+  ],
+  "skipped": [
+    {
+      "asset": "open-design/video-short-1080x1920.mp4",
+      "reason": "no NotebookLM audio (*.mp3 / *.wav) in notebooklm/ \u2014 State 1"
+    },
+    {
+      "asset": "open-design/video-overview-16x9.mp4",
+      "reason": "no NotebookLM audio (*.mp3 / *.wav) in notebooklm/ \u2014 State 1"
+    },
+    {
+      "asset": "open-design/infographic-square-1080x1080.png",
+      "reason": "no NotebookLM audio (*.mp3 / *.wav) in notebooklm/ \u2014 State 1"
+    },
+    {
+      "asset": "open-design/infographic-landscape-1600x900.png",
+      "reason": "no NotebookLM audio (*.mp3 / *.wav) in notebooklm/ \u2014 State 1"
+    },
+    {
+      "asset": "text/x-thread.md",
+      "reason": "media branch skipped \u2014 State 1"
+    },
+    {
+      "asset": "text/facebook-post.md",
+      "reason": "media branch skipped \u2014 State 1"
+    },
+    {
+      "asset": "text/instagram-caption.md",
+      "reason": "media branch skipped \u2014 State 1"
+    }
+  ],
+  "pass": true
+}
