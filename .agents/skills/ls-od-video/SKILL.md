@@ -51,6 +51,53 @@ Fallbacks, only when they fit better than HyperFrames:
 Author multi-composition timelines, audio-reactive overlays, or TTS captions
 from scratch only when the human explicitly asked for them.
 
+## Frame Specifications
+
+Two delivery formats. Author each as its own composition — a 16:9 timeline
+stretched into 9:16 fails the safe-area rule and the type scale at once.
+
+### 9:16 Vertical — Video Shorts (Reels / TikTok)
+
+- **Canvas:** `1080 × 1920`, 30 fps, 60 s max (Reels/TikTok cut at 60 s; a
+  60-second short is the target, 15 s is the floor).
+- **Backdrop:** Navy `#070A40`, full bleed, ~80% of the frame.
+- **Soundwave:** animated Cyan `#00BFFF` waveform, the single motion element.
+  Keep it in the lower third behind the subtitle band, amplitude driven by the
+  narration envelope, never a static decoration. Cyan is instrumentation here,
+  so it stays a stroke — never a large fill.
+- **Accent:** Red `#E63946` for the one argued number and the CTA chevron only.
+  One red element per scene.
+- **Subtitle track:** burn-in readiness requires a separate, deterministic
+  track — one line at a time, ≤42 characters, ≤2 lines on screen, max 3 s per
+  card. Position the band in the **lower-middle** third: a 9:16 frame loses
+  ~15% to UI chrome at the bottom and ~12% to the caption rail at the top, so
+  the safe band is roughly y = 1150–1620 at 1080×1920.
+- **Safe margins:** ≥96px left/right, ≥250px top, ≥300px bottom. Nothing
+  load-bearing outside it.
+- **Cyan-on-dark caution:** white body text on navy; cyan for the waveform and
+  eyebrows only. Never white on cyan.
+
+### 16:9 Landscape — LinkedIn / YouTube overview
+
+- **Canvas:** `1920 × 1080`, 30 fps, 60–120 s.
+- **Backdrop:** Navy `#070A40` with the navy left rail (4px at web scale,
+  scaled to ~6px at 1920).
+- **Type:** title 28pt, subtitle 16pt, body 14pt, eyebrow/footer 8pt (house
+  style). Headlines 60px+ at 1920×1080.
+- **Subtitle band:** lower third, same ≤42-character line discipline; YouTube
+  and LinkedIn both render their own closed captions, so keep the burn-in band
+  clear of the platform's control bar (bottom ~10%).
+- **Safe margins:** ≥96px all edges.
+
+### Subtitle discipline (both formats)
+
+- The script comes from the NotebookLM prompt 4 beat table. A subtitle is a
+  **compression of a line that exists in the pack**, never a new claim.
+- One line, one breath. If a line breaks mid-phrase it reads as a glitch.
+- No subtitle without a spoken line behind it, and no spoken line without a
+  subtitle — the two tracks are the same content.
+- Figures in a subtitle carry their scope (`90 agents` not `90`).
+
 ## Commands
 
 ```bash
@@ -84,6 +131,30 @@ COMP_REL=".hyperframes-cache/$(date +%s)-<slug>"
 
 Before dispatch, check the composition structure: the root duration is set,
 the palette is declared, and text sits inside the frame's safe area.
+
+## Local Render Path (no daemon)
+
+When the Open Design daemon is not running (`OD_BIN` unset) or a paid render is
+not approved, HyperFrames is unavailable but the frame discipline still applies.
+Render deterministically with Pillow frames + ffmpeg, which is already installed:
+
+```bash
+uv run python scripts/generate_all_assets.py --campaign artifacts/campaigns/<slug>
+```
+
+That script composes each frame from exact brand-token hexes with text
+anti-aliasing disabled, so every visible pixel is on-palette, then encodes with
+ffmpeg. Use it for brand-critical shorts and overviews; use HyperFrames when the
+brief needs GSAP choreography or audio-reactive motion.
+
+Two ffmpeg facts that decide whether the output survives QA:
+
+- **`-pix_fmt yuv420p` is required for platform playback** (Reels, TikTok, X,
+  YouTube all reject 4:4:4). It is also lossy: decoded frames will not be
+  bit-exact to the source palette, so **run the palette gate on the source
+  frames, not on decoded video.** State which one you measured.
+- **`-movflags +faststart`** moves the moov atom to the front so the file starts
+  playing before it finishes downloading.
 
 ## House Style
 
@@ -172,8 +243,14 @@ Each render is a paid job, and `media generate` has no dry-run flag.
 
 - The returned file exists at the expected path.
 - Duration and dimensions match the brief and project metadata.
+- Dimensions are the **exact** canvas: `1080 × 1920` for the vertical short,
+  `1920 × 1080` for the landscape overview — verified with `ffprobe`, not assumed
+  from the composition source.
+- Palette gate run on source frames (reported as such) or on an extracted frame
+  with the result stated honestly.
+- Subtitle track present, one line at a time, inside the platform safe band.
 - No placeholder text, debug overlays, missing fonts, or black frames.
 - Palette, type, and logo match the brand tokens.
 - The filename is quoted in the reply, with model, duration, and dimensions.
 - The composition source remains under `.hyperframes-cache/` for the next
-  revision.
+  revision (or, on the local path, under the campaign's `video/frames/`).
