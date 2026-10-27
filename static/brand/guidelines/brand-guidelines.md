@@ -49,6 +49,33 @@
 | Favicon | `logo-favicon.png` / `.svg` | Browser tabs, small favicons |
 | Open Graph | `logo-og.png` / `.svg` | 1200×630 social/OG share cards |
 
+### Transparent variants
+Every concept also ships transparent. The rule used: a transparent twin exists only
+where the base file was opaque, so `dark-bg`, `light-bg`, `mark` and `mark-mono`
+have no `-transparent.svg` — their SVGs never carried a background.
+
+| Transparent file | Size | Wordmark colour | Usable on |
+|------------------|------|-----------------|-----------|
+| `logo-full-transparent.svg` / `.png` | 1254² | white | dark only |
+| `logo-og-transparent.svg` / `.png` | 1200×630 | white | dark only |
+| `logo-dark-bg-transparent.png` | 1254² | white | dark only |
+| `logo-light-bg-transparent.png` | 1254² | navy `#070A40` | light only |
+| `logo-avatar-transparent.svg` / `.png` | 1024² | mark only | light and dark |
+| `logo-favicon-transparent.svg` / `.png` | 512² | mark only | light and dark |
+| `logo-mark-transparent.png` | 609×388 | mark only | light and dark |
+| `logo-mark-mono-transparent.png` | 609×388 | navy `#070A40` | light only |
+| `logo-no-background.svg` / `.png` | 1024² | mark only | light and dark |
+
+`logo-mark-mono-transparent.png` is navy-filled, so it disappears on a navy
+background. There is no white mono mark yet; add `logo-mark-mono-white.svg` if
+one is needed.
+
+Note: the table above describes `logo-full` as being for light/white backgrounds
+and `logo-light-bg` for dark or navy backgrounds. Measured from the pixels this
+is the other way round — `logo-full` is a white wordmark on a navy canvas, and
+`logo-light-bg` is a navy wordmark on a light canvas. The transparent-variant
+table is the pixel-verified one; treat the rows above with that in mind.
+
 ### Archived Legacy Suite
 The legacy lighthouse-in-shield suite (`fulllogo`, `icononly`, `textonly`, `grayscale`) is **retired** and lives only in `.archive/legacy-logo-suite-2026-10-23/`. Do not reference it in any live artifact. Style explorations are in `.archive/brand/logos/`.
 
