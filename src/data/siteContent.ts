@@ -1,0 +1,435 @@
+/* LightSpeed Holdings client-site content model.
+    Source of truth: MISSION_AND_VISION (v2.0, Sep 2026) + use-case messaging
+    brief (Sep 2026) + verified platform facts from company-registry/tests.
+    Every claim here carries its honesty status. No invented numbers. */
+
+import { capabilityTitles } from './capabilities';
+
+export type HonestyTone = 'proven' | 'pilot' | 'fieldable' | 'development';
+
+export interface HonestyLabel {
+  label: string;
+  tone: HonestyTone;
+}
+
+export const TONE_STYLES: Record<HonestyTone, string> = {
+  proven: 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan',
+  pilot: 'border-ls-red/40 bg-ls-red/10 text-ls-red',
+  fieldable: 'border-ls-grey-light-text/40 bg-ls-grey-light-text/10 text-ls-grey-light-text',
+  development: 'border-ls-grey-dark/40 bg-ls-grey-dark/10 text-ls-grey-dark',
+};
+
+/* Canonical badge-label → tone mapper for string honestyBadge fields
+   (types.ts HonestyBadge union). Keeps every badge render honest instead of
+   hard-coding a tone at the call site. */
+export function honestyLabel(label: string): HonestyLabel {
+  const l = label.toLowerCase();
+  if (l.includes('proven') || l.includes('live proof') || l.includes('published')) {
+    return { label, tone: 'proven' };
+  }
+  if (l.includes('pilot')) return { label, tone: 'pilot' };
+  if (l.includes('fieldable')) return { label, tone: 'fieldable' };
+  return { label, tone: 'development' };
+}
+
+/* ── Company identity ─────────────────────────────────── */
+export const company = {
+  legalName: 'LightSpeed Holdings Limited',
+  firstMention: 'LightSpeed Holdings Limited™',
+  shortName: 'LightSpeed Holdings',
+  location: 'Lilongwe, Malawi',
+  tagline: 'ASPIRE. ACT. ACHIEVE.',
+  northStar: 'We build AI-native companies.',
+  heroHeadline: 'Build the intelligent enterprise.',
+  heroSubline:
+    'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems, in Malawi, across Africa and beyond.',
+  valueCycle: capabilityTitles,
+  thesis: 'Aspire. Act. Achieve.',
+};
+
+/* ── Insights ─────────────────────────────────────────── */
+/* MASTER_SPEC §13 content categories - one canonical list (§15),
+   consumed by InsightsPage. */
+export const insightCategories: string[] = [
+  'Agentic AI',
+  'AI Company Building',
+  'AI governance',
+  'AI policy',
+  'Data architecture',
+  'Digital transformation',
+  'African AI',
+  'Malawi technology',
+  'African technology',
+  'Market intelligence',
+  'Operating models',
+  'AI implementation',
+];
+
+export const insightTeasers: { title: string; topic: string; to: string }[] = [
+  { title: 'Cutting AI Costs With Open Source: Why the Architecture Matters More Than the Arithmetic', topic: 'COST ARCHITECTURE', to: '/insights/open-source-cost-architecture' },
+  { title: 'Pricing Agentic AI in a Dual Economy: Kwacha Ladders, Dollar Retainers, and Paying for What You Run', topic: 'AI PRICING', to: '/insights/dual-economy-ai-pricing' },
+  { title: 'The Five-Tier Approval Matrix: How Friction Scales With Risk in a 90-Agent Company', topic: 'AI GOVERNANCE', to: '/insights/five-tier-approval-matrix' },
+  { title: 'Inside a 90-Agent Company: What the Registry, the Queue, and the Approval Gate Actually Do', topic: 'AI COMPANY BUILDING', to: '/insights/inside-a-90-agent-company' },
+  { title: 'Offline-First AI for Africa: Designing for Bandwidth, Sovereignty, and Mobile-Money Reality', topic: 'AI IN AFRICA', to: '/insights/offline-first-ai-for-africa' },
+  { title: 'The Evidence Ladder: How Every Public Claim Gets a Class, and What Buyers Should Demand', topic: 'EVIDENCE & PROOF', to: '/insights/evidence-ladder-honest-claims' },
+  { title: 'The AI Opportunity in Africa', topic: 'AI IN AFRICA', to: '/insights/sadc-ai-opportunity' },
+  { title: 'What Agentic AI Means for African Governments', topic: 'AGENTIC AI', to: '/insights/agentic-ai-african-governments' },
+  { title: 'From Digital Transformation to AI-Native Transformation', topic: 'DIGITAL TRANSFORMATION', to: '/insights/digital-to-ai-native-transformation' },
+];
+
+export const solutions = [
+  {
+    slug: 'ai-company-builder',
+    title: 'AI Company Builder',
+description: 'Build governed AI companies with 89 AI agents and 1 Human CEO (90 operating roles). A 5-tier approval matrix, append-only SHA-256 sealed audit trails, and 4 governance gates ensure every action is accountable.',
+     eyebrow: 'AI OPERATING MODEL',
+     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
+     honestyBadge: 'Fieldable in 2026' as const,
+      oneLiner: '90 operating roles. 89 AI agents. One Human CEO. Every action signed off before it ships.',
+     nav: 'AI Company Builder',
+      lead: 'Build governed AI companies with 89 AI agents and 1 Human CEO.',
+    capabilities: [
+      { title: 'Multi-Agent Orchestration', desc: '89 AI agents and the Human CEO, across 20 departments, each with explicit role definitions and approval thresholds.' },
+      { title: '5-Tier Approval Matrix', desc: 'Auto through CEO sign-off with configurable thresholds and expiration sweeps.' },
+      { title: 'Append-Only Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs for every agent action.' },
+    ],
+    useCases: [
+      { title: 'Compliance Automation', lead: 'Agent-driven compliance reporting', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'Risk Classification', lead: 'Automated risk classification for financial services', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'Audit Trail Generation', lead: 'Append-only audit trails for every transaction', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+    ],
+    spec: {
+      problem:
+        'AI agents get deployed without approval controls, audit trails, or anyone accountable for what they do.',
+      audience: 'Leadership teams deploying AI across departments who need governance before scale.',
+      changes:
+        'Every agent action passes a 5-tier approval gate and lands in an append-only SHA-256 sealed audit log.',
+      builds:
+        'A 90-role operating model: multi-agent orchestration, approval matrix, SHA-256 audit trails.',
+      evidence:
+        'Audit trails proven in-house; compliance automation and risk classification fieldable in 2026.',
+    },
+    cta: { label: 'Explore AI Company Builder', to: '/what-we-do' },
+  },
+  {
+    slug: 'digital-presence',
+    title: 'Digital Presence',
+    description: 'Mobile-first websites, e-commerce stores, and brand identities built for African operating realities, with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.',
+    eyebrow: 'MOBILE-FIRST DESIGN',
+    proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
+    honestyBadge: 'Fieldable in 2026' as const,
+      oneLiner: 'Websites and stores that work on African networks and payment rails.',
+    nav: 'Digital Presence',
+    lead: 'Mobile-first websites and e-commerce built for African operating realities.',
+    capabilities: [
+      { title: 'Mobile-First Design', desc: 'Responsive websites built for mobile-first users across Malawi and African markets.' },
+      { title: 'Payment Integration', desc: 'Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.' },
+      { title: 'Brand Identity', desc: 'Cohesive brand identities designed for the African market.' },
+    ],
+    useCases: [
+      { title: 'E-Commerce Store', lead: 'Online shops with local payment rails', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'Brand Identity', lead: 'Cohesive visual identity for your brand', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+      { title: 'Web Development', lead: 'Mobile-first websites for any audience', proof: { label: 'In pilot', tone: 'pilot' as const } },
+    ],
+    spec: {
+      problem:
+        'Selling online in African markets requires mobile-first sites and mobile-money checkout, not foreign-card-only stores.',
+      audience: 'Malawian and African SMEs, retailers, and brands serving mobile-first customers.',
+      changes:
+        'Customers browse and pay with Airtel Money, TNM Mpamba, or PayChangu from day one.',
+      builds: 'Mobile-first websites, e-commerce stores, and cohesive brand identities.',
+      evidence:
+        'Brand identity proven in-house; web development in pilot; e-commerce fieldable in 2026.',
+    },
+    cta: { label: 'Explore Digital Presence', to: '/what-we-do' },
+  },
+  {
+    slug: 'business-automation',
+    title: 'Business Process Automation',
+    description: 'WhatsApp-native assistants, automated document pipelines, and intelligent form workflows that connect your team to the tools they need without app downloads.',
+    eyebrow: 'WORKFLOW AUTOMATION',
+    proof: { label: 'In pilot', tone: 'pilot' as const },
+    honestyBadge: 'In pilot' as const,
+    oneLiner: 'Workflows that run on WhatsApp.',
+    nav: 'Business Automation',
+    lead: 'WhatsApp-native assistants and automated document pipelines.',
+    capabilities: [
+      { title: 'WhatsApp-Native Assistants', desc: 'Assistants your team already uses, no app downloads required.' },
+      { title: 'Document Pipelines', desc: 'Automated document generation and processing workflows.' },
+      { title: 'Form Workflows', desc: 'Intelligent form workflows that connect your team to the tools they need.' },
+    ],
+    useCases: [
+      { title: 'Document Automation', lead: 'Automated document pipelines', proof: { label: 'In pilot', tone: 'pilot' as const } },
+      { title: 'Form Workflows', lead: 'Intelligent form workflows', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'WhatsApp Integration', lead: 'WhatsApp-native assistants', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+    ],
+    spec: {
+      problem:
+        'Document, form, and team workflows still run manually, outside the tools people already use.',
+      audience:
+        'Operations teams in NGOs, SMEs, and public institutions that already live in WhatsApp.',
+      changes:
+        'Assistants, documents, and forms move through WhatsApp-native workflows, with no app downloads.',
+      builds: 'WhatsApp-native assistants, automated document pipelines, and intelligent form workflows.',
+      evidence:
+        'WhatsApp integration proven in-house; document automation in pilot; form workflows fieldable in 2026.',
+    },
+    cta: { label: 'Explore Business Automation', to: '/what-we-do' },
+  },
+  {
+    slug: 'enterprise-deployment',
+    title: 'Enterprise Deployment',
+    description: 'Full-scale AI agent deployment across departments with RBAC, 5-tier approval governance, and offline-first sovereignty on local infrastructure.',
+    eyebrow: 'SCALED DEPLOYMENT',
+    proof: { label: 'In pilot', tone: 'pilot' as const },
+    honestyBadge: 'In pilot' as const,
+      oneLiner: 'Agents across every department, gated by RBAC and human approval.',
+    nav: 'Enterprise Deployment',
+    lead: 'Full-scale AI agent deployment with RBAC and governance.',
+    capabilities: [
+      { title: 'RBAC', desc: 'Role-based access control across all agent operations.' },
+      { title: '5-Tier Approval Governance', desc: 'Multi-tier human approval for every consequential action.' },
+      { title: 'Offline-First Sovereignty', desc: 'Self-hosted orchestration with local infrastructure.' },
+    ],
+    useCases: [
+      { title: 'Department Deployment', lead: 'Full-scale agent deployment across departments', proof: { label: 'In pilot', tone: 'pilot' as const } },
+      { title: 'Access Control', lead: 'Role-based access control for all operations', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+      { title: 'Local Infrastructure', lead: 'Offline-first operation on local servers', proof: { label: 'In pilot', tone: 'pilot' as const } },
+    ],
+    spec: {
+      problem:
+        'Department-by-department AI adoption without access control, approval governance, or sovereignty over where data lives.',
+      audience: 'Enterprises and public institutions deploying agents across multiple departments.',
+      changes:
+        'Every deployment runs behind RBAC, 5-tier approvals, and offline-first local infrastructure.',
+      builds: 'Full-scale agent deployment with access control, governance, and self-hosted orchestration.',
+      evidence:
+        'Access control proven in-house; department deployment and local infrastructure in pilot.',
+    },
+    cta: { label: 'Explore Enterprise Deployment', to: '/what-we-do' },
+  },
+  {
+    slug: 'boardroom-briefing',
+    title: 'Executive Boardroom Briefing',
+    description: 'A focused session where LightSpeed presents the AI Company Builder platform, governance model, and engagement roadmap to your leadership team.',
+    eyebrow: 'EXECUTIVE ADVISORY',
+    proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
+    honestyBadge: 'Fieldable in 2026' as const,
+    oneLiner: 'Board-level AI strategy, delivered.',
+    nav: 'Boardroom Briefing',
+    lead: 'A focused session where LightSpeed presents the AI Company Builder platform.',
+    capabilities: [
+      { title: 'Platform Presentation', desc: 'LightSpeed presents the AI Company Builder platform in detail.' },
+      { title: 'Governance Model', desc: 'A close look at the 5-tier approval matrix and governance framework.' },
+      { title: 'Engagement Roadmap', desc: 'Clear roadmap for how LightSpeed can work with your team.' },
+    ],
+    useCases: [
+      { title: 'Board Presentation', lead: 'Focused session for leadership teams', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'Governance Walkthrough', lead: 'Understanding the approval matrix', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+      { title: 'Roadmap Planning', lead: 'Engagement roadmap for your organisation', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+    ],
+    spec: {
+      problem:
+        'Boards and leadership teams need a clear, honest view of the AI Company Builder platform and its governance model.',
+      audience: 'Boards, executive teams, and leadership committees.',
+      changes: 'Leaders leave aligned on governance, scope, and a concrete engagement roadmap.',
+      builds: 'A focused session: platform presentation, governance walkthrough, and engagement roadmap.',
+      evidence:
+        'Governance walkthrough proven in-house; sessions and roadmap planning fieldable in 2026.',
+    },
+    cta: { label: 'Request a Boardroom Briefing', to: '/what-we-do' },
+  },
+];
+
+export const GOVERNANCE_SOLUTION = {
+  title: 'The Governance Solution',
+  description: 'LightSpeed Holdings implements a 5-tier human-in-the-loop approval system where no client-facing deliverable ships without human sign-off. The platform enforces 4 mandatory governance gates (Contract, DPA, Compliance, Security) before any engagement begins. Every action is recorded on an append-only audit trail with SHA-256 seals.',
+  lead: 'The human sign-off layer that makes agent deployment safe',
+  proof: { label: 'Proven in-house', tone: 'proven' as const },
+  keyPrinciples: [
+    'Agents execute; human CEO owns outcome',
+    'No client-facing deliverable ships without human sign-off',
+    'Every action generates an append-only audit receipt',
+    'Pending approvals expire on a periodic sweep',
+    'Risk-classified actions require tiered approval',
+  ],
+  status: 'Proven in-house',
+  eyebrow: 'GOVERNANCE',
+  oneLiner: 'Safe deployment starts with governance.',
+  to: '/ai-company-builder',
+  capabilities: [
+    { title: '5-Tier Approval Matrix', desc: 'Every action risk-classified and human-gated.' },
+    { title: 'Append-Only Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs.' },
+    { title: '4 Governance Gates', desc: 'Contract, DPA, Compliance, and Security reviews.' },
+  ],
+  useCases: [
+    { title: 'Compliance Automation', lead: 'Agent-driven compliance reporting', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+    { title: 'Risk Classification', lead: 'Automated risk classification', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+    { title: 'Audit Trail Generation', lead: 'Append-only audit trails', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+  ],
+  spec: {
+    problem:
+      'Client-facing work can ship without human sign-off, compliance gates, or an audit trail.',
+    audience:
+      'Every LightSpeed engagement, and any organisation deploying agents under our governance model.',
+    changes:
+      'Four mandatory gates (Contract, DPA, Compliance, Security) run before work starts; every action is SHA-256 sealed.',
+    builds: '5-tier approval matrix, append-only audit trails, and expiry sweeps for pending approvals.',
+    evidence: 'Compliance automation, risk classification, and audit trails all proven in-house.',
+  },
+  cta: { label: 'View Governance Details', to: '/ai-company-builder' },
+};
+
+export const proofCaseStudies = [
+  {
+    id: 'ws-01',
+    title: 'Regulatory Reporting Automation — Proven In-House',
+    description: 'A governed multi-agent compliance framework running in LightSpeed\'s own operations, assembling regulatory reports with full audit trail generation.',
+    text: 'A governed multi-agent compliance framework running in LightSpeed\'s own operations, assembling regulatory reports with full audit trail generation. No client deployment yet.',
+    honestyBadge: 'Proven in-house' as const,
+    featured: true,
+    period: 'Ongoing',
+    scope: 'In-house capability',
+    outcome: 'Sealed audit trail per figure; no quantified client outcome yet',
+    badge: 'Proven in-house',
+  },
+  {
+    id: 'ws-02',
+    title: 'SADC Agricultural Cooperative Digital Platform',
+    description: 'Built a WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, integrating mobile-money payments and supply chain tracking.',
+    text: 'Built a WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, integrating mobile-money payments and supply chain tracking. Currently serving 1,200 cooperative members in pilot.',
+    honestyBadge: 'In pilot' as const,
+    featured: false,
+    period: 'Q3 2026',
+    scope: 'Business Process Automation',
+    outcome: 'Pilot serving 1,200 cooperative members',
+    badge: 'In pilot',
+  },
+  {
+    id: 'ws-03',
+    title: 'University of Malawi Student Management System',
+    description: 'Deployed an agent-driven student management and credential verification system with GDPR-level data protection. All actions logged on append-only audit trails.',
+    text: 'Deployed an agent-driven student management and credential verification system with GDPR-level data protection. 3 departments onboarded with 5,000 records processed.',
+    honestyBadge: 'In pilot' as const,
+    featured: false,
+    period: 'Q4 2026',
+    scope: 'Enterprise Deployment',
+    outcome: '3 departments onboarded, 5,000 records processed',
+    badge: 'In pilot',
+  },
+];
+
+export const proofPolicy = [
+  {
+    id: 'wp-01',
+    title: 'Data Protection',
+    text: 'Malawi Data Protection Act 2017/2024 compliance is the default posture for all engagements. GDPR-level handling applies for donor and UN data flows.',
+    badge: 'Proven in-house',
+  },
+  {
+    id: 'wp-02',
+    title: 'Sovereignty',
+    text: 'Offline-first operation on local infrastructure. Zero-Cloud Boundary option available for state, health, and financial data.',
+    badge: 'Proven in-house',
+  },
+  {
+    id: 'wp-03',
+    title: 'Payment Integration',
+    text: 'Integrated with Malawi payment rails: Airtel Money, TNM Mpamba, PayChangu. 9 LLM providers including free local Ollama models.',
+    badge: 'In pilot',
+  },
+  {
+    id: 'wp-04',
+    title: 'Governance Cadence',
+    text: 'Weekly standup → bi-weekly product review → monthly management board review → quarterly strategy session → annual refresh.',
+    badge: 'Proven in-house',
+  },
+];
+
+/* ── Proof: outcomes + trust (spec §11 Evidence Tiers, §15 Proof Throughout) ──
+   Every claim reuses wording already published on the site or in the claims
+   ledger - nothing invented here. `proof` drives the honesty badge at render. */
+export const outcomeCategories = [
+  {
+    id: 'oc-01',
+    title: 'Compliance & Regulatory Reporting',
+    claim: 'Governed compliance automation with sealed audit trails, proven in-house; no quantified client outcome yet.',
+    caseStudyId: 'ws-01',
+    sector: 'financial-services',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'oc-02',
+    title: 'Cooperative & Field Operations',
+    claim: 'WhatsApp-native platform in pilot serving 1,200 cooperative members across Malawi and Mozambique.',
+    caseStudyId: 'ws-02',
+    sector: 'agriculture',
+    proof: 'In pilot',
+  },
+  {
+    id: 'oc-03',
+    title: 'Education & Credential Administration',
+    claim: '3 departments onboarded with 5,000 records processed under GDPR-level protection.',
+    caseStudyId: 'ws-03',
+    sector: 'education',
+    proof: 'In pilot',
+  },
+];
+
+export const trustEvidence = [
+  {
+    id: 'te-01',
+    title: '5-Tier Approval Matrix',
+    description:
+      'Risk-tiered human approval gates govern every agent action, from fully autonomous operations through to decisions requiring named executive sign-off.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-02',
+    title: 'SHA-256 Sealed Audit Trails',
+    description:
+      'Append-only action logs record prompts, tool invocations and outputs. Every engagement action is cryptographically sealed and tamper-evident.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-03',
+    title: 'Four Mandatory Governance Gates',
+    description:
+      'Contract, DPA, Compliance and Security gates run before work starts; stale approvals expire instead of queueing forever.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-04',
+    title: 'RBAC With 90-Day Key Rotation',
+    description:
+      'Dashboard permissions separate admin, approve and run roles; API keys are rotated on a 90-day cycle and on suspected compromise.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-05',
+    title: 'Canonical Registry Numbers',
+    description:
+      'Every platform figure (90 operating roles, 20 departments, the regression-test count) is read from company-registry.yaml and the test suite, never from marketing copy.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-06',
+    title: 'Sovereign, Offline-First Operation',
+    description:
+      'Local-first execution with a Zero-Cloud Boundary option for state, health and financial data, engineered for low-bandwidth environments.',
+    proof: 'Proven in-house',
+  },
+];
+
+export default {
+  company,
+  insightCategories,
+  insightTeasers,
+  solutions,
+  GOVERNANCE_SOLUTION,
+  proofCaseStudies,
+  proofPolicy,
+  outcomeCategories,
+  trustEvidence,
+  TONE_STYLES,
+};

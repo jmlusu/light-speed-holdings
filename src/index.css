@@ -1,0 +1,256 @@
+@import "tailwindcss";
+@import "../brand/tokens/brand-tokens.css";
+
+/* Class-based dark mode: the app theme toggles .dark on <html> (App.tsx),
+   so `dark:` utilities must follow the class, not the OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --font-display: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+/* ── Calm Intelligence Design System ────────────────────── */
+/* Emotional sequence: Calm → Curiosity → Clarity → Confidence → Action */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html, body, #root {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  }
+
+  /* Light mode: Morning Mist / Alabaster */
+  html:not(.dark) {
+    background-color: var(--ls-bg-light);
+    color: var(--ls-text-light);
+  }
+
+  /* Dark mode: Slate / Deep Mineral */
+  html.dark {
+    background-color: var(--ls-bg-dark);
+    color: var(--ls-text-dark);
+  }
+
+  /* Smooth transitions for theme changes */
+  *, ::before, ::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-timing-function: var(--ease-spatial);
+    transition-duration: 300ms;
+  }
+}
+
+/* ── Motion Utilities ────────────────────────────────────── */
+/* Slow to the eye. Fast to the mind. */
+
+@layer utilities {
+  .transition-slow {
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .transition-medium {
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .transition-fast {
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ease-spatial {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ease-out-expo {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ease-in-expo {
+    transition-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+  }
+
+  /* Reveal animations */
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 600ms var(--ease-out-expo), transform 600ms var(--ease-out-expo);
+  }
+  .reveal-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-fade {
+    opacity: 0;
+    transition: opacity 500ms var(--ease-out-expo);
+  }
+  .reveal-fade.is-visible {
+    opacity: 1;
+  }
+  .reveal-scale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 500ms var(--ease-out-expo), transform 500ms var(--ease-out-expo);
+  }
+  .reveal-scale.is-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Stagger delays */
+  .delay-1 { transition-delay: 50ms; }
+  .delay-2 { transition-delay: 100ms; }
+  .delay-3 { transition-delay: 150ms; }
+  .delay-4 { transition-delay: 200ms; }
+  .delay-5 { transition-delay: 250ms; }
+  .delay-6 { transition-delay: 300ms; }
+}
+
+/* ── Reduced Motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html, body, #root {
+    scroll-behavior: auto !important;
+  }
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-up, .reveal-fade, .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── HAOMTGV Blueprint Hero Animations ────────────────────── */
+/* Used by HaomtgvBlueprintHero component */
+@keyframes ls-hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes ls-hero-breathe {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes ls-hero-drop {
+  0% { opacity: 0; transform: translateY(-40px) rotateX(62deg); }
+  60% { transform: rotateX(62deg) translateY(4px); }
+  100% { opacity: 1; transform: rotateX(62deg) translateY(0); }
+}
+
+@keyframes ls-hero-drop-text {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ls-hero-slide {
+  0% { opacity: 0; transform: translateX(-30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes ls-hero-draw {
+  0% { stroke-dashoffset: 100; opacity: 0; width: 0; }
+  100% { stroke-dashoffset: 0; opacity: 1; width: 40px; }
+}
+
+/* ── Custom Scrollbar ────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--ls-red-rgb), 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--ls-red-rgb), 0.6);
+}
+
+/* ── Skip Link ──────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: var(--ls-space-4) var(--ls-space-2);
+  background: var(--ls-navy);
+  color: var(--ls-white);
+  border-radius: var(--ls-radius-sm) var(--ls-radius-sm) 0 0;
+  font-size: 14px;
+  text-decoration: none;
+  transition: top 0.2s var(--ease-spatial);
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ── Focus Visible ──────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--ls-cyan);
+  outline-offset: 2px;
+}
+
+/* ── Selection ──────────────────────────────────────────── */
+::selection {
+  background: rgba(var(--ls-red-rgb), 0.2);
+  color: var(--ls-red);
+}
+html.dark ::selection {
+  background: rgba(var(--ls-cyan-rgb), 0.2);
+  color: var(--ls-cyan);
+}
+
+/* ── Calm Intelligence Surface Utilities ────────────────── */
+@layer utilities {
+  /* Mist atmosphere */
+  .surface-mist {
+    background: linear-gradient(180deg, var(--ls-bg-light) 0%, var(--ls-mist-subtle) 100%);
+  }
+  html.dark .surface-mist {
+    background: linear-gradient(180deg, var(--ls-bg-dark) 0%, var(--ls-mineral-elevated) 100%);
+  }
+
+  /* Water reflection */
+  .surface-water {
+    background: var(--ls-water-reflection);
+  }
+
+  /* Stone texture */
+  .surface-stone {
+    background-image: radial-gradient(ellipse at center, var(--ls-stone-texture) 0%, transparent 70%);
+  }
+
+  /* Light glow */
+  .surface-glow {
+    box-shadow:
+      0 0 40px rgba(var(--ls-red-rgb), 0.03),
+      0 0 80px rgba(var(--ls-cyan-rgb), 0.02);
+  }
+  html.dark .surface-glow {
+    box-shadow:
+      0 0 40px rgba(var(--ls-red-rgb), 0.05),
+      0 0 80px rgba(var(--ls-cyan-rgb), 0.03);
+  }
+
+  /* Restrained shadows */
+  .shadow-calm-sm { box-shadow: var(--ls-shadow-sm); }
+  .shadow-calm-md { box-shadow: var(--ls-shadow-md); }
+  .shadow-calm-lg { box-shadow: var(--ls-shadow-lg); }
+  .shadow-calm-xl { box-shadow: var(--ls-shadow-xl); }
+  .shadow-calm-red { box-shadow: var(--ls-shadow-red); }
+  .shadow-calm-cyan { box-shadow: var(--ls-shadow-cyan); }
+}
