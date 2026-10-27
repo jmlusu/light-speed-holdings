@@ -22,8 +22,23 @@ One Python generator, not six bash steps. `scripts/generate_all_assets.py` reads
 | `.agents/skills/ls-document-design/SKILL.md` | 4-page A4 report anatomy |
 | `.agents/skills/ls-artifact-qa/SKILL.md` | MP4 QA block (ffprobe dimensions, duration, source-frame palette) |
 | `.opencode/commands/generate-all-assets.md` | New — slash command, `!` bash invocation, hard rules, `--skip-video` / `--keep-frames` |
+| `scripts/build_campaign.py` | New — `/build-campaign` router: State 1/2 detection, markdown → flow blocks, pagination, unabridged PDF via headless Chrome, LinkedIn post, media branch, palette + integrity gates, audit report |
+| `scripts/brand_briefing.py` | New (committed here) — earlier single-artifact generator; supplies PDF print, logo geometry, page count and palette rasterisation to the router |
+| `static/brand/templates/briefing-flow.html` | New — shared unabridged flow engine: brand CSS, masthead, metric strip, tables, compact density |
+| `static/brand/templates/executive-briefing-4pp.html` | New — thin wrapper, `variant='standard'`, 4-page budget |
+| `static/brand/templates/executive-briefing-2pp.html` | New — thin wrapper, `variant='compact'`, 2-page budget |
+| `.opencode/commands/build-campaign.md` | New — the one-touch master command and its STATUS contract |
+| `build-campaign.bat` | New — Windows one-click launcher, pure ASCII |
 
-Not committed by this change: `artifacts/` (campaign output, and the MP4s exceed `check-added-large-files`), and the pre-existing untracked `scripts/brand_briefing.py` + `.opencode/commands/brand-briefing.md`.
+Not committed by this change: `artifacts/` (campaign output, and the MP4s exceed `check-added-large-files`). The earlier note deferring `scripts/brand_briefing.py` is superseded — the router imports it, so it is committed.
+
+## Extension Approach — `/build-campaign`
+
+One router over the existing engines rather than a second generator. `scripts/build_campaign.py` inspects `notebooklm/`, parses the briefing into atomic **flow blocks** (heading / paragraph / bullets / table), paginates them, and renders through a single shared template so the 2-page and 4-page variants cannot drift apart.
+
+- **Pagination is capacity-driven, and the render arbitrates.** The line-cost model is an estimate; `build_pdf` walks a `(fill, fit)` ladder — tightest page fill at `fit 1.00` first, and only reaches a smaller type scale once looser fill has been exhausted. A page budget that cannot be met adds a page; nothing is ever dropped.
+- **Evidence over assumption.** Page fill, line pitch and per-page capacity were measured from rasterised output rather than estimated; the constants in the scripts reflect those measurements.
+- **One template, thin variants.** `briefing-flow.html` holds all brand CSS and layout; the 4-page and 2-page files set only `variant` plus the page budget.
 
 ## Interfaces, Data, Permissions
 

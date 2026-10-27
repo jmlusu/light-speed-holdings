@@ -45,6 +45,26 @@
 - [x] T043 Social-copy acronym damage: `.title()` produced `Offline-First Agentic Ai`; replaced with an explicit `decap()` and a capitalisation map. Removed a duplicated "Full thread" block.
 - [x] T044 Governance beat restored after it was lost to trimming: `take(body, 400)` instead of 150 so "timeouts escalate…" survives, and `sentence_with()` extracts the timeout sentence for both the video beat and an X post.
 
+### E. `/build-campaign` router
+
+- [x] T060 [US2] `scripts/build_campaign.py` — campaign resolution, State 1 / State 2 detection from files on disk, markdown → atomic flow blocks with line-cost estimates.
+- [x] T061 [US2] Unabridged PDF: shared `briefing-flow.html` engine plus thin 4-page / 2-page wrappers, Jinja2 → headless Chrome → A4, masthead, metric strip, tables, running heads, footers.
+- [x] T062 [US2] `text_integrity` gate — re-extract the rendered PDF and match every source block as a contiguous token sequence so a dropped clause fails the run.
+- [x] T063 [US2] `text/linkedin-primary.md` generation with the 2,800-character limit gated.
+- [x] T064 [US3] Media branch (State 2 only): reuse `generate_all_assets.py` renderers for both MP4s, both infographics and the three platform copy files; `--skip-video` and `--force-media` escape hatches.
+- [x] T065 [US3] `PIPELINE-AUDIT-REPORT.md` — input inspection, template decision, assets built and skipped, integrity result, gate table, reproduce command, honest notes.
+- [x] T066 [US3] Register `/build-campaign`, exact alias `/generate-all-assets`, and `build-campaign.bat`.
+
+### F. Defect fixes found by validating the router
+
+- [x] T070 Proportional pagination left page 1 of the 2-page route at 45% fill (visible void): replaced with capacity-driven fill; measured 80% after the fix.
+- [x] T071 Line-cost model assumed 96 characters per line against the template's real ~112, and page capacity was under-set: recalibrated from measured renders.
+- [x] T072 Orphaned section heading at a page foot after tightening fill: keep-with-next rule carries the heading to the next page.
+- [x] T073 Tight fill pushed the 4-page campaign to `fit 0.92`: `(fill, fit)` probe ladder relaxes page fill at `fit 1.00` before shrinking type.
+- [x] T074 Square infographic labels overflowed their cards: label now shrinks to card width.
+- [x] T075 Stray `>` blockquote markers reached the PDF: stripped at parse time.
+- [x] T076 `build-campaign.bat` carried 456 non-ASCII bytes that cmd.exe garbles: rewritten pure ASCII and verified by running it.
+
 ## Validation
 
 - [x] T050 `uv run ruff check scripts/generate_all_assets.py` → `All checks passed!`
@@ -56,10 +76,16 @@
 - [x] T056 Social copy → `x_posts PASS ([105, 159, 94])`, all under 280.
 - [x] T057 `assets_present PASS (14 files)` — the 7 required assets plus the 3 platform variants and 4 QA artifacts.
 - [x] T058 `pwsh scripts/maintenance/lint-ecl.ps1` and `pwsh scripts/maintenance/harness-change.ps1 validate` on this record.
+- [x] T080 Real campaign via `/build-campaign` → `STATUS: OK`; 4 pages at fit 1.00; 49 blocks checked, 0 missing; 9/9 gates PASS.
+- [x] T081 Page fill measured from the rendered PDF → 82 / 78 / 79 / 100 %.
+- [x] T082 State 2 fixture (briefing + wav) → both MP4s present; `ffprobe` 1080×1920 and 1920×1080, h264, 30 fps, 60.000 s; both infographics; three copy files; all gates PASS.
+- [x] T083 ≤600-word route on a 430-word fixture → `executive-briefing-2pp.html`, 2 pages, fit 1.00, 13 blocks / 0 missing, `STATUS: OK`.
+- [x] T084 `uv run ruff check scripts/build_campaign.py scripts/generate_all_assets.py` → `All checks passed!`
+- [x] T085 `build-campaign.bat 2026-10-26-pipeline-test` executed → exit 0, `STATUS: OK`.
 
 ## Deferred Tasks
 
 - **Open Design path not exercised.** `OD_BIN` is unset and the daemon is not running, so every asset came from the local renderer. The OD route is documented in `ls-od-video` but has not been run against this generator. Revisit when a daemon is available.
 - **Audio.** Both videos are silent. No BGM or SFX catalogue is reachable offline; adding a music bed and a voiceover is a separate change.
-- **`scripts/brand_briefing.py` and `.opencode/commands/brand-briefing.md`** remain untracked from an earlier session and were deliberately left untouched.
+- **`scripts/brand_briefing.py` and `.opencode/commands/brand-briefing.md`** — `brand_briefing.py` is now committed because the router imports it; the standalone `brand-briefing.md` command remains out of scope.
 - **`artifacts/` is not committed.** Campaign output (including 1.6 MB MP4s) stays untracked by policy and by `check-added-large-files --maxkb=500`.

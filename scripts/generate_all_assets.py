@@ -757,10 +757,17 @@ def render_infographic(facts: Facts, size: tuple[int, int], variant: str) -> Ima
             fill=CYAN,
         )
         label = metric["label_text"]
+        if len(label) > 26:
+            label = label[:25] + "\u2026"
+        max_label_w = chip_w - round(28 * scale)
+        label_font = font(label_size, bold=True)
+        while label_size > 9 and draw.textlength(label, font=label_font) > max_label_w:
+            label_size -= 1
+            label_font = font(label_size, bold=True)
         draw.text(
             (x + round(14 * scale), value_y + value_size + round(chip_h * 0.06)),
-            label if len(label) <= 22 else label[:21] + "\u2026",
-            font=font(label_size, bold=True),
+            label,
+            font=label_font,
             fill=GREY_LIGHT_TEXT,
         )
 

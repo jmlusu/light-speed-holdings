@@ -1,37 +1,38 @@
 ---
-description: Build every campaign asset — 9:16 and 16:9 video, infographics, carousel, 4-page PDF report and social copy — from a campaign's NotebookLM pack, gated on brand palette
+description: Alias of /build-campaign — one-touch multimodal campaign build from notebooklm/raw-briefing.md and any NotebookLM audio
 ---
 
-!`uv run python scripts/generate_all_assets.py $ARGUMENTS`
+!`uv run python scripts/build_campaign.py $ARGUMENTS`
 
-The `/generate-all-assets` factory ran above. Report the result to the user and stop.
+`/generate-all-assets` is the exact alias of `/build-campaign` and ran the same
+routing logic above. Report the result to the user and stop.
 
-- **`STATUS: OK`** — every gate passed. Give the absolute campaign path and list each
-  artifact with its real dimensions or page count as printed: the two MP4s
-  (`1080x1920`, `1920x1080`), the three infographics, `social-carousel.pdf` and its
-  card count, `comprehensive-report-branded.pdf` and its page count, and
-  `threads-and-captions.md`. Give the palette result for each file and the manifest
-  path (`qa/assets/assets-manifest.json`). Do not restate the campaign's content;
-  the files are the deliverable.
+- **`STATUS: OK`** — every gate passed. State the detected state (TEXT ONLY or
+  TEXT + AUDIO), then list only the assets the run actually built, with their real
+  numbers as printed: the PDF path, page count and page budget; the LinkedIn
+  length; and, when the media branch ran, the two MP4 dimensions/durations, the
+  two infographic dimensions, and the three copy files. Give the
+  `text_integrity` result (blocks checked / missing) and the audit report path
+  (`artifacts/campaigns/<slug>/PIPELINE-AUDIT-REPORT.md`). Do not restate the
+  campaign's content; the files are the deliverable.
 - **`STATUS: FAILED`** — quote the failing gate and its numbers verbatim, say the
-  affected artifact is not brand-compliant or not renderable, and stop. Do not
-  describe it as ready.
-- **No `STATUS:` line, or a traceback** — report that the generator failed and paste
+  affected artifact is not ready, and stop. Do not describe it as ready.
+- **No `STATUS:` line, or a traceback** — report that the build failed and paste
   the error. Do not retry with different flags unless the user asks.
 
-Hard rules: never hand-edit or post-process a rendered asset, never re-run with a
-looser `--tolerance` to force a palette pass, never substitute a placeholder for a
-missing gate, and never claim brand compliance that a gate did not report. Every
-figure in every asset must trace to the campaign `dossier.md` or
-`notebooklm/source-pack.md`; if a fact is absent the generator must leave it out,
-not invent it.
+Hard rules: never hand-edit or post-process a rendered asset; never re-run with a
+looser `--tolerance` to force a palette pass; never substitute a placeholder for
+a missing gate; never claim brand compliance or content completeness that a gate
+did not report. The PDF must carry every paragraph, bullet and table row from
+`notebooklm/raw-briefing.md` — if `text_integrity` reports a missing block, the
+run is not shippable. Media assets require NotebookLM audio in
+`notebooklm/` (`*.mp3` / `*.wav`); `--force-media` exists for QA only and must be
+disclosed as forced if used.
 
 Usage notes for the user (only mention if relevant):
 
-- `/generate-all-assets` — uses the most recent campaign under `artifacts/campaigns/`
-  that has a `notebooklm/` staging folder.
-- `/generate-all-assets artifacts/campaigns/<slug>` — targets a specific campaign.
-- `/generate-all-assets artifacts/campaigns/<slug> --skip-video` — everything except
-  the two MP4s, for a fast copy-and-layout check.
-- `/generate-all-assets artifacts/campaigns/<slug> --keep-frames` — keeps the PNG
-  frame sequence under `video/frames/` for frame-level inspection.
+- `/generate-all-assets` — most recent campaign with `notebooklm/raw-briefing.md`.
+- `/generate-all-assets artifacts/campaigns/<slug>` — a specific campaign.
+- `/generate-all-assets <slug> --skip-video` — everything except the two MP4s.
+- `/generate-all-assets <slug> --force-media` — QA only: exercise the media
+  branch when no audio exists; the audit records the override.
