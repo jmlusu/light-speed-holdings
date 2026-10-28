@@ -128,6 +128,42 @@ def test_permission_block_full_access(generator: AgentGenerator) -> None:
     assert "tools" not in frontmatter
 
 
+def test_skills_section_omitted_when_empty(generator: AgentGenerator) -> None:
+    results = generator.generate_all()
+    for path in results:
+        assert "## Skills" not in path.read_text(encoding="utf-8")
+
+
+def test_skills_section_rendered(
+    sample_registry: Path, templates_dir: Path, tmp_path: Path
+) -> None:
+    data = yaml.safe_load(sample_registry.read_text(encoding="utf-8"))
+    agents = data["company"]["agents"]
+    agents[0]["skills"] = ["ls-od-deck", "ls-od-brand"]
+    agents[1]["skills"] = ["ls-od-prototype"]
+    registry_path = tmp_path / "registry-with-skills.yaml"
+    registry_path.write_text(yaml.dump(data), encoding="utf-8")
+
+    gen = AgentGenerator(
+        registry_path=str(registry_path),
+        templates_dir=str(templates_dir),
+        output_dir=str(tmp_path / "skills-agents"),
+        table_path=str(tmp_path / "SKILLS-AGENT-REGISTRY-TABLE.md"),
+    )
+    gen.generate_all()
+
+    exec_content = (gen.output_dir / "test-exec.md").read_text(encoding="utf-8")
+    assert "## Skills" in exec_content
+    assert "- `ls-od-deck`" in exec_content
+    assert "- `ls-od-brand`" in exec_content
+    assert exec_content.index("## Skills") > exec_content.index("## Leadership Principles")
+    assert exec_content.index("## Skills") < exec_content.index("## Operating Guidelines")
+
+    spec_content = (gen.output_dir / "test-spec.md").read_text(encoding="utf-8")
+    assert "## Skills" in spec_content
+    assert "- `ls-od-prototype`" in spec_content
+
+
 # ---------------------------------------------------------------------------
 # Phase 3 tests: filename convention, coverage, references, frontmatter
 # ---------------------------------------------------------------------------

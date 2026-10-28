@@ -40,6 +40,24 @@ ls-creative-director        (YOU — brief intake + routing)
 | Infographic / one-pager / data story | `ls-visual-storytelling` | `ls-diagramming` |
 | Docs / API reference / knowledge base | `ls-documentation-engineering` | — |
 
+### Open-Design Render Layer
+
+Open Design is a **render layer**, not a primary production skill. Choose ONE primary skill from the table above first, then add render-layer skills only when the artifact benefits from open-design projects, templates, brand extraction, or HTML/video export.
+
+| Need | Render-layer skill |
+|------|--------------------|
+| Install, diagnose, or operate the `od` runtime | `ls-od-runtime` |
+| Discover functional skills and design templates | `ls-od-catalogue` |
+| Extract/import a brand or design system | `ls-od-brand` |
+| Create/import a project and attach `lightspeed` | `ls-od-project` |
+| Standalone web/mobile prototypes and wireframes | `ls-od-prototype` |
+| Data-backed live dashboards and live artifacts | `ls-od-live-artifact` |
+| HTML/browser decks and deck templates | `ls-od-deck` |
+| Generated campaign or editorial imagery | `ls-od-image` |
+| HyperFrames motion and video | `ls-od-video` |
+
+Use `--design-system lightspeed` only when creating or importing the project. Keep `ls-artifact-qa` as the final gate.
+
 ## Intake (Five Questions)
 
 Before routing, resolve the brief. Ask or infer:
@@ -75,6 +93,7 @@ QA GATE:            <ls-artifact-qa checklist scope: visual/brand/ux/content/acc
 3. Choose ONE primary production skill; support skills are optional and additive.
 4. If the brief is ambiguous on audience or objective, ask — do not guess on high-stakes artifacts.
 5. If the artifact wraps long-form content that needs research, note that the source research must exist first (see `research`, `k-dense-literature-review`) — do not let production skills invent facts.
+6. **Imagery** follows [ADR-027](../../../docs/adr/027-ai-generated-imagery-policy.md): AI-generated imagery is permitted for non-person surfaces; generated people, faces, figures and avatars are prohibited — human imagery is only released commissioned photography. Carry that constraint into the brief handed to the production skill.
 
 ## Execution
 

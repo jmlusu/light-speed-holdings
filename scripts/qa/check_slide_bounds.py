@@ -63,8 +63,8 @@ def _shape_font_pt(shape) -> float:
 # body text touches the slide right edge.  Bottom is naturally bounded by
 # the slide height and the footer position; we only guard the horizontal
 # extents so the checker only flags drift outside the rail/gutter area.
-_CONTENT_LEFT = 0.7          # clears the 0.15in rail + 0.25in gutter
-_CONTENT_RIGHT = 9.6         # SLIDE_W - 0.15in right margin on a 10in slide
+_CONTENT_LEFT = 0.7  # clears the 0.15in rail + 0.25in gutter
+_CONTENT_RIGHT = 9.6  # SLIDE_W - 0.15in right margin on a 10in slide
 
 
 def _in_content_bounds(left, right) -> bool:
@@ -101,6 +101,7 @@ def check_pptx(pptx_path: Path, margin: float, text_tol: float) -> int:
         return 1
 
     from pptx.presentation import Presentation as _Presentation
+
     prs: _Presentation = Presentation(str(pptx_path))
     slide_w = _in(prs.slide_width)
     slide_h = _in(prs.slide_height)

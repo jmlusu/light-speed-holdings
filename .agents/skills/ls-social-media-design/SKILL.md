@@ -50,6 +50,13 @@ For each asset: platform spec, headline, body/hook, CTA, visual (diagram / infog
 - Hashtags: focused set of 3–5. First mention of company name carries `™`.
 - Every claim must have a source (registry, results, published Pharos artifact). Never invent stats.
 
+## Rendering Paths
+
+- Reuse `static/brand/social/*` first; keep channel specs, copy, asset matrix, and publishing order in this skill.
+- Use `ls-od-image` for generated campaign imagery. Confirm count, model, aspect ratio, variations, and paid-generation budget with the human before running it.
+- Use `ls-od-deck` for slide-style carousels or deck-native assets rendered as HTML.
+- Use `ls-od-video` for motion or short-video assets; HyperFrames owns the render. Keep scripts and platform dimensions here.
+
 ## Workflow
 
 1. Load `ls-design-system`; read the thesis/brief.

@@ -51,6 +51,21 @@ from PIL import Image
 REPO = Path(__file__).resolve().parents[1]
 TEMPLATE = REPO / "static" / "brand" / "templates" / "executive-briefing-template.html"
 LOGO = REPO / "brand" / "logo" / "logo-full.png"
+
+
+@dataclass
+class FlowBlock:
+    kind: str  # heading | para | bullets | table
+    level: int = 0
+    html: str = ""
+    plain: str = ""
+    items: list[str] = field(default_factory=list)
+    plain_items: list[str] = field(default_factory=list)
+    rows: list[list[str]] = field(default_factory=list)
+    plain_rows: list[list[str]] = field(default_factory=list)
+    cost: float = 0.0
+
+
 TOKENS = REPO / "brand" / "tokens" / "brand-tokens.json"
 PALETTE_GATE = (
     REPO / ".agents" / "skills" / "ls-visual-storytelling" / "scripts" / "check_brand_palette.py"

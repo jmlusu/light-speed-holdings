@@ -27,7 +27,7 @@
   },
   "color": {
     "navy": { "value": "#070A40", "name": "Navy Primary", "usage": "Headlines, logo text, primary brand surfaces" },
-    "red": { "value": "#E63946", "name": "Red Accent", "usage": "Signal waves, accent elements, key highlights, CTAs" },
+    "red": { "value": "#DC3641", "name": "Red Accent", "usage": "Signal waves, accent elements, key highlights, CTAs" },
     "cyan": { "value": "#00BFFF", "name": "Cyan Accent", "usage": "Shield base, accent elements, links on dark" },
     "morning-mist": { "value": "#F7F8F9", "name": "Morning Mist", "usage": "Light surfaces, backgrounds, subtle dividers" },
     "deep-mineral": { "value": "#121518", "name": "Deep Mineral", "usage": "Primary dark text, pronounced contrast" },

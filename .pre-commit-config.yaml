@@ -141,3 +141,17 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
+
+  # CEO Override Governance Protocol for root config files (AGENTS.md, opencode.json)
+  # Blocks unauthorized automated changes; allows Human CEO overrides with audit trail.
+  # See AGENTS.md §18 and docs/governance-audit.md for protocol details.
+  # Runs at commit-msg stage to access the commit message file.
+  - repo: local
+    hooks:
+      - id: validate-root-config
+        name: validate CEO override for root config files
+        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/lint/validate-root-config.ps1
+        language: system
+        pass_filenames: false
+        files: '^(AGENTS\.md|opencode\.json)$'
+        stages: [commit-msg]

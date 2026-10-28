@@ -8,7 +8,7 @@
   },
   "connection": {
     "method": "cli",
-    "cliPath": "open-design",
+    "cliPath": "od",
     "autoUpdate": true,
     "fallbackToDesktop": true
   },
@@ -29,7 +29,7 @@
     ]
   },
   "brand": {
-    "designSystem": "ls-design-system",
+    "designSystem": "lightspeed",
     "tokensPath": "brand/tokens/brand-tokens.json",
     "guidelinesPath": "brand/guidelines/brand-guidelines.md",
     "enforceBrand": true

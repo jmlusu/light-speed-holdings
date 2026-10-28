@@ -234,10 +234,10 @@ const HAOMTGVInfographic: React.FC = () => {
               </svg>
             )}
 
-            {/* WebP fallback */}
-            {asset.formats.includes('webp') && (
+            {/* Raster fallback — no .webp files exist; pipeline deferred to issue #385 */}
+            {asset.formats.includes('png') && (
               <img
-                src={asset.src?.webp || '/assets/diagrams/haomtgv/haomtgv-full-vertical.webp'}
+                src={asset.src?.png || '/brand/digital/Lightspeed HAOMTGV Operating Framework.png'}
                 alt={asset.alt}
                 width={asset.width}
                 height={asset.height}
