@@ -76,6 +76,16 @@ ComfyUI MCP driver (comfyui-mcp), workflow template library with 581 templates, 
 - `task`
 
 
+## Skills
+
+
+- `ls-od-runtime`
+
+- `ls-od-image`
+
+- `ls-od-video`
+
+
 ---
 
 
