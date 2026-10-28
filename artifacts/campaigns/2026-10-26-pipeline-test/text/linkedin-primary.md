@@ -1,0 +1,1 @@
+Executive Briefing: Pipeline Verification. Pipeline build verification running on LightSpeed Holdings campaign infrastructure. No source briefing was available for this run. Read the full briefing → https://www.lightholdings.com/briefing #AgenticAI #OfflineFirst #SovereignAI

@@ -117,7 +117,7 @@ def create_profile_image(size, output_path, variant="default", size_factor=None)
         draw.ellipse(bbox, outline=CYAN, width=ring_width)
 
     # Load icon logo
-    icon_path = os.path.join(LOGO_DIR, "logo-mark.png")
+    icon_path = os.path.join(LOGO_DIR, "logo-avatar.png")
     if os.path.exists(icon_path):
         icon = Image.open(icon_path).convert("RGBA")
         # Calculate size to fit (50% of canvas default), preserving aspect ratio
@@ -164,7 +164,7 @@ def create_banner_image(
     draw.rectangle([(0, height - bar_height), (width, height)], fill=RED)
 
     # Load icon-only logo (requested: icon only)
-    icon_logo_path = os.path.join(LOGO_DIR, "logo-mark.png")
+    icon_logo_path = os.path.join(LOGO_DIR, "logo-avatar.png")
     if os.path.exists(icon_logo_path):
         logo = Image.open(icon_logo_path).convert("RGBA")
         # Scale logo to fit banner height (40% default, larger if requested)

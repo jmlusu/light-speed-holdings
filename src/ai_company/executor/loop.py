@@ -218,7 +218,7 @@ class Executor:
         # max_iterations is configurable via AI_COMPANY_MAX_ITERS for local
         # model runs; defaults to the 10-iteration completion cap.
         try:
-            max_iterations = int(os.environ.get("AI_COMPANY_MAX_ITERS", "10"))
+            max_iterations = int(os.environ.get("AI_COMPANY_MAX_ITERS", "5"))
         except ValueError:
             max_iterations = 10
         self.agent_loop = AgentLoop(
@@ -709,7 +709,50 @@ class Executor:
             #    required — falls back to keyword search; never blocks the task).
             recalled_memories: list[dict[str, Any]] = []
             try:
-                recalled_memories = recall_context(task.instruction, limit=5)
+                # Detect task type from instruction for task-type-aware memory recall
+                instruction_lower = task.instruction.lower()
+                if any(
+                    kw in instruction_lower
+                    for kw in [
+                        "debug",
+                        "fix",
+                        "error",
+                        "bug",
+                        "issue",
+                        "fail",
+                        "root cause",
+                        "diagnose",
+                    ]
+                ):
+                    task_type = "debug"
+                elif any(
+                    kw in instruction_lower
+                    for kw in ["edit", "modify", "change", "fix ", "update ", "rename ", "adjust "]
+                ):
+                    task_type = "edit"
+                elif any(
+                    kw in instruction_lower
+                    for kw in ["read", "show", "display", "list", "view", "what is", "how does"]
+                ):
+                    task_type = "read_only"
+                elif any(
+                    kw in instruction_lower
+                    for kw in [
+                        "architect",
+                        "design",
+                        "structure",
+                        "framework",
+                        "pattern",
+                        "plan",
+                        "strategy",
+                    ]
+                ):
+                    task_type = "architecture"
+                else:
+                    task_type = "general"
+                recalled_memories = recall_context(
+                    task.instruction, limit=5, min_similarity=0.3, task_type=task_type
+                )
             except Exception:  # noqa: BLE001 - pragma: no cover - defensive: recall must never break execution
                 logger.debug("Memory recall failed for task %s", task.id, exc_info=True)
 
