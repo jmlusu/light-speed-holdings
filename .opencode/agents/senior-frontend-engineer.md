@@ -68,6 +68,12 @@ Complex UI implementation, performance optimization, frontend architecture, ment
 - `list`
 
 
+## Skills
+
+
+- `ls-od-prototype`
+
+
 ---
 
 
