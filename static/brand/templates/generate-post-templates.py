@@ -516,7 +516,7 @@ def generate_linkedin_carousel(
     draw.text((CONTENT_INSET, height - 40), tagline, font=caption_font, fill=grey_light_text)
     _paste_logo(
         img,
-        ("logo", "logo-mark.png"),
+        ("logo", "logo-avatar.png"),
         target_width=96,
         position="bottom-right",
         margin=24,
@@ -575,7 +575,7 @@ def generate_youtube_thumbnail(
     draw.text((CONTENT_INSET, height - 40), tagline, font=caption_font, fill=grey_light_text)
     _paste_logo(
         img,
-        ("logo", "logo-mark.png"),
+        ("logo", "logo-avatar.png"),
         target_width=96,
         position="bottom-right",
         margin=24,
@@ -629,7 +629,7 @@ def generate_reels_shorts_cover(
     # Logo top-right (min 32px icon; 96px for template presence)
     _paste_logo(
         img,
-        ("logo", "logo-mark.png"),
+        ("logo", "logo-avatar.png"),
         target_width=96,
         position="top-right",
         margin=24,
@@ -692,7 +692,7 @@ def generate_quote_card(
     draw.text((CONTENT_INSET, height - 40), tagline, font=caption_font, fill=grey_light_text)
     _paste_logo(
         img,
-        ("logo", "logo-mark.png"),
+        ("logo", "logo-avatar.png"),
         target_width=96,
         position="bottom-right",
         margin=24,
@@ -820,7 +820,7 @@ def generate_thread_header(
     draw.text((CONTENT_INSET, height - 40), tagline, font=caption_font, fill=grey_light_text)
     _paste_logo(
         img,
-        ("logo", "logo-mark.png"),
+        ("logo", "logo-avatar.png"),
         target_width=96,
         position="bottom-right",
         margin=24,
@@ -871,7 +871,7 @@ def generate_lower_third_video_overlay(
     # Logo — Icon Only (48px), right side, vertically centered, clear space
     _paste_logo(
         img,
-        ("logo", "logo-mark.png"),
+        ("logo", "logo-avatar.png"),
         target_width=48,
         position="center-right",
         margin=64,
@@ -942,7 +942,7 @@ def generate_hook_card(
     # Logo top-right (Icon Only, 96px)
     _paste_logo(
         img,
-        ("logo", "logo-mark.png"),
+        ("logo", "logo-avatar.png"),
         target_width=96,
         position="top-right",
         margin=24,

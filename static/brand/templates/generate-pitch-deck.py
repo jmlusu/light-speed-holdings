@@ -61,7 +61,7 @@ LIGHT_TEXT = RGBColor(0x9C, 0xA3, 0xAF)
 
 # Canonical logo (brand/** is the single source of truth; legacy static/brand/logos
 # suite was archived 2026-10-23 — see brand/CANONICAL_SOURCES.md)
-OFFICIAL_LOGO = REPO_ROOT / "brand" / "logo" / "logo-light-bg.png"
+OFFICIAL_LOGO = REPO_ROOT / "brand" / "logo" / "logo-full.png"
 
 DRAFT_NOTICE = "INTERNAL DRAFT — NOT FOR EXTERNAL DISTRIBUTION"
 DECK_MONTH = "October 2026"

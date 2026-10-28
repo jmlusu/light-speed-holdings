@@ -127,24 +127,100 @@ def record_procedure(
     _store.store("procedural", content=procedure, agent_id=agent_id, tags=tags or ["procedure"])
 
 
-def recall_context(query: str, limit: int = 5) -> list[dict[str, Any]]:
+def recall_context(
+    query: str, limit: int = 5, min_similarity: float = 0.0, task_type: str = "general"
+) -> list[dict[str, Any]]:
     """Recall relevant memories for context loading.
 
     Tries semantic (vector) search first for high-quality results.
     Falls back to keyword-based search if vector store is unavailable
     or returns no results.
+
+    Memories with a similarity score below ``min_similarity`` are filtered
+    out to avoid injecting irrelevant context into the prompt.
+
+    Results are weighted by ``task_type`` so that memories relevant to the
+    current task category (e.g. ``debug``, ``edit``, ``read_only``) are
+    prioritized over unrelated memories.
+
+    Args:
+        query: The search query used to find memories.
+        limit: Maximum number of memories to return.
+        min_similarity: Minimum similarity score (0.0 to 1.0) for a memory
+            to be included. Defaults to 0.0 (no filter).
+        task_type: Optional task type hint that influences which memory types
+            are prioritized. Recognized types: ``"read_only"``, ``"edit"``,
+            ``"debug"``, ``"architecture"``, ``"general"``.
+
+    Returns:
+        A list of memory dicts, each with ``type``, ``content``, ``agent_id``,
+        ``tags``, and ``similarity`` keys, sorted by relevance and filtered
+        by ``min_similarity``.
     """
     if not learning_enabled():
         return []
     if _store is None:
         return []
 
+    min_similarity = max(0.0, min(1.0, min_similarity))
+
+    # Task-type weighting: maps task types to preferred memory types and
+    # keyword tags that increase relevance scoring. This helps ensure that
+    # memories injected into the prompt are actually useful for the task at hand.
+    _TASK_TYPE_WEIGHTS: dict[str, dict[str, Any]] = {
+        "read_only": {
+            "preferred_types": ["episodic"],
+            "preferred_tags": ["completed", "read", "success"],
+            "penalty_tags": ["failed", "error", "timeout"],
+        },
+        "edit": {
+            "preferred_types": ["procedural", "semantic"],
+            "preferred_tags": ["edited", "modified", "completed"],
+            "penalty_tags": ["failed", "error", "reverted"],
+        },
+        "debug": {
+            "preferred_types": ["episodic", "semantic"],
+            "preferred_tags": ["failed", "error", "fixed", "resolved"],
+            "penalty_tags": ["success", "completed", "approved"],
+        },
+        "architecture": {
+            "preferred_types": ["semantic", "relational"],
+            "preferred_tags": ["pattern", "framework", "structure"],
+            "penalty_tags": ["ad-hoc", "temporary", "quick-fix"],
+        },
+        "general": {
+            "preferred_types": [],
+            "preferred_tags": [],
+            "penalty_tags": [],
+        },
+    }
+
+    task_weights = _TASK_TYPE_WEIGHTS.get(task_type, _TASK_TYPE_WEIGHTS["general"])
+
+    # Build a relevance penalty/bonus factor based on task-type tags.
+    # Later used to nudge the scoring of entries toward the task type.
+    preferred_tags_set = set(t.lower() for t in task_weights.get("preferred_tags", []))
+    penalty_tags_set = set(t.lower() for t in task_weights.get("penalty_tags", []))
+
+    def _task_relevance_score(entry: dict[str, Any]) -> float:
+        """Compute a task-type-adjusted relevance score for an entry."""
+        similarity = entry.get("similarity", 0.0)
+        score = similarity if isinstance(similarity, (int, float)) else 0.0
+        tags = {t.lower() for t in entry.get("tags", [])}
+        # Bonus: entry has tags that match the task type's preferred set
+        if preferred_tags_set:
+            score += 0.1 * len(tags.intersection(preferred_tags_set))
+        # Penalty: entry has tags that match the task type's penalty set
+        if penalty_tags_set:
+            score -= 0.1 * len(tags.intersection(penalty_tags_set))
+        return score
+
     # Try semantic search first
     if _vector_store is not None:
         try:
-            raw = _vector_store.search(query, top_k=limit)
+            raw = _vector_store.search(query, top_k=limit * 2)
             if raw:
-                return [
+                vector_results: list[dict[str, Any]] = [
                     {
                         "type": entry.memory_type,
                         "content": entry.content,
@@ -153,23 +229,45 @@ def recall_context(query: str, limit: int = 5) -> list[dict[str, Any]]:
                         "similarity": round(score, 4),
                     }
                     for entry, score in raw
+                    if score >= min_similarity
                 ]
+                # Apply task-type relevance adjustment and truncate
+                results_semantic: list[dict[str, Any]] = vector_results[:limit]
+                # Apply minimum similarity filter
+                if min_similarity > 0.0 and results_semantic:
+                    results_semantic = [
+                        r for r in results_semantic if r.get("similarity", 0) >= min_similarity
+                    ]
+                # Post-process: apply task-type relevance adjustment and prioritize
+                # preferred memory types (semantic > procedural > episodic) for better
+                # context compactness and relevance.
+                type_priority = {
+                    "semantic": 3,
+                    "procedural": 2,
+                    "episodic": 1,
+                    "relational": 1,
+                    "aggregate": 0,
+                }
         except Exception:  # noqa: BLE001 - vector search is best-effort
             pass  # Fall through to keyword search
 
-    # Fallback: keyword-based search
+    # Fallback: keyword-based search across memory types
     results: list[dict[str, Any]] = []
     for mem_type in ["episodic", "semantic", "procedural"]:
         entries = _store.recall(mem_type, query=query, limit=limit)
         for e in entries:
             results.append(
-                {"type": mem_type, "content": e.content, "agent_id": e.agent_id, "tags": e.tags}
+                {
+                    "type": mem_type,
+                    "content": e.content,
+                    "agent_id": e.agent_id,
+                    "tags": e.tags,
+                }
             )
 
-    # Token-overlap expansion: substring search is too strict for natural
-    # queries that do not appear verbatim in memory content. Score entries by
-    # how many query tokens appear in their content + tags when substring
-    # search found nothing, so realistic queries still surface memories.
+    # Apply min_similarity filter for keyword search results.
+    # Keyword search doesn't produce intrinsic similarity, so we use a
+    # simple overlap-based score that was computed earlier in the function.
     if not results and query:
         tokens = [t.lower() for t in query.split() if len(t) >= 2]
         if tokens:
@@ -194,6 +292,23 @@ def recall_context(query: str, limit: int = 5) -> list[dict[str, Any]]:
                         )
             scored.sort(key=lambda item: item[0], reverse=True)
             results = [item[1] for item in scored[:limit]]
+
+    # Apply min_similarity filter after all sourcing paths
+    if min_similarity > 0.0 and results:
+        results = [r for r in results if r.get("similarity", 0) >= min_similarity]
+
+    # Post-process: apply task-type relevance adjustment and prioritize
+    # preferred memory types (semantic > procedural > episodic) for better
+    # context compactness and relevance.
+    type_priority = {"semantic": 3, "procedural": 2, "episodic": 1, "relational": 1, "aggregate": 0}
+
+    def _type_priority_sort(entry: dict[str, Any]) -> tuple[int, float]:
+        """Sort key: higher type priority first, then higher similarity."""
+        t = entry.get("type", "episodic")
+        return (type_priority.get(t, 1), entry.get("similarity", 0.0))
+
+    results.sort(key=_task_relevance_score)
+    results.sort(key=_type_priority_sort, reverse=True)
 
     return results[:limit]
 

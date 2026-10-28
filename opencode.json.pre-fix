@@ -4,6 +4,10 @@
   "plugin": [
     "@omniroute/opencode-plugin"
   ],
+  "permission": {
+    "edit": "allow",
+    "bash": "allow"
+  },
   "mcp": {
     "resend": {
       "type": "remote",

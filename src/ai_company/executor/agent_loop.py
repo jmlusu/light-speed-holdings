@@ -92,7 +92,7 @@ def _omniroute_gateway_ok() -> bool:
 class LoopConfig:
     """Configuration for the agentic loop."""
 
-    max_iterations: int = 10
+    max_iterations: int = 5
     max_tokens: int = 4096
     temperature: float = 0.3
     # Budget guards — None means unlimited
@@ -113,7 +113,7 @@ class LoopConfig:
     max_history_tokens: int = 6000
     # Tool result summarization
     enable_tool_summarization: bool = True
-    max_tokens_per_tool_summary: int = 500
+    max_tokens_per_tool_summary: int = 250
     # Detailed token logging for validation
     enable_detailed_token_logging: bool = False
 
@@ -232,10 +232,8 @@ class AgentLoop:
 
         # A/B Testing: Check which optimizations to enable for this task
         agent_type = agent.type.strip().lower()
-        use_optimized = (
-            self.config.use_optimized_prompts
-            and agent_type == "specialist"
-            and should_use_optimized_prompts(resolved_name, task_id)
+        use_optimized = agent_type == "specialist" and should_use_optimized_prompts(
+            resolved_name, task_id
         )
         use_history_sum = (
             self.config.enable_history_summarization
@@ -531,6 +529,83 @@ class AgentLoop:
                     all_tool_records.append(record)
 
                 # ── Feed results back to LLM ──────────────────────────
+                # Filter out empty/meaningless tool results to avoid
+                # wasting prompt tokens on feedback with no value.
+                filtered_step_results: list[dict[str, Any]] = []
+                for step_result in step_results:
+                    status = step_result.get("status", "unknown")
+                    _ = step_result.get("tool", "unknown")
+                    if status == "error":
+                        # Always include error results (they contain diagnostic value)
+                        filtered_step_results.append(step_result)
+                    elif status == "ok":
+                        # Check if the result has meaningful output
+                        result_data = step_result.get("result", {})
+                        tool_type = step_result.get("tool", "")
+                        has_meaningful_output = False
+                        if tool_type == "bash":
+                            stdout = (
+                                result_data.get("stdout", "")
+                                if isinstance(result_data, dict)
+                                else ""
+                            )
+                            stderr = (
+                                result_data.get("stderr", "")
+                                if isinstance(result_data, dict)
+                                else ""
+                            )
+                            if stdout.strip() or stderr.strip():
+                                has_meaningful_output = True
+                        elif tool_type == "read":
+                            content = (
+                                result_data.get("content", "")
+                                if isinstance(result_data, dict)
+                                else ""
+                            )
+                            if content.strip():
+                                has_meaningful_output = True
+                        elif tool_type == "grep":
+                            matches = (
+                                result_data.get("matches", [])
+                                if isinstance(result_data, dict)
+                                else []
+                            )
+                            if matches:
+                                has_meaningful_output = True
+                        elif tool_type == "list":
+                            entries = (
+                                result_data.get("entries", [])
+                                if isinstance(result_data, dict)
+                                else []
+                            )
+                            if entries:
+                                has_meaningful_output = True
+                        elif tool_type == "webfetch":
+                            content = (
+                                result_data.get("content", "")
+                                if isinstance(result_data, dict)
+                                else ""
+                            )
+                            if content.strip():
+                                has_meaningful_output = True
+                        elif tool_type == "edit":
+                            # Edit results are always meaningful (they represent a change)
+                            has_meaningful_output = True
+                        elif tool_type == "task":
+                            # Task/delegate results are always meaningful
+                            has_meaningful_output = True
+                        else:
+                            # For unknown tools, include if there's any result data
+                            if result_data:
+                                has_meaningful_output = True
+
+                        if has_meaningful_output:
+                            filtered_step_results.append(step_result)
+                    else:
+                        # Include non-ok/non-error statuses for completeness
+                        filtered_step_results.append(step_result)
+                step_results = filtered_step_results
+
                 if use_tool_sum:
                     feedback = build_summarized_feedback(
                         step_results=step_results,

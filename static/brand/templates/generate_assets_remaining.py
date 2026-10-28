@@ -15,8 +15,8 @@ CYAN = (0, 191, 255)
 WHITE = (255, 255, 255)
 LIGHT = (242, 242, 242)
 
-LOGO_MARK = os.path.join(ROOT, "brand", "logo", "logo-mark.png")
-LOGO_FULL_LIGHT = os.path.join(ROOT, "brand", "logo", "logo-light-bg.png")
+LOGO_MARK = os.path.join(ROOT, "brand", "logo", "logo-avatar.png")
+LOGO_FULL_LIGHT = os.path.join(ROOT, "brand", "logo", "logo-full.png")
 # logo-dark-bg.png rasterised white-on-white (unusable); logo-full.png has the
 # navy lockup whose baked #02062F tile snaps to #070A40 on paste+snap
 LOGO_FULL_DARK = os.path.join(ROOT, "brand", "logo", "logo-full.png")
@@ -282,7 +282,7 @@ def email_html():
 <tr><td align="center" style="padding:24px 8px;">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#FFFFFF;">
 <tr><td bgcolor="#070A40" style="padding:32px;">
-<img src="https://lightspeedholdings.vercel.app/brand/logo/logo-light-bg.png" alt="LightSpeed Holdings logo" width="220" style="display:block;border:0;">
+<img src="https://lightspeedholdings.vercel.app/brand/logo/logo-full.png" alt="LightSpeed Holdings logo" width="220" style="display:block;border:0;">
 </td></tr>
 <tr><td style="padding:32px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#070A40;">
 <h1 style="margin:0 0 16px 0;font-size:24px;color:#070A40;">Governed agentic AI for Southern Africa</h1>

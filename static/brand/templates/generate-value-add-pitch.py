@@ -38,7 +38,6 @@ def claim(id: str) -> str:
     raise KeyError(f"Claim '{id}' not found.")
 
 
-
 # Brand Colors (from brand-tokens.json)
 NAVY = RGBColor(0x07, 0x0A, 0x40)
 RED = RGBColor(0xE6, 0x39, 0x46)
@@ -64,12 +63,9 @@ FOOTER_Y = 7.16  # page-number footer baseline
 ASSETS = Path(__file__).resolve().parent / "assets"
 
 # Logo system (brand/logo/)
-# logo-dark-bg.png is a broken export — white canvas, white wordmark — so on a navy
-# slide it renders as a white box reading "Speed". logo-full.png carries the real
-# lockup on a baked #02062F canvas; keying that canvas out yields the dark-slide
-# asset, and QA identifies transparency by the filename.
-LOGO_DARK_BG = REPO_ROOT / "brand" / "logo" / "logo-dark-bg-transparent.png"
-LOGO_LIGHT_BG = REPO_ROOT / "brand" / "logo" / "logo-light-bg.png"  # for white/light slides
+# Official logos: full lockup for light/dark slides, avatar for small spaces.
+LOGO_LIGHT_BG = REPO_ROOT / "brand" / "logo" / "logo-full.png"  # for white/light slides
+LOGO_DARK_BG = REPO_ROOT / "brand" / "logo" / "logo-full.png"  # for navy slides
 LOGO_DARK_SOURCE = REPO_ROOT / "brand" / "logo" / "logo-full.png"
 
 # ── Bounded placement helpers ─────────────────────────────────────────
@@ -236,7 +232,7 @@ def _export_dark_logo(dest=LOGO_DARK_BG, source=LOGO_DARK_SOURCE):
 
 def add_logo(slide, left, top, height, dark_bg=True):
     """Place the official full lockup, aspect-preserved, bounds-clamped."""
-    path = _export_dark_logo(LOGO_DARK_BG, LOGO_DARK_SOURCE) if dark_bg else LOGO_LIGHT_BG
+    path = LOGO_DARK_SOURCE
     with Image.open(path) as im:
         w, h = im.size
     aspect = w / float(h)

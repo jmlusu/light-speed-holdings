@@ -98,7 +98,7 @@ def create_open_graph_image(width=1200, height=630, output_path=None):
     # Tagline: 24px below title
 
     # Load icon-only logo
-    icon_path = os.path.join(LOGO_DIR, "logo-mark.png")
+    icon_path = os.path.join(LOGO_DIR, "logo-avatar.png")
     logo_size = 40
     logo_x = 32
     logo_y = 32
@@ -171,7 +171,7 @@ def create_favicon_ico(output_path=None):
     sizes = [(16, 16), (32, 32), (48, 48)]
     images = []
 
-    icon_path = os.path.join(LOGO_DIR, "logo-mark.png")
+    icon_path = os.path.join(LOGO_DIR, "logo-avatar.png")
 
     for size in sizes:
         img = Image.new("RGBA", size, (0, 0, 0, 0))
@@ -220,7 +220,7 @@ def create_favicon_png(size=32, output_path=None):
 
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
 
-    icon_path = os.path.join(LOGO_DIR, "logo-mark.png")
+    icon_path = os.path.join(LOGO_DIR, "logo-avatar.png")
     if os.path.exists(icon_path):
         icon = Image.open(icon_path).convert("RGBA")
         padding = max(2, size // 8)
@@ -257,7 +257,7 @@ def create_apple_touch_icon(size=180, output_path=None):
 
     img = Image.new("RGB", (size, size), NAVY)
 
-    icon_path = os.path.join(LOGO_DIR, "logo-mark.png")
+    icon_path = os.path.join(LOGO_DIR, "logo-avatar.png")
     if os.path.exists(icon_path):
         icon = Image.open(icon_path).convert("RGBA")
         padding = max(8, size // 8)
@@ -295,7 +295,7 @@ def create_android_chrome_icon(size, output_path=None):
 
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
 
-    icon_path = os.path.join(LOGO_DIR, "logo-mark.png")
+    icon_path = os.path.join(LOGO_DIR, "logo-avatar.png")
     if os.path.exists(icon_path):
         icon = Image.open(icon_path).convert("RGBA")
         padding = max(8, size // 8)

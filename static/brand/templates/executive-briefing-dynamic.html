@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ title }}</title>
+<meta name="author" content="LightSpeed Holdings Limited">
+<meta name="description" content="{{ meta_description }}">
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════
+     LightSpeed Holdings Limited™ — FLUID executive briefing
+     ───────────────────────────────────────────────────────────────────────
+     This is the only briefing template. Rendered by scripts/build_campaign.py
+     (OpenCode command /build-campaign, alias /generate-all-assets).
+
+     It contains NO fixed-height page containers and NO page budget. Chromium
+     owns pagination: content flows across however many A4 sheets it needs
+     (2, 3, 5, 9 …) and the page numbering is resolved by CSS counters at
+     print time — `counter(page)` / `counter(pages)` inside the @page margin
+     boxes, printed as decimal-leading-zero ("01 / 04").
+
+     Content-preservation contract
+     -----------------------------
+     Every heading, paragraph, bullet and table row from
+     notebooklm/raw-briefing.md is emitted exactly once and in source order.
+     Nothing is summarised, trimmed, reordered or paraphrased, and nothing is
+     scaled down to force a page count — a longer briefing simply makes a
+     longer document.
+
+     Break discipline (no sliced blocks, no orphan headings)
+     -------------------------------------------------------
+     break-inside: avoid   table.data-table · .card-light · .callout-navy
+                           .callout-red · .ci-gate · .card-strip · .two-col
+     break-after: avoid    h1, h2, h3, h4 (a heading never ends a page)
+     orphans / widows: 2   p.body, li (a paragraph never leaves <2 lines behind)
+
+     Palette    navy #070A40 · red #E63946 · cyan #00BFFF
+                grey-light #F2F2F2 · white #FFFFFF · grey-dark #6B7280
+                grey-light-text #9CA3AF · mist #F7F8F9 · mineral #121518
+     80/10/10   navy is the dominant surface (rail band, masthead, table
+                heads, gate labels); cyan carries structure and metric values;
+                red appears only as the masthead rule and on risk callouts —
+                together well under 10% of any page.
+     Typography Arial 700 headings · Arial 400 body (brand type scale)
+     Spacing    4px base — 4/8/12/16/24/32
+     ═══════════════════════════════════════════════════════════════════════ */
+  :root {
+    --ls-navy: #070A40;
+    --ls-red: #E63946;
+    --ls-cyan: #00BFFF;
+    --ls-mist: #F7F8F9;
+    --ls-mineral: #121518;
+    --ls-grey-light: #F2F2F2;
+    --ls-white: #FFFFFF;
+    --ls-grey-dark: #6B7280;
+    --ls-grey-light-text: #9CA3AF;
+
+    --t-title: 24pt;
+    --t-metric: 18pt;
+    --t-h2: 16pt;
+    --t-h3: 14pt;
+    --t-lede: 13pt;
+    --t-body: 12pt;
+    --t-caption: 9pt;
+
+    --ls-space-1: 4px;
+    --ls-space-2: 8px;
+    --ls-space-3: 12px;
+    --ls-space-4: 16px;
+    --ls-space-5: 24px;
+    --ls-space-6: 32px;
+
+    /* Logo lockup geometry, measured from the artwork bounding box in
+       brand/logo/logo-full.png — see logo_geometry() in build_campaign.py.
+       The plate is opaque; `mix-blend-mode: lighten` resolves plate + navy
+       masthead to #070A40, so no foreign colour enters the header and the
+       artwork is never recoloured (ADR-027). */
+    --logo-box-w: {{ logo.box_w }};
+    --logo-box-h: {{ logo.box_h }};
+    --logo-img-w: {{ logo.img_w }};
+    --logo-img-h: {{ logo.img_h }};
+    --logo-off-x: {{ logo.off_x }};
+    --logo-off-y: {{ logo.off_y }};
+    --logo-clear-space: {{ logo.clear_space }};
+  }
+
+  /* ── Page geometry + dynamic furniture ────────────────────────────────
+     Margin boxes are the only place a printed page can carry content that
+     repeats on every sheet, so the rail and the footer live here. `counter`
+     values are resolved by the print engine, which is why the numbering is
+     correct for any page count without the build script knowing it. */
+  @page {
+    size: A4;
+    margin: 12mm 14mm 14mm 14mm;
+
+    @top-left {
+      content: "LIGHTSPEED HOLDINGS LIMITED\2122";
+      width: 62%;
+      height: 6mm;
+      line-height: 6mm;
+      padding-left: 4mm;
+      background: var(--ls-navy);
+      color: var(--ls-white);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    @top-right {
+      content: "{{ rail_right }}";
+      width: 38%;
+      height: 6mm;
+      line-height: 6mm;
+      padding-right: 4mm;
+      background: var(--ls-navy);
+      color: var(--ls-cyan);
+      text-align: right;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    @bottom-left {
+      content: "LightSpeed Holdings Limited\2122  \00b7  Confidential";
+      width: 56%;
+      padding-top: 2mm;
+      border-top: 0.75pt solid var(--ls-grey-light);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 7.5pt;
+      font-weight: 400;
+      color: var(--ls-grey-dark);
+    }
+
+    @bottom-right {
+      content: "ASPIRE. ACT. ACHIEVE.    " counter(page, decimal-leading-zero)
+               " / " counter(pages, decimal-leading-zero);
+      width: 44%;
+      padding-top: 2mm;
+      border-top: 0.75pt solid var(--ls-grey-light);
+      text-align: right;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--ls-navy);
+    }
+  }
+
+  /* Page 1 carries the masthead instead of the running rail, so it loses its
+     top margin and the masthead bleeds to the paper edge. */
+  @page :first {
+    margin-top: 0;
+    @top-left { content: none; background: transparent; }
+    @top-right { content: none; background: transparent; }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--ls-white);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    color: var(--ls-navy);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Masthead (page 1 only, edge-to-edge) ─────────────────────────────── */
+  .masthead {
+    background: var(--ls-navy);
+    margin: 0 -14.3mm 0 -14.3mm;
+    padding: calc(var(--logo-clear-space) + 4mm) 14.3mm 7mm 14.3mm;
+  }
+
+  .masthead-top { display: flex; align-items: flex-start; gap: 12mm; }
+
+  .logo-crop {
+    flex: 0 0 auto;
+    width: var(--logo-box-w);
+    height: var(--logo-box-h);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .logo-crop img {
+    position: absolute;
+    width: var(--logo-img-w);
+    height: var(--logo-img-h);
+    left: var(--logo-off-x);
+    top: var(--logo-off-y);
+    mix-blend-mode: lighten;
+  }
+
+  .masthead-copy { flex: 1 1 auto; min-width: 0; }
+
+  .eyebrow {
+    font-size: var(--t-caption);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ls-cyan);
+    margin-bottom: var(--ls-space-2);
+  }
+
+  h1.masthead-title {
+    font-size: var(--t-title);
+    font-weight: 700;
+    line-height: 1.14;
+    letter-spacing: -0.005em;
+    color: var(--ls-white);
+    break-after: avoid;
+  }
+
+  .masthead-rule {
+    width: 32px;
+    height: 3px;
+    background: var(--ls-red);
+    margin: var(--ls-space-2) 0;
+  }
+
+  .masthead-sub {
+    font-size: var(--t-lede);
+    font-weight: 400;
+    line-height: 1.34;
+    color: var(--ls-grey-light-text);
+  }
+
+  /* ── Metric strip (source-derived only; light cards) ──────────────────── */
+  .card-strip {
+    display: grid;
+    gap: 3mm;
+    margin: 7mm 0 2mm 0;
+    break-inside: avoid;
+  }
+
+  .card-light {
+    background: var(--ls-grey-light);
+    border-left: 3px solid var(--ls-cyan);
+    padding: var(--ls-space-3) var(--ls-space-3) var(--ls-space-3) var(--ls-space-4);
+    break-inside: avoid;
+  }
+
+  .card-value {
+    font-size: var(--t-metric);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ls-navy);
+  }
+
+  .card-label {
+    font-size: var(--t-caption);
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--ls-grey-dark);
+    margin-top: 5px;
+  }
+
+  /* ── Body flow ───────────────────────────────────────────────────────── */
+  h2.section {
+    font-size: var(--t-h2);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    color: var(--ls-navy);
+    border-left: 4px solid var(--ls-cyan);
+    padding-left: var(--ls-space-3);
+    margin: var(--ls-space-6) 0 var(--ls-space-2) 0;
+    break-after: avoid;
+    break-inside: avoid;
+  }
+
+  h3.subsection {
+    font-size: var(--t-h3);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ls-navy);
+    margin: var(--ls-space-5) 0 var(--ls-space-1) 0;
+    break-after: avoid;
+    break-inside: avoid;
+  }
+
+  h4.label {
+    font-size: var(--t-caption);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ls-grey-dark);
+    margin: var(--ls-space-4) 0 var(--ls-space-1) 0;
+    break-after: avoid;
+    break-inside: avoid;
+  }
+
+  h2.section:first-child, h3.subsection:first-child { margin-top: 0; }
+
+  p.body {
+    font-size: var(--t-body);
+    font-weight: 400;
+    line-height: 1.44;
+    color: var(--ls-navy);
+    text-align: left;
+    hyphens: manual;
+    orphans: 2;
+    widows: 2;
+  }
+
+  p.body + p.body { margin-top: var(--ls-space-3); }
+
+  strong { font-weight: 700; }
+
+  code {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    background: var(--ls-grey-light);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  /* ── Lists ───────────────────────────────────────────────────────────── */
+  ul.flow-list {
+    list-style: none;
+    margin: var(--ls-space-2) 0 var(--ls-space-3) 0;
+  }
+
+  ul.flow-list li {
+    position: relative;
+    padding-left: var(--ls-space-4);
+    font-size: var(--t-body);
+    font-weight: 400;
+    line-height: 1.44;
+    color: var(--ls-navy);
+    margin-bottom: 4px;
+    orphans: 2;
+    widows: 2;
+  }
+
+  ul.flow-list li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: calc(var(--t-body) * 0.44);
+    width: 4px;
+    height: 4px;
+    background: var(--ls-cyan);
+  }
+
+  /* ── Data tables (structure preserved verbatim, never sliced) ─────────── */
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--ls-space-3) 0 var(--ls-space-4) 0;
+    table-layout: fixed;
+    break-inside: avoid;
+  }
+
+  table.data-table th {
+    background: var(--ls-navy);
+    color: var(--ls-white);
+    font-size: var(--t-caption);
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: left;
+    padding: 5px 6px;
+    border: 1px solid var(--ls-navy);
+    word-wrap: break-word;
+  }
+
+  table.data-table td {
+    font-size: var(--t-caption);
+    font-weight: 400;
+    line-height: 1.36;
+    color: var(--ls-navy);
+    vertical-align: top;
+    padding: 5px 6px;
+    border: 1px solid var(--ls-grey-light);
+    word-wrap: break-word;
+  }
+
+  table.data-table tbody tr:nth-child(even) td { background: var(--ls-grey-light); }
+
+  /* ── Callouts (markdown blockquotes) ─────────────────────────────────── */
+  .callout-navy,
+  .callout-red {
+    margin: var(--ls-space-3) 0 var(--ls-space-4) 0;
+    padding: var(--ls-space-3) var(--ls-space-4);
+    break-inside: avoid;
+  }
+
+  .callout-navy {
+    background: var(--ls-mist);
+    border-left: 4px solid var(--ls-navy);
+  }
+
+  .callout-red {
+    background: var(--ls-grey-light);
+    border-left: 4px solid var(--ls-red);
+  }
+
+  .callout-navy p,
+  .callout-red p {
+    font-size: var(--t-body);
+    font-weight: 400;
+    line-height: 1.42;
+    color: var(--ls-navy);
+  }
+
+  .callout-red p { font-weight: 700; }
+
+  /* ── CI gate definitions ─────────────────────────────────────────────── */
+  .ci-gates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3mm;
+    margin: var(--ls-space-3) 0 var(--ls-space-4) 0;
+    break-inside: avoid;
+  }
+
+  .ci-gate {
+    background: var(--ls-mist);
+    border-top: 3px solid var(--ls-navy);
+    padding: var(--ls-space-3);
+    break-inside: avoid;
+  }
+
+  .ci-gate-label {
+    font-size: var(--t-caption);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ls-navy);
+    margin-bottom: 4px;
+  }
+
+  .ci-gate-body {
+    font-size: var(--t-caption);
+    font-weight: 400;
+    line-height: 1.36;
+    color: var(--ls-grey-dark);
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-top">
+    <div class="logo-crop">
+      <img src="{{ logo.src }}"
+           alt="LightSpeed Holdings Limited&#8482; &#8212; ASPIRE. ACT. ACHIEVE.">
+    </div>
+    <div class="masthead-copy">
+      <div class="eyebrow">{{ eyebrow }}</div>
+      <h1 class="masthead-title">{{ title }}</h1>
+      <div class="masthead-rule"></div>
+      <p class="masthead-sub">{{ subtitle }}</p>
+    </div>
+  </div>
+</header>
+
+{% if metrics %}
+<section class="card-strip" style="grid-template-columns: repeat({{ metrics|length }}, 1fr);">
+  {% for m in metrics %}
+  <div class="card-light">
+    <div class="card-value">{{ m.value }}</div>
+    <div class="card-label">{{ m.label }}</div>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<main class="flow">
+  {% for block in blocks %}
+    {% if block.kind == 'heading' and block.level <= 3 %}
+    <h2 class="section">{{ block.html|safe }}</h2>
+    {% elif block.kind == 'heading' and block.level == 4 %}
+    <h3 class="subsection">{{ block.html|safe }}</h3>
+    {% elif block.kind == 'heading' %}
+    <h4 class="label">{{ block.html|safe }}</h4>
+    {% elif block.kind == 'para' %}
+    <p class="body">{{ block.html|safe }}</p>
+    {% elif block.kind == 'bullets' %}
+    <ul class="flow-list">
+      {% for item in block.items %}<li>{{ item|safe }}</li>{% endfor %}
+    </ul>
+    {% elif block.kind == 'table' %}
+    <table class="data-table">
+      <thead>
+        <tr>{% for cell in block.rows[0] %}<th>{{ cell|safe }}</th>{% endfor %}</tr>
+      </thead>
+      <tbody>
+        {% for row in block.rows[1:] %}
+        <tr>{% for cell in row %}<td>{{ cell|safe }}</td>{% endfor %}</tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% elif block.kind == 'quote' %}
+    <blockquote class="{{ block.tone }}">
+      <p>{{ block.html|safe }}</p>
+    </blockquote>
+    {% elif block.kind == 'gates' %}
+    <div class="ci-gates">
+      {% for gate in block.gates %}
+      <div class="ci-gate">
+        <div class="ci-gate-label">{{ gate.label|safe }}</div>
+        <div class="ci-gate-body">{{ gate.body|safe }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endfor %}
+</main>
+
+</body>
+</html>

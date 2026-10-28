@@ -77,6 +77,7 @@ class MessageBus:
             # the bus can never silently write to an unrelated working directory.
             storage_path = str(get_data_root() / ".opencode" / "inbox.json")
         self.storage_path = Path(storage_path)
+        logger.info("MessageBus storage path: %s", self.storage_path)
         self._store = FileStore(self.storage_path.parent, backup=True)
         self._inbox_name = self.storage_path.name
         self._broadcast_callback = broadcast_callback

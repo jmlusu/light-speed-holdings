@@ -1,0 +1,59 @@
+DECK GATE VERIFICATION RESULT
+==============================
+Deck: C:\Users\jmlus\light-speed-holdings\static\brand\templates\value-add-pitch-investors-clients.pptx
+Exit code: 1
+Timestamp: 2026-10-25 02:33:12
+
+VERIFY-DECK.PY OUTPUT:
+--------------------
+V01  PASS     file
+V02  PASS     structure
+V03  PASS     palette
+V04  PASS     type
+V05  PASS     brand-text
+V06  WARN     logo
+V07  PASS     alt-text
+V08  PASS     leftovers
+V09  PASS     claims
+V10  WARN     sources
+V11  PASS     fit
+V12  PASS     contrast
+V13  FAIL     qa-verdict
+  [V06] WARN: slide 1: 'TextBox 1' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
+  [V06] WARN: slide 1: 'Rectangle 3' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
+  [V06] WARN: slide 1: 'TextBox 4' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
+  [V06] WARN: slide 13: 'Rounded Rectangle 6' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
+  [V06] WARN: slide 13: 'TextBox 7' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
+  [V10] WARN: claim 'agents-total' is not shown on any slide and is not usable (status is 'unverified', not 'verified')
+  [V10] WARN: claim 'departments-total' is not shown on any slide and is not usable (status is 'unverified', not 'verified')
+  [V10] WARN: claim 'atc-rate' is not shown on any slide and is not usable (status is 'unverified', not 'verified')
+  [V10] WARN: claim 'tam-65b' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'sam-12b' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'som-120m' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'price-starter' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'price-pro' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'price-enterprise' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'seed-ask' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'capital-efficiency-3-5x' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'capital-efficiency-3x' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'capital-efficiency-4-2x' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'velocity-mvp-60d' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'velocity-mvp-45d' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'correction-ratio' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'offer-lines-pilot' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'priced-products' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'design-partners' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'arr-120k' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'arr-600k' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'gross-margin-70' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'llm-cost-15' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'cac-payback-6m' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'pilot-clients-15' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'enterprise-clients-50' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'spinout-companies-3' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V10] WARN: claim 'agents-90-departments-20' is not shown on any slide and is not usable (status is 'unverified', not 'verified')
+  [V10] WARN: claim 'exec-breakdown' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
+  [V13] FAIL: no QA verdict at C:\Users\jmlus\light-speed-holdings\static\brand\templates\.qa-verdict.json (ls-artifact-qa must write it after rendering the slides)
+
+REJECTED  exit=1  slides=13  sha256=fecb8a21f49ae664...
+report: C:\Users\jmlus\light-speed-holdings\static\brand\templates\.verify.json

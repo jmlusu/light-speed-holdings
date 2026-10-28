@@ -728,7 +728,8 @@ class TestCircuitBreakerWiring:
 class TestLoopConfig:
     def test_defaults(self) -> None:
         config = LoopConfig()
-        assert config.max_iterations == 10
+        # Default lowered 10 -> 5 in the token-consumption audit (commit 67d88031).
+        assert config.max_iterations == 5
         assert config.max_tokens == 4096
         assert config.temperature == 0.3
         assert config.daily_budget_usd is None
