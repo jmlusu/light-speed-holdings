@@ -6,7 +6,7 @@
  * Directive §11
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { PageContainer } from '../layouts/PageContainer';
@@ -45,6 +45,43 @@ const SECTOR_OPTIONS = sectorsRegistry.map(s => ({ value: s.id, label: s.title }
 
 export const UseCasesPage: React.FC = () => {
   const isDark = document.documentElement.classList.contains('dark');
+
+  // SEO meta tags for /use-cases.
+  useEffect(() => {
+    const description =
+      'Explore verified use cases across sectors, problems, and solutions. Every case carries an evidence status, from proven in-house to future roadmap targets. No fabricated client evidence.';
+
+    document.title = 'Use Cases | LightSpeed Holdings - Verified AI Projects';
+
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', description);
+    }
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', 'Use Cases | LightSpeed Holdings');
+    }
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', description);
+    }
+    const ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogImage) {
+      ogImage.setAttribute('content', '/og-default.png');
+    }
+    const twitterCard = document.querySelector('meta[name="twitter:card"]');
+    if (twitterCard) {
+      twitterCard.setAttribute('content', 'summary_large_image');
+    }
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) {
+      twitterTitle.setAttribute('content', 'Use Cases | LightSpeed Holdings');
+    }
+    const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDescription) {
+      twitterDescription.setAttribute('content', description);
+    }
+  }, []);
 
   const [statusFilter, setStatusFilter] = useState<UseCaseStatus | 'all'>('all');
   const [problemFilter, setProblemFilter] = useState<ProblemCategory | 'all'>('all');
