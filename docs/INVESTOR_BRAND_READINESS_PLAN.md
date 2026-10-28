@@ -5,6 +5,12 @@
 **Status:** DRAFT — Pending CFO Review
 **Next Review:** Before next board meeting or fundraise kickoff
 
+> **Logo references in this document are historic (written 2026-08-27).** The
+> lighthouse-in-shield suite it names (`fulllogo`, `icononly`, `textonly`,
+> `grayscale`) was retired and archived on 2026-10-23. For current assets use
+> `brand/logo/` and `brand/guidelines/brand-guidelines.md`; this plan is kept for
+> its investor-touchpoint mapping, not for asset paths.
+
 ---
 
 ## Executive Summary

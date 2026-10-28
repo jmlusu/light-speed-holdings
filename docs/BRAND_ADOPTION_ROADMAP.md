@@ -6,6 +6,12 @@
 **Status:** ACTIVE
 **Tagline:** MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY.
 
+> **Logo references in this document are historic (written 2026-08-27).** The
+> lighthouse-in-shield suite it names (`fulllogo`, `icononly`, `textonly`,
+> `grayscale`) was retired and archived on 2026-10-23. Current assets live in
+> `brand/logo/`; current guidance is `brand/guidelines/brand-guidelines.md`.
+> The adoption-tracking tables below are still live; the asset-path rows are not.
+
 ---
 
 ## Executive Summary

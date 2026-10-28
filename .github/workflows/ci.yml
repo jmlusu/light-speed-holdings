@@ -286,6 +286,22 @@ jobs:
       - name: Verify every generated image is registered
         run: pwsh -NoProfile -File scripts/maintenance/check-generated-imagery.ps1
 
+  # Logo Usage Check: the retired lighthouse-in-shield suite is archived, but
+  # prose copies of its variant tables kept resurfacing in docs and in the
+  # ls-design-system skill, pointing readers at paths that no longer exist.
+  # This gate scans live artifacts for textual references to the archived suite.
+  # Explicit targets on purpose: a repo-wide scan walks node_modules and
+  # .git and does not finish in reasonable time.
+  logo-usage:
+    name: Logo Usage Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify no live artifact references the archived logo suite
+        run: |
+          python3 scripts/qa/check_logo_usage.py paths \
+            docs/ brand/ static/ public/ src/ scripts/ .agents/ templates/ index.html
+
   # Deck QA: the client deck is generated code, so it is policed like code.
   # deck-qa runs the structural verifier plus the regression tests (including
   # the drift check that the committed deck is the one the generator produces).
@@ -334,7 +350,7 @@ jobs:
   gate:
     name: CI Gate
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, registry-baseline, archify-check, version-check, index-freshness, generated-imagery, deck-qa, deck-render]
+    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, registry-baseline, archify-check, version-check, index-freshness, generated-imagery, logo-usage, deck-qa, deck-render]
     steps:
       - uses: actions/checkout@v7
-      - run: echo "All required checks passed (ruff + mypy + pytest + coverage + harness + bandit + uv-audit + generated-files + registry-baseline + archify + deck-qa)."
+      - run: echo "All required checks passed (ruff + mypy + pytest + coverage + harness + bandit + uv-audit + generated-files + registry-baseline + archify + logo-usage + deck-qa)."

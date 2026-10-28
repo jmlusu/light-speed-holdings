@@ -11,73 +11,34 @@ This directory contains the official, version-controlled brand assets for LightS
 ## Directory Structure
 
 ```
-brand/
+brand/                        # Canonical. Runtime mirrors: static/brand/, public/brand/
 ├── README.md                 # This file
 ├── CHANGELOG.md              # Version history of brand asset changes
-├── logos/                    # All logo variants
-│   ├── fulllogo/             # Full logo (primary brand logo) — now Logo1
-│   │   ├── fulllogo.png      # Primary full logo (Logo1)
-│   │   ├── fulllogo.jpg
-│   │   ├── fulllogo_nobuffer.png
-│   │   ├── fulllogo_nobuffer.jpg
-│   │   ├── fulllogo_transparent.png
-│   │   ├── fulllogo_transparent_nobuffer.png
-│   │   ├── fulllogo_legacy.png        # Previous primary logo
-│   │   ├── fulllogo_legacy.jpg
-│   │   ├── fulllogo_nobuffer_legacy.png
-│   │   ├── fulllogo_nobuffer_legacy.jpg
-│   │   ├── fulllogo_transparent_legacy.png
-│   │   ├── fulllogo_transparent_nobuffer_legacy.png
-│   │   ├── Logo2.png         # Alternative full logo variant 2
-│   │   ├── Logo2.jpg
-│   │   ├── Logo2.svg
-│   │   ├── Logo2_transparent.svg
-│   │   ├── Logo2.pdf
-│   │   ├── Logo2_transparent.pdf
-│   │   ├── Logo2.eps
-│   │   ├── Logo2_transparent.eps
-│   │   ├── Logo3.png         # Alternative full logo variant 3
-│   │   ├── Logo3.jpg
-│   │   ├── Logo3.svg
-│   │   ├── Logo3_transparent.svg
-│   │   ├── Logo3.pdf
-│   │   ├── Logo3_transparent.pdf
-│   │   ├── Logo3.eps
-│   │   └── Logo3_transparent.eps
-│   │   └── vector/           # Print vectors (primary logo)
-│   │       ├── print.svg
-│   │       ├── print_transparent.svg
-│   │       ├── print.eps
-│   │       ├── print_transparent.eps
-│   │       ├── print.pdf
-│   │       └── print_transparent.pdf
-│   ├── icononly/             # Icon mark only
-│   │   ├── icononly.png
-│   │   ├── icononly_nobuffer.png
-│   │   ├── icononly_transparent.png
-│   │   └── icononly_transparent_nobuffer.png
-│   ├── textonly/             # Text wordmark only
-│   │   ├── textonly.png
-│   │   └── textonly_nobuffer.png
-│   ├── grayscale/            # Monochrome variants
-│   │   ├── grayscale.png
-│   │   ├── grayscale_nobuffer.png
-│   │   ├── grayscale_transparent.png
-│   │   └── grayscale_transparent_nobuffer.png
-│   └── print/                # Vector formats (SVG, PDF, EPS)
+├── logo/                     # Logo concepts — each as SVG + PNG, most with a -transparent twin
+│   ├── logo-full.*           # Full lockup — light/white backgrounds
+│   ├── logo-light-bg.*       # Full lockup tuned for navy/dark backgrounds
+│   ├── logo-dark-bg.*        # Full lockup for darker textured backgrounds
+│   ├── logo-mark.*           # Bare speed-mark, where the wordmark is already present
+│   ├── logo-mark-mono.*      # Single-colour mark
+│   ├── logo-avatar.*         # Square avatar / round placements
+│   ├── logo-favicon.*        # Browser tab / app icon
+│   ├── logo-og.*             # 1200x630 share card
+│   └── logo-no-background.*  # Mark on a transparent 1024x1024 canvas
 ├── print/                    # Physical materials
 │   ├── letterhead/           # Letterhead templates
 │   ├── business-cards/       # Business card designs
 │   └── email-signatures/     # Email signature templates
-├── digital/                  # Digital assets
-│   ├── social/               # Social media templates
-│   └── favicons/             # Browser/app icons
-├── tokens/                   # Design tokens
+├── digital/                  # Digital specs (e.g. social-card-spec.md)
+├── tokens/                   # Design tokens (canonical-only — not mirrored)
 │   ├── brand-tokens.json     # Source of truth for colors, fonts, spacing
 │   └── brand-tokens.css      # CSS custom properties
 └── guidelines/               # Brand guidelines
-    └── brand-guidelines.md   # Full brand guidelines document
+    └── brand-guidelines.md   # Canonical brand guidelines document
 ```
+
+`static/brand/` additionally carries mirror-only working content with no canonical peer:
+`templates/` (deck, document and social generators) and `social/` (generated output).
+
 
 ---
 
@@ -85,8 +46,9 @@ brand/
 
 ### For Agents & Developers
 - **Quick reference:** `static/brand/BRAND_GUIDELINES.md`
-- **Full guidelines:** `docs/INVESTOR_BRAND_READINESS_PLAN.md`
-- **Roadmap:** `docs/BRAND_ADOPTION_ROADMAP.md`
+- **Canonical guidelines:** `brand/guidelines/brand-guidelines.md`
+- **Tokens:** `brand/tokens/brand-tokens.json`
+- **Provenance (canonical vs mirror vs archived):** `brand/CANONICAL_SOURCES.md`
 
 ### For Web/CLI Integration
 - **Runtime serving:** `static/brand/` (symlinked or copied from `brand/`)
@@ -127,4 +89,4 @@ The CEO Dashboard (`src/ai_company/dashboard/`) uses the J.A.R.V.I.S. theme with
 ---
 
 *For questions, contact: CEO or CMO*
-*Last updated: 2026-09-06*
+*Last updated: 2026-10-28*
