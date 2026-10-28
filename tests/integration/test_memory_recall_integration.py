@@ -69,7 +69,6 @@ class TestMemoryRecallIntegration:
         # Recall must have been called once with the task instruction.
         assert calls, "recall_context was not invoked before task execution"
         assert calls[0][0] == "Draft the Q3 strategy memo"
-        assert calls[0][0] == "Draft the Q3 strategy memo"
         run_mock.assert_called_once()
 
     def test_recall_result_fed_into_prompt(
