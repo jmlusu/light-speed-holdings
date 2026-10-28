@@ -18,7 +18,7 @@
     "white": "#FFFFFF"
   },
   "logo": {
-    "source": "brand/logos/fulllogo/fulllogo.png",
+    "source": "brand/logo/logo-full.png",
     "clearSpace": "1x height of 'L' in LIGHTSPEED on all sides",
     "placement": "top-left or bottom-right per platform"
   },
@@ -189,7 +189,7 @@
   },
   "qaGates": [
     "Dimension-exact per platform specification",
-    "Logo is official asset from brand/logos/, clear space respected",
+    "Logo is official asset from brand/logo/, clear space respected",
     "Brand palette only: navy #070A40, red #E63946, cyan #00BFFF, lightGrey #F2F2F2, white #FFFFFF",
     "Red reserved for CTA button only",
     "Text within safe zones (≥15% inset), no clipping/overflow",
