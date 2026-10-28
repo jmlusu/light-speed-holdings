@@ -84,7 +84,8 @@ export default defineConfig(({ mode, command }) => {
     },
     server: {
       host: '0.0.0.0',
-      port: 1441,
+      port: Number(process.env.PORT) || 1441,
+      strictPort: false,
       allowedHosts: true,
       // Worktrees and build output sit under the project root. Watching them
       // made Vite fire 131 full page reloads in ten minutes, interrupting any

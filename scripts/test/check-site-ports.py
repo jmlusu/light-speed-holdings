@@ -41,7 +41,14 @@ def main() -> int:
     errors: list[str] = []
 
     vite = _read("vite.config.ts")
-    server_match = re.search(r"server:\s*\{[^}]*?port:\s*(\d+)", vite, re.DOTALL)
+    # server.port is either a bare literal (local-only) or a cloud-container
+    # override with a literal fallback: `Number(process.env.PORT) || 1441`.
+    # Both are accepted; the fallback must remain the ratified dev port.
+    server_match = re.search(
+        r"server:\s*\{[^}]*?port:\s*(?:Number\(\s*process\.env\.PORT\s*\)\s*\|\|\s*)?(\d+)",
+        vite,
+        re.DOTALL,
+    )
     preview_match = re.search(r"preview:\s*\{[^}]*?port:\s*(\d+)", vite, re.DOTALL)
     if not server_match:
         _fail("vite.config.ts: server.port not found", errors)

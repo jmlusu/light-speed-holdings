@@ -7,6 +7,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- Prepared for Google AI Studio WebContainer import: updated `vite.config.ts` (dynamic port + `host: '0.0.0.0'`) and prepended AI Studio Directive to `README.md`.
+
+### Added
 - **Deck QA automation**: The AI Venture Studio client deck is now policed like generated code. New `scripts/presentation/deck_geometry.py` holds the design intent shared by the generator, the structural verifier and the rendered-pixel gate; new `tests/presentation/test_venture_studio_deck.py` (8 tests) guards the logo-over-tagline defect fixed in PR #480 and checks the committed deck against the generator output; two new required CI checks run the gates on every PR (`Deck QA (structure)`, `Deck QA (rendered pixels)` via headless LibreOffice).
 - **HAOMTGV Verification Status** (P4 Equivalent): Added HAOMTGV pillar alignment (`H-A-O-M-T-G-V`) to all 7 ProofPage sections with verification status lines per pillar; canonical 7-tool vocabulary compliance notes per agent card; honest badge mapping to CLAIMS_GOVERNANCE.md statuses (VERIFIED/PROVEN_IN_HOUSE/PILOT/DEMONSTRATION/FIELDABLE/FUTURE)
 - **KPI Collectors**: Ensured HAOMTGV-aligned metrics (5-tier gates, 90 agents, 17 verified tests, 20 departments) synchronized across metrics.ts, ProofPage, and insight articles; drift telemetry with HAOMTGV pillar context in model performance tracking

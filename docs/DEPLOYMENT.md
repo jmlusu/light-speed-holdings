@@ -6,6 +6,8 @@
 
 ## 1 Environments
 
+> **Note on Cloud Container Compatibility**: The frontend is now configured for Google AI Studio WebContainer readiness (dynamic port via `process.env.PORT` + `host: '0.0.0.0'`).
+
 | Environment | How | Dashboard | Notes |
 |-------------|-----|-----------|-------|
 | Local dev | `.\scripts\dev\dev.ps1` / `uv run ai-company dashboard` | localhost:8420 | `.env` from `.env.example` (gitignored) |

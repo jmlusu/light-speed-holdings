@@ -1,3 +1,8 @@
+# LightSpeed Holdings Marketing Website
+
+> **PROJECT TYPE**: Production-Ready React 18 + Vite Web Application.
+> **AI STUDIO DIRECTIVE**: This repository already contains a complete, functional web frontend. Do NOT rewrite, port, or scaffold new components. Run the existing Vite application as-is (`npm run dev`). All pages are pre-built in `src/pages/`.
+
 # AI Company Builder
 
 Python CLI for creating and orchestrating AI agent hierarchies. One human CEO supervises AI executives, managers, and specialists through a defined chain of command.
