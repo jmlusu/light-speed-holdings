@@ -2,7 +2,7 @@
   "$schema": "https://opencode.ai/config.schema.json",
   "smallModel": "opencode/gpt-5.1-codex",
   "plugin": [
-    "@omniroute/opencode-plugin-v2"
+    "@omniroute/opencode-plugin"
   ],
   "permission": {
     "edit": "allow",
@@ -12,7 +12,7 @@
     "resend": {
       "type": "remote",
       "url": "https://mcp.resend.com/mcp",
-      "enabled": true
+      "enabled": false
     },
     "open-design": {
       "type": "local",
@@ -21,9 +21,9 @@
         "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\apps\\daemon\\dist\\cli.js",
         "mcp",
         "--daemon-url",
-        ""
+        "http://127.0.0.1:7456"
       ],
-      "enabled": true,
+      "enabled": false,
       "environment": {
         "OD_DATA_DIR": "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\.od"
       }
@@ -34,7 +34,7 @@
       "name": "OmniRoute",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://localhost:20128",
+        "baseURL": "http://localhost:20128/v1",
         "apiKey": "{env:OMNIROUTE_API_KEY}"
       },
       "models": {
@@ -95,7 +95,7 @@
       "name": "Groq (free tier, direct)",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "",
+        "baseURL": "https://api.groq.com/openai/v1",
         "apiKey": "{env:GROQ_API_KEY}"
       },
       "models": {
@@ -108,7 +108,7 @@
       "name": "NVIDIA NIM (free credits, direct)",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "",
+        "baseURL": "https://integrate.api.nvidia.com/v1",
         "apiKey": "{env:NVIDIA_API_KEY}"
       },
       "models": {
@@ -121,7 +121,7 @@
       "name": "Mistral La Plateforme (free tier, direct)",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "",
+        "baseURL": "https://api.mistral.ai/v1",
         "apiKey": "{env:MISTRAL_API_KEY}"
       },
       "models": {
@@ -133,7 +133,7 @@
       "name": "Google AI Studio (free tier, direct)",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "",
+        "baseURL": "https://generativelanguage.googleapis.com/v1beta/openai",
         "apiKey": "{env:GOOGLE_API_KEY}"
       },
       "models": {
@@ -146,29 +146,29 @@
       "name": "Cloudflare Workers AI (free tier, direct)",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "",
+        "baseURL": "https://api.cloudflare.com/client/v4/accounts/{env:CLOUDFLARE_ACCOUNT_ID}/ai/v1",
         "apiKey": "{env:CLOUDFLARE_API_TOKEN}"
       },
       "models": {
         "@cf/openai/gpt-oss-20b": { "name": "gpt-oss 20B (CF)" },
         "@cf/meta/llama-4-scout-17b-16e-instruct": { "name": "Llama 4 Scout (CF)" },
-        "cf-llama-3.3-70b": { "name": "Llama 3.3 70B fast (CF)" },
-        "cf-llama-3.1-8b": { "name": "Llama 3.1 8B (CF)" },
-        "cf-qwen3.8-27b": { "name": "Qwen3.8 27B (CF)" },
+        "@cf/meta/llama-3.3-70b-instruct-fp8-fast": { "name": "Llama 3.3 70B fast (CF)" },
+        "@cf/meta/llama-3.1-8b-instruct-fp8": { "name": "Llama 3.1 8B (CF)" },
+        "@cf/qwen/qwen3.8-27b": { "name": "Qwen3.8 27B (CF)" },
         "@cf/qwen/qwen3-30b-a3b-fp8": { "name": "Qwen3 30B-A3B (CF)" },
-        "cf-qwen2.5-coder-32b": { "name": "Qwen2.5 Coder 32B (CF)" },
+        "@cf/qwen/qwen2.5-coder-32b-instruct": { "name": "Qwen2.5 Coder 32B (CF)" },
         "@cf/google/gemma-4-26b-a4b-it": { "name": "Gemma 4 26B-A4B (CF)" },
-        "cf-mistral-small-3.1": { "name": "Mistral Small 3.1 24B (CF)" },
+        "@cf/mistralai/mistral-small-3.1-24b-instruct": { "name": "Mistral Small 3.1 24B (CF)" },
         "@cf/nvidia/nemotron-3-120b-a12b": { "name": "Nemotron 3 120B-A12B (CF)" },
-        "cf-deepseek-v4.1": { "name": "DeepSeek V4.1 Flash (CF)" },
-        "cf-granite-4.0": { "name": "Granite 4.0 H Micro (CF)" }
+        "@cf/deepseek-ai/deepseek-v4.1-flash-1017": { "name": "DeepSeek V4.1 Flash (CF)" },
+        "@cf/ibm-granite/granite-4.0-h-micro": { "name": "Granite 4.0 H Micro (CF)" }
       }
     },
     "ollama-cloud-direct": {
-      "name": "Ollama Cloud (free plan, direct)",
+      "name": "Ollama Cloud (free plan, direct; IDs from /api/tags, free-plan access untested)",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "",
+        "baseURL": "https://ollama.com/v1",
         "apiKey": "{env:OLLAMA_API_KEY}"
       },
       "models": {
@@ -183,9 +183,51 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "Ollama (local)",
       "options": {
-        "baseURL": ""
+        "baseURL": "http://127.0.0.1:11434/v1"
       },
-      "models": {}
+      "models": {
+        "gpt-oss:20b": {
+          "name": "gpt-oss 20B (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "qwen3-coder:30b": {
+          "name": "Qwen3 Coder 30B (Local, ~18 GB, stop other models first)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "phi4-mini:latest": {
+          "name": "Phi-4 Mini 3.8B (Local)",
+          "limit": { "context": 32768, "output": 4096 }
+        },
+        "gemma4:e4b": {
+          "name": "Gemma 4 E4B (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "gemma4-12b-32k:latest": {
+          "name": "Gemma 4 12B 32K (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "tev1:4b": {
+          "name": "TEV1 4B (Local, experimental)",
+          "limit": { "context": 8192, "output": 4096 }
+        }
+      }
+    },
+    "llamacpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:8088/v1"
+      },
+      "models": {
+        "qwen2.5-coder-7b-32k": {
+          "name": "Qwen 2.5 Coder 7B (llama.cpp)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "deepseek-r1-64k": {
+          "name": "DeepSeek R1 64K (llama.cpp)",
+          "limit": { "context": 65536, "output": 16384 }
+        }
+      }
     }
   }
 }
