@@ -39,7 +39,7 @@ export const insightArticles: InsightArticle[] = [
     seo: {
       title: 'Cutting AI Costs With Open Source | LightSpeed',
       description:
-        'Token prices are not the binding constraint in Malawi, connectivity is. Why open-source AI cost is an architecture argument, with honest limits.',
+        'Token prices are not the binding constraint in Malawi. Connectivity costs 8.45% of GNI per capita. Open-source AI cost is an architecture argument, with limits.',
     },
     source:
       'docs/Pharos/research-briefs/2026-10-12-open-source-costs.md · docs/Pharos/research-briefs/2026-10-12-africa-open-source-ecosystem.md · pyproject.toml · package-lock.json · src/ai_company/llm/providers/ · src/ai_company/llm/cost_tracker.py · src/ai_company/llm/client.py · docs/adr/004-multi-provider-llm.md · docs/ARCHITECTURE_REMOTE_RUNTIME.md · docs/Pharos/case-study-pipeline.md',
@@ -148,6 +148,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'We have mechanisms and inventories, not published savings measurements. There is no measured before/after in our repository, so this article claims no dollar savings, no percentage cost reduction, no bandwidth-savings figure and no cost-per-workflow number. Those would require evidence we do not have. The zero price on local inference is a ledger convention. Offline-first, zero-cloud and SHA-256-chained append-only audit trails are design and implementation claims, not externally audited guarantees; our decision logs are auditable on request. External prices above are third-party tracker figures that move weekly and must be re-verified before anyone relies on them. J&S StopOver Bar is a real SME in our case pipeline, not a paid client delivery. Nothing has been delivered to paying clients yet, and the proof you can inspect is the stack, the gates, and the ledger.',
       },
+      { kind: 'h', text: 'Key takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Connectivity, not token prices, is the real binding constraint for AI deployment in Malawi, where internet costs 8.45% of GNI per capita',
+          'Open-source local models eliminate per-token costs, but governance and approval workflows require human attention and process investment',
+          'Sovereignty-by-default and offline-first design are not optional for African institutions — they are architectural requirements driven by data protection law and bandwidth reality',
+        ],
+      },
     ],
     relatedSolutions: ['ai-company-builder', 'enterprise-deployment', 'business-automation'],
     relatedSectors: ['agriculture', 'financial-services', 'government'],
@@ -163,7 +172,7 @@ export const insightArticles: InsightArticle[] = [
     seo: {
       title: 'Pricing Agentic AI in a Dual Economy | MWK and USD',
       description:
-        'A dollar list price divided by the exchange rate died with the 44% kwacha devaluation. Kwacha ladders, dollar retainers, mobile-money rails.',
+        'A dollar list price divided by the exchange rate died with the 44% kwacha devaluation. Kwacha ladders, dollar retainers, mobile-money rails built in from day one. Honest dual-currency pricing.',
     },
     source:
       'docs/Pharos/research-briefs/2026-10-12-ai-economics-sadc.md · docs/client-facing/USE-CASE-CATALOG.md · docs/marketing/competitive-landscape.md · content/drafts/faq.md · results/pestel-lightspeed-2026.md · src/data/insights.ts · docs/venture-studio/12-T3-call-scripts.md · docs/Pharos/articles/h-a-o-m-t-g-v-seven-layers.md · docs/Pharos/roadmap.md · docs/Pharos/case-study-pipeline.md',
@@ -246,6 +255,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'What this article does not contain is as deliberate as what it does: no TAM, SAM or SOM figure for Malawi or SADC agentic AI; no adoption percentage for African enterprises; no competitor prices, because they are undisclosed; no FX conversions beyond the catalog\'s own ~USD estimates; no signed-revenue, win-rate or pipeline numbers, because no paying client delivery exists yet. The ladder is offer language pending prospect validation, not a revenue record. The policy citations are current as of October 2026 and should be re-verified if this is read more than 30 days out. The pricing is defensible because it is published, collectable on rails that already exist, and denominated in the currency the buyer carries. That is the whole claim, and it is enough to start a conversation on.',
       },
+      { kind: 'h', text: 'Key takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Malawi\'s dual-currency economy (kwacha local, dollar international) requires priced rails that match each buyer\'s currency risk, not a single converted rate',
+          'Mobile money already reaches 75% of Malawian adults (MWK 8.6 trillion 2025 volume) — pricing must integrate with Airtel Money and TNM Mpamba from day one',
+          'Every ~USD figure in the catalog is an explicit estimate pending prospect validation — no public rate card will be invented, and all conversionshonesty-badged as estimates',
+        ],
+      },
     ],
     relatedSolutions: ['business-automation', 'digital-presence', 'boardroom-briefing'],
     relatedSectors: ['financial-services', 'agriculture', 'government'],
@@ -261,7 +279,7 @@ export const insightArticles: InsightArticle[] = [
     seo: {
       title: 'The Five-Tier Approval Matrix for Agent Governance',
       description:
-        'A permission system that gates everything drowns humans. One that gates nothing is not a company. The tier table lives in code; a timeout never means yes.',
+        'A permission system that gates everything drowns humans. One that gates nothing is not a company. The tier table lives in code; a timeout never means yes. CEO sign-off is the final gate for irreversible actions.',
     },
     source:
       'src/ai_company/orchestrator/tier_rules.py · src/ai_company/executor/hitl_gate.py · src/ai_company/orchestrator/approval.py · docs/Pharos/pillars/02-5-tier-human-in-the-loop.md · docs/APPROVAL-UX-SPEC.md',
@@ -356,7 +374,7 @@ export const insightArticles: InsightArticle[] = [
     seo: {
       title: 'Inside a 91-Agent Company | Registry, Queue, Gate',
       description:
-        '91 agents (90 AI + 1 human CEO) across 20 departments. What the registry, message bus, and five-tier approval gate actually do.',
+        '91 agents (90 AI + 1 human CEO) across 20 departments. What the registry, message bus, and five-tier approval gate actually do. Human CEO as the final accountable authority.',
     },
     source:
       'company-registry.yaml · src/ai_company/orchestrator/tier_rules.py · src/ai_company/orchestrator/approval.py · src/ai_company/orchestrator/message_bus.py · docs/Pharos/pillars/01-built-a-90-agent-company.md · docs/APPROVAL-UX-SPEC.md',
@@ -428,6 +446,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'LightSpeed runs this model in-house. The agent count is 91 (90 AI plus one human CEO) across 20 departments per company-registry.yaml, verified by direct count. The five-tier matrix, message-bus queue, and audit-ledger patterns ship in our own platform code: Tier 0 through Tier 4 classification, approval-gate persistence, and expiry sweeps are implemented, not proposed. J&S StopOver Bar is a real SME running agentic decision support; it is not a LightSpeed client engagement. No paid enterprise client has been delivered this stack yet. Client-facing badges on the site say the same thing: proven in-house first, fieldable and piloted where true, never claimed delivered when it is not.',
       },
+      { kind: 'h', text: 'Key takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Friction scales with risk: low-risk work auto-approves, high-risk work requires human sign-off at the appropriate tier',
+          'Timeout never final: unanswered approvals expire and escalate, never silently pass into default permission',
+          'Human accountability stays legible: one human CEO remains answerable for what the agents do, via the registry and audit trail',
+        ],
+      },
     ],
     relatedSolutions: ['ai-company-builder', 'enterprise-deployment', 'boardroom-briefing'],
     relatedSectors: ['financial-services', 'government', 'education'],
@@ -443,7 +470,7 @@ export const insightArticles: InsightArticle[] = [
     seo: {
       title: 'Offline-First AI for Africa | Bandwidth and Sovereignty',
       description:
-        'Low-bandwidth is the design brief, not a footnote. How offline-first routing, a zero-cloud boundary, and local models answer the four reservations.',
+        'Low-bandwidth is the design brief, not a footnote. How offline-first routing, a zero-cloud boundary, and local models answer the four reservations: bandwidth, data protection, technology debt, and AI skepticism.',
     },
     source:
       'docs/RESERVATIONS-STRATEGY.md · docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/Pharos/case-study-pipeline.md · src/ai_company/llm/providers/ · src/ai_company/model_router.py · research/site-claims-ledger.md',
@@ -521,6 +548,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'Offline-first routing, provider-agnostic LLM clients (including Ollama and llama.cpp), and sovereign deployment patterns are proven in-house on LightSpeed\'s own platform. WhatsApp-native and mobile-money-aware product surfaces are fieldable or in pilot as tagged on the site. J&S StopOver Bar is a real SME running agentic pricing support; it is not a paid LightSpeed client delivery. No ministerial or bank production deployment of this full stack is claimed. Class-level architecture claims above describe capabilities and design decisions we run and publish; they do not assert a finished client product where none has been delivered. Nothing in this article should be read as a paid engagement reference.',
       },
+      { kind: 'h', text: 'Key takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Human CEO remains the single accountable authority: 90 AI agents plus one human CEO, with all governance enforced through the registry and approval matrix',
+          'Offline-first and sovereignty-by-default are architectural requirements for African institutions, not optional deployments — driven by data protection law and bandwidth reality',
+          'Governance scales with risk: a five-tier approval matrix ensures friction matches the consequence of each agent action',
+        ],
+      },
     ],
     relatedSolutions: ['enterprise-deployment', 'business-automation', 'digital-presence'],
     relatedSectors: ['agriculture', 'financial-services', 'healthcare', 'government'],
@@ -536,7 +572,7 @@ export const insightArticles: InsightArticle[] = [
     seo: {
       title: 'The Evidence Ladder | How Every Claim Gets a Class',
       description:
-        'Every public claim gets a class and a source, and occasionally gets cut. What the ledger killed, and what buyers should demand of any AI vendor.',
+        'Every public claim gets a class and a source, and occasionally gets cut. What the ledger killed, and what buyers should demand. Honesty badges reflect evidence tiers.',
     },
     source:
       'research/site-claims-ledger.md · research/site-claims-audit.md · research/site-claims-index.yaml · src/data/registries/claims-registry.json · src/data/governance.ts · src/data/sectors.ts · src/data/insights.ts · docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/Pharos/manifesto-draft.md',
@@ -616,6 +652,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'LightSpeed runs this model on ourselves. The claims registry, the ledger, and the sector evidence tiers are in the repository; the last full reconciliation booked 67 claims with zero unqualified rows remaining, and the remediation trail is public in our own research files rather than performed behind a rebrand. What the ladder has not yet earned us is a client claim: no paid enterprise deployment has been delivered this stack, and every public surface says so. What it has earned is the right to be inspected, which for a buyer who has sat through one too many logo walls is the only claim that should matter.',
       },
+      { kind: 'h', text: 'Key takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Bandwidth constraints are engineered, not assumed: offline-first routing and local model preference keep agents running without constant connectivity',
+          'Sovereignty by default: data stays in-jurisdiction; zero-cloud deployment option for institutions that cannot risk leakage',
+          'Four reservations answered with engineering: bandwidth, data protection, technology debt, and AI skepticism all have concrete design answers in our stack',
+        ],
+      },
     ],
     relatedSolutions: ['boardroom-briefing', 'digital-presence', 'ai-company-builder'],
     relatedSectors: ['financial-services', 'government', 'healthcare'],
@@ -631,7 +676,7 @@ export const insightArticles: InsightArticle[] = [
     seo: {
       title: 'The SADC AI Opportunity | LightSpeed',
       description:
-        'Southern Africa is writing its AI rules in public. Why accountability-first architecture will set the terms for everyone else.',
+        'Southern Africa is writing its AI rules in public. Why accountability-first architecture will set the terms for everyone else. SADC Agentic AI Governance Framework: four principles for member-state adoption.',
     },
     source:
       'docs/Pharos/policy-drafts/sadc-agentic-ai-governance-framework.md · pillars/03-agentic-ai-resource-constrained-africa.md · research/site-claims-ledger.md',
@@ -679,6 +724,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'The framework is a policy proposal, not an adopted standard, and LightSpeed’s engagement status in the region is advisory and pilot work, not deployed client systems. Nothing has been delivered to paying clients yet. What exists is the operating evidence: a governed 90-agent company running daily, and the proof pages to check it against.',
       },
+      { kind: 'h', text: 'Key takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'SADC Agentic AI Governance Framework is a policy proposal, not an adopted standard - advisory engagement with member states',
+          'Four principles anchor the framework: Agency Control, Agency Sovereignty, Financial Safety, and Traceability',
+          'Builders should design for sovereignty by default, offline-first, mobile-money rails, and cost scaling with use from day one',
+        ],
+      },
     ],
     relatedSolutions: ['boardroom-briefing', 'ai-company-builder', 'enterprise-deployment'],
     relatedSectors: ['government', 'financial-services'],
@@ -694,7 +748,7 @@ export const insightArticles: InsightArticle[] = [
     seo: {
       title: 'What Agentic AI Means for African Governments | LightSpeed',
       description:
-        'Bandwidth, data protection, technology debt and AI skepticism are real. The engineering answers are already concrete.',
+        'Bandwidth, data protection, technology debt and AI skepticism are real. The engineering answers are already concrete. Human CEO perspective on government deployments.',
     },
     source:
       'docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · pillars/01-built-a-90-agent-company.md · company-registry.yaml (91 agents / 20 departments)',
@@ -734,6 +788,15 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'LightSpeed runs this model in-house: 91 agents (90 AI plus one human CEO) across 20 departments, coordinated through a message-bus queue under a five-tier approval matrix. On the public-sector side, the engagement is policy-level: advisory work on Malawi’s National AI Strategy consultation, with a submission prepared for the record. No ministerial production deployment is claimed. The systems are the evidence; the badges say which stage each one is at.',
       },
+      { kind: 'h', text: 'Key takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Bandwidth and data protection are engineering constraints: offline-first and sovereign-by-default deployment for ministerial networks',
+          'Technology debt means integration seams and 90-day pilots, not rip-and-replace - legacy cores keep running while one workflow moves',
+          'AI skepticism is answered by evidence: the evidence ladder (Proposed, Verified, Established, Market-leading) strictly governs all claims',
+        ],
+      },
     ],
     relatedSolutions: ['ai-company-builder', 'boardroom-briefing', 'enterprise-deployment'],
     relatedSectors: ['government', 'financial-services', 'education'],
@@ -747,9 +810,9 @@ export const insightArticles: InsightArticle[] = [
     readMins: 7,
     publishedAt: '2026-09-24',
     seo: {
-      title: 'From Digital Transformation to AI-Native | LightSpeed',
+      title: 'From Digital Transformation to AI-Native Transformation | LightSpeed',
       description:
-        'Most organisations adopt AI the way they adopted email. The test that separates tool use from an operating model.',
+        'Most organisations adopt AI the way they adopted email: they buy tools, hand them to people, and hope for a transformation. The test that separates tool use from an operating model. Human CEO on tool use vs operating model.',
     },
     source:
       'docs/Pharos/linkedin-series/post-01 (draft-v1, feed-v1) · pillars/01-built-a-90-agent-company.md · docs/client-facing/USE-CASE-CATALOG.md',
@@ -783,6 +846,15 @@ export const insightArticles: InsightArticle[] = [
       {
         kind: 'p',
         text: 'For a bank, a university or a cooperative, the path is the same one LightSpeed walked: pick one workflow, put it behind a real approval gate, measure it against the old way, then widen. A real, non-tech SME in Malawi (J&S StopOver Bar) runs agentic decision support on inventory, sales velocity and cash reconciliation, built in-house and documented openly: proof that AI-native operations work in the informal economy, not just in a demo. Client engagements have not yet been delivered; the proof is in-house first, and the site says so at every badge.',
+      },
+    { kind: 'h', text: 'Key takeaway' },
+      {
+        kind: 'ul',
+        items: [
+          'Tool users paste prompts with no measurement or compounding: throughput still moves with headcount and mood',
+          'AI-native: agents own defined tasks, coordinate through a shared queue, are measured like staff, and act inside human-set permission boundaries',
+          'The differentiating test: does the operating structure change when agents change? Remove an agent and owned work leaves the system',
+        ],
       },
     ],
     relatedSolutions: ['ai-company-builder', 'business-automation', 'digital-presence'],
