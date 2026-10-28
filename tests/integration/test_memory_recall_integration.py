@@ -44,9 +44,13 @@ class TestMemoryRecallIntegration:
         calls: list[tuple] = []
         real_recall = recall_context
 
-        def spy(query: str, limit: int = 5):
+        def spy(
+            query: str, limit: int = 5, min_similarity: float = 0.0, task_type: str = "general"
+        ):
             calls.append((query, limit))
-            return real_recall(query, limit)
+            return real_recall(query, limit, min_similarity, task_type)
+
+        monkeypatch.setattr("ai_company.executor.loop.recall_context", spy)
 
         monkeypatch.setattr("ai_company.executor.loop.recall_context", spy)
 
