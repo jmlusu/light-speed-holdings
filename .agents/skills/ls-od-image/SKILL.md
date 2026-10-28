@@ -32,6 +32,43 @@ paid job immediately.
   re-render.
 - If the model or count was not explicitly approved, stop and ask.
 
+## Platform Sizes
+
+`--aspect` selects a ratio, **not** a pixel size. A `16:9` render commonly
+returns 1536×864 or similar, which is not a valid X or Facebook asset. Every
+social deliverable therefore has two steps: generate at the closest aspect,
+then normalise to the exact platform canvas.
+
+| Target | Exact canvas | `--aspect` | Delivery filename |
+|--------|--------------|-----------|-------------------|
+| X / Twitter infographic | `1600 × 900` | `16:9` | `infographic-landscape-1600x900.png` |
+| Facebook share / link | `1200 × 628` | `16:9` | `infographic-landscape-1200x628.png` |
+| Instagram / LinkedIn square | `1080 × 1080` | `1:1` | `infographic-square-1080x1080.png` |
+| Instagram / LinkedIn carousel card | `1080 × 1080` | `1:1` | `card-<n>.png` |
+| Vertical video still / Reels cover | `1080 × 1920` | `9:16` | `cover-1080x1920.png` |
+| YouTube / LinkedIn video still | `1920 × 1080` | `16:9` | `cover-1920x1080.png` |
+
+Normalisation contract, after the render returns:
+
+1. **Cover + centre-crop**, do not stretch. Scale so the render covers the
+   target canvas, then crop the overflow. Stretching breaks the logo lockup and
+   the type scale.
+2. **Keep the safe area out of the crop.** Place the subject and any overlaid
+   copy so a 6% margin (≥64px at 1080 wide) can be cropped away on any edge
+   without losing them.
+3. **Verify the pixel size**, not the ratio:
+   `uv run python -c "from PIL import Image; print(Image.open('<file>').size)"`
+   must print exactly the target tuple.
+4. **Then run the palette gate** if the asset carries brand colours:
+   `uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.py <file> --tolerance 3`.
+   A generated render will usually **fail** this gate — that is expected. The
+   fix is the deterministic re-render path in `ls-visual-storytelling`, not a
+   looser tolerance. Never raise `--tolerance` to force a pass.
+5. Record model, aspect, task ID, and the normalisation crop in the asset note.
+
+For campaign assets, the exact-size, palette-clean versions come from
+`scripts/generate_all_assets.py` rather than from a generated render.
+
 ## Commands
 
 Inside Open Design the daemon exports `OD_NODE_BIN`, `OD_BIN`,
