@@ -2,7 +2,7 @@
 
 > **Source**: `company-registry.yaml`
 > **Total Agents**: 90 across 20 departments
-> **Generated**: 2026-10-22
+> **Generated**: 2026-10-18
 
 ---
 
@@ -82,7 +82,7 @@
 | 30 | `data-privacy-officer` | Data Privacy Officer | `clo` | None | Ensure GDPR and CCPA compliance for all data processing.; Maintain data classification and retention policies.; Implement right-to-deletion workflows.; Manage DPA agreements with LLM providers and vendors.; Conduct privacy impact assessments for new features. |
 | 31 | `legal-owner` | Legal Owner | `clo` | None | Own the legal service module and legal SOP.; Map regulatory requirements to agent actions.; Coordinate with compliance_officer on audit and policy. |
 
-## Marketing (9 agents)
+## Marketing (10 agents)
 
 | # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
 |---|----------|-----------|------------|----------------|-----------------|

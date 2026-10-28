@@ -20,7 +20,7 @@ Deterministic probe summary:
 - [ok] cards.reconcile: registry=91 live=91 bak=0 orphan=[] missing=[]
 - [ok] cards.tools: non-canonical tools: []
 - [ok] ruff.check: All checks passed!
-- [ok] pytest.collect: tests/unit/test_write_through.py::TestMessageBusWriteThrough::test_without_database_writes_file_only | tests/unit/test_write_through.py::TestAuditWriterWriteThrough::test_write_mirrors_to_sqlite | tests/unit/test_write_through.py::TestAuditWriterWriteThrough::test_write_batch_mirrors_to_sqlite | tests/unit/test_write_through.py::TestAuditWriterWriteThrough::test_without_database_writes_file_only | tests/unit/test_write_through.py::TestCostTrackerWriteThrough::test_record_usage_mirrors_to_sqlite 
+- [ok] pytest.collect: tests/unit/test_write_through.py::TestMessageBusWriteThrough::test_without_database_writes_file_only | tests/unit/test_write_through.py::TestAuditWriterWriteThrough::test_write_mirrors_to_sqlite | tests/unit/test_write_through.py::TestAuditWriterWriteThrough::test_write_batch_mirrors_to_sqlite | tests/unit/test_write_through.py::TestAuditWriterWriteThrough::test_without_database_writes_file_only | tests/unit/test_write_through.py::TestCostTrackerWriteThrough::test_record_usage_mirrors_to_sqlite
 - [ok] pytest.collect: tests/unit/test_validate_opencode.py::test_valid_v2_card_has_no_errors
 - [ok] drift.manifest: { |   "drifts": [], |   "warnings": [], |   "status": "clean", |   "timestamp": "2026-10-18T10:07:41.6170608+00:00", |   "checked": 87 | }
 - [ok] drift.manifest: drifts=0 checked=87

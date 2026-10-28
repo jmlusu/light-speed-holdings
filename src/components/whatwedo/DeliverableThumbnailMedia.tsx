@@ -1,7 +1,5 @@
 import React from 'react';
-import { HonestyBadge } from '../../components/site/HonestyBadge';
-import type { ContentMedia, ContentMediaSet, ScreenshotMedia, BrandMedia, IllustrationMedia } from '../../types';
-import { honestyLabel } from '../../data/siteContent';
+import type { ContentMedia } from '../../types';
 
 /** Check if media feature is enabled (behind feature flag for phased rollout) */
 const isMediaEnabled = (): boolean => {
@@ -11,7 +9,7 @@ const isMediaEnabled = (): boolean => {
 
 /** Render deliverable thumbnail media */
 export const DeliverableThumbnailMedia: React.FC<{
-  media: ContentMediaSet['thumbnail'];
+  media?: ContentMedia;
   isLight: boolean;
 }> = ({ media, isLight }) => {
   if (!media || !isMediaEnabled()) return null;
@@ -23,33 +21,34 @@ export const DeliverableThumbnailMedia: React.FC<{
     if (!media) return null;
     switch (media.kind) {
       case 'screenshot':
-      case 'illustration': {
-        const m = media as ScreenshotMedia | IllustrationMedia;
+      case 'illustration':
         return (
           <img
-            src={m.src}
-            alt={m.alt}
+            src={media.src}
+            alt={media.alt}
             className="w-full h-full object-cover"
             loading="lazy"
           />
         );
-      }
-      case 'brand-mark': {
-        const m = media as BrandMedia;
+      case 'brand':
         return (
           <img
-            src={m.src}
-            alt={m.alt}
+            src={media.src}
+            alt={media.alt}
             className="w-full h-full object-contain p-2"
             loading="lazy"
           />
         );
-      }
       case 'diagram':
-      case 'metrics':
         return (
           <div className="w-full h-full flex items-center justify-center p-2">
-            <p className="text-center text-xs text-ls-grey-light-text">{media.kind}</p>
+            <p className="text-center text-xs text-ls-grey-light-text">Diagram: {media.alt}</p>
+          </div>
+        );
+      case 'metric':
+        return (
+          <div className="w-full h-full flex items-center justify-center p-2">
+            <p className="text-center text-xs text-ls-grey-light-text">Metric: {media.alt}</p>
           </div>
         );
       default:

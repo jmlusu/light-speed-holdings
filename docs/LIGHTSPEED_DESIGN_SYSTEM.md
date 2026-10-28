@@ -620,13 +620,24 @@ Required variants (canonical filenames in `brand/logo/`):
 - **Editorial scale** — imagery is compositional, not decorative filler (§8)
 - **Architectural geometry** — structures, grids, data-center and civic geometry over stock desk scenes (§8)
 - **Whitespace-friendly** — images support the layout; they do not fight type (§8)
-- **African context, authentic** — real people, real work, contemporary settings (§8, §39)
+- **African context, authentic** — real people, real work, contemporary settings (§8, §39). *Real* is literal: human imagery is only ever real, consented, commissioned photography holding a model or property release. AI-generated people and avatars are prohibited — see Generated Imagery below
 - **No stereotypes** — *"Avoid stereotypical poverty imagery."* (Directive line 2067); no "staring at a laptop" cliché; no generic stock-photo smiles (lines 1088, §19 Type A)
-- **Authentic leadership** — leadership imagery shows competence and context, not posed headshot grids (line 1278)
+- **Authentic leadership** — leadership imagery shows competence and context, not posed headshot grids (line 1278); no headshots at all, generated or otherwise
 - **Controlled accent use** — cyan/red appear as light and signal in imagery, never as an all-over grade (§5 80/10/10)
 
+### Generated Imagery
+
+Governed by [ADR-027](adr/027-ai-generated-imagery-policy.md).
+
+- **Permitted** for all non-person surfaces: hero backdrops, product and infrastructure surfaces, abstract data, environment and geometry, textures, and conceptual illustration — on the website, CEO Dashboard, decks, video, documents, social, ads, diagrams and infographics.
+- **Prohibited:** generated people, faces, figures, and avatars. The prohibition supersedes the "chatbot avatars" allowance in [ADR-018](adr/018-comfyui-media-generation.md:11) and any template that emits an avatar image.
+- **Non-human hero vocabulary** — hero imagery is Type A *subjects without people*: Lilongwe/architectural geometry, data-center and civic infrastructure, product surfaces, environment, abstract data.
+- **Vendors** are limited to those allow-listed in `docs/APPROVED-VENDORS.md`. Prompts are subject to the third-party transmission ban in `docs/SKILL_CURATION_POLICY.md`.
+- **Raw output is not an asset.** Generated rasters are post-processed to the brand palette before commit. Flat and vector output is held to the exact-match palette gate; continuous-tone output is held to brand-token presence and dominant-colour compliance.
+- **Provenance is recorded** — generated assets are typed `illustration` with `generated: true`, never `screenshot`.
+
 ### Diagrams & Illustration Types (Directive §19)
-- **Type A** — cinematic hero imagery (African tech/business context, Lilongwe geometry, data centers)
+- **Type A** — cinematic hero imagery (African tech/business context, Lilongwe geometry, data centers). Non-human subjects by default; no generated people
 - **Type B** — process/flow infographics (HAOMTGV, model routing, economics)
 - **Type K** — micro-illustrations (H A O M T G V glyphs)
 - **Type D/E** — model-routing and Africa AI economics diagrams
