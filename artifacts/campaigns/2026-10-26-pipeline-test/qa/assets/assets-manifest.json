@@ -1,0 +1,299 @@
+{
+  "campaign": "2026-10-26-pipeline-test",
+  "generated": "2026-10-27T19:28:03",
+  "tolerance_pct": 3.0,
+  "fps": 30,
+  "headline": "OFFLINE-FIRST AGENTIC AI",
+  "metrics": [
+    {
+      "value": "90",
+      "label": "agents",
+      "label_text": "AGENTS IN OPERATION",
+      "scope": "Agentic Workforce: 90 agents (89 AI + 1 human CEO) operating across 20 departments under a canonical 7-tool runtime\u2026",
+      "match": "90 agents"
+    },
+    {
+      "value": "20",
+      "label": "departments",
+      "label_text": "OPERATING DEPARTMENTS",
+      "scope": "Agentic Workforce: 90 agents (89 AI + 1 human CEO) operating across 20 departments under a canonical 7-tool runtime\u2026",
+      "match": "20 departments"
+    },
+    {
+      "value": "5",
+      "label": "HITL approval tiers",
+      "label_text": "HITL APPROVAL TIERS",
+      "scope": "Governance: 5-tier human-in-the-loop approval system ensures auditability\u2026",
+      "match": "5-tier human"
+    },
+    {
+      "value": "4",
+      "label": "CI quality gates",
+      "label_text": "CI QUALITY GATES",
+      "scope": "4-gate CI (ruff, mypy, bandit, pytest).",
+      "match": "4-gate CI"
+    }
+  ],
+  "checks": {
+    "grounding": {
+      "pass": true,
+      "ungrounded": []
+    },
+    "carousel_pages": {
+      "pass": true,
+      "value": 6
+    },
+    "report_pages": {
+      "pass": true,
+      "value": 4
+    },
+    "report_a4": {
+      "pass": true,
+      "value": [
+        [
+          595,
+          842
+        ],
+        [
+          595,
+          842
+        ],
+        [
+          595,
+          842
+        ],
+        [
+          595,
+          842
+        ]
+      ]
+    },
+    "report_text": {
+      "pass": true,
+      "value": 3926
+    },
+    "report_rasteriser": {
+      "pass": true,
+      "value": "pdftoppm (anti-aliasing off)"
+    },
+    "video_dims_video-short-1080x1920.mp4": {
+      "pass": true,
+      "value": "1080x1920"
+    },
+    "video_dims_video-overview-16x9.mp4": {
+      "pass": true,
+      "value": "1920x1080"
+    },
+    "x_posts": {
+      "pass": true,
+      "value": [
+        105,
+        159,
+        94
+      ]
+    },
+    "assets_present": {
+      "pass": true,
+      "value": "14 files",
+      "missing": []
+    },
+    "palette": {
+      "pass": true,
+      "tolerance_pct": 3.0,
+      "files_checked": 13,
+      "failures": []
+    }
+  },
+  "palette": [
+    {
+      "file": "infographic-square-1080x1080.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 1166400; off-palette: 1287 (0.11%)",
+      "result": "PASS: 99.89% of visible pixels on brand palette (0.11% off, tolerance 3%)"
+    },
+    {
+      "file": "infographic-landscape-1600x900.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 1440000; off-palette: 872 (0.06%)",
+      "result": "PASS: 99.94% of visible pixels on brand palette (0.06% off, tolerance 3%)"
+    },
+    {
+      "file": "infographic-landscape-1200x628.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 753600; off-palette: 585 (0.08%)",
+      "result": "PASS: 99.92% of visible pixels on brand palette (0.08% off, tolerance 3%)"
+    },
+    {
+      "file": "card-1.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 1166400; off-palette: 772 (0.07%)",
+      "result": "PASS: 99.93% of visible pixels on brand palette (0.07% off, tolerance 3%)"
+    },
+    {
+      "file": "card-2.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 1166400; off-palette: 2496 (0.21%)",
+      "result": "PASS: 99.79% of visible pixels on brand palette (0.21% off, tolerance 3%)"
+    },
+    {
+      "file": "card-3.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 1166400; off-palette: 3385 (0.29%)",
+      "result": "PASS: 99.71% of visible pixels on brand palette (0.29% off, tolerance 3%)"
+    },
+    {
+      "file": "card-4.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 1166400; off-palette: 3771 (0.32%)",
+      "result": "PASS: 99.68% of visible pixels on brand palette (0.32% off, tolerance 3%)"
+    },
+    {
+      "file": "card-5.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 1166400; off-palette: 2689 (0.23%)",
+      "result": "PASS: 99.77% of visible pixels on brand palette (0.23% off, tolerance 3%)"
+    },
+    {
+      "file": "card-6.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 1166400; off-palette: 772 (0.07%)",
+      "result": "PASS: 99.93% of visible pixels on brand palette (0.07% off, tolerance 3%)"
+    },
+    {
+      "file": "page-1.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 2174960; off-palette: 0 (0.00%)",
+      "result": "PASS: 100.00% of visible pixels on brand palette (0.00% off, tolerance 3%)"
+    },
+    {
+      "file": "page-2.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 2174960; off-palette: 0 (0.00%)",
+      "result": "PASS: 100.00% of visible pixels on brand palette (0.00% off, tolerance 3%)"
+    },
+    {
+      "file": "page-3.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 2174960; off-palette: 0 (0.00%)",
+      "result": "PASS: 100.00% of visible pixels on brand palette (0.00% off, tolerance 3%)"
+    },
+    {
+      "file": "page-4.png",
+      "rc": 0,
+      "pass": true,
+      "detail": "visible pixels: 2174960; off-palette: 0 (0.00%)",
+      "result": "PASS: 100.00% of visible pixels on brand palette (0.00% off, tolerance 3%)"
+    }
+  ],
+  "videos": {
+    "video-short-1080x1920.mp4": {
+      "probe": {
+        "ok": true,
+        "width": 1080,
+        "height": 1920,
+        "duration": 60.0,
+        "frames": "1800"
+      },
+      "source_frame_palette": [
+        {
+          "file": "f00001.png",
+          "rc": 0,
+          "pass": true,
+          "detail": "visible pixels: 2073600; off-palette: 1372 (0.07%)",
+          "result": "PASS: 99.93% of visible pixels on brand palette (0.07% off, tolerance 3%)"
+        },
+        {
+          "file": "f00901.png",
+          "rc": 0,
+          "pass": true,
+          "detail": "visible pixels: 2073600; off-palette: 1372 (0.07%)",
+          "result": "PASS: 99.93% of visible pixels on brand palette (0.07% off, tolerance 3%)"
+        },
+        {
+          "file": "f01800.png",
+          "rc": 0,
+          "pass": true,
+          "detail": "visible pixels: 2073600; off-palette: 1372 (0.07%)",
+          "result": "PASS: 99.93% of visible pixels on brand palette (0.07% off, tolerance 3%)"
+        }
+      ],
+      "decoded_frame_palette": {
+        "file": "video-short-1080x1920-decoded.png",
+        "rc": 1,
+        "pass": false,
+        "detail": "visible pixels: 2073600; off-palette: 2044268 (98.59%)",
+        "result": "FAIL: 98.59% of visible pixels off brand palette (tolerance 3%)"
+      },
+      "size_mb": 1.61
+    },
+    "video-overview-16x9.mp4": {
+      "probe": {
+        "ok": true,
+        "width": 1920,
+        "height": 1080,
+        "duration": 60.0,
+        "frames": "1800"
+      },
+      "source_frame_palette": [
+        {
+          "file": "f00001.png",
+          "rc": 0,
+          "pass": true,
+          "detail": "visible pixels: 2073600; off-palette: 668 (0.03%)",
+          "result": "PASS: 99.97% of visible pixels on brand palette (0.03% off, tolerance 3%)"
+        },
+        {
+          "file": "f00901.png",
+          "rc": 0,
+          "pass": true,
+          "detail": "visible pixels: 2073600; off-palette: 668 (0.03%)",
+          "result": "PASS: 99.97% of visible pixels on brand palette (0.03% off, tolerance 3%)"
+        },
+        {
+          "file": "f01800.png",
+          "rc": 0,
+          "pass": true,
+          "detail": "visible pixels: 2073600; off-palette: 668 (0.03%)",
+          "result": "PASS: 99.97% of visible pixels on brand palette (0.03% off, tolerance 3%)"
+        }
+      ],
+      "decoded_frame_palette": {
+        "file": "video-overview-16x9-decoded.png",
+        "rc": 1,
+        "pass": false,
+        "detail": "visible pixels: 2073600; off-palette: 2066525 (99.66%)",
+        "result": "FAIL: 99.66% of visible pixels off brand palette (tolerance 3%)"
+      },
+      "size_mb": 1.68
+    }
+  },
+  "assets": [
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\infographics\\infographic-square-1080x1080.png",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\infographics\\infographic-landscape-1600x900.png",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\infographics\\infographic-landscape-1200x628.png",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\carousels\\social-carousel.pdf",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\reports\\comprehensive-report-branded.pdf",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\social-copy\\threads-and-captions.md",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\carousels\\instagram\\card-1.png",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\carousels\\instagram\\card-2.png",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\carousels\\instagram\\card-3.png",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\carousels\\instagram\\card-4.png",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\carousels\\instagram\\card-5.png",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\carousels\\instagram\\card-6.png",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\video\\video-short-1080x1920.mp4",
+    "artifacts\\campaigns\\2026-10-26-pipeline-test\\video\\video-overview-16x9.mp4"
+  ],
+  "pass": true
+}

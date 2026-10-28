@@ -1,0 +1,25 @@
+{
+  "target": "artifacts/campaigns/2026-10-26-pipeline-test/open-design/executive-briefing.html",
+  "checks": [
+    {
+      "viewport": {
+        "width": 794,
+        "height": 1123
+      },
+      "scrollWidth": 794,
+      "scrollHeight": 2243,
+      "horizontalOverflowPx": 0,
+      "imgCount": 1,
+      "missingAltCount": 0,
+      "untypedImageCount": 0,
+      "invalidImageTypeCount": 0,
+      "decorativeWithAltCount": 0,
+      "informativeMissingAltCount": 0,
+      "altQualityFailures": 0,
+      "logoAltMismatchCount": 0,
+      "headingCount": 13,
+      "emptyHeadingCount": 0,
+      "screenshot": "artifacts/campaigns/2026-10-26-pipeline-test/qa/qa-page1-794x1123.png"
+    }
+  ]
+}

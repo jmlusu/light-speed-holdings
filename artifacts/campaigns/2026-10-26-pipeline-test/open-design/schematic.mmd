@@ -1,0 +1,21 @@
+flowchart LR
+    subgraph J_S_StopOver [J&S StopOver Bar]
+    Finance[AI Finance Agent]
+    Inventory[AI Inventory Agent]
+    Procurement[AI Procurement Agent]
+    Operations[AI Operations Agent]
+    end
+
+    Dashboard[CEO Dashboard]
+
+    J_S_StopOver --> Finance
+    Finance --> Inventory
+    Inventory --> Procurement
+    Procurement --> Operations
+    Operations --> Dashboard
+
+    style Finance fill:#070A40,stroke:#00BFFF,stroke-width:2px,color:#fff
+    style Inventory fill:#070A40,stroke:#00BFFF,stroke-width:2px,color:#fff
+    style Procurement fill:#070A40,stroke:#00BFFF,stroke-width:2px,color:#fff
+    style Operations fill:#070A40,stroke:#00BFFF,stroke-width:2px,color:#fff
+    style Dashboard fill:#E63946,stroke:#00BFFF,stroke-width:2px,color:#fff
