@@ -22,6 +22,7 @@ Usage:
 from __future__ import annotations
 
 import hashlib
+import re
 import sys
 from pathlib import Path
 
@@ -29,6 +30,12 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 LOGO_DIR = REPO_ROOT / "brand" / "logo"
 ASSETS_DIR = REPO_ROOT / "static" / "brand" / "templates" / "assets"
 ARCHIVE_DIR = REPO_ROOT / ".archive" / "legacy-logo-suite-2026-10-23"
+
+# A violation line can contain characters the console encoding cannot represent
+# (e.g. cp1252 on Windows). Without this the gate crashes instead of reporting
+# the very violation it just found, which reads as a pass in some wrappers.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(errors="backslashreplace")  # type: ignore[union-attr]
 
 # Textual legacy references that must not appear in live source/docs.
 LEGACY_PATH_TOKENS = (
@@ -40,6 +47,18 @@ LEGACY_PATH_TOKENS = (
     "logos/grayscale",
 )
 
+# Bare retired-variant filenames, e.g. `fulllogo.png`, `icononly/` or a table row
+# reading `fulllogo_transparent` — these are flagged even without the old
+# `brand/logos/` prefix, because copying one of them into a new artifact is the
+# failure mode the prefix tokens missed. `fulllogo` / `icononly` / `textonly` are
+# not English words, so they are safe to match bare; `grayscale` is a CSS
+# `grayscale` is a CSS keyword and only counts when spelled as a path or a file.
+LEGACY_ASSET_RE = re.compile(
+    r"\b(?:fulllogo|icononly|textonly)(?:_[a-z]+)*\b"
+    r"|\bgrayscale(?:_[a-z]+)*(?:/|\.(?:png|jpe?g|svg|pdf|eps)\b)",
+    re.IGNORECASE,
+)
+
 # Files whose historical mentions of legacy paths are expected and allowed.
 HISTORICAL_ALLOW = (
     "brand/changelog.md",
@@ -47,6 +66,14 @@ HISTORICAL_ALLOW = (
     "knowledge/technology/bug-fixes/",
     "harness/changes/archive/",
     "tasks/brand-update/",
+    # Dated per-post campaign QA records: evidence of what was produced at the
+    # time, deliberately not rewritten.
+    "docs/pharos/",
+    # Still carries retired variant names in its asset rows. It is being
+    # rewritten by the open salvage PR (#545), so fixing it here would only
+    # collide. REMOVE THIS ENTRY once that doc is migrated — the gate is the
+    # thing that should be keeping it honest.
+    "docs/brand_adoption_roadmap.md",
     ".archive/",
     "scripts/qa/check_logo_usage.py",
 )
@@ -173,7 +200,8 @@ def check_paths(targets: list[str]) -> int:
             continue
         for lineno, line in enumerate(text.splitlines(), start=1):
             low = line.lower()
-            if any(tok in low for tok in LEGACY_PATH_TOKENS):
+            hit = any(tok in low for tok in LEGACY_PATH_TOKENS) or LEGACY_ASSET_RE.search(line)
+            if hit:
                 # Allow lines that explicitly flag the reference as legacy/archived.
                 if any(w in low for w in ("legacy", "archiv", "former", "deprecated", "retired")):
                     continue

@@ -79,7 +79,7 @@ slot.
   (≥ 120px min), publication + issue to its right, tagline right-aligned.
 - **Exact-palette snap for small canvases**: the 600×200 header is small
   enough that anti-aliased logo/text edges would exceed the 3% exact-token QA
-  tolerance (the source fulllogo itself carries ~970 blend colors).
+  tolerance (the source full logo itself carries ~970 blend colors).
   `_snap_to_palette` snaps every visible pixel to its nearest brand token
   after rendering — visually identical (every blend is an average of two
   tokens) and the gate reports 100% on-palette. Only the email header applies

@@ -100,7 +100,7 @@ Governed by [`docs/adr/027-ai-generated-imagery-policy.md`](../../../docs/adr/02
 
 1. **AI-generated imagery is permitted** on every non-person surface — hero backdrops, infrastructure, product surfaces, environment and geometry, abstract data, textures, conceptual illustration — in any artifact: website, dashboard, deck, video, document, social, ad, diagram, infographic.
 2. **Generated people, faces, figures and avatars are prohibited.** No synthetic person, no invented persona icon. Human imagery is only real, consented, commissioned photography holding a model or property release.
-3. **Using the official `icononly` logo as a profile avatar is a logo use, not generated imagery** — permitted, and the only sanctioned avatar substitute.
+3. **Using the official `logo-avatar` mark as a profile avatar is a logo use, not generated imagery** — permitted, and the only sanctioned avatar substitute.
 4. **Vendors** must be allow-listed in `docs/APPROVED-VENDORS.md`; prompts are subject to the third-party transmission ban in `docs/SKILL_CURATION_POLICY.md`.
 5. **Palette gate differs by asset class.** Flat graphic output (diagram, brand-mark, vector, flat illustration) must pass exact-match `--tolerance 3`. Continuous-tone output (generated photographic/raster illustration) is checked for brand-token presence and dominant-colour compliance — navy dominant, red/cyan as accents.
 6. **Provenance is recorded** — generated rasters are typed `illustration` with `generated: true`, never `screenshot`. Raw model output is not an asset until post-processed to the palette.

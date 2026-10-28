@@ -5,11 +5,10 @@
 **Status:** DRAFT — Pending CFO Review
 **Next Review:** Before next board meeting or fundraise kickoff
 
-> **Logo references in this document are historic (written 2026-08-27).** The
-> lighthouse-in-shield suite it names (`fulllogo`, `icononly`, `textonly`,
-> `grayscale`) was retired and archived on 2026-10-23. For current assets use
-> `brand/logo/` and `brand/guidelines/brand-guidelines.md`; this plan is kept for
-> its investor-touchpoint mapping, not for asset paths.
+> **Originally written 2026-08-27 for the retired lighthouse-in-shield logo
+> suite.** Asset paths below were migrated to the current `brand/logo/` set on
+> 2026-10-28; current guidance is `brand/guidelines/brand-guidelines.md`. The
+> plan is kept for its investor-touchpoint mapping.
 
 ---
 
@@ -29,7 +28,7 @@ LightSpeed Holdings Limited has received official branding materials from the CE
 | **Tagline** | MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY |
 | **Primary Color** | Dark Navy (#070A40) |
 | **Accent Colors** | Signal Red, Cyan Blue (#00BFFF) |
-| **Logo Symbol** | Lighthouse/shield emblem with signal waves |
+| **Logo Symbol** | Speed-mark with wordmark (blue→cyan gradient) |
 | **Typography** | Bold, wide-spaced sans-serif (company name); lighter weight (tagline) |
 
 ### Extracted Color Palette
@@ -60,7 +59,7 @@ Every point where an investor encounters the LightSpeed Holdings brand:
 | 8 | **Press / Media Kit** | Does not exist | Create downloadable press kit | MEDIUM |
 | 9 | **Board Meeting Materials** | J.A.R.V.I.S. dashboard only | Create branded board deck template | HIGH |
 | 10 | **Data Room / Due Diligence** | Does not exist | Create branded data room cover page and folder structure | HIGH |
-| 11 | **Legal Documents** | No letterhead | Use grayscale logo variant on legal filings | MEDIUM |
+| 11 | **Legal Documents** | No letterhead | Use `logo-mark-mono.png` on legal filings | MEDIUM |
 | 12 | **Investor Update Emails** | No template | Create branded email template | HIGH |
 | 13 | **CLI / Developer-Facing** | "LS" text placeholder in dashboard | Keep J.A.R.V.I.S. theme (internal); do NOT rebrand | N/A |
 | 14 | **Conference / Event Materials** | Does not exist | Order banners, pull-ups using vector assets | MEDIUM |
@@ -73,22 +72,22 @@ Which logo variant to use for each investor material:
 
 | Material | Logo Variant | Format | Background | Notes |
 |----------|-------------|--------|------------|-------|
-| **Pitch Deck — Cover** | `fulllogo.png` or `fulllogo_transparent.png` | PNG (high-res) | White or Navy | Full logo with icon + text; use transparent on dark backgrounds |
-| **Pitch Deck — Slides** | `icononly.png` | PNG | White | Icon only for slide corners/watermarks |
-| **Pitch Deck — Thank You** | `fulllogo_transparent.png` | PNG | Navy | Full logo on dark background |
-| **One-Pager** | `fulllogo.png` | PNG | White | Header placement, left-aligned |
-| **Email Signature** | `icononly.png` | PNG (72dpi, ~80px wide) | White | Small icon next to name block |
+| **Pitch Deck — Cover** | `logo-full.png` or `logo-full-transparent.png` | PNG (high-res) | White or Navy | Full logo with mark + wordmark; use the transparent variant on dark backgrounds |
+| **Pitch Deck — Slides** | `logo-mark.png` | PNG | White | Bare mark for slide corners/watermarks |
+| **Pitch Deck — Thank You** | `logo-full-transparent.png` | PNG | Navy | Full logo on dark background |
+| **One-Pager** | `logo-full.png` | PNG | White | Header placement, left-aligned |
+| **Email Signature** | `logo-mark.png` | PNG (72dpi, ~80px wide) | White | Small mark next to name block |
 | **Business Card** | Pre-designed | SVG/PDF | Navy pattern | Use Design 1 as-is; do not modify layout |
 | **Letterhead** | Pre-designed | SVG/PDF | White | Use Letterhead 1 as-is; navy header bar |
-| **Website** | `fulllogo_transparent.png` or `print.svg` | SVG preferred | Variable | SVG for crisp rendering at all sizes |
-| **Social Media — Profile** | `icononly_transparent.png` | PNG (400x400+) | Transparent | Avatar/profile picture |
+| **Website** | `logo-full.svg` / `logo-full-transparent.svg` | SVG preferred | Variable | SVG for crisp rendering at all sizes |
+| **Social Media — Profile** | `logo-avatar.png` (or `logo-avatar-transparent.png`) | PNG (1024²) | Transparent | Square avatar/profile picture |
 | **Social Media — Cover** | Facebook Cover Page 3 (SVG) | SVG/PDF | Navy pattern | Direct use of provided asset |
 | **Press Kit** | All variants | SVG + PNG | Mixed | Include all formats for media use |
-| **Board Deck** | `fulllogo.png` | PNG | White | Cover slide; icon on internal slides |
-| **Legal Documents** | `grayscale.png` or `grayscale_transparent.png` | PNG | White | Monochrome for B&W printing |
-| **Data Room** | `fulllogo.png` | PNG | White | Cover page; folder tabs |
-| **Investor Updates** | `icononly.png` | PNG | White | Email header; small and clean |
-| **Event Banners** | `print.svg` or `print.pdf` | Vector | Variable | High-resolution print output |
+| **Board Deck** | `logo-full.png` | PNG | White | Cover slide; `logo-mark.png` on internal slides |
+| **Legal Documents** | `logo-mark-mono.png` or `logo-mark-mono-transparent.png` | PNG | White | Single-colour for B&W printing |
+| **Data Room** | `logo-full.png` | PNG | White | Cover page; folder tabs |
+| **Investor Updates** | `logo-mark.png` | PNG | White | Email header; small and clean |
+| **Event Banners** | Same variant as `.svg` | Vector | Variable | High-resolution print output |
 
 ### Vector vs Raster Decision Tree
 
@@ -110,9 +109,9 @@ Is it for screen display?
 
 | Slide | Content | Branding Notes |
 |-------|---------|----------------|
-| 1 | Cover: Logo + Company Name + Tagline | `fulllogo_transparent.png` on navy background |
-| 2 | Problem Statement | Icon-only watermark; navy headlines |
-| 3 | Solution | Icon-only watermark |
+| 1 | Cover: Logo + Company Name + Tagline | `logo-full-transparent.png` on navy background |
+| 2 | Problem Statement | Bare-mark watermark; navy headlines |
+| 3 | Solution | Bare-mark watermark |
 | 4 | Market Opportunity | Charts use brand accent colors |
 | 5 | Product / Technology | Screenshots with brand frame |
 | 6 | Business Model | Clean layout; navy dividers |
@@ -121,29 +120,29 @@ Is it for screen display?
 | 9 | Team | Photos in circular frames; navy name bars |
 | 10 | Financials | Charts use brand palette |
 | 11 | Funding Ask | Clear CTA; navy background option |
-| 12 | Thank You / Contact | `fulllogo_transparent.png` centered on navy |
+| 12 | Thank You / Contact | `logo-full-transparent.png` centered on navy |
 
 **Template Format:** `.pptx` (PowerPoint) + `.key` (Keynote) as primary; PDF export for distribution.
 
 ### 4.2 One-Pager Template
 
 - **Size:** A4 / US Letter
-- **Header:** `fulllogo.png` top-left, contact info top-right
+- **Header:** `logo-full.png` top-left, contact info top-right
 - **Body:** Company overview, key metrics, contact details
 - **Footer:** Tagline + legal entity name
 - **Format:** PDF (print-ready) + editable DOCX
 
 ### 4.3 Board Meeting Template
 
-- **Cover Slide:** `fulllogo.png` + "Board Meeting — [Date]"
+- **Cover Slide:** `logo-full.png` + "Board Meeting — [Date]"
 - **Section Dividers:** Navy background with white text
-- **Content Slides:** Clean white; icon-only watermark bottom-right
-- **Appendix:** Grayscale variant for B&W printouts
+- **Content Slides:** Clean white; bare-mark watermark bottom-right
+- **Appendix:** `logo-mark-mono.png` for B&W printouts
 - **Format:** `.pptx` with master slide branding
 
 ### 4.4 Investor Update Email Template
 
-- **Header:** `icononly.png` (40px) + "LightSpeed Holdings Limited" text
+- **Header:** `logo-mark.png` (40px) + "LightSpeed Holdings Limited" text
 - **Divider:** Navy horizontal rule
 - **Body:** Clean sans-serif font; brand navy for headings
 - **Footer:** Email signature block (matches Email Signature 2)
@@ -161,7 +160,7 @@ Is it for screen display?
 | **LightSpeed + Partner (LightSpeed lead)** | LightSpeed logo 1.5x partner logo size. LightSpeed top/left, partner bottom/right. |
 | **LightSpeed + Partner (Partner lead)** | Partner logo 1.5x LightSpeed logo size. Partner top/left, LightSpeed bottom/right. |
 | **LightSpeed as sponsor** | LightSpeed logo in sponsor row, consistent with other sponsor logos. |
-| **LightSpeed as client/partner** | Use `icononly` variant; respect partner's brand guidelines. |
+| **LightSpeed as client/partner** | Use the `logo-mark` variant; respect partner's brand guidelines. |
 
 ### 5.2 Clear Space Requirements
 
@@ -173,9 +172,9 @@ Is it for screen display?
 
 | Variant | Print Minimum | Screen Minimum |
 |---------|---------------|----------------|
-| Full Logo (icon + text) | 30mm wide | 120px wide |
-| Icon Only | 12mm wide | 32px wide |
-| Text Only | 25mm wide | 100px wide |
+| Full Logo (mark + wordmark) | 30mm wide | 120px wide |
+| Mark | 12mm wide | 32px wide |
+| Avatar | 12mm wide | 32px wide |
 
 ### 5.4 Do Not
 
@@ -200,23 +199,13 @@ lightspeed-press-kit/
 ├── README.txt                    # Usage terms and contact info
 ├── brand-guidelines.pdf          # Summary of this document
 ├── logo/
-│   ├── fulllogo/
-│   │   ├── fulllogo.png
-│   │   ├── fulllogo.jpg
-│   │   ├── fulllogo_transparent.png
-│   │   ├── print.svg
-│   │   ├── print.pdf
-│   │   └── print.eps
-│   ├── icononly/
-│   │   ├── icononly.png
-│   │   ├── icononly_transparent.png
-│   │   └── print.svg
-│   ├── textonly/
-│   │   ├── textonly.png
-│   │   └── textonly_nobuffer.png
-│   └── grayscale/
-│       ├── grayscale.png
-│       └── grayscale_transparent.png
+│   ├── logo-full.png / .svg           # mark + wordmark, light backgrounds
+│   ├── logo-full-transparent.png/.svg # mark + wordmark, dark backgrounds
+│   ├── logo-mark.png / .svg           # bare mark
+│   ├── logo-mark-mono.png / .svg      # single-colour
+│   ├── logo-avatar.png / .svg         # square social avatar
+│   ├── logo-favicon.png / .svg        # 512²
+│   └── logo-og.png / .svg             # 1200×630 share card
 ├── business-card/
 │   ├── front_fullcolor_1024x599.png
 │   ├── front_fullcolor_1024x599.svg
@@ -291,7 +280,7 @@ as outlined in the included brand guidelines.
 | Do | Don't |
 |----|-------|
 | Use exact hex values from brand assets | Approximate colors from memory |
-| Use grayscale variant for B&W media | Convert color logo to grayscale manually |
+| Use `logo-mark-mono.png` for B&W media | Convert colour logo to grayscale manually |
 | Use transparent PNGs on non-white backgrounds | Place light logos on light backgrounds |
 | Test contrast ratio (minimum 4.5:1 for text) | Assume accessibility compliance without testing |
 
@@ -305,12 +294,12 @@ as outlined in the included brand guidelines.
 |---|------|-------|--------|-------|
 | 1.1 | Copy all brand assets to `static/brand/` directory | IR Lead | ☐ TODO | Centralize assets for web/CLI access |
 | 1.2 | Create `static/brand/BRAND_GUIDELINES.md` | IR Lead | ☐ TODO | Quick-reference for all agents and team |
-| 1.3 | Build pitch deck template (12–15 slides) | IR Lead + CMO | ☐ TODO | Use `fulllogo_transparent.png` for cover |
+| 1.3 | Build pitch deck template (12–15 slides) | IR Lead + CMO | ☐ TODO | Use `logo-full-transparent.png` for cover |
 | 1.4 | Build one-pager template | IR Lead | ☐ TODO | A4/Letter; PDF + DOCX |
 | 1.5 | Build board meeting template | IR Lead | ☐ TODO | `.pptx` master with branded slides |
 | 1.6 | Deploy Email Signature 2 org-wide | IR Lead + IT | ☐ TODO | HTML signature for all team members |
 | 1.7 | Order business cards (Design 1) | IR Lead | ☐ TODO | For CEO, CFO, and key executives |
-| 1.8 | Update `static/index.html` logo | IR Lead + Eng | ☐ obsolete — root `static/` PWA removed 2026-09-27 | Replace "LS" placeholder with `icononly.png` |
+| 1.8 | Update `static/index.html` logo | IR Lead + Eng | ☐ obsolete — root `static/` PWA removed 2026-09-27 | Replace "LS" placeholder with `logo-mark.png` |
 
 ### Phase 2 — Pre-Fundraise (4–6 Weeks Before Raise)
 
@@ -345,33 +334,15 @@ as outlined in the included brand guidelines.
 ```
 static/brand/
 ├── logos/
-│   ├── fulllogo/
-│   │   ├── fulllogo.png
-│   │   ├── fulllogo.jpg
-│   │   ├── fulllogo_transparent.png
-│   │   ├── fulllogo_transparent_nobuffer.png
-│   │   ├── fulllogo_nobuffer.png
-│   │   ├── fulllogo_nobuffer.jpg
-│   │   └── vector/
-│   │       ├── print.svg
-│   │       ├── print.pdf
-│   │       ├── print.eps
-│   │       ├── print_transparent.svg
-│   │       ├── print_transparent.pdf
-│   │       └── print_transparent.eps
-│   ├── icononly/
-│   │   ├── icononly.png
-│   │   ├── icononly_nobuffer.png
-│   │   ├── icononly_transparent.png
-│   │   └── icononly_transparent_nobuffer.png
-│   ├── textonly/
-│   │   ├── textonly.png
-│   │   └── textonly_nobuffer.png
-│   └── grayscale/
-│       ├── grayscale.png
-│       ├── grayscale_nobuffer.png
-│       ├── grayscale_transparent.png
-│       └── grayscale_transparent_nobuffer.png
+│   ├── logo-full.png / .svg
+│   ├── logo-full-transparent.png / .svg
+│   ├── logo-light-bg.png / .svg
+│   ├── logo-dark-bg.png / .svg
+│   ├── logo-mark.png / .svg
+│   ├── logo-mark-mono.png / .svg
+│   ├── logo-avatar.png / .svg
+│   ├── logo-favicon.png / .svg
+│   └── logo-og.png / .svg
 ├── templates/
 │   ├── pitch-deck.pptx
 │   ├── one-pager.docx
@@ -461,7 +432,7 @@ If we need to reference brand colors in CSS, email templates, or digital materia
 ║  LIGHTSPEED HOLDINGS LIMITED™                           ║
 ║  Aspire. Act. Achieve.                                  ║
 ╠══════════════════════════════════════════════════════════╣
-║  LOGO:  Use fulllogo for headers; icononly for avatars  ║
+║  LOGO:  logo-full for headers; logo-mark for avatars    ║
 ║  COLOR: Navy #070A40 | Red accent | Cyan accent        ║
 ║  MIN:   30mm print / 120px screen (full logo)           ║
 ║  SPACE: 1x "L" height clear on all sides                ║
