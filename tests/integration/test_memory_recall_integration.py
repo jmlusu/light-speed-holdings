@@ -40,8 +40,15 @@ class TestMemoryRecallIntegration:
     ) -> None:
         _seed_task(workspace)
 
-        # Spy on recall_context (already imported into the executor module).
+        # Ensure memory is initialized in the isolated workspace
+        from ai_company.memory.integration import init_memory
+
+        init_memory(base_dir=str(workspace / "memory"))
+
+        # Spy on recall_context
         calls: list[tuple] = []
+        from ai_company.memory.integration import recall_context
+
         real_recall = recall_context
 
         def spy(
@@ -49,8 +56,6 @@ class TestMemoryRecallIntegration:
         ):
             calls.append((query, limit))
             return real_recall(query, limit, min_similarity, task_type)
-
-        monkeypatch.setattr("ai_company.executor.loop.recall_context", spy)
 
         monkeypatch.setattr("ai_company.executor.loop.recall_context", spy)
 
@@ -63,6 +68,7 @@ class TestMemoryRecallIntegration:
 
         # Recall must have been called once with the task instruction.
         assert calls, "recall_context was not invoked before task execution"
+        assert calls[0][0] == "Draft the Q3 strategy memo"
         assert calls[0][0] == "Draft the Q3 strategy memo"
         run_mock.assert_called_once()
 
