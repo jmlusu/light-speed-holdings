@@ -30,9 +30,19 @@ def _read(relpath: str) -> str:
 
 
 def test_vite_config_ports() -> None:
-    """vite.config.ts: server.port == 1441, preview.port == 1440."""
+    """vite.config.ts: server.port falls back to 1441, preview.port == 1440.
+
+    The dev port may be declared as either a bare literal (`port: 1441`) or a
+    cloud-container override with a literal fallback
+    (`port: Number(process.env.PORT) || 1441`). Either form must still pin the
+    ratified Marketing Site default, so only the fallback literal is asserted.
+    """
     content = _read("vite.config.ts")
-    server_match = re.search(r"server:\s*\{[^}]*?port:\s*(\d+)", content, re.DOTALL)
+    server_match = re.search(
+        r"server:\s*\{[^}]*?port:\s*(?:Number\(\s*process\.env\.PORT\s*\)\s*\|\|\s*)?(\d+)",
+        content,
+        re.DOTALL,
+    )
     preview_match = re.search(r"preview:\s*\{[^}]*?port:\s*(\d+)", content, re.DOTALL)
     assert server_match, "vite.config.ts: server.port not found"
     assert preview_match, "vite.config.ts: preview.port not found"
