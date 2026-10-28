@@ -261,7 +261,7 @@ export const insightArticles: InsightArticle[] = [
         items: [
           'Malawi\'s dual-currency economy (kwacha local, dollar international) requires priced rails that match each buyer\'s currency risk, not a single converted rate',
           'Mobile money already reaches 75% of Malawian adults (MWK 8.6 trillion 2025 volume) — pricing must integrate with Airtel Money and TNM Mpamba from day one',
-          'Every ~USD figure in the catalog is an explicit estimate pending prospect validation — no public rate card will be invented, and all conversionshonesty-badged as estimates',
+          'Every ~USD figure in the catalog is an explicit estimate pending prospect validation — no public rate card will be invented, and all conversions are honesty-badged as estimates',
         ],
       },
     ],
@@ -847,7 +847,7 @@ export const insightArticles: InsightArticle[] = [
         kind: 'p',
         text: 'For a bank, a university or a cooperative, the path is the same one LightSpeed walked: pick one workflow, put it behind a real approval gate, measure it against the old way, then widen. A real, non-tech SME in Malawi (J&S StopOver Bar) runs agentic decision support on inventory, sales velocity and cash reconciliation, built in-house and documented openly: proof that AI-native operations work in the informal economy, not just in a demo. Client engagements have not yet been delivered; the proof is in-house first, and the site says so at every badge.',
       },
-    { kind: 'h', text: 'Key takeaway' },
+      { kind: 'h', text: 'Key takeaway' },
       {
         kind: 'ul',
         items: [
