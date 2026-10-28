@@ -1,5 +1,8 @@
 # Open Design Integration - Agent Configuration
-# This file defines how agents interact with Open Design
+# This file defines how agents interact with Open Design.
+# Single source of truth for agents: company-registry.yaml.
+# The `skills` below mirror the `skills:` blocks in that registry. Regenerate
+# them from the registry; do not edit by hand.
 
 integrations:
   open-design:
@@ -9,7 +12,9 @@ integrations:
     # Connection settings
     connection:
       method: cli  # cli or desktop
-      cliPath: "open-design"
+      # Canonical CLI name. In this source checkout `od` is not on PATH; invoke
+      # it as: node open-design/apps/daemon/dist/cli.js
+      cliPath: "od"
       autoUpdate: true
 
     # Authentication (AMR - no API key needed)
@@ -37,89 +42,93 @@ integrations:
         - pdf
         - pptx
 
-# Agent-specific Open Design configurations
+# Agent-specific Open Design configurations.
+# 12 agents, mirroring company-registry.yaml. `skills` are the ls-od-* render
+# skills each agent may invoke. The final QA gate (ls-artifact-qa) is run by the
+# creative_director; there is no separate artifact-qa-reviewer agent.
 agents:
-  creative-director:
+  creative_director:
     role: orchestrator
-    openDesignMode: brief-intake
-    responsibilities:
-      - Load brand system
-      - Ask 5 intake questions
-      - Route to production skill
-      - Enforce brand compliance
-
-  product-designer:
-    role: production
-    openDesignMode: ai-ui-generator
     skills:
-      - ls-frontend-design
-      - ls-design-system
-      - ls-artifact-qa
-    outputFormats:
-      - html
-      - svg
-      - png
+      - ls-od-runtime
+      - ls-od-catalogue
+      - ls-od-brand
+      - ls-od-project
+      - ls-od-prototype
+      - ls-od-live-artifact
+      - ls-od-deck
+      - ls-od-image
+      - ls-od-video
 
-  presentation-designer:
-    role: production
-    openDesignMode: slides
+  cmo:
+    role: executive
     skills:
-      - ls-presentation-design
-      - ls-design-system
-      - ls-diagramming
-    outputFormats:
-      - pptx
-      - pdf
-      - html
+      - ls-od-runtime
+      - ls-od-catalogue
+      - ls-od-deck
 
-  document-designer:
+  marketing_owner:
     role: production
-    openDesignMode: document
     skills:
-      - ls-document-design
-      - ls-design-system
-      - ls-artifact-qa
-    outputFormats:
-      - pdf
-      - html
-      - docx
+      - ls-od-catalogue
+      - ls-od-deck
+      - ls-od-image
 
-  diagram-designer:
+  social_media_manager:
     role: production
-    openDesignMode: diagram
     skills:
-      - ls-diagramming
-      - ls-design-system
-    outputFormats:
-      - svg
-      - png
-      - html
+      - ls-od-image
+      - ls-od-deck
 
-  visual-storyteller:
+  technical_documentation_lead:
     role: production
-    openDesignMode: infographic
     skills:
-      - ls-visual-storytelling
-      - ls-design-system
-      - ls-diagramming
-    outputFormats:
-      - png
-      - svg
-      - html
-      - pdf
+      - ls-od-live-artifact
+      - ls-od-deck
 
-  brand-advertising-designer:
+  product_marketing_manager:
     role: production
-    openDesignMode: image
     skills:
-      - ls-brand-advertising
-      - ls-design-system
-      - ls-artifact-qa
-    outputFormats:
-      - png
-      - jpg
-      - svg
-      - html
+      - ls-od-deck
+      - ls-od-image
+
+  product_designer:
+    role: production
+    skills:
+      - ls-od-brand
+      - ls-od-prototype
+      - ls-od-live-artifact
+
+  lead_frontend:
+    role: production
+    skills:
+      - ls-od-prototype
+      - ls-od-live-artifact
+
+  senior_frontend_engineer:
+    role: production
+    skills:
+      - ls-od-prototype
+
+  market_analyst:
+    role: production
+    skills:
+      - ls-od-live-artifact
+      - ls-od-deck
+
+  content_creator:
+    role: production
+    skills:
+      - ls-od-image
+      - ls-od-video
+      - ls-od-deck
+
+  media_generation_owner:
+    role: production
+    skills:
+      - ls-od-runtime
+      - ls-od-image
+      - ls-od-video
 
 # Workflow definitions
 workflows:
@@ -127,11 +136,11 @@ workflows:
     description: "End-to-end creative production workflow"
     steps:
       - name: intake
-        agent: creative-director
+        agent: creative_director
         action: "Load brand system and ask 5 intake questions"
 
       - name: route
-        agent: creative-director
+        agent: creative_director
         action: "Route to appropriate production skill based on artifact type"
 
       - name: produce
@@ -139,9 +148,9 @@ workflows:
         action: "Create artifact using Open Design with brand constraints"
 
       - name: qa
-        agent: artifact-qa-reviewer
-        action: "Run visual, brand, UX, accessibility, and content QA"
+        agent: creative_director
+        action: "Run ls-artifact-qa (visual, brand, UX, accessibility, and content QA)"
 
       - name: deliver
-        agent: creative-director
+        agent: creative_director
         action: "Deliver approved artifact to user"

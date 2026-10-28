@@ -5,6 +5,7 @@
    One canonical source per sector fact. Only claim sector experience where evidence exists.
    Source: sectors.ts (evidence) + MASTER_SPEC §11 (canonical 5 slugs). */
 
+import type { SectorMedia } from '../types';
 import type { HonestyLabel, HonestyTone } from './siteContent';
 import { sectors as legacySectors, SECTOR_TIERS } from './sectors';
 
@@ -18,6 +19,7 @@ export interface Sector {
   evidence?: string;
   region?: string[];
   relevantSolutions?: string[]; // Solution slugs that apply to this sector
+  media?: SectorMedia;
 }
 
 /* MASTER_SPEC §11 four evidence tiers - mapped from SECTOR_TIERS */

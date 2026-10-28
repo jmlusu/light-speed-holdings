@@ -313,9 +313,8 @@ Reference in data/media/registry.ts
   "type": "HAOMTGV_INFOGRAPHIC",
   "title": "H-A-O-M-T-G-V Framework",
   "src": {
-    "webp": "/assets/diagrams/haomtgv-full-vertical.webp",
-    "avif": "/assets/diagrams/haomtgv-full-vertical.avif",
-    "svg": "/assets/diagrams/haomtgv-full-vertical.svg"
+    "svg": "/assets/diagrams/haomtgv/haomtgv-full-vertical.svg",
+    "png": "/brand/digital/Lightspeed HAOMTGV Operating Framework.png"
   },
   "alt": "H-A-O-M-T-G-V framework showing Human at top, flowing through Agents, Orchestration, Memory, Tools, Governance to Value",
   "width": 1200,

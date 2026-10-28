@@ -334,6 +334,10 @@ company:
     - read
     - edit
     - webfetch
+    skills:
+    - ls-od-runtime
+    - ls-od-catalogue
+    - ls-od-deck
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -1314,6 +1318,10 @@ company:
     - bash
     - grep
     - list
+    skills:
+    - ls-od-catalogue
+    - ls-od-deck
+    - ls-od-image
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -1362,6 +1370,9 @@ company:
     - grep
     - list
     - webfetch
+    skills:
+    - ls-od-image
+    - ls-od-deck
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -1891,6 +1902,9 @@ company:
     - edit
     - grep
     - list
+    skills:
+    - ls-od-live-artifact
+    - ls-od-deck
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -2116,6 +2130,9 @@ company:
     - webfetch
     - grep
     - list
+    skills:
+    - ls-od-deck
+    - ls-od-image
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -2470,6 +2487,10 @@ company:
     - edit
     - grep
     - list
+    skills:
+    - ls-od-brand
+    - ls-od-prototype
+    - ls-od-live-artifact
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -2783,6 +2804,9 @@ company:
     - bash
     - grep
     - list
+    skills:
+    - ls-od-prototype
+    - ls-od-live-artifact
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -2874,6 +2898,8 @@ company:
     - bash
     - grep
     - list
+    skills:
+    - ls-od-prototype
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -3054,6 +3080,9 @@ company:
     - webfetch
     - grep
     - list
+    skills:
+    - ls-od-live-artifact
+    - ls-od-deck
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -3143,6 +3172,10 @@ company:
     - edit
     - grep
     - list
+    skills:
+    - ls-od-image
+    - ls-od-video
+    - ls-od-deck
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -3910,6 +3943,10 @@ company:
     - grep
     - list
     - task
+    skills:
+    - ls-od-runtime
+    - ls-od-image
+    - ls-od-video
     model_tier: standard
     approval_level: lead
     escalation_path:
@@ -3969,6 +4006,16 @@ company:
     - grep
     - list
     - task
+    skills:
+    - ls-od-runtime
+    - ls-od-catalogue
+    - ls-od-brand
+    - ls-od-project
+    - ls-od-prototype
+    - ls-od-live-artifact
+    - ls-od-deck
+    - ls-od-image
+    - ls-od-video
     model_tier: standard
     approval_level: lead
     escalation_path:

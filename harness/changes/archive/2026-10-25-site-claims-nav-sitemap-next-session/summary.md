@@ -183,4 +183,3 @@ Run Plan Review (lint-ecl.ps1), then update `spec.md` and `plan.md`. Branch from
 ## Transition Note
 
 - Plan complete - ready for implementation session
-

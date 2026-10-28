@@ -54,6 +54,8 @@ Every slide gets speaker notes: what to say (2–4 sentences), the proof point, 
 
 **Rich/SVG decks:** if the brief demands executive 2×2s, waterfalls, or small multiples, consider `k-dense-mckinsey-style` which renders those patterns to SVG/HTML export.
 
+**HTML/browser decks:** delegate to `ls-od-deck` when the deck should be an interactive HTML artifact or should use an open-design template such as `html-ppt`, `guizang-ppt`, `kami-deck`, or `ib-pitch-book`. Keep narrative, slide architecture, speaker notes, and the python-pptx path in this skill; `ls-od-deck` owns the HTML render, and `ls-artifact-qa` still gates the result.
+
 **16:9 override:** set slide size 13.333 × 7.5in for widescreen venues; keep navy rail + composition identical.
 
 ## Branded Deck Anatomy (Memorize)

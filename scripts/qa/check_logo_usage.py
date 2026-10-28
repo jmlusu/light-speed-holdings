@@ -152,8 +152,11 @@ def check_paths(targets: list[str]) -> int:
             p = (REPO_ROOT / t).resolve()
         if p.is_dir():
             files.extend(
-                f for f in p.rglob("*")
-                if f.is_file() and f.suffix.lower() in {".md", ".html", ".py", ".json", ".yaml", ".yml", ".css", ".tsx", ".ts"}
+                f
+                for f in p.rglob("*")
+                if f.is_file()
+                and f.suffix.lower()
+                in {".md", ".html", ".py", ".json", ".yaml", ".yml", ".css", ".tsx", ".ts"}
             )
         elif p.is_file():
             files.append(p)

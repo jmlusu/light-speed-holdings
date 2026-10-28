@@ -52,6 +52,13 @@ Type: Arial stack, sizes from the brand scale (36/32/28/24/18/16/14/13/12). Grid
 - [ ] Accessible: semantic headings (h1→h2→h3 order), alt text, focus states, nav landmark
 - [ ] Iconography consistent (lucide set), same stroke weight everywhere
 
+## Rendering Paths
+
+- **Native LightSpeed site:** keep the repo-root Vite React SPA as the production path; build with `bun run build` and deploy `dist/` to Vercel.
+- **Standalone prototype:** delegate to `ls-od-prototype` for `web-prototype`, `saas-landing`, `pricing-page`, `waitlist-page`, `mobile-app`, `mobile-onboarding`, or `wireframe-*` work that should live outside the production SPA.
+- **Live artifact:** delegate to `ls-od-live-artifact` when the page is a dashboard or data-backed view with a connector and refresh behavior.
+- Load `ls-od-runtime` only when the daemon or project is not ready; return here for brand, responsive, accessibility, and QA standards.
+
 ## Workflow
 
 1. Load `ls-design-system`; pull live token values from `brand/tokens/brand-tokens.json`.

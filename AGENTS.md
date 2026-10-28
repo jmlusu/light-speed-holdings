@@ -345,6 +345,63 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 - Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
 - Before removing any entry, a replacement fix must be documented
 
+## 18 Governance Protocol — CEO Override for Root Config Files
+
+### 18.1 Protocol Overview
+
+The files `AGENTS.md` and `opencode.json` are **root configuration files** that control agent behavior and tool permissions across the entire organization. To prevent unauthorized automated changes (by agents, bots, or CI) while preserving the Human CEO's ability to make immediate operational decisions, the following protocol is enforced:
+
+**Any commit modifying `AGENTS.md` or `opencode.json` must include a CEO Override tag in the commit message:**
+
+```text
+[CEO-OVERRIDE: <OPERATIONAL REASON>]
+```
+
+### 18.2 Behavior Matrix
+
+| Commit Touches Root Config? | Tag Present? | Result |
+|----------------------------|--------------|--------|
+| No | N/A | Pass |
+| Yes | Yes | Pass + Auto-log to `docs/governance-audit.md` |
+| Yes | No | **BLOCKED** with error message |
+
+### 18.3 Audit Log
+
+All successful overrides are logged immutably to [`docs/governance-audit.md`](docs/governance-audit.md) with:
+- Timestamp
+- Actor (git config user.name)
+- Files modified
+- Commit SHA
+- Branch name
+- Override reason
+
+### 18.4 Enforcement
+
+This protocol is enforced by a **pre-commit hook** (`scripts/lint/validate-root-config.ps1`) configured in `.pre-commit-config.yaml`. The hook:
+- Runs on every commit
+- Detects staged changes to `AGENTS.md` or `opencode.json`
+- Validates the commit message for the override tag
+- Blocks the commit with a clear error message if the tag is missing
+- Appends an audit entry to `docs/governance-audit.md` if the tag is present
+
+### 18.5 Usage Examples
+
+**Allowed (Human CEO operational change):**
+```bash
+git commit -m "Add emergency agent permission [CEO-OVERRIDE: Production incident response]"
+```
+
+**Blocked (automated/agent change without authorization):**
+```bash
+git commit -m "Update agent permissions"  # FAILS - no override tag
+```
+
+### 18.6 Rollback
+
+If the hook causes issues, remove it from `.pre-commit-config.yaml` and delete `scripts/lint/validate-root-config.ps1`. The audit log at `docs/governance-audit.md` can be retained for history or archived.
+
+---
+
 ## 17 Tool Usage Issues (Session Records)
 
 | Issue | Fix | Date Identified | Date Fixed | Status |

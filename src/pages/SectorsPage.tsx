@@ -10,6 +10,39 @@ import { sectors, sectorTierLegend } from '../data/sector-registry';
 import { solutions } from '../data/siteContent';
 import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
+// SEO meta tags for /sectors
+useEffect(() => {
+  document.title = 'Sectors | LightSpeed Holdings - Sector Categorization';
+  const metaDescription = document.querySelector('meta[name="description"]');
+  if (metaDescription) {
+    metaDescription.setAttribute('content', 'Six sectors across Malawi and Africa. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show, and every card links to the solutions that serve it.');
+  }
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) {
+    ogTitle.setAttribute('content', 'Sectors | LightSpeed Holdings');
+  }
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  if (ogDescription) {
+    ogDescription.setAttribute('content', 'Six sectors across Malawi and Africa. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show, and every card links to the solutions that serve it.');
+  }
+  const ogImage = document.querySelector('meta[property="og:image"]');
+  if (ogImage) {
+    ogImage.setAttribute('content', '/og-default.png');
+  }
+  const twitterCard = document.querySelector('meta[name="twitter:card"]');
+  if (twitterCard) {
+    twitterCard.setAttribute('content', 'summary_large_image');
+  }
+  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twitterTitle) {
+    twitterTitle.setAttribute('content', 'Sectors | LightSpeed Holdings');
+  }
+  const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+  if (twitterDescription) {
+    twitterDescription.setAttribute('content', 'Six sectors across Malawi and Africa. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show, and every card links to the solutions that serve it.');
+  }
+}, []);
+
 interface SectorsPageProps {
   theme: 'light' | 'dark';
   onRequestBriefing?: (summary?: string) => void;

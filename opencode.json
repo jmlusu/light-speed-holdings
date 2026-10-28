@@ -23,7 +23,7 @@
         "--daemon-url",
         "http://127.0.0.1:7456"
       ],
-      "enabled": false,
+      "enabled": true,
       "environment": {
         "OD_DATA_DIR": "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\.od"
       }

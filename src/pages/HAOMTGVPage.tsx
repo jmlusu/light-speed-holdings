@@ -1,9 +1,9 @@
 import React from 'react';
-import { Brain, Bot, GitBranch, HardDrive, Wrench, ShieldCheck, TrendingUp, ArrowRight, type LucideIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Brain, Bot, GitBranch, HardDrive, Wrench, ShieldCheck, TrendingUp, type LucideIcon } from 'lucide-react';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { Reveal } from '../components/Reveal';
 import { RelatedLinks } from '../components/site/RelatedLinks';
+import { HaomtgvBlueprintHero } from '../components/haomtgv/HaomtgvBlueprintHero';
 
 interface HaomtgvPageProps {
   theme: 'light' | 'dark';
@@ -93,41 +93,8 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme }) => {
      */}
   return (
     <>
-      {/* Hero */}
-      <section
-        className={`relative overflow-hidden border-b ${
-          isLight ? 'bg-ls-navy text-ls-white' : 'bg-ls-navy text-ls-white'
-        }`}
-      >
-        <div aria-hidden="true" className="absolute top-0 left-0 right-0 h-1 flex">
-          {BRAND_BAR.map((color) => (
-            <div key={color} className="flex-1" style={{ backgroundColor: color }} />
-          ))}
-        </div>
-        <div className="max-w-4xl mx-auto px-6 py-20 sm:py-28 text-center space-y-6">
-          <span className="text-xs font-body font-bold tracking-widest text-ls-red">
-            OPERATING FRAMEWORK
-          </span>
-          <h1
-            id="haomtgv-title"
-            className="text-4xl sm:text-6xl font-black tracking-[0.2em] font-display text-ls-cyan"
-          >
-            H-A-O-M-T-G-V
-          </h1>
-          <p className="text-sm sm:text-lg leading-relaxed text-ls-grey-light-text max-w-2xl mx-auto">
-            Human authority through Agents, Orchestration, Memory, and Tools —
-            with Governance as an integral control layer and Value as the only
-            score that counts. Not a linear pipeline; a working model.
-          </p>
-          <Link
-            to="/ai-company-builder/#governance"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-ls-red text-ls-white font-bold text-sm tracking-wide hover:brightness-110 transition-all"
-          >
-            Explore the Framework
-            <ArrowRight className="w-4 h-4" aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
+      {/* Hero — wired to HaomtgvBlueprintHero (approved via ECL) */}
+      <HaomtgvBlueprintHero />
 
       {/* 7-layer grid */}
       <section className={`py-16 sm:py-24 ${isLight ? 'bg-ls-white' : 'bg-ls-navy-dark'}`}>

@@ -221,6 +221,19 @@ class TestRegistryParser:
         registry = parser.parse(sample_raw)
         assert registry.budget.total_budget == 500000
 
+    def test_parse_skills(self, sample_raw: dict):
+        sample_raw["executives"]["executives"][0]["skills"] = ["ls-od-runtime", "ls-od-deck"]
+        sample_raw["specialists"]["specialists"][0]["skills"] = ["ls-od-prototype"]
+        registry = RegistryParser().parse(sample_raw)
+        ceo = next(e for e in registry.executives if e.id == "ceo")
+        assert ceo.skills == ["ls-od-runtime", "ls-od-deck"]
+        assert registry.specialists[0].skills == ["ls-od-prototype"]
+
+    def test_parse_missing_skills_defaults_to_empty(self, sample_raw: dict):
+        registry = RegistryParser().parse(sample_raw)
+        assert all(e.skills == [] for e in registry.executives)
+        assert all(s.skills == [] for s in registry.specialists)
+
     def test_parse_empty_data_returns_defaults(self):
         parser = RegistryParser()
         registry = parser.parse({})

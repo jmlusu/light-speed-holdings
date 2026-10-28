@@ -11,6 +11,50 @@ import { solutions } from '../data/siteContent';
 import { sectors } from '../data/sector-registry';
 import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
+// SEO meta tags for individual insight article pages
+useEffect(() => {
+  if (!slug) return;
+  const article = getInsightArticle(slug);
+  if (!article) return;
+
+  document.title = `${article.title} | LightSpeed Holdings`;
+
+  const metaDescription = document.querySelector('meta[name="description"]');
+  if (metaDescription) {
+    metaDescription.setAttribute('content', article.seo?.description || '');
+  }
+
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) {
+    ogTitle.setAttribute('content', article.seo?.title || `${article.title} | LightSpeed Holdings`);
+  }
+
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  if (ogDescription) {
+    ogDescription.setAttribute('content', article.seo?.description || '');
+  }
+
+  const ogImage = document.querySelector('meta[property="og:image"]');
+  if (ogImage) {
+    ogImage.setAttribute('content', '/og-default.png');
+  }
+
+  const twitterCard = document.querySelector('meta[name="twitter:card"]');
+  if (twitterCard) {
+    twitterCard.setAttribute('content', 'summary_large_image');
+  }
+
+  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twitterTitle) {
+    twitterTitle.setAttribute('content', article.seo?.title || `${article.title} | LightSpeed Holdings`);
+  }
+
+  const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+  if (twitterDescription) {
+    twitterDescription.setAttribute('content', article.seo?.description || '');
+  }
+}, [slug]);
+
 interface InsightArticlePageProps {
   theme: 'light' | 'dark';
   onRequestBriefing: (summary?: string) => void;

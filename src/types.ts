@@ -1,3 +1,5 @@
+import type { HonestyTone } from './data/siteContent';
+
 export type PublicTool = 'read' | 'edit' | 'grep' | 'list' | 'bash' | 'webfetch' | 'task';
 export type PublicAgentType = 'executive' | 'specialist' | 'board';
 
@@ -156,6 +158,7 @@ export interface CatalogOfferDeliverable {
   blocked?: boolean;
   blockedReason?: string;
   hostingFee?: string;
+  media?: CatalogMedia;
 }
 
 export interface CatalogOfferFamily {
@@ -169,9 +172,8 @@ export interface CatalogOfferFamily {
   governanceNote: string;
   pricingNote: string;
   deliverables: CatalogOfferDeliverable[];
+  media?: CatalogMedia;
 }
-
-export type ContentMediaType = 'screenshot' | 'brand-mark' | 'diagram' | 'metrics' | 'illustration';
 
 export interface ScreenshotMedia {
   kind: 'screenshot';
@@ -179,7 +181,7 @@ export interface ScreenshotMedia {
   alt: string;
   width: number;
   height: number;
-  tone: 'light' | 'dark';
+  tone: HonestyTone;
 }
 
 export interface BrandMedia {
@@ -193,13 +195,23 @@ export interface BrandMedia {
 export interface DiagramMedia {
   kind: 'diagram';
   alt: string;
-  tone: 'light' | 'dark';
+  tone: HonestyTone;
+  component?: string;
 }
 
 export interface MetricMedia {
   kind: 'metrics';
   alt: string;
-  tone: 'light' | 'dark';
+  tone: HonestyTone;
+  component?: string;
+}
+
+export interface IllustrationProvenance {
+  origin: 'authored' | 'generated';
+  vendor?: string;
+  model?: string;
+  prompt?: string;
+  recordedAt?: string;
 }
 
 export interface IllustrationMedia {
@@ -208,7 +220,9 @@ export interface IllustrationMedia {
   alt: string;
   width: number;
   height: number;
-  tone: 'light' | 'dark';
+  tone: HonestyTone;
+  generated: boolean;
+  provenance?: IllustrationProvenance;
 }
 
 export type ContentMedia =
@@ -222,8 +236,4 @@ export interface ContentMediaSet {
   hero?: ContentMedia;
   gallery?: ContentMedia[];
   thumbnail?: ContentMedia;
-}
-
-export interface MediaFeatureFlag {
-  enabled: boolean;
 }

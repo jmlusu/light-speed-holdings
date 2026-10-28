@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "tool": "verify-deck.py 1.0.0",
-  "generated_at": "2026-10-26T13:59:13+00:00",
+  "generated_at": "2026-10-26T23:37:22+00:00",
   "artifact": {
     "path": "C:\\Users\\jmlus\\light-speed-holdings\\static\\brand\\templates\\value-add-pitch-investors-clients.pptx",
-    "sha256": "bd53aeab42b2f88f5ce039572db2ba5148f59ad3098c722ac94ec2828561cc99",
+    "sha256": "5b07f3cdeee758cf5c01ae99b858b46bfdfc3dd85f3af33e5842ffb45f04d283",
     "slides": 13
   },
   "claims_sha256": "fe436327ba3b7bd824ff7ba79b0a62e3b16c3c434111ebb72ad69e29c928610c",
@@ -49,8 +49,12 @@
     {
       "id": "V06",
       "title": "logo",
-      "status": "WARN",
+      "status": "FAIL",
       "findings": [
+        {
+          "level": "FAIL",
+          "message": "slide 1: non-transparent logo 'static/brand/logo/logo-dark-bg.png' on non-white backdrop #070A40"
+        },
         {
           "level": "WARN",
           "message": "slide 1: 'TextBox 1' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)"
@@ -61,11 +65,7 @@
         },
         {
           "level": "WARN",
-          "message": "slide 13: 'Rounded Rectangle 6' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)"
-        },
-        {
-          "level": "WARN",
-          "message": "slide 13: 'TextBox 7' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)"
+          "message": "slide 1: 'TextBox 4' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)"
         }
       ],
       "skipped": null
@@ -248,13 +248,8 @@
     {
       "id": "V13",
       "title": "qa-verdict",
-      "status": "FAIL",
-      "findings": [
-        {
-          "level": "FAIL",
-          "message": "no QA verdict at static\\brand\\templates\\value-add-pitch-investors-clients.qa-verdict.json (ls-artifact-qa must write it after rendering the slides)"
-        }
-      ],
+      "status": "PASS",
+      "findings": [],
       "skipped": null
     }
   ]

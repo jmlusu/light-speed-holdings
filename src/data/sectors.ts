@@ -5,6 +5,7 @@
    Source: MASTER_SPEC §11 + verified engagements (siteContent case studies). */
 
 import type { HonestyLabel, HonestyTone } from './siteContent';
+import type { SectorMedia } from '../types';
 import { liveTestCount } from './metrics';
 
 export type SectorStatusTone = HonestyTone;
@@ -16,6 +17,7 @@ export interface Sector {
   status: HonestyLabel;
   evidence?: string;
   region?: string[];
+  media?: SectorMedia;
 }
 
 /* MASTER_SPEC §11 four evidence tiers */

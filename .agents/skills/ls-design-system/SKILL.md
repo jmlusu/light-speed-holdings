@@ -1,6 +1,6 @@
 ---
 name: ls-design-system
-description: "The LightSpeed Holdings brand design system. MUST be loaded before any creative production work (websites, decks, documents, social media, ads, diagrams, infographics). Enforces brand tokens (navy #070A40 / red #E63946 / cyan #00BFFF, Arial type scale, 4px spacing grid), logo rules, and template usage so every artifact is on-brand. Referenced by every ls-* creative skill. Trigger on: 'use the LightSpeed brand', 'design system', 'brand tokens', 'on-brand', 'match our branding', 'make it look like LightSpeed'."
+description: "The LightSpeed Holdings brand design system. MUST be loaded before any creative production work (websites, decks, documents, social media, ads, diagrams, infographics). Enforces brand tokens (navy #070A40 / red #DC3641 / cyan #00BFFF, Arial type scale, 4px spacing grid), logo rules, template usage, and the imagery policy (AI imagery permitted on non-person surfaces; generated people and avatars prohibited). Referenced by every ls-* creative skill. Trigger on: 'use the LightSpeed brand', 'design system', 'brand tokens', 'on-brand', 'match our branding', 'make it look like LightSpeed'."
 ---
 
 # LightSpeed Design System
@@ -41,7 +41,7 @@ pick it up.
 | Token | Hex | Usage |
 |-------|-----|-------|
 | Navy | `#070A40` | Primary surfaces, headlines, slide rails, logo text |
-| Red | `#E63946` | Accent — CTAs, highlights, signal waves, key results |
+| Red | `#DC3641` | Accent — CTAs, highlights, signal waves, key results (WCAG AA value; not `#E63946`) |
 | Cyan | `#00BFFF` | Accent — shield base, links on dark, taglines on navy |
 | Light Grey | `#F2F2F2` | Backgrounds, cards, callouts |
 | White | `#FFFFFF` | Clean backgrounds, text on navy |
@@ -94,6 +94,18 @@ and `logo-dark-bg-transparent` are white and usable on dark only;
 `logo-no-background` are mark-only and work on both. Full table, transparent variants and the
 clear-space rule live in `brand/guidelines/brand-guidelines.md` § 3.
 
+## Imagery Policy (Never Break)
+
+Governed by [`docs/adr/027-ai-generated-imagery-policy.md`](../../../docs/adr/027-ai-generated-imagery-policy.md).
+
+1. **AI-generated imagery is permitted** on every non-person surface — hero backdrops, infrastructure, product surfaces, environment and geometry, abstract data, textures, conceptual illustration — in any artifact: website, dashboard, deck, video, document, social, ad, diagram, infographic.
+2. **Generated people, faces, figures and avatars are prohibited.** No synthetic person, no invented persona icon. Human imagery is only real, consented, commissioned photography holding a model or property release.
+3. **Using the official `icononly` logo as a profile avatar is a logo use, not generated imagery** — permitted, and the only sanctioned avatar substitute.
+4. **Vendors** must be allow-listed in `docs/APPROVED-VENDORS.md`; prompts are subject to the third-party transmission ban in `docs/SKILL_CURATION_POLICY.md`.
+5. **Palette gate differs by asset class.** Flat graphic output (diagram, brand-mark, vector, flat illustration) must pass exact-match `--tolerance 3`. Continuous-tone output (generated photographic/raster illustration) is checked for brand-token presence and dominant-colour compliance — navy dominant, red/cyan as accents.
+6. **Provenance is recorded** — generated rasters are typed `illustration` with `generated: true`, never `screenshot`. Raw model output is not an asset until post-processed to the palette.
+7. **Composition** follows §Art Direction: authentic African context, no stereotypical poverty imagery, no stock-photo smiles, no posed headshot grids, cyan/red as light and signal only.
+
 ## Pre-Built Templates (Prefer Over Building From Scratch)
 
 For decks, documents, and social assets, start from the branded templates in `static/brand/templates/`:
@@ -125,4 +137,5 @@ The CEO Dashboard (`src/ai_company/dashboard/`) uses the J.A.R.V.I.S. theme with
 - [ ] Type sizes are on the brand scale
 - [ ] Spacing follows the 4px base scale
 - [ ] Template used where one exists
+- [ ] Imagery policy respected — no generated people or avatars; vendors allow-listed; provenance recorded
 - [ ] `™` on first mention; tagline correct

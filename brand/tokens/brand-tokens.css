@@ -5,7 +5,7 @@
 :root {
   /* Colors */
   --ls-navy: #070A40;
-  --ls-red: #E63946;
+  --ls-red: #DC3641;
   --ls-cyan: #00BFFF;
   --ls-grey-light: #F2F2F2;
   --ls-white: #FFFFFF;
@@ -72,7 +72,7 @@
 @theme {
   /* ── Brand Colors (Tailwind v4 custom palette) ─────────── */
   --color-ls-navy: #070A40;
-  --color-ls-red: #E63946;
+  --color-ls-red: #DC3641;
   --color-ls-cyan: #00BFFF;
   --color-ls-mist: #F7F8F9;
   --color-ls-slate: #121518;
@@ -143,7 +143,7 @@
 
   /* ── RGB channels (for rgba() usage) ──────────────────── */
   --ls-navy-rgb: 7, 10, 64;
-  --ls-red-rgb: 230, 57, 70;
+  --ls-red-rgb: 220, 54, 65;
   --ls-cyan-rgb: 0, 191, 255;
   --ls-mist-rgb: 247, 248, 249;
   --ls-slate-rgb: 18, 21, 24;
@@ -172,6 +172,6 @@
   --ls-shadow-md: 0 4px 12px rgba(0,0,0,0.05);
   --ls-shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
   --ls-shadow-xl: 0 16px 48px rgba(0,0,0,0.1);
-  --ls-shadow-red: 0 8px 24px rgba(230,57,70,0.15);
+  --ls-shadow-red: 0 8px 24px rgba(220,54,65,0.15);
   --ls-shadow-cyan: 0 8px 24px rgba(0,191,255,0.15);
 }

@@ -1,8 +1,8 @@
 DECK GATE VERIFICATION RESULT
 ==============================
-Deck: C:\Users\jmlus\light-speed-holdings\static\brand\templates\value-add-pitch-investors-clients.pptx
+Deck: C:\Users\jmlus\light-speed-holdings\static\brand\templates\pitch-deck.pptx
 Exit code: 1
-Timestamp: 2026-10-25 02:33:12
+Timestamp: 2026-10-25 00:31:27
 
 VERIFY-DECK.PY OUTPUT:
 --------------------
@@ -19,11 +19,8 @@ V10  WARN     sources
 V11  PASS     fit
 V12  PASS     contrast
 V13  FAIL     qa-verdict
-  [V06] WARN: slide 1: 'TextBox 1' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
-  [V06] WARN: slide 1: 'Rectangle 3' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
-  [V06] WARN: slide 1: 'TextBox 4' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
-  [V06] WARN: slide 13: 'Rounded Rectangle 6' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
-  [V06] WARN: slide 13: 'TextBox 7' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
+  [V06] WARN: slides 1,13: 'Rectangle 1' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
+  [V06] WARN: slides 1,13: 'TextBox 3' intrudes into approximate logo clear space (ratio 0.15; real rule is 1x 'L' height - measure by eye)
   [V10] WARN: claim 'agents-total' is not shown on any slide and is not usable (status is 'unverified', not 'verified')
   [V10] WARN: claim 'departments-total' is not shown on any slide and is not usable (status is 'unverified', not 'verified')
   [V10] WARN: claim 'atc-rate' is not shown on any slide and is not usable (status is 'unverified', not 'verified')
@@ -55,5 +52,5 @@ V13  FAIL     qa-verdict
   [V10] WARN: claim 'exec-breakdown' is not shown on any slide and is not usable (status is 'placeholder', not 'verified')
   [V13] FAIL: no QA verdict at C:\Users\jmlus\light-speed-holdings\static\brand\templates\.qa-verdict.json (ls-artifact-qa must write it after rendering the slides)
 
-REJECTED  exit=1  slides=13  sha256=fecb8a21f49ae664...
+REJECTED  exit=1  slides=13  sha256=a4f3025cda5134ba...
 report: C:\Users\jmlus\light-speed-holdings\static\brand\templates\.verify.json
