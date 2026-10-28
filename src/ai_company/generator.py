@@ -550,7 +550,6 @@ class AgentGenerator:
                 responsibilities=ex.responsibilities,
                 decision_rights=ex.decision_rights,
                 tools=ex.tools,
-                skills=ex.skills,
                 permission=self._build_permission(ex.tools),
                 agent_type="Executive",
             )
@@ -593,7 +592,6 @@ class AgentGenerator:
                 reports_to=spec.reports_to,
                 responsibilities=spec.responsibilities,
                 tools=spec.tools,
-                skills=spec.skills,
                 permission=self._build_permission(spec.tools),
                 seniority=spec.seniority.value,
                 agent_type="Specialist",

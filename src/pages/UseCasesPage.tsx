@@ -23,39 +23,6 @@ import { useCasesRegistry, getUseCasesByStatus, getUseCasesBySector, getUseCases
 import { sectorsRegistry } from '../data/sectors/registry';
 import { solutionsRegistry } from '../data/solutions/registry';
 
-// SEO meta tags for /use-cases
-useEffect(() => {
-  document.title = 'Use Cases | LightSpeed Holdings - Verified AI Projects';
-  const metaDescription = document.querySelector('meta[name="description"]');
-  if (metaDescription) {
-    metaDescription.setAttribute('content', 'Explore verified use cases across sectors, problems, and solutions. Every case carries an evidence status, from proven in-house to future roadmap targets. No fabricated client evidence.');
-  }
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) {
-    ogTitle.setAttribute('content', 'Use Cases | LightSpeed Holdings');
-  }
-  const ogDescription = document.querySelector('meta[property="og:description"]');
-  if (ogDescription) {
-    ogDescription.setAttribute('content', 'Explore verified use cases across sectors, problems, and solutions. Every case carries an evidence status, from proven in-house to future roadmap targets. No fabricated client evidence.');
-  }
-  const ogImage = document.querySelector('meta[property="og:image"]');
-  if (ogImage) {
-    ogImage.setAttribute('content', '/og-default.png');
-  }
-  const twitterCard = document.querySelector('meta[name="twitter:card"]');
-  if (twitterCard) {
-    twitterCard.setAttribute('content', 'summary_large_image');
-  }
-  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
-  if (twitterTitle) {
-    twitterTitle.setAttribute('content', 'Use Cases | LightSpeed Holdings');
-  }
-  const twitterDescription = document.querySelector('meta[name="twitter:description"]');
-  if (twitterDescription) {
-    twitterDescription.setAttribute('content', 'Explore verified use cases across sectors, problems, and solutions. Every case carries an evidence status, from proven in-house to future roadmap targets. No fabricated client evidence.');
-  }
-}, []);
-
 const STATUS_OPTIONS: { value: UseCaseStatus; label: string }[] = [
   { value: 'LIVE', label: 'Live' },
   { value: 'PROVEN_IN_HOUSE', label: 'Proven In-House' },
