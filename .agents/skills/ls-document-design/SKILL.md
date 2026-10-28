@@ -30,6 +30,36 @@ The whitepaper / report / proposal factory. Turns research and narrative into pr
 
 Length guidance: whitepaper 8–20 pages; report 4–12; concept note 3–6; one-pager 1.
 
+## The 4-Page Comprehensive Executive Report
+
+The default campaign report. Four A4 pages, exactly — a fifth page means the
+content was not edited, and a missing page means the argument was not finished.
+
+| Page | Beats | Content |
+|------|-------|---------|
+| 1 | Executive summary + key metrics | The position in ≤120 words, the metrics table (4 figures max), and the one-sentence recommendation |
+| 2 | Architecture | How it works: the offline-first / local-inference argument, one diagram or schematic |
+| 3 | Evidence + governance | Field proof, then the approval and CI posture; the "so what" for the reader's institution |
+| 4 | Gaps, risk, ask | The explicit unknowns, the risk framing, and the decision required |
+
+Rules:
+
+- **Page 1 is the decision page.** A reader who stops after page 1 must know the
+  claim, the four numbers behind it, and what is being asked.
+- **Figures come from the extraction table** (NotebookLM prompt 5). A number
+  that is not in that table does not appear in the report.
+- **Page 4 states gaps, never fills them.** This is what makes the document
+  decision-grade. A report with no stated unknowns reads as marketing.
+- **Prose on 2 and 3, tables on 1 and 4.** Four consecutive bullet pages is not
+  an executive report.
+- **No page exceeds ~350 words.** At Arial 11pt with 1.5 leading on A4, that is
+  the point where the type scale starts shrinking.
+- Metadata line on the cover and in the footer: `LightSpeed Holdings Limited™`,
+  campaign slug, confidentiality class, date.
+
+Render it with `scripts/generate_all_assets.py --campaign <slug>`, which prints
+A4 and asserts the page count, or via Path A below for a bespoke layout.
+
 ## The LightSpeed Document Anatomy
 
 - **Cover:**
@@ -67,6 +97,9 @@ Length guidance: whitepaper 8–20 pages; report 4–12; concept note 3–6; one
 - [ ] Tables/charts legible in print (navy headers, no clipped columns)
 - [ ] Callouts used for emphasis, not decoration
 - [ ] PDF renders without overflow/cutoff; page count matches intent
+- [ ] 4-page executive report: exactly 4 pages, page plan honoured, page 1 is decision-grade
+- [ ] Every figure in the document appears in the source extraction table
+- [ ] Page 4 states the gaps explicitly rather than omitting them
 - [ ] `™` on first mention; tagline correct if used
 
 Deliver the rendered file(s), a citation trail for every fact, and QA verdict.
