@@ -205,10 +205,7 @@ def recall_context(
     def _task_relevance_score(entry: dict[str, Any]) -> float:
         """Compute a task-type-adjusted relevance score for an entry."""
         similarity = entry.get("similarity", 0.0)
-        if isinstance(similarity, (int, float)):
-            score = similarity
-        else:
-            score = 0.0
+        score = similarity if isinstance(similarity, (int, float)) else 0.0
         tags = {t.lower() for t in entry.get("tags", [])}
         # Bonus: entry has tags that match the task type's preferred set
         if preferred_tags_set:
@@ -238,11 +235,19 @@ def recall_context(
                 results_semantic: list[dict[str, Any]] = vector_results[:limit]
                 # Apply minimum similarity filter
                 if min_similarity > 0.0 and results_semantic:
-                    results_semantic = [r for r in results_semantic if r.get("similarity", 0) >= min_similarity]
+                    results_semantic = [
+                        r for r in results_semantic if r.get("similarity", 0) >= min_similarity
+                    ]
                 # Post-process: apply task-type relevance adjustment and prioritize
                 # preferred memory types (semantic > procedural > episodic) for better
                 # context compactness and relevance.
-                type_priority = {"semantic": 3, "procedural": 2, "episodic": 1, "relational": 1, "aggregate": 0}
+                type_priority = {
+                    "semantic": 3,
+                    "procedural": 2,
+                    "episodic": 1,
+                    "relational": 1,
+                    "aggregate": 0,
+                }
         except Exception:  # noqa: BLE001 - vector search is best-effort
             pass  # Fall through to keyword search
 
