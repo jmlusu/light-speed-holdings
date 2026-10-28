@@ -29,6 +29,43 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
   const isLight = theme === 'light';
   const { hash } = useLocation();
 
+  // SEO meta tags for /sectors.
+  useEffect(() => {
+    const description =
+      'Six sectors across Malawi and Africa. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show, and every card links to the solutions that serve it.';
+
+    document.title = 'Sectors | LightSpeed Holdings - Sector Categorization';
+
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', description);
+    }
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', 'Sectors | LightSpeed Holdings');
+    }
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', description);
+    }
+    const ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogImage) {
+      ogImage.setAttribute('content', '/og-default.png');
+    }
+    const twitterCard = document.querySelector('meta[name="twitter:card"]');
+    if (twitterCard) {
+      twitterCard.setAttribute('content', 'summary_large_image');
+    }
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) {
+      twitterTitle.setAttribute('content', 'Sectors | LightSpeed Holdings');
+    }
+    const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDescription) {
+      twitterDescription.setAttribute('content', description);
+    }
+  }, []);
+
   useEffect(() => {
     const id = hash.replace('#', '');
     if (!id) return;
