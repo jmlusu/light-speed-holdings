@@ -1,0 +1,18 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   LightSpeed Holdings Limited™ — 4-page unabridged executive briefing
+   ───────────────────────────────────────────────────────────────────────────
+   Selected automatically by scripts/build_campaign.py when the source briefing
+   is dense (> 600 words) or contains data tables.
+
+   Layout (flowing, never truncated):
+       page 1   masthead — logo, title, source-derived metric strip, then §1
+       page 2-n remaining sections, paragraphs, bullet lists and full tables
+       last     remainder + footer; if content needs more than 4 pages the
+                renderer adds pages and reports the real count rather than
+                dropping text (Content Preservation Law)
+
+   The structure, brand CSS and palette live in briefing-flow.html. This wrapper
+   only declares the density variant and the intended page budget, so the two
+   templates cannot drift apart.
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% with variant = 'standard' %}{% include "briefing-flow.html" %}{% endwith %}
