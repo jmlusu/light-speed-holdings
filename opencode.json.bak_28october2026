@@ -1,0 +1,131 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "smallModel": "opencode/gpt-5.1-codex",
+  "plugins": [
+    {
+      "package": "@omniroute/opencode-plugin-v2",
+      "options": {
+        "providerId": "omniroute",
+        "baseURL": "http://localhost:20128"
+      }
+    }
+  ],
+  "permission": {
+    "edit": "allow",
+    "bash": "allow"
+  },
+  "mcp": {
+    "resend": {
+      "type": "remote",
+      "url": "https://mcp.resend.com/mcp",
+      "enabled": false
+    },
+    "open-design": {
+      "type": "local",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\apps\\daemon\\dist\\cli.js",
+        "mcp",
+        "--daemon-url",
+        ""
+      ],
+      "enabled": false,
+      "environment": {
+        "OD_DATA_DIR": "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\.od"
+      }
+    }
+  },
+  "provider": {
+    "groq-direct": {
+      "name": "Groq (free tier, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "",
+        "apiKey": "{env:GROQ_API_KEY}"
+      },
+      "models": {
+        "openai/gpt-oss-120b": { "name": "gpt-oss 120B (Groq)" },
+        "openai/gpt-oss-20b": { "name": "gpt-oss 20B (Groq)" },
+        "qwen/qwen3.8-27b": { "name": "Qwen3.8 27B (Groq)" }
+      }
+    },
+    "nvidia-nim-direct": {
+      "name": "NVIDIA NIM (free credits, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "",
+        "apiKey": "{env:NVIDIA_API_KEY}"
+      },
+      "models": {
+        "openai/gpt-oss-20b": { "name": "gpt-oss 20B (NIM)" },
+        "nvidia/nemotron-3.5-lightning-30b-a3b": { "name": "Nemotron 3.5 Lightning 30B (NIM)" },
+        "google/gemma-4-31b-it": { "name": "Gemma 4 31B (NIM)" }
+      }
+    },
+    "mistral-direct": {
+      "name": "Mistral La Plateforme (free tier, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "",
+        "apiKey": "{env:MISTRAL_API_KEY}"
+      },
+      "models": {
+        "ministral-8b-latest": { "name": "Ministral 8B (latest)" },
+        "ministral-14b-latest": { "name": "Ministral 14B (latest)" }
+      }
+    },
+    "gemini-studio-direct": {
+      "name": "Google AI Studio (free tier, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "",
+        "apiKey": "{env:GOOGLE_API_KEY}"
+      },
+      "models": {
+        "gemma-4-31b-it": { "name": "Gemma 4 31B (AI Studio)" },
+        "gemma-4-26b-a4b-it": { "name": "Gemma 4 26B-A4B (AI Studio)" },
+        "gemini-3.8-flash": { "name": "Gemini 3.8 Flash (AI Studio)" }
+      }
+    },
+    "cloudflare-direct": {
+      "name": "Cloudflare Workers AI (free tier, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "",
+        "apiKey": "{env:CLOUDFLARE_API_TOKEN}"
+      },
+      "models": {
+        "@cf/openai/gpt-oss-20b": { "name": "gpt-oss 20B (CF)" },
+        "@cf/meta/llama-4-scout-17b-16e-instruct": { "name": "Llama 4 Scout (CF)" },
+        "@cf/qwen/qwen3-30b-a3b-fp8": { "name": "Qwen3 30B-A3B (CF)" },
+        "@cf/google/gemma-4-26b-a4b-it": { "name": "Gemma 4 26B-A4B (CF)" },
+        "@cf/nvidia/nemotron-3-120b-a12b": { "name": "Nemotron 3 120B-A12B (CF)" }
+      }
+    },
+    "ollama-cloud-direct": {
+      "name": "Ollama Cloud (free plan, direct)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "",
+        "apiKey": "{env:OLLAMA_API_KEY}"
+      },
+      "models": {
+        "gpt-oss:120b": { "name": "gpt-oss 120B (Ollama Cloud)" },
+        "gpt-oss:20b": { "name": "gpt-oss 20B (Ollama Cloud)" },
+        "nemotron-3-super": { "name": "Nemotron 3 Super (Ollama Cloud)" },
+        "gemma4:31b": { "name": "Gemma 4 31B (Ollama Cloud)" }
+      }
+    },
+    "ollama": {
+      "name": "Ollama (local)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "llama3.2": { "name": "Llama 3.2 (Local)" },
+        "qwen2.5-coder": { "name": "Qwen 2.5 Coder (Local)" }
+      }
+    }
+  }
+}

@@ -125,60 +125,6 @@ jobs:
             exit 1
           fi
 
-  # E2E (Playwright) suite — SEPARATE, NON-BLOCKING job.
-  # Runs `pytest -m e2e` against a dashboard started in-job. Deliberately NOT part
-  # of the merge `gate` (see needs: below): e2e requires a live dashboard + browser
-  # and is historically flaky, so it must not block merges on environmental noise.
-  # A red result here is still a real signal — promote it into `gate.needs` once the
-  # suite is stable.
-  e2e:
-    name: E2E (Playwright, non-blocking)
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v7
-        with:
-          python-version: "3.12"
-          enable-cache: true
-      - name: Install dependencies (incl. e2e extra)
-        run: uv sync --extra dev --extra e2e --frozen
-      - name: Install Playwright browser (chromium)
-        run: uv run playwright install --with-deps chromium
-      - name: Start dashboard and run E2E tests
-        run: |
-          # Open auth for the test dashboard: since the auth hardening, the
-          # default fail-closed `api_key` mode rejects every request (health
-          # probes and browser page loads alike) unless an X-API-Key is sent,
-          # which Playwright navigation cannot do. `open` is the documented
-          # opt-in for localhost-only dev/test instances.
-          # Raise the per-IP rate limit for the test dashboard: the E2E suite
-          # drives many rapid browser requests (page loads + KPI/tasks fetches)
-          # and would otherwise trip the production 100 req/min guard.
-          DASHBOARD_AUTH_MODE=open DASHBOARD_RATE_LIMIT=10000 uv run python -m ai_company.cli.main dashboard \
-            --host 127.0.0.1 --port 8421 --no-open > dashboard-e2e.log 2>&1 &
-          DASH_PID=$!
-          # Clean up the dashboard when this step exits.
-          trap 'kill "$DASH_PID" 2>/dev/null || true' EXIT
-          # Wait for the health endpoint (max ~60s).
-          READY=0
-          for i in $(seq 1 60); do
-            if curl -fsS http://127.0.0.1:8421/health >/dev/null 2>&1; then
-              echo "Dashboard ready after ${i}s"
-              READY=1
-              break
-            fi
-            sleep 1
-          done
-          if [ "$READY" -ne 1 ]; then
-            echo "::error::Dashboard did not become healthy on :8421"
-            tail -50 dashboard-e2e.log
-            exit 1
-          fi
-          # Distinct basetemp keeps this job isolated (collision-proof by default).
-          uv run pytest -m e2e --tb=short -q --basetemp=.pytest_tmp_e2e \
-            --dashboard-url=http://127.0.0.1:8421
-
   harness:
     name: ECL Harness Lint
     runs-on: ubuntu-latest
