@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
 import { HaomtgvPage } from '../../pages/HAOMTGVPage';
@@ -19,45 +19,42 @@ describe('HaomtgvPage', () => {
     vi.clearAllMocks();
   });
 
-  it('renders hero section (HaomtgvBlueprintHero)', () => {
+  it('renders hero section with brand color bar', () => {
     renderPage('dark');
+    // Hero section is the first section, find it by its content
     const heroSection = screen.getByText('OPERATING FRAMEWORK').closest('section');
     expect(heroSection).toBeInTheDocument();
-    // Blueprint hero uses background shorthand + a transparent overlay;
-    // no solid brand-color bars (navy/red/cyan) remain in the hero
-    const colorBars = heroSection?.querySelectorAll(
-      'div[style*="background-color"]:not([style*="transparent"])'
-    );
-    expect(colorBars?.length ?? 0).toBe(0);
-    expect(heroSection).toHaveClass('bg-[#050B1A]');
+    // Brand color bar at top of hero
+    const colorBars = heroSection?.querySelectorAll('div[style*="background-color"]');
+    expect(colorBars?.length).toBe(3); // navy, red, cyan
   });
 
-  it('renders H1 with id="haomtgv-title" and dotted format', () => {
+  it('renders H1 with id="haomtgv-title" and cyan text', () => {
     renderPage('light');
     const h1 = screen.getByRole('heading', { level: 1 });
     expect(h1).toHaveAttribute('id', 'haomtgv-title');
-    expect(h1).toHaveTextContent('H.A.O.M.T.G.V.');
+    expect(h1).toHaveTextContent('H-A-O-M-T-G-V');
+    expect(h1).toHaveClass('text-ls-cyan');
   });
 
-  it('renders eyebrow "OPERATING FRAMEWORK" in slate-300', () => {
+  it('renders eyebrow "OPERATING FRAMEWORK" in red', () => {
     renderPage('dark');
-    expect(screen.getByText('OPERATING FRAMEWORK')).toHaveClass('text-slate-300');
+    expect(screen.getByText('OPERATING FRAMEWORK')).toHaveClass('text-ls-red');
   });
 
   it('renders lead paragraph with correct copy', () => {
     renderPage('light');
-    expect(screen.getByText(/A control model for agentic companies/)).toBeInTheDocument();
-    expect(screen.getByText(/Human at the Core/)).toBeInTheDocument();
-    // Tagline is split across 3 spans (ASPIRE. / ACT. / ACHIEVE.) with aria-label
-    expect(screen.getByLabelText('ASPIRE. ACT. ACHIEVE.')).toBeInTheDocument();
+    expect(screen.getByText(/Human authority through Agents, Orchestration, Memory, and Tools/)).toBeInTheDocument();
+    expect(screen.getByText(/Governance as an integral control layer/)).toBeInTheDocument();
+    expect(screen.getByText(/Not a linear pipeline; a working model/)).toBeInTheDocument();
   });
 
   it('renders CTA link to /ai-company-builder/#governance', () => {
     renderPage('dark');
     const link = screen.getByRole('link', { name: /explore the framework/i });
     expect(link).toHaveAttribute('href', '/ai-company-builder/#governance');
-    expect(link).toHaveClass('bg-[#FF2D55]');
-    expect(link).toHaveClass('text-[#050B1A]');
+    expect(link).toHaveClass('bg-ls-red');
+    expect(link).toHaveClass('text-ls-white');
   });
 
   it('renders 7-layer grid section with SectionHeading', () => {
@@ -69,19 +66,15 @@ describe('HaomtgvPage', () => {
 
   it('renders all 7 pillar cards in grid', () => {
     renderPage('light');
-    const gridSection = screen.getByText('THE SEVEN LAYERS').closest('section');
-    expect(gridSection).toBeInTheDocument();
-    const scope = within(gridSection as HTMLElement);
     const pillars = ['Human', 'Agents', 'Orchestration', 'Memory', 'Tools', 'Governance', 'Value'];
     pillars.forEach((pillar) => {
-      expect(scope.getByText(pillar)).toBeInTheDocument();
+      expect(screen.getByText(pillar)).toBeInTheDocument();
     });
   });
 
   it('applies governance ring accent on Governance card', () => {
     renderPage('dark');
-    const gridSection = screen.getByText('THE SEVEN LAYERS').closest('section');
-    const governanceCard = within(gridSection as HTMLElement).getByText('Governance').closest('article');
+    const governanceCard = screen.getByText('Governance').closest('article');
     expect(governanceCard).toHaveClass('ring-1');
     expect(governanceCard).toHaveClass('ring-ls-red/30');
   });
@@ -98,15 +91,11 @@ describe('HaomtgvPage', () => {
     expect(screen.getByText(/Human direction is not a checkpoint at the end/)).toBeInTheDocument();
   });
 
-  it('renders bottom brand color bar (3 segments)', () => {
+  it('renders bottom brand color bar', () => {
     renderPage('light');
-    // Exclude the hero's transparent BackgroundLayer overlay div
-    const colorBars = document.querySelectorAll(
-      'div[style*="background-color"]:not([style*="transparent"])'
-    );
-    // Blueprint hero uses background shorthand (not background-color bars);
-    // only the bottom brand bar remains = 3 segments
-    expect(colorBars.length).toBe(3);
+    const colorBars = document.querySelectorAll('div[style*="background-color"]');
+    // 3 in hero + 3 at bottom = 6 total
+    expect(colorBars.length).toBe(6);
   });
 
   it('renders RelatedLinks with correct links', () => {
@@ -130,21 +119,18 @@ describe('HaomtgvPage', () => {
 
   it('renders pillar descriptions with correct content', () => {
     renderPage('dark');
-    const gridSection = screen.getByText('THE SEVEN LAYERS').closest('section');
-    const scope = within(gridSection as HTMLElement);
-    expect(scope.getByText(/People set intent, own outcomes, and hold final decision authority/)).toBeInTheDocument();
-    expect(scope.getByText(/Specialized AI roles with explicit scopes/)).toBeInTheDocument();
-    expect(scope.getByText(/Deterministic routing of tasks, data, and decisions/)).toBeInTheDocument();
-    expect(scope.getByText(/Persistent contextual state across long-running work/)).toBeInTheDocument();
-    expect(scope.getByText(/Isolated execution environments for APIs, data, and actions/)).toBeInTheDocument();
-    expect(scope.getByText(/A control layer woven through the model/)).toBeInTheDocument();
-    expect(scope.getByText(/Measured business outcomes \(cost, latency, quality, and adoption\)/)).toBeInTheDocument();
+    expect(screen.getByText(/People set intent, own outcomes, and hold final decision authority/)).toBeInTheDocument();
+    expect(screen.getByText(/Specialized AI roles with explicit scopes/)).toBeInTheDocument();
+    expect(screen.getByText(/Deterministic routing of tasks, data, and decisions/)).toBeInTheDocument();
+    expect(screen.getByText(/Persistent contextual state across long-running work/)).toBeInTheDocument();
+    expect(screen.getByText(/Isolated execution environments for APIs, data, and actions/)).toBeInTheDocument();
+    expect(screen.getByText(/A control layer woven through the model/)).toBeInTheDocument();
+    expect(screen.getByText(/Measured business outcomes \(cost, latency, quality, and adoption\)/)).toBeInTheDocument();
   });
 
   it('uses Reveal component for staggered card animation', () => {
     renderPage('dark');
-    const gridSection = screen.getByText('THE SEVEN LAYERS').closest('section');
-    const articles = (gridSection as HTMLElement).querySelectorAll('article');
+    const articles = document.querySelectorAll('article');
     expect(articles.length).toBe(7);
   });
 });

@@ -388,7 +388,6 @@ class Executive(EntityBase):
     escalation_path: list[str] = Field(default_factory=list)
     kpis: list[str] = Field(default_factory=list)
     tools: list[str] = Field(default_factory=list)
-    skills: list[str] = Field(default_factory=list)
     workflows: list[str] = Field(default_factory=list)
     inputs: list[str] = Field(default_factory=list)
     outputs: list[str] = Field(default_factory=list)
@@ -422,7 +421,6 @@ class Agent(EntityBase):
     escalation_path: list[str] = Field(default_factory=list)
     kpis: list[str] = Field(default_factory=list)
     tools: list[str] = Field(default_factory=list)
-    skills: list[str] = Field(default_factory=list)
     seniority: Seniority = Seniority.MID
     workflows: list[str] = Field(default_factory=list)
     inputs: list[str] = Field(default_factory=list)
