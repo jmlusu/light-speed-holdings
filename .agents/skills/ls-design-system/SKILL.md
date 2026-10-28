@@ -72,13 +72,27 @@ pick it up.
 5. `™` on first mention: "LightSpeed Holdings Limited™".
 6. Tagline spelled exactly: **ASPIRE. ACT. ACHIEVE.**
 
-| When | Use |
-|------|-----|
-| Headers/covers/light backgrounds | `logos/fulllogo/fulllogo.png` |
-| Dark backgrounds/overlays | `logos/fulllogo/fulllogo_transparent.png` |
-| Avatars/favicons/small spaces | `logos/icononly/icononly.png` |
-| Print | `logos/fulllogo/vector/print.svg` (or PDF/EPS) |
-| Legal/B&W | `logos/grayscale/grayscale.png` |
+Select the variant by background, then take the `.svg` sibling for print:
+
+| When | Use (all in `brand/logo/`) |
+|------|----------------------------|
+| Headers, covers, light/white backgrounds | `logo-full.png` |
+| Dark or navy backgrounds | `logo-light-bg.png` |
+| Darker textured backgrounds | `logo-dark-bg.png` |
+| Square crops, social avatars, round placements | `logo-avatar.png` |
+| Bare speed-mark where the wordmark is already present | `logo-mark.png` |
+| Single-colour, embossing, one-colour print | `logo-mark-mono.png` |
+| Browser tabs, small favicons | `logo-favicon.png` |
+| Social/OG share cards (1200×630) | `logo-og.png` |
+
+The variants are not interchangeable across backgrounds. Opaque bases are tuned to a canvas:
+`logo-full` for light/white, `logo-light-bg` for dark/navy, `logo-dark-bg` for darker textures.
+`-transparent` twins inherit the artwork's ink, so `logo-full-transparent`, `logo-og-transparent`
+and `logo-dark-bg-transparent` are white and usable on dark only;
+`logo-light-bg-transparent` and `logo-mark-mono-transparent` are navy and usable on light only;
+`logo-mark-transparent`, `logo-avatar-transparent`, `logo-favicon-transparent` and
+`logo-no-background` are mark-only and work on both. Full table, transparent variants and the
+clear-space rule live in `brand/guidelines/brand-guidelines.md` § 3.
 
 ## Pre-Built Templates (Prefer Over Building From Scratch)
 

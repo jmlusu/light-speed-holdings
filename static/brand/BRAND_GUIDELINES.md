@@ -2,11 +2,15 @@
 
 **For agents, developers, and team members.**
 
+This is a pointer, not a second source of truth. If anything here disagrees with the
+documents below, those win — and this file should be fixed.
+
 | Document | Location | Purpose |
 |----------|----------|---------|
-| **Brand Guidelines** | `docs/INVESTOR_BRAND_READINESS_PLAN.md` | Full brand guidelines with compliance rules |
-| **Brand Roadmap** | `docs/BRAND_ADOPTION_ROADMAP.md` | Organization-wide adoption plan & tracking |
-| **Quick Reference** | This file | Fast lookup for agents and developers |
+| **Brand Guidelines** | `brand/guidelines/brand-guidelines.md` | Canonical: identity, logo variants, colour rules, typography |
+| **Brand Tokens** | `brand/tokens/brand-tokens.json` | Machine-readable colours, type scale, minimum logo sizes |
+| **Asset Inventory** | `brand/README.md` | Directory layout of canonical assets |
+| **Provenance** | `brand/CANONICAL_SOURCES.md` | What is canonical, what is a mirror, what is archived |
 
 ---
 
@@ -19,47 +23,53 @@
 | **Primary Color** | Dark Navy `#070A40` |
 | **Accent — Red** | `#E63946` |
 | **Accent — Cyan** | `#00BFFF` |
-| **Logo Symbol** | Lighthouse/shield emblem with signal waves |
+| **Logo Symbol** | Angular speed-mark (cyan/blue slab + red chevron) |
 
 ---
 
 ## Logo Variants
 
+Canonical location: **`brand/logo/`** — 8 variants, each with an SVG and a PNG sibling.
+Runtime mirrors: `static/brand/logo/` and `public/brand/logo/`. Select by background.
+
 | Variant | File | Use For |
 |---------|------|---------|
-| **Full Logo (Primary)** | `logos/fulllogo/fulllogo.png` | Headers, covers, presentations |
-| **Full Logo (Transparent)** | `logos/fulllogo/fulllogo_transparent.png` | Dark backgrounds, overlays |
-| **Full Logo (No Buffer)** | `logos/fulllogo/fulllogo_nobuffer.png` | Tight layouts, no padding |
-| **Full Logo (No Buffer, Transparent)** | `logos/fulllogo/fulllogo_transparent_nobuffer.png` | Dark backgrounds, tight layouts |
-| **Full Logo (Legacy)** | `logos/fulllogo/fulllogo_legacy.png` | Previous primary logo |
-| **Full Logo Variant 2** | `logos/fulllogo/Logo2.png` | Alternative layout, presentations |
-| **Full Logo Variant 2 (Transparent)** | `logos/fulllogo/Logo2_transparent.svg` | Dark backgrounds, overlays |
-| **Full Logo Variant 3** | `logos/fulllogo/Logo3.png` | Alternative layout, presentations |
-| **Full Logo Variant 3 (Transparent)** | `logos/fulllogo/Logo3_transparent.svg` | Dark backgrounds, overlays |
-| **Icon Only** | `logos/icononly/icononly.png` | Avatars, favicons, small spaces |
-| **Icon Only (No Buffer)** | `logos/icononly/icononly_nobuffer.png` | Tight layouts |
-| **Icon Only (Transparent)** | `logos/icononly/icononly_transparent.png` | Dark backgrounds |
-| **Icon Only (Transparent, No Buffer)** | `logos/icononly/icononly_transparent_nobuffer.png` | Dark backgrounds, tight layouts |
-| **Text Only** | `logos/textonly/textonly.png` | When icon is already present |
-| **Text Only (No Buffer)** | `logos/textonly/textonly_nobuffer.png` | Tight layouts |
-| **Grayscale** | `logos/grayscale/grayscale.png` | B&W print, legal documents |
-| **Grayscale (No Buffer)** | `logos/grayscale/grayscale_nobuffer.png` | Tight layouts |
-| **Grayscale (Transparent)** | `logos/grayscale/grayscale_transparent.png` | Dark backgrounds |
-| **Grayscale (Transparent, No Buffer)** | `logos/grayscale/grayscale_transparent_nobuffer.png` | Dark backgrounds, tight layouts |
-| **Vector (Print)** | `logos/fulllogo/vector/print.svg` | All print materials |
-| **Vector (Print, Transparent)** | `logos/fulllogo/vector/print_transparent.svg` | Print on colored backgrounds |
+| Full Logo | `logo-full.png` / `.svg` | Light/white backgrounds — headers, covers, presentations |
+| Full Logo (light bg) | `logo-light-bg.png` / `.svg` | Dark or navy backgrounds |
+| Full Logo (dark bg) | `logo-dark-bg.png` / `.svg` | Darker textured backgrounds |
+| Mark | `logo-mark.png` / `.svg` | Bare speed-mark where the wordmark is already present |
+| Mark (mono) | `logo-mark-mono.png` / `.svg` | Single-colour contexts, embossing, one-colour print |
+| Avatar | `logo-avatar.png` / `.svg` | Square crops, social avatars, round placements |
+| Favicon | `logo-favicon.png` / `.svg` | Browser tabs, small favicons |
+| Open Graph | `logo-og.png` / `.svg` | 1200×630 social/OG share cards |
+
+Most concepts also ship a `-transparent.png` twin, and the twin inherits the artwork's
+intended background rather than being universally safe:
+
+| Twin family | Ink | Usable on |
+|-------------|-----|-----------|
+| `logo-full-transparent`, `logo-og-transparent`, `logo-dark-bg-transparent` | white | dark only |
+| `logo-light-bg-transparent`, `logo-mark-mono-transparent` | navy `#070A40` | light only |
+| `logo-avatar-transparent`, `logo-favicon-transparent`, `logo-mark-transparent`, `logo-no-background` | mark only | light and dark |
+
+So `logo-mark-mono-transparent.png` disappears on navy, and `logo-full-transparent.png`
+disappears on white. Note the naming of `logo-light-bg`: it is the lockup tuned **for** dark
+and navy backgrounds (a transparent twin for light backgrounds), which reads backwards. Full
+matrix: `brand/guidelines/brand-guidelines.md` § 3.
 
 ## Colors
 
 | Name | Hex | Usage |
 |------|-----|-------|
-| Navy Primary | `#070A40` | Headlines, logo text, primary brand |
-| Red Accent | `#E63946` | Signal waves, accent elements |
-| Cyan Accent | `#00BFFF` | Shield base, accent elements |
+| Navy Primary | `#070A40` | Headlines, primary brand surfaces |
+| Red Accent | `#E63946` | Calls to action, accent elements |
+| Cyan Accent | `#00BFFF` | Accent elements, taglines on navy |
 | Light Grey | `#F2F2F2` | Backgrounds |
 | White | `#FFFFFF` | Clean backgrounds |
 
 ## Minimum Sizes
+
+From `brand/tokens/brand-tokens.json`:
 
 | Context | Full Logo | Icon Only |
 |---------|-----------|-----------|
@@ -72,13 +82,14 @@ Minimum clear space = height of the "L" in "LIGHTSPEED" on all sides of the logo
 
 ## Rules
 
-1. **Never** recreate the logo — always use official assets
+1. **Never** recreate the logo — always use official assets from `brand/logo/`
 2. **Never** stretch, rotate, or distort the logo
 3. **Never** change logo colors
 4. **Always** maintain clear space
 5. **Always** use vector (SVG/PDF/EPS) for print
-6. **Always** use transparent PNGs on non-white backgrounds
+6. **Always** use the transparent variant on non-white backgrounds
 7. **Always** use `™` on first mention: "LightSpeed Holdings Limited™"
+8. **Never** redraw or "clean up" logo artwork — the SVGs are vector masters
 
 ## Dashboard Exception
 
@@ -87,11 +98,15 @@ The CEO Dashboard (`src/ai_company/dashboard/`) uses the J.A.R.V.I.S. theme with
 ## Asset Directory
 
 ```
-static/brand/
-├── logos/          # All logo variants
-├── templates/      # Pitch deck, one-pager, board templates
-├── print/          # Letterhead, business cards, email signatures
-├── social/         # Facebook, LinkedIn, Twitter assets
-├── BRAND_GUIDELINES.md  # This file
-└── README.md       # Asset inventory and usage notes
+brand/                     # Canonical. Mirrors: static/brand/, public/brand/
+├── logo/                  # 8 logo concepts, SVG + PNG, plus transparent variants
+├── guidelines/            # brand-guidelines.md (canonical guidance)
+├── tokens/                # brand-tokens.json + brand-tokens.css (canonical-only)
+├── print/                 # Letterhead, business cards, email signatures
+├── digital/               # Social card specs and digital guidance
+├── CHANGELOG.md           # Version history of brand asset changes
+└── README.md              # Asset inventory and usage notes
 ```
+
+`static/brand/` additionally carries mirror-only working content that has no canonical peer:
+`templates/` (deck, document and social generators) and `social/` (generated output).
