@@ -68,6 +68,14 @@ Frontend architecture, component design, state management, responsive design, ac
 - `list`
 
 
+## Skills
+
+
+- `ls-od-prototype`
+
+- `ls-od-live-artifact`
+
+
 ---
 
 

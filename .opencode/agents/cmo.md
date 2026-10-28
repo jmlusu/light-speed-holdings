@@ -74,6 +74,16 @@ Drives brand awareness, demand generation, market positioning, and owns the exte
 - Make data-driven decisions and measure outcomes
 - Build and nurture team culture and performance
 
+## Skills
+
+
+- `ls-od-runtime`
+
+- `ls-od-catalogue`
+
+- `ls-od-deck`
+
+
 ---
 
 

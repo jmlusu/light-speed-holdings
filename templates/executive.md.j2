@@ -62,6 +62,14 @@ Department: {{ department | default('Executive Team') }}
 - Ensure cross-functional coordination and communication
 - Make data-driven decisions and measure outcomes
 - Build and nurture team culture and performance
+{%- if skills %}
+
+## Skills
+
+{% for skill in skills %}
+- `{{ skill }}`
+{% endfor %}
+{%- endif %}
 
 ---
 {% endblock %}

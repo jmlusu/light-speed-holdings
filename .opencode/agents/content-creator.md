@@ -67,6 +67,16 @@ Visual content, video production, social media assets, content distribution, eng
 - `list`
 
 
+## Skills
+
+
+- `ls-od-image`
+
+- `ls-od-video`
+
+- `ls-od-deck`
+
+
 ---
 
 
