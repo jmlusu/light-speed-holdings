@@ -694,9 +694,7 @@ def check_logo_and_alt(infos, theme, root, args, c_logo: Check, c_alt: Check) ->
                     f"slide {info.n}: logo aspect ratio distorted "
                     f"({sh.width / sh.height:.3f} vs source {iw / ih:.3f})",
                 )
-            min_in = (
-                args.min_icon_in if ("icononly" in src or "logo-mark" in src) else args.min_logo_in
-            )
+            min_in = args.min_icon_in if "logo-mark" in src else args.min_logo_in
             if sh.width and sh.width / EMU_IN < min_in:
                 c_logo.add(
                     "FAIL",
