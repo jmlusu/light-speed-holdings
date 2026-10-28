@@ -1,0 +1,702 @@
+{
+    "generated":  "2026-10-26T14:38:27.3732343Z",
+    "summary":  {
+                    "available":  38,
+                    "failing":  32,
+                    "uncertain":  46,
+                    "notTested":  0
+                },
+    "warnings":  [
+                     "smallModel is \u0027opencode/gpt-5.1-codex\u0027, a PAID OpenCode Zen model (Zen needs billing). Consider a free one, e.g. opencode/big-pickle or opencode/deepseek-v4-flash-free.",
+                     "OmniRoute serves 1303 models; 1224 were listed but NOT called (use -Deep to call every one; some upstreams may be paid).",
+                     "OpenCode Zen lists 76 paid models (not called): test, claude-fable-5, jev-1.13, claude-fable-5-1, claude-haiku-4-5, claude-haiku-5-5, claude-opus-4-5, claude-opus-4-6, claude-opus-4-7, claude-opus-4-8, claude-opus-5, claude-opus-5-5, ...",
+                     "Local models (ollama, llamacpp) were NOT tested. Run with -IncludeLocal to test them."
+                 ],
+    "providers":  [
+                      {
+                          "Provider":  "omniroute",
+                          "Health":  "UP (15 working)",
+                          "Working":  15,
+                          "Failing":  31,
+                          "Unsure":  35
+                      },
+                      {
+                          "Provider":  "groq-direct",
+                          "Health":  "UP (3 working)",
+                          "Working":  3,
+                          "Failing":  0,
+                          "Unsure":  0
+                      },
+                      {
+                          "Provider":  "nvidia-nim-direct",
+                          "Health":  "UP (2 working)",
+                          "Working":  2,
+                          "Failing":  0,
+                          "Unsure":  0
+                      },
+                      {
+                          "Provider":  "mistral-direct",
+                          "Health":  "UP (2 working)",
+                          "Working":  2,
+                          "Failing":  0,
+                          "Unsure":  0
+                      },
+                      {
+                          "Provider":  "gemini-studio-direct",
+                          "Health":  "UP (1 working)",
+                          "Working":  1,
+                          "Failing":  0,
+                          "Unsure":  2
+                      },
+                      {
+                          "Provider":  "cloudflare-direct",
+                          "Health":  "UP (11 working)",
+                          "Working":  11,
+                          "Failing":  0,
+                          "Unsure":  0
+                      },
+                      {
+                          "Provider":  "ollama-cloud-direct",
+                          "Health":  "UP (4 working)",
+                          "Working":  4,
+                          "Failing":  1,
+                          "Unsure":  0
+                      },
+                      {
+                          "Provider":  "opencode-zen",
+                          "Health":  "UNCERTAIN (rate limited / busy)",
+                          "Working":  0,
+                          "Failing":  0,
+                          "Unsure":  9
+                      }
+                  ],
+    "available":  [
+                      {
+                          "model":  "groq-direct/qwen/qwen3.8-27b",
+                          "ms":  699
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/ibm-granite/granite-4.0-h-micro",
+                          "ms":  756
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+                          "ms":  793
+                      },
+                      {
+                          "model":  "groq-direct/openai/gpt-oss-20b",
+                          "ms":  833
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/mistralai/mistral-small-3.1-24b-instruct",
+                          "ms":  836
+                      },
+                      {
+                          "model":  "mistral-direct/ministral-14b-latest",
+                          "ms":  920
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/qwen/qwen2.5-coder-32b-instruct",
+                          "ms":  923
+                      },
+                      {
+                          "model":  "mistral-direct/ministral-8b-latest",
+                          "ms":  963
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/meta/llama-4-scout-17b-16e-instruct",
+                          "ms":  968
+                      },
+                      {
+                          "model":  "groq-direct/openai/gpt-oss-120b",
+                          "ms":  1017
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/nvidia/nemotron-3-120b-a12b",
+                          "ms":  1064
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/meta/llama-3.1-8b-instruct-fp8",
+                          "ms":  1102
+                      },
+                      {
+                          "model":  "ollama-cloud-direct/gemma4:31b",
+                          "ms":  1312
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/openai/gpt-oss-20b",
+                          "ms":  1324
+                      },
+                      {
+                          "model":  "ollama-cloud-direct/gpt-oss:20b",
+                          "ms":  1468
+                      },
+                      {
+                          "model":  "ollama-cloud-direct/gpt-oss:120b",
+                          "ms":  1492
+                      },
+                      {
+                          "model":  "nvidia-nim-direct/nvidia/nemotron-3.5-lightning-30b-a3b",
+                          "ms":  1814
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/google/gemma-4-26b-a4b-it",
+                          "ms":  1848
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/qwen/qwen3.8-27b",
+                          "ms":  1990
+                      },
+                      {
+                          "model":  "cloudflare-direct/@cf/qwen/qwen3-30b-a3b-fp8",
+                          "ms":  2180
+                      },
+                      {
+                          "model":  "ollama-cloud-direct/nemotron-3-super",
+                          "ms":  2532
+                      },
+                      {
+                          "model":  "omniroute/auto/coding",
+                          "ms":  3443
+                      },
+                      {
+                          "model":  "omniroute/auto/gemini",
+                          "ms":  15263
+                      },
+                      {
+                          "model":  "omniroute/auto/reasoning:pro",
+                          "ms":  17160
+                      },
+                      {
+                          "model":  "omniroute/auto/coding:pro",
+                          "ms":  17345
+                      },
+                      {
+                          "model":  "omniroute/auto/gemma",
+                          "ms":  18147
+                      },
+                      {
+                          "model":  "gemini-studio-direct/gemma-4-31b-it",
+                          "ms":  25661
+                      },
+                      {
+                          "model":  "omniroute/auto/pro-chat",
+                          "ms":  25735
+                      },
+                      {
+                          "model":  "omniroute/auto/pro-coding",
+                          "ms":  26491
+                      },
+                      {
+                          "model":  "omniroute/auto/best-fast",
+                          "ms":  28505
+                      },
+                      {
+                          "model":  "omniroute/auto/pro-vision",
+                          "ms":  28574
+                      },
+                      {
+                          "model":  "omniroute/auto/best-coding-fast",
+                          "ms":  28681
+                      },
+                      {
+                          "model":  "omniroute/auto/pro-fast",
+                          "ms":  30100
+                      },
+                      {
+                          "model":  "nvidia-nim-direct/openai/gpt-oss-20b",
+                          "ms":  35180
+                      },
+                      {
+                          "model":  "omniroute/auto/fast",
+                          "ms":  37539
+                      },
+                      {
+                          "model":  "omniroute/auto/offline",
+                          "ms":  42592
+                      },
+                      {
+                          "model":  "omniroute/auto/multimodal",
+                          "ms":  48932
+                      },
+                      {
+                          "model":  "omniroute/auto/best-vision",
+                          "ms":  55664
+                      }
+                  ],
+    "failing":  [
+                    {
+                        "model":  "omniroute/auto",
+                        "status":  "NOT_FOUND",
+                        "http":  "-",
+                        "note":  "in opencode.json but not served by OmniRoute"
+                    },
+                    {
+                        "model":  "omniroute/oc/x-preview-f-free",
+                        "status":  "NOT_FOUND",
+                        "http":  "-",
+                        "note":  "in opencode.json but not served by OmniRoute"
+                    },
+                    {
+                        "model":  "ollama-cloud-direct/mistral-large-4",
+                        "status":  "FORBIDDEN",
+                        "http":  "403",
+                        "note":  "This model is currently being rolled out and is not yet available to you. Please check bac..."
+                    },
+                    {
+                        "model":  "omniroute/auto/best-chaos",
+                        "status":  "ERROR",
+                        "http":  "200",
+                        "note":  "200 but no choices: "
+                    },
+                    {
+                        "model":  "omniroute/auto/chaos",
+                        "status":  "ERROR",
+                        "http":  "200",
+                        "note":  "200 but no choices: "
+                    },
+                    {
+                        "model":  "omniroute/auto/mimo",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "oc/mimo-v2.5-free: model — [400]: Upstream request failed: Model is unavailable. (HTTP 400..."
+                    },
+                    {
+                        "model":  "omniroute/oc/north-mini-code-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027north-mini-code-free\u0027 is not available in the active live catalog for provider \u0027ope..."
+                    },
+                    {
+                        "model":  "omniroute/oc/deepseek-v4-flash-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "[400]: Upstream request failed: Model is unavailable."
+                    },
+                    {
+                        "model":  "omniroute/opencode/deepseek-v4-flash-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027deepseek-v4-flash-free\u0027 is not available in the active live catalog for provider \u0027o..."
+                    },
+                    {
+                        "model":  "omniroute/oc/muse-spark-1.2-contributor-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "[400]: Upstream request failed: Model is unavailable."
+                    },
+                    {
+                        "model":  "omniroute/opencode/muse-spark-1.2-contributor-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027muse-spark-1.2-contributor-free\u0027 is not available in the active live catalog for pr..."
+                    },
+                    {
+                        "model":  "omniroute/oc/mimo-v2.5-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "[400]: Upstream request failed: Model is unavailable."
+                    },
+                    {
+                        "model":  "omniroute/opencode/mimo-v2.5-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027mimo-v2.5-free\u0027 is not available in the active live catalog for provider \u0027opencode-..."
+                    },
+                    {
+                        "model":  "omniroute/oc/hy3-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "[400]: Upstream request failed: Model is unavailable."
+                    },
+                    {
+                        "model":  "omniroute/opencode/hy3-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027hy3-free\u0027 is not available in the active live catalog for provider \u0027opencode-zen\u0027."
+                    },
+                    {
+                        "model":  "omniroute/oc/nemotron-3-ultra-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "[400]: Upstream request failed: Model is unavailable."
+                    },
+                    {
+                        "model":  "omniroute/opencode/nemotron-3-ultra-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027nemotron-3-ultra-free\u0027 is not available in the active live catalog for provider \u0027op..."
+                    },
+                    {
+                        "model":  "omniroute/oc/laguna-s-2.1-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "[400]: Upstream request failed: Model is unavailable."
+                    },
+                    {
+                        "model":  "omniroute/opencode/laguna-s-2.1-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027laguna-s-2.1-free\u0027 is not available in the active live catalog for provider \u0027openco..."
+                    },
+                    {
+                        "model":  "omniroute/opencode-zen/muse-spark-1.2-contributor-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027muse-spark-1.2-contributor-free\u0027 is not available in the active live catalog for pr..."
+                    },
+                    {
+                        "model":  "omniroute/opencode-zen/deepseek-v4-flash-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027deepseek-v4-flash-free\u0027 is not available in the active live catalog for provider \u0027o..."
+                    },
+                    {
+                        "model":  "omniroute/opencode-zen/mimo-v2.5-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027mimo-v2.5-free\u0027 is not available in the active live catalog for provider \u0027opencode-..."
+                    },
+                    {
+                        "model":  "omniroute/opencode-zen/hy3-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027hy3-free\u0027 is not available in the active live catalog for provider \u0027opencode-zen\u0027."
+                    },
+                    {
+                        "model":  "omniroute/opencode-zen/nemotron-3-ultra-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027nemotron-3-ultra-free\u0027 is not available in the active live catalog for provider \u0027op..."
+                    },
+                    {
+                        "model":  "omniroute/opencode-zen/laguna-s-2.1-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027laguna-s-2.1-free\u0027 is not available in the active live catalog for provider \u0027openco..."
+                    },
+                    {
+                        "model":  "omniroute/oc/beam-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027beam-free\u0027 is not available in the active live catalog for provider \u0027opencode\u0027."
+                    },
+                    {
+                        "model":  "omniroute/oc/flint-40b-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027flint-40b-free\u0027 is not available in the active live catalog for provider \u0027opencode\u0027..."
+                    },
+                    {
+                        "model":  "omniroute/oc/mimo-v2.6-flash-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027mimo-v2.6-flash-free\u0027 is not available in the active live catalog for provider \u0027ope..."
+                    },
+                    {
+                        "model":  "omniroute/oc/nemotron-3.5-super-vl-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027nemotron-3.5-super-vl-free\u0027 is not available in the active live catalog for provide..."
+                    },
+                    {
+                        "model":  "omniroute/oc/jev-1.13-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027jev-1.13-free\u0027 is not available in the active live catalog for provider \u0027opencode\u0027."
+                    },
+                    {
+                        "model":  "omniroute/oc/deepseek-v4.1-flash-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027deepseek-v4.1-flash-free\u0027 is not available in the active live catalog for provider ..."
+                    },
+                    {
+                        "model":  "omniroute/oc/glm-5.3-flash-free",
+                        "status":  "BAD_REQUEST",
+                        "http":  "400",
+                        "note":  "Model \u0027glm-5.3-flash-free\u0027 is not available in the active live catalog for provider \u0027openc..."
+                    }
+                ],
+    "uncertain":  [
+                      {
+                          "model":  "gemini-studio-direct/gemma-4-26b-a4b-it",
+                          "status":  "SERVER_ERR",
+                          "http":  "500",
+                          "note":  "Internal error encountered."
+                      },
+                      {
+                          "model":  "gemini-studio-direct/gemini-3.8-flash",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/auto/best-coding",
+                          "status":  "SERVER_ERR",
+                          "http":  "503",
+                          "note":  "Maximum combo retry limit reached"
+                      },
+                      {
+                          "model":  "omniroute/auto/best-reasoning",
+                          "status":  "SERVER_ERR",
+                          "http":  "503",
+                          "note":  "Maximum combo retry limit reached"
+                      },
+                      {
+                          "model":  "omniroute/auto/best-chat",
+                          "status":  "SERVER_ERR",
+                          "http":  "503",
+                          "note":  "Maximum combo retry limit reached"
+                      },
+                      {
+                          "model":  "omniroute/auto/pro-reasoning",
+                          "status":  "SERVER_ERR",
+                          "http":  "503",
+                          "note":  "Maximum combo retry limit reached"
+                      },
+                      {
+                          "model":  "omniroute/auto/chat",
+                          "status":  "SERVER_ERR",
+                          "http":  "503",
+                          "note":  "Maximum combo retry limit reached"
+                      },
+                      {
+                          "model":  "omniroute/auto/cheap",
+                          "status":  "SERVER_ERR",
+                          "http":  "503",
+                          "note":  "Maximum combo retry limit reached"
+                      },
+                      {
+                          "model":  "omniroute/auto/smart",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/auto/claude-opus",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/auto/claude-sonnet",
+                          "status":  "SERVER_ERR",
+                          "http":  "503",
+                          "note":  "Maximum combo retry limit reached"
+                      },
+                      {
+                          "model":  "omniroute/auto/best-free",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/auto/coding:fast",
+                          "status":  "SERVER_ERR",
+                          "http":  "503",
+                          "note":  "Maximum combo retry limit reached"
+                      },
+                      {
+                          "model":  "omniroute/auto/coding:cheap",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/auto/coding:free",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/auto/coding:reliable",
+                          "status":  "SERVER_ERR",
+                          "http":  "503",
+                          "note":  "Maximum combo retry limit reached"
+                      },
+                      {
+                          "model":  "omniroute/auto/reasoning",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/auto/vision",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/auto/glm",
+                          "status":  "SERVER_ERR",
+                          "http":  "504",
+                          "note":  "zc/glm-5.1: provider — [502]: spawn zcode ENOENT (HTTP 502); dva/glm-5-2-max-1m: provider ..."
+                      },
+                      {
+                          "model":  "omniroute/auto/minimax",
+                          "status":  "SERVER_ERR",
+                          "http":  "502",
+                          "note":  "nvidia/minimaxai/minimax-m3: model — [410]: {\"type\":\"about:blank\",\"title\":\"Gone\",\"status\":..."
+                      },
+                      {
+                          "model":  "omniroute/auto/zai",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/auto/llama",
+                          "status":  "SERVER_ERR",
+                          "http":  "502",
+                          "note":  "nvidia/meta/llama-3.2-11b-vision-instruct: auth — [403]: {\"status\":403,\"title\":\"Forbidden\"..."
+                      },
+                      {
+                          "model":  "omniroute/veoaifree-web/veo",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/veoaifree-web/seedance",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/veo-free/veo",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/veo-free/seedance",
+                          "status":  "TIMEOUT",
+                          "http":  "000",
+                          "note":  "no reply within the time limit"
+                      },
+                      {
+                          "model":  "omniroute/opencode-zen/big-pickle",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "All credentials for model big-pickle are cooling down"
+                      },
+                      {
+                          "model":  "omniroute/opencode-zen/beam-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "All credentials for model beam-free are cooling down"
+                      },
+                      {
+                          "model":  "omniroute/opencode-zen/flint-40b-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "All credentials for model flint-40b-free are cooling down"
+                      },
+                      {
+                          "model":  "omniroute/opencode-zen/mimo-v2.6-flash-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "All credentials for model mimo-v2.6-flash-free are cooling down"
+                      },
+                      {
+                          "model":  "omniroute/opencode-zen/nemotron-3.5-super-vl-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "All credentials for model nemotron-3.5-super-vl-free are cooling down"
+                      },
+                      {
+                          "model":  "omniroute/opencode-zen/nemotron-3.5-lightning-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "All credentials for model nemotron-3.5-lightning-free are cooling down"
+                      },
+                      {
+                          "model":  "omniroute/opencode-zen/jev-1.13-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "All credentials for model jev-1.13-free are cooling down"
+                      },
+                      {
+                          "model":  "omniroute/opencode-zen/deepseek-v4.1-flash-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "All credentials for model deepseek-v4.1-flash-free are cooling down"
+                      },
+                      {
+                          "model":  "omniroute/opencode-zen/glm-5.3-flash-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "All credentials for model glm-5.3-flash-free are cooling down"
+                      },
+                      {
+                          "model":  "omniroute/oc/big-pickle",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "[429]: Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subsc..."
+                      },
+                      {
+                          "model":  "omniroute/oc/nemotron-3.5-lightning-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "[429]: Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subsc..."
+                      },
+                      {
+                          "model":  "opencode-zen/big-pickle",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subscribe to..."
+                      },
+                      {
+                          "model":  "opencode-zen/beam-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subscribe to..."
+                      },
+                      {
+                          "model":  "opencode-zen/flint-40b-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subscribe to..."
+                      },
+                      {
+                          "model":  "opencode-zen/mimo-v2.6-flash-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subscribe to..."
+                      },
+                      {
+                          "model":  "opencode-zen/nemotron-3.5-super-vl-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subscribe to..."
+                      },
+                      {
+                          "model":  "opencode-zen/nemotron-3.5-lightning-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subscribe to..."
+                      },
+                      {
+                          "model":  "opencode-zen/jev-1.13-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subscribe to..."
+                      },
+                      {
+                          "model":  "opencode-zen/deepseek-v4.1-flash-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subscribe to..."
+                      },
+                      {
+                          "model":  "opencode-zen/glm-5.3-flash-free",
+                          "status":  "RATE_LIMIT",
+                          "http":  "429",
+                          "note":  "Free usage limit reached. Free models work in OpenCode (https://opencode.ai); subscribe to..."
+                      }
+                  ],
+    "notTested":  [
+
+                  ]
+}

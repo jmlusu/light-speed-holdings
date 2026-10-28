@@ -1,0 +1,4 @@
+﻿"Provider","Model","Status","HTTP","Ms","Note"
+"nvidia-nim-direct","openai/gpt-oss-20b","PASS","200","31028","ok"
+"nvidia-nim-direct","nvidia/nemotron-3.5-lightning-30b-a3b","PASS_NOTEXT","200","3420","200 but empty text (reasoning model? try -MaxTokens 256)"
+"nvidia-nim-direct","google/gemma-4-31b-it","TIMEOUT","000","180040","no reply within the time limit"
