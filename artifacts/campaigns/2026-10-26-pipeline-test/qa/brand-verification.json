@@ -1,0 +1,172 @@
+{
+  "tokens": [
+    "#00BFFF",
+    "#070A40",
+    "#121518",
+    "#6B7280",
+    "#9CA3AF",
+    "#E63946",
+    "#F2F2F2",
+    "#F7F8F9",
+    "#FFFFFF"
+  ],
+  "G1_css": {
+    "declared": 7,
+    "distinct_values": [
+      "#00BFFF",
+      "#070A40",
+      "#6B7280",
+      "#9CA3AF",
+      "#E63946",
+      "#F2F2F2",
+      "#FFFFFF"
+    ],
+    "off_palette": [],
+    "named_colour_keywords": [],
+    "pass": true
+  },
+  "G2_pdf": {
+    "painted_fill_colours": {
+      "#070A40": 25,
+      "#00BFFF": 25,
+      "#F2F2F2": 10,
+      "#FFFFFF": 7,
+      "#6B7280": 7,
+      "#9CA3AF": 5,
+      "#E63946": 3
+    },
+    "painted_stroke_colours": {},
+    "declared_but_unpainted": {
+      "#070A40": 25,
+      "#00BFFF": 25,
+      "#F2F2F2": 10,
+      "#000000": 8,
+      "#FFFFFF": 7,
+      "#6B7280": 7,
+      "#9CA3AF": 5,
+      "#E63946": 3
+    },
+    "embedded_images": 1,
+    "off_palette": [],
+    "pass": true
+  },
+  "G3_300": {
+    "results": [
+      {
+        "page": "pdf-300dpi-1.png",
+        "rc": 1,
+        "output": "FAIL: 3.87% of visible pixels off brand palette (tolerance 3%)"
+      },
+      {
+        "page": "pdf-300dpi-2.png",
+        "rc": 1,
+        "output": "FAIL: 3.42% of visible pixels off brand palette (tolerance 3%)"
+      }
+    ],
+    "pass": false
+  },
+  "G3_600": {
+    "results": [
+      {
+        "page": "pdf-600dpi-1.png",
+        "rc": 0,
+        "output": "PASS: 97.69% of visible pixels on brand palette (2.31% off, tolerance 3%)"
+      },
+      {
+        "page": "pdf-600dpi-2.png",
+        "rc": 0,
+        "output": "PASS: 98.30% of visible pixels on brand palette (1.70% off, tolerance 3%)"
+      }
+    ],
+    "pass": true
+  },
+  "G4_edges": {
+    "pages": [
+      {
+        "page": "pdf-300dpi-1.png",
+        "visible_px": 8696332,
+        "off_palette_px": 336638,
+        "off_palette_pct": 3.87,
+        "off_palette_distinct_colours": 5100,
+        "max_blend_distance_outside_logo": 0.0,
+        "non_blend_colours_outside_logo": 0,
+        "non_blend_pixels_outside_logo": 0,
+        "non_blend_colours_inside_logo": 1906
+      },
+      {
+        "page": "pdf-300dpi-2.png",
+        "visible_px": 8696332,
+        "off_palette_px": 297844,
+        "off_palette_pct": 3.42,
+        "off_palette_distinct_colours": 1440,
+        "max_blend_distance_outside_logo": 0.0,
+        "non_blend_colours_outside_logo": 0,
+        "non_blend_pixels_outside_logo": 0,
+        "non_blend_colours_inside_logo": 0
+      }
+    ],
+    "foreign_colours_outside_logo": 0,
+    "pass": true
+  },
+  "G5_layout": {
+    "pages": 2,
+    "page_sizes_pt": [
+      [
+        595.0,
+        841.9
+      ]
+    ],
+    "a4": true,
+    "fonts_embedded": [
+      "Arial-BoldMT",
+      "ArialMT"
+    ],
+    "css_type_sizes_pt": [],
+    "css_sizes_off_scale": [],
+    "pdf_rendered_sizes_pt": [
+      12.0,
+      13.0,
+      14.0,
+      16.0,
+      18.0,
+      24.0
+    ],
+    "pdf_sizes_off_scale": [],
+    "chars_extracted": 3890,
+    "contrast": {
+      "navy-on-white": 18.64,
+      "white-on-navy": 18.64,
+      "cyan-on-navy": 8.79,
+      "grey-dark-on-white": 4.83,
+      "navy-on-grey-light": 16.65,
+      "grey-light-text-on-navy": 7.34,
+      "red-on-white": 4.17
+    }
+  },
+  "dominance": [
+    {
+      "page": "pdf-300dpi-1.png",
+      "navy": 34.82,
+      "red": 0.01,
+      "cyan": 0.89,
+      "grey-light": 27.5,
+      "white": 32.42,
+      "grey-dark": 0.21,
+      "grey-light-text": 0.28,
+      "mist": 0.0,
+      "deep-mineral": 0.0
+    },
+    {
+      "page": "pdf-300dpi-2.png",
+      "navy": 17.17,
+      "red": 0.81,
+      "cyan": 0.69,
+      "grey-light": 9.32,
+      "white": 68.25,
+      "grey-dark": 0.32,
+      "grey-light-text": 0.0,
+      "mist": 0.0,
+      "deep-mineral": 0.0
+    }
+  ]
+}

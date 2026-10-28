@@ -1,0 +1,85 @@
+{
+  "checks": {
+    "page_count": {
+      "value": 2,
+      "pass": true
+    },
+    "a4": {
+      "value": [
+        [
+          595.0,
+          841.9
+        ],
+        [
+          595.0,
+          841.9
+        ]
+      ],
+      "pass": true
+    },
+    "title_in_pdf": {
+      "value": "Scaling Agentic AI Architecture",
+      "pass": true
+    },
+    "text_extracted": {
+      "value": 4243,
+      "pass": true
+    },
+    "rasteriser": {
+      "value": "pdftoppm (anti-aliasing off)",
+      "pass": true
+    },
+    "palette": {
+      "value": [
+        {
+          "page": "page-1.png",
+          "rc": 0,
+          "output": "PASS: 99.28% of visible pixels on brand palette (0.72% off, tolerance 3%)",
+          "detail": "visible pixels: 8696332; off-palette: 62803 (0.72%)"
+        },
+        {
+          "page": "page-2.png",
+          "rc": 0,
+          "output": "PASS: 100.00% of visible pixels on brand palette (0.00% off, tolerance 3%)",
+          "detail": "visible pixels: 8696332; off-palette: 0 (0.00%)"
+        }
+      ],
+      "tolerance_pct": 3.0,
+      "pass": true
+    },
+    "css_colours": {
+      "value": [],
+      "pass": true
+    }
+  },
+  "pass": true,
+  "campaign": "2026-10-26-pipeline-test",
+  "source": "artifacts\\campaigns\\2026-10-26-pipeline-test\\notebooklm\\raw-briefing.md",
+  "source_sha256": "75d75d3160e518b3f9f4e81477887783187d6adfb742000e0097ffa373dbd854",
+  "generated": "2026-10-27T18:29:25",
+  "pdf": "artifacts\\campaigns\\2026-10-26-pipeline-test\\open-design\\executive-briefing-branded.pdf",
+  "html": "artifacts\\campaigns\\2026-10-26-pipeline-test\\open-design\\executive-briefing.html",
+  "fit": 0.94,
+  "metrics": [
+    {
+      "value": "89",
+      "label": "AI agents in operation",
+      "source": "89 AI Agents"
+    },
+    {
+      "value": "20",
+      "label": "Operating departments",
+      "source": "20 distinct departments"
+    },
+    {
+      "value": "5",
+      "label": "HITL approval tiers",
+      "source": "5-tier Human"
+    },
+    {
+      "value": "4",
+      "label": "CI quality gates",
+      "source": "4-gate Continuous"
+    }
+  ]
+}

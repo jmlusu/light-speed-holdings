@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ title }}</title>
+<meta name="author" content="LightSpeed Holdings Limited">
+<meta name="description" content="{{ meta_description }}">
+<style>
+  /* ─────────────────────────────────────────────────────────────────────
+     LightSpeed Holdings Limited™ — Executive Briefing template
+     Consumed by scripts/brand_briefing.py (OpenCode command /brand-briefing).
+
+     Palette       navy #070A40 · red #E63946 · cyan #00BFFF
+                   grey-light #F2F2F2 · white #FFFFFF
+                   grey-dark #6B7280 · grey-light-text #9CA3AF
+     Typography    Arial 700 headings · Arial 400 body
+     Type scale    24 / 18 / 16 / 14 / 13 / 12 pt (brand/tokens/brand-tokens.json)
+     Spacing       4px base — 4/8/12/16/24/32
+
+     Every font size is written as calc(<token> * var(--fit)). At --fit: 1 the
+     rendered sizes are exactly the brand scale; the converter only lowers
+     --fit when source content would otherwise overflow the 2-page grid.
+     ───────────────────────────────────────────────────────────────────── */
+  :root {
+    --ls-navy: #070A40;
+    --ls-red: #E63946;
+    --ls-cyan: #00BFFF;
+    --ls-grey-light: #F2F2F2;
+    --ls-white: #FFFFFF;
+    --ls-grey-dark: #6B7280;
+    --ls-grey-light-text: #9CA3AF;
+
+    --t-title: 24pt;
+    --t-metric: 18pt;
+    --t-h2: 16pt;
+    --t-h3: 14pt;
+    --t-lede: 13pt;
+    --t-body: 12pt;
+
+    --fit: {{ fit }};
+
+    --ls-space-1: 4px;
+    --ls-space-2: 8px;
+    --ls-space-3: 12px;
+    --ls-space-4: 16px;
+    --ls-space-5: 24px;
+    --ls-space-6: 32px;
+
+    --ls-radius-sm: 4px;
+
+    /* Logo lockup geometry, computed from the artwork bounding box in
+       brand/logo/logo-full.png — see scripts/brand_briefing.py.
+       The plate is opaque #02062F; `lighten` resolves plate + banner to
+       #070A40, so no foreign colour enters the header and the artwork is
+       never recoloured (ADR-027). */
+    --logo-box-w: {{ logo.box_w }};
+    --logo-box-h: {{ logo.box_h }};
+    --logo-img-w: {{ logo.img_w }};
+    --logo-img-h: {{ logo.img_h }};
+    --logo-off-x: {{ logo.off_x }};
+    --logo-off-y: {{ logo.off_y }};
+    --logo-clear-space: {{ logo.clear_space }};
+  }
+
+  @page { size: A4; margin: 0; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--ls-white);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    color: var(--ls-navy);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    position: relative;
+    width: 210mm;
+    height: 296.7mm;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+    display: flex;
+    flex-direction: column;
+  }
+  .page:last-of-type { page-break-after: auto; break-after: auto; }
+
+  /* Measure mode: let an over-long page grow so Chromium reports it as an
+     extra sheet. The converter reads the sheet count and lowers --fit. */
+  .page.measure {
+    height: auto;
+    min-height: 296.7mm;
+    overflow: visible;
+  }
+
+  /* ── Header banner (page 1) ─────────────────────────────────────────── */
+  .masthead {
+    background: var(--ls-navy);
+    padding: var(--logo-clear-space) 14mm 0 14mm;
+    flex: 0 0 auto;
+  }
+
+  .masthead-top { display: flex; align-items: flex-start; gap: 12mm; }
+
+  .logo-crop {
+    flex: 0 0 auto;
+    width: var(--logo-box-w);
+    height: var(--logo-box-h);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .logo-crop img {
+    position: absolute;
+    width: var(--logo-img-w);
+    height: var(--logo-img-h);
+    left: var(--logo-off-x);
+    top: var(--logo-off-y);
+    mix-blend-mode: lighten;
+  }
+
+  .masthead-copy { flex: 1 1 auto; }
+
+  .eyebrow {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ls-cyan);
+    margin-bottom: var(--ls-space-2);
+  }
+
+  h1.masthead-title {
+    font-size: calc(var(--t-title) * var(--fit));
+    font-weight: 700;
+    line-height: 1.14;
+    color: var(--ls-white);
+    letter-spacing: -0.005em;
+  }
+
+  .masthead-rule {
+    width: 32px;
+    height: 3px;
+    background: var(--ls-red);
+    margin: var(--ls-space-2) 0;
+  }
+
+  .masthead-sub {
+    font-size: calc(var(--t-h3) * var(--fit));
+    font-weight: 400;
+    line-height: 1.36;
+    color: var(--ls-cyan);
+  }
+
+  /* ── Metric strip inside the navy banner ────────────────────────────── */
+  .metric-strip {
+    /* Clear space below the lockup: 1x the 'L' cap height on every side. */
+    margin-top: var(--logo-clear-space);
+    border-top: 1px solid var(--ls-grey-light-text);
+    display: grid;
+  }
+
+  .metric { padding: var(--ls-space-2) 0 8px 0; min-width: 0; }
+
+  .metric + .metric {
+    border-left: 1px solid var(--ls-cyan);
+    padding-left: var(--ls-space-5);
+  }
+
+  .metric-value {
+    font-size: calc(var(--t-metric) * var(--fit));
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ls-cyan);
+  }
+
+  .metric-label {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--ls-grey-light-text);
+    margin-top: 4px;
+  }
+
+  /* ── Body canvas ────────────────────────────────────────────────────── */
+  .canvas {
+    flex: 1 1 auto;
+    padding: 5mm 14mm 0 14mm;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: var(--ls-space-3);
+    margin-bottom: var(--ls-space-2);
+  }
+
+  .section-mark {
+    width: 4px;
+    height: calc(var(--t-lede) * var(--fit));
+    background: var(--ls-cyan);
+    flex: 0 0 auto;
+  }
+
+  .section-head h2 {
+    font-size: calc(var(--t-h2) * var(--fit));
+    font-weight: 700;
+    color: var(--ls-navy);
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+
+  .section-kicker {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ls-grey-dark);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  p.lede {
+    font-size: calc(var(--t-lede) * var(--fit));
+    font-weight: 400;
+    line-height: 1.46;
+    color: var(--ls-navy);
+  }
+
+  p.body {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 400;
+    line-height: 1.38;
+    color: var(--ls-navy);
+  }
+
+  p.body + p.body { margin-top: var(--ls-space-2); }
+
+  strong { font-weight: 700; }
+
+  /* ── Pillar grid ────────────────────────────────────────────────────── */
+  .pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .pillar {
+    background: var(--ls-grey-light);
+    border-left: 4px solid var(--ls-cyan);
+    border-radius: var(--ls-radius-sm);
+    padding: 10px 14px 8px 12px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pillar-index {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--ls-cyan);
+    margin-bottom: 4px;
+  }
+
+  .pillar h3 {
+    font-size: calc(var(--t-h3) * var(--fit));
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--ls-navy);
+    margin-bottom: 4px;
+  }
+
+  .pillar p {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 400;
+    line-height: 1.38;
+    color: var(--ls-navy);
+  }
+
+  .pillar-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 4px;
+  }
+
+  .chip {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 700;
+    color: var(--ls-navy);
+    background: var(--ls-white);
+    border: 1px solid var(--ls-navy);
+    border-radius: var(--ls-radius-sm);
+    padding: 0 5px;
+    line-height: 1.4;
+  }
+
+  /* ── Callouts ───────────────────────────────────────────────────────── */
+  .callout-navy {
+    background: var(--ls-navy);
+    border-radius: var(--ls-radius-sm);
+    padding: 10px var(--ls-space-4) 10px var(--ls-space-4);
+    color: var(--ls-white);
+  }
+
+  .callout-label {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .callout-navy .callout-label { color: var(--ls-cyan); }
+  .callout-red .callout-label { color: var(--ls-red); }
+
+  .callout-navy p {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--ls-white);
+  }
+
+  .callout-red {
+    background: var(--ls-white);
+    border: 2px solid var(--ls-red);
+    border-left-width: 8px;
+    border-radius: var(--ls-radius-sm);
+    padding: 10px var(--ls-space-4) 10px var(--ls-space-4);
+  }
+
+  .callout-red p {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--ls-navy);
+  }
+
+  /* ── Evidence row ───────────────────────────────────────────────────── */
+  .evidence {
+    display: grid;
+    grid-template-columns: repeat({{ evidence.columns }}, 1fr);
+    gap: 10px;
+    margin-top: var(--ls-space-2);
+  }
+
+  .evidence-item {
+    background: var(--ls-grey-light);
+    border-top: 3px solid var(--ls-cyan);
+    border-radius: var(--ls-radius-sm);
+    padding: 6px 10px 6px 10px;
+  }
+
+  .evidence-item h3 {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 700;
+    color: var(--ls-navy);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .evidence-item p {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 400;
+    line-height: 1.38;
+    color: var(--ls-navy);
+  }
+
+  /* ── Mandate / pillar columns ───────────────────────────────────────── */
+  .reg-columns {
+    display: grid;
+    grid-template-columns: repeat({{ mandates|length if mandates else 3 }}, 1fr);
+    gap: var(--ls-space-4);
+    margin-top: var(--ls-space-3);
+  }
+
+  .reg-item { border-left: 3px solid var(--ls-navy); padding-left: var(--ls-space-3); }
+
+  .reg-label {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ls-cyan);
+    margin-bottom: 2px;
+  }
+
+  .reg-item p {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 400;
+    line-height: 1.38;
+    color: var(--ls-navy);
+  }
+
+  /* ── Action steps ───────────────────────────────────────────────────── */
+  .steps { margin-top: var(--ls-space-1); }
+
+  .step {
+    display: flex;
+    gap: var(--ls-space-3);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--ls-grey-light);
+  }
+  .step:last-child { border-bottom: none; }
+
+  .step-num {
+    flex: 0 0 auto;
+    width: 20px;
+    font-size: calc(var(--t-lede) * var(--fit));
+    font-weight: 700;
+    color: var(--ls-cyan);
+    line-height: 1.3;
+  }
+
+  .step h4 {
+    font-size: calc(var(--t-lede) * var(--fit));
+    font-weight: 700;
+    color: var(--ls-navy);
+    line-height: 1.25;
+    margin-bottom: 2px;
+  }
+
+  .step p {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--ls-navy);
+  }
+
+  /* ── Page 2 rail ────────────────────────────────────────────────────── */
+  .rail {
+    background: var(--ls-navy);
+    padding: 4mm 14mm;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex: 0 0 auto;
+  }
+
+  .rail-company {
+    font-size: calc(var(--t-lede) * var(--fit));
+    font-weight: 700;
+    color: var(--ls-white);
+    white-space: nowrap;
+  }
+
+  .rail-right {
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ls-cyan);
+    white-space: nowrap;
+  }
+
+  /* ── Footer ─────────────────────────────────────────────────────────── */
+  .footer {
+    flex: 0 0 auto;
+    margin: 0 14mm;
+    border-top: 1px solid var(--ls-grey-light);
+    padding: 4px 0 6px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ls-space-4);
+    font-size: calc(var(--t-body) * var(--fit));
+    font-weight: 400;
+    color: var(--ls-grey-dark);
+  }
+
+  .footer > span { white-space: nowrap; }
+
+  .footer .tagline {
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--ls-navy);
+  }
+
+  .footer .pagenum { font-weight: 700; color: var(--ls-navy); }
+
+  /* vertical rhythm helpers on the 4px scale */
+  .mt-4 { margin-top: var(--ls-space-3); }
+  .mt-5mm { margin-top: 4mm; }
+  .mt-4mm { margin-top: 3mm; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ PAGE 1 — SUMMARY & PILLARS ══════════════════════════ -->
+<section class="page{{ ' measure' if measure else '' }}">
+
+  <header class="masthead">
+    <div class="masthead-top">
+      <div class="logo-crop">
+        <img src="{{ logo.src }}"
+             alt="LightSpeed Holdings Limited™ — ASPIRE. ACT. ACHIEVE.">
+      </div>
+      <div class="masthead-copy">
+        <div class="eyebrow">{{ eyebrow }}</div>
+        <h1 class="masthead-title">{{ title }}</h1>
+        <div class="masthead-rule"></div>
+        <div class="masthead-sub">{{ subtitle }}</div>
+      </div>
+    </div>
+
+    <div class="metric-strip"
+         style="grid-template-columns: repeat({{ metrics|length }}, 1fr);">
+      {% for m in metrics %}
+      <div class="metric">
+        <div class="metric-value">{{ m.value }}</div>
+        <div class="metric-label">{{ m.label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </header>
+
+  <div class="canvas">
+
+    <div class="section-head">
+      <span class="section-mark"></span>
+      <h2>{{ summary.heading }}</h2>
+      <span class="section-kicker">{{ summary.kicker }}</span>
+    </div>
+
+    {% for para in summary.paragraphs %}
+    <p class="lede">{{ para }}</p>
+    {% endfor %}
+
+    {% if pillars %}
+    <div class="section-head mt-5mm">
+      <span class="section-mark"></span>
+      <h2>{{ pillars_heading }}</h2>
+      <span class="section-kicker">{{ pillars_kicker }}</span>
+    </div>
+
+    <div class="pillars">
+      {% for p in pillars %}
+      <article class="pillar">
+        <div class="pillar-index">PILLAR {{ '%02d' % loop.index }}</div>
+        <h3>{{ p.heading }}</h3>
+        <p>{{ p.body }}</p>
+        {% if p.chips %}
+        <div class="pillar-chips">
+          {% for chip in p.chips %}<span class="chip">{{ chip }}</span>{% endfor %}
+        </div>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+  </div>
+
+  <footer class="footer">
+    <span>LightSpeed Holdings Limited™ &nbsp;·&nbsp; Confidential</span>
+    <span class="tagline">ASPIRE. ACT. ACHIEVE.</span>
+    <span class="pagenum">01 / 02</span>
+  </footer>
+</section>
+
+<!-- ══════════════════════════ PAGE 2 — EVIDENCE & ACTION ══════════════════════════ -->
+<section class="page{{ ' measure' if measure else '' }}">
+
+  <header class="rail">
+    <div class="rail-company">LightSpeed Holdings Limited™</div>
+    <div class="rail-right">{{ rail_right }}</div>
+  </header>
+
+  <div class="canvas">
+
+    {% if evidence %}
+    <div class="section-head">
+      <span class="section-mark"></span>
+      <h2>{{ evidence.heading }}</h2>
+      <span class="section-kicker">{{ evidence.kicker }}</span>
+    </div>
+
+    {% if evidence.intro %}<p class="body">{{ evidence.intro }}</p>{% endif %}
+
+    <div class="evidence">
+      {% for item in evidence.cards %}
+      <div class="evidence-item">
+        <h3>{{ item.heading }}</h3>
+        <p>{{ item.body }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if evidence.callout %}
+    <div class="callout-navy mt-4">
+      <div class="callout-label">{{ evidence.callout.label }}</div>
+      <p>{{ evidence.callout.body }}</p>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if mandates %}
+    <div class="section-head mt-4mm">
+      <span class="section-mark"></span>
+      <h2>{{ mandates_heading }}</h2>
+      <span class="section-kicker">{{ mandates_kicker }}</span>
+    </div>
+
+    {% if mandates_intro %}<p class="body">{{ mandates_intro }}</p>{% endif %}
+
+    <div class="reg-columns">
+      {% for m in mandates %}
+      <div class="reg-item">
+        <div class="reg-label">{{ m.label }}</div>
+        <p>{{ m.body }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if steps %}
+    <div class="section-head mt-4mm">
+      <span class="section-mark"></span>
+      <h2>{{ steps_heading }}</h2>
+      <span class="section-kicker">{{ steps_kicker }}</span>
+    </div>
+
+    <div class="steps">
+      {% for s in steps %}
+      <div class="step">
+        <div class="step-num">{{ '%02d' % loop.index }}</div>
+        <div>
+          <h4>{{ s.heading }}</h4>
+          <p>{{ s.body }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if gate %}
+    <div class="callout-red mt-4">
+      <div class="callout-label">{{ gate.label }}</div>
+      <p>{{ gate.body }}</p>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <footer class="footer">
+    <span>LightSpeed Holdings Limited™ &nbsp;·&nbsp; Confidential</span>
+    <span class="tagline">ASPIRE. ACT. ACHIEVE.</span>
+    <span class="pagenum">02 / 02</span>
+  </footer>
+</section>
+
+</body>
+</html>
