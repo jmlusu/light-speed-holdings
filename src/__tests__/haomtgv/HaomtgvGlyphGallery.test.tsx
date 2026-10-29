@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { HaomtgvGlyphGallery } from '../../components/haomtgv/HaomtgvGlyphGallery';
 
 // Mock the media registry
-vi.mock('../../../data/media/registry', () => ({
+vi.mock('../../data/media/registry', () => ({
   getMediaByType: vi.fn(() => [
     {
       id: 'glyph-human',
