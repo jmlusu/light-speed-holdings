@@ -75,7 +75,7 @@ export default defineConfig(({ mode, command }) => {
         { find: '@lightspeed/data/faqs', replacement: path.resolve(__dirname, './data/faqs/registry.ts') },
         { find: '@lightspeed/data/claims', replacement: path.resolve(__dirname, './data/claims/registry.ts') },
         { find: '@lightspeed/data/governance', replacement: path.resolve(__dirname, './data/governance/registry.ts') },
-        { find: '@lightspeed/data/media', replacement: path.resolve(__dirname, './data/media/registry.ts') },
+        { find: '@lightspeed/data/media', replacement: path.resolve(__dirname, './src/data/media/registry.ts') },
         { find: '@lightspeed/data/ctas', replacement: path.resolve(__dirname, './data/ctas/registry.ts') },
       ],
     },

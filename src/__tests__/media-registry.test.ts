@@ -73,6 +73,7 @@ const NON_SITE_PREFIX = 'src/ai_company/';
 
 /** This guard file quotes image paths in its own assertions; skip it when scanning. */
 const SELF = 'src/__tests__/media-registry.test.ts';
+const MEDIA_TS_REGISTRY = 'src/data/media/registry.ts';
 
 /** Every .ts/.tsx/.json file under src/, plus the site shell index.html. */
 const siteSourceFiles = (): string[] => {
@@ -92,7 +93,7 @@ const collectReferences = (): { site: Set<string>; nonSite: Set<string> } => {
 
   for (const file of siteSourceFiles()) {
     const rel = toPosix(relative(ROOT, file));
-    if (rel === SELF) continue;
+    if (rel === SELF || rel === MEDIA_TS_REGISTRY) continue;
     const target = rel.startsWith(NON_SITE_PREFIX) ? nonSite : site;
     for (const match of readFileSync(file, 'utf8').matchAll(IMAGE_REF)) {
       target.add(match[1]);
