@@ -23,7 +23,7 @@ const mockAsset = {
   updatedAt: '2026-10-16',
 };
 
-vi.mock('../../../data/media/registry', () => ({
+vi.mock('../../data/media/registry', () => ({
   getMediaById: vi.fn((id: string) => (id === 'haomtgv-full-vertical' ? mockAsset : undefined)),
 }));
 

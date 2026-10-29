@@ -1,5 +1,5 @@
 import React from 'react';
-import { getMediaByType } from '../../../data/media/registry';
+import { getMediaByType } from '../../data/media/registry';
 import { SectionHeading } from '../site/SectionHeading';
 import { Reveal } from '../Reveal';
 
