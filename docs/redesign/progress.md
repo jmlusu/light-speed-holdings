@@ -9,7 +9,7 @@
 | 07 | Layout shell: navbar, footer, CTA band | Complete | Applied new NavShell, Footer, and CTABand to all routes; build passes; axe no critical issues on nav/footer. | All routes — shell swap. | NavShell, Footer, CTABand, LogoLockup. | — | ✅ Fixed | M |
 | 08 | Component library | | | |
 | 09 | Home | | | |
-| 10 | What We Do | | | |
+| 10 | What We Do | done | 7c318d41 | what-we-do redesign (HeroPhoto, 5 LightServiceCards, dark stat band) |
 | 11 | Solutions | | | |
 | 12 | Use Cases | | | |
 | 13 | Company Builder | | | |
