@@ -8,6 +8,23 @@
     "edit": "allow",
     "bash": "allow"
   },
+  "workspace": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      "**/*.db",
+      "**/*.sqlite",
+      "docs/redesign/**",
+      "package-lock.json"
+    ]
+  },
+  "agent": {
+    "default": {
+      "maxContextTokens": 64000,
+      "autoReadFiles": false
+    }
+  },
   "mcp": {
     "resend": {
       "type": "remote",
@@ -221,7 +238,7 @@
       "models": {
         "qwen2.5-coder-7b-32k": {
           "name": "Qwen 2.5 Coder 7B (llama.cpp)",
-          "limit": { "context": 32768, "output": 8192 }
+          "limit": { "context": 65536, "output": 16384 }
         },
         "deepseek-r1-64k": {
           "name": "DeepSeek R1 64K (llama.cpp)",
