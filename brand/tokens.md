@@ -45,7 +45,7 @@ Use in CSS: `rgba(var(--ls-red-rgb), 0.3)`
 
 ### Color rules
 
-- Navy is dominant. Red and cyan are accents — roughly 80/10/10 navy/red/cyan on brand surfaces.
+- Navy is dominant. Red and cyan are supporting accents — roughly 60% navy / 20% red / 20% cyan on brand-dominant surfaces.
 - Do NOT add new colors without a documented brand decision.
 
 ---

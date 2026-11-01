@@ -176,7 +176,7 @@ Research Data → k-dense-infographics (Nano Banana Pro) → ls-visual-storytell
 ```
 
 **Brand Enforcement Rules:**
-- Palette: 80% navy / 10% red / 10% cyan
+- Palette: roughly 60% navy / 20% red / 20% cyan on brand-dominant surfaces
 - Type: Arial scale (36/32/28/24/18/16/14/13/12pt)
 - Logo: `brand/logo/logo-light-bg.png` on navy
 - Clear space: 1× "L" height

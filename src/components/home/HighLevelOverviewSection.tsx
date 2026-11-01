@@ -18,7 +18,7 @@ interface HighLevelOverviewSectionProps {
  - Cyan: #00BFFF (links on dark, taglines on navy)
  - Arial type scale: displayXL 36pt → caption 12pt
  - 4px spacing grid base unit
- - 80/10/10 color rule (navy dominant, red/cyan accents)
+ - 60/20/20 color rule (navy dominant, red/cyan accents)
  - Tagline "ASPIRE. ACT. ACHIEVE." on first mention with ™
  */
 export const HighLevelOverviewSection: React.FC<HighLevelOverviewSectionProps> = ({ theme }) => {

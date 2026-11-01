@@ -1,6 +1,6 @@
 # LightSpeed Holdings Brand Guidelines
 
-**Version:** 1.0.1
+**Version:** 1.1.0
 **Source of truth:** `brand/tokens/brand-tokens.json` (machine-readable), `brand/tokens.md` (human-readable overview), `static/brand/BRAND_GUIDELINES.md` (quick reference).
 **Owner:** Brand Strategist / CMO.
 **Applies to:** All public-facing and operational touchpoints. Agents creating any artifact (website, deck, document, social post, ad, diagram, infographic) MUST load the `ls-design-system` skill before producing creative output.
@@ -29,7 +29,7 @@
 | `grey-light-text` | `#9CA3AF` | Tertiary text on dark surfaces |
 
 ### Color Rules
-- Navy is the dominant brand color. Red and cyan are accents — use sparingly (approximately 80/10/10 navy/red/cyan on brand-dominant surfaces).
+- Navy is the dominant brand color. Red and cyan are supporting accents — use them deliberately (roughly 60% navy / 20% red / 20% cyan on brand-dominant surfaces).
 - On navy surfaces, text is white; on cyan surfaces, text is navy; on red surfaces, text is white.
 - Do NOT add new colors without a documented brand decision. Off-palette colors invalidate brand compliance.
 

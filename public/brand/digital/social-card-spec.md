@@ -16,9 +16,9 @@
 ### 1.2 Color Palette (Brand Tokens, `brand/tokens/brand-tokens.json`)
 | Token | Hex | Usage | Coverage per Brand Rules |
 |-------|-----|---------|--------------------------|
-| Navy | `#070A40` | Primary background, dominant surface | ~80% of visible canvas |
-| Red | `#E63946` | Accent — CTAs, highlights, signal waves | ~10% of visible canvas |
-| Cyan | `#00BFFF` | Accent — shield base, links on dark, taglines on navy | ~10% of visible canvas |
+| Navy | `#070A40` | Primary background, dominant surface | ~60% of visible canvas |
+| Red | `#E63946` | Accent — CTAs, highlights, signal waves | ~20% of visible canvas |
+| Cyan | `#00BFFF` | Accent — shield base, links on dark, taglines on navy | ~20% of visible canvas |
 | White | `#FFFFFF` | Text on navy, clean backgrounds | As needed for contrast |
 
 ### 1.3 Logo Usage
@@ -78,9 +78,9 @@
 - If rendered as actual social media asset: single primary CTA, visually distinct (red `#E63946` accent on navy background), positioned at bottom-right, 48 px from right and bottom edges, 32 px minimum width, white text on red background
 
 ### 1.8 Brand Compliance Checklist (pre-QA)
-- [ ] Navy `#070A40` is the dominant background color (~80% coverage)
-- [ ] Red `#E63946` used as accent only (~10% coverage)
-- [ ] Cyan `#00BFFF` used as accent only (~10% coverage)
+- [ ] Navy `#070A40` is the dominant background color (~60% coverage)
+- [ ] Red `#E63946` used as an accent, not the dominant surface (~20% coverage)
+- [ ] Cyan `#00BFFF` used as an accent, not the dominant surface (~20% coverage)
 - [ ] White `#FFFFFF` used for text on navy background
 - [ ] Icon-only logo from `brand/logo/` (never recreated)
 - [ ] Clear space respected (1× "L" height on all sides)
