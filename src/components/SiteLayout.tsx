@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { FloatingNav } from './FloatingNav';
-import { SiteFooter } from './SiteFooter';
+import { NavShell } from './NavShell';
+import { Footer } from './Footer';
 import { ExecutiveBriefingModal } from './ExecutiveBriefingModal';
 import { useSite } from '../site-context';
 import { trackJourneyEvent, stageForRoute } from '../hooks/useJourneyEvents';
@@ -64,7 +64,7 @@ export const SiteLayout: React.FC = () => {
         Skip to content
       </a>
 
-      <FloatingNav
+      <NavShell
         onRequestBriefing={onRequestBriefing}
         theme={theme}
         onToggleTheme={onToggleTheme}
@@ -74,7 +74,7 @@ export const SiteLayout: React.FC = () => {
         <Outlet />
       </main>
 
-      <SiteFooter theme={theme} />
+      <Footer theme={theme} />
 
       <ExecutiveBriefingModal
         isOpen={isBriefingOpen}

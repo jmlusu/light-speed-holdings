@@ -191,6 +191,8 @@ export const ContextualCTA: React.FC<{ id: string; href?: string; onClick?: () =
 
 /**
  * CTA Band — Full-width CTA section for page endings
+ * Blue gradient band with logo, heading with cyan final word, sub line,
+ * and crimson pill button with arrow.
  */
 export interface CTABandProps {
   title: string;
@@ -208,18 +210,23 @@ export const CTABand: React.FC<CTABandProps> = ({
   theme,
 }) => {
   const isDark = theme === 'dark' || document.documentElement.classList.contains('dark');
-  const colorTokens = tokens.colors;
+  const onNavy = isDark ? '#FFFFFF' : '#070A40';
+  const onCyan = '#00BFFF';
+  const crimson = '#DC3641';
 
   const bandStyle: React.CSSProperties = {
     padding: `${tokens.spacing[16]} ${tokens.spacing[12]}`,
-    backgroundColor: isDark ? colorTokens.navy : colorTokens.navy,
-    color: colorTokens.white,
+    background: isDark ? 'linear-gradient(135deg, #00BFFF 0%, #070A40 100%)' : 'linear-gradient(135deg, #00BFFF 0%, #070A40 100%)',
+    color: onNavy,
     textAlign: 'center',
+    position: 'relative',
   };
 
   const containerStyle: React.CSSProperties = {
     maxWidth: '720px',
     margin: '0 auto',
+    position: 'relative',
+    zIndex: 1,
   };
 
   const titleStyle: React.CSSProperties = {
@@ -228,13 +235,14 @@ export const CTABand: React.FC<CTABandProps> = ({
     fontSize: tokens.typography.fontSize.titleMd,
     margin: `0 0 ${tokens.spacing[4]}`,
     lineHeight: 1.2,
+    display: 'inline-block',
   };
 
   const textStyle: React.CSSProperties = {
     fontFamily: tokens.typography.fontFamily.sans,
     fontSize: tokens.typography.fontSize.bodyLg,
     lineHeight: 1.6,
-    color: colorTokens.grey[300],
+    color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.7)',
     margin: `0 0 ${tokens.spacing[8]}`,
   };
 
@@ -243,21 +251,61 @@ export const CTABand: React.FC<CTABandProps> = ({
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: tokens.spacing[4],
+    marginTop: tokens.spacing[6],
   };
+
+  // Extract the final word of the title to style it cyan
+  const titleWords = title.trim().split(/\s+/);
+  const lastWord = titleWords[titleWords.length - 1];
+  const restWords = titleWords.slice(0, -1);
 
   return (
     <section style={bandStyle} aria-labelledby="cta-band-title">
       <div style={containerStyle}>
-        <h2 id="cta-band-title" style={titleStyle}>{title}</h2>
+        <h2 id="cta-band-title" style={titleStyle}>
+          {restWords.length > 0
+            ? <span>{restWords.join(' ')} </span>
+            : ''}
+          <span style={{ color: onCyan, fontWeight: 700 }}>{lastWord}</span>
+        </h2>
         {text && <p style={textStyle}>{text}</p>}
         <div style={ctaGroupStyle}>
           {primaryCTA && (
-            <CTAButton variant="primary" href={primaryCTA.href} size="lg">
+            <CTAButton
+              variant="primary"
+              href={primaryCTA.href}
+              size="lg"
+              style={{
+                backgroundColor: crimson,
+                color: 'white',
+                boxShadow: '0 4px 14px rgba(220,54,65,0.15)',
+              }}
+            >
               {primaryCTA.label}
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2.5"
+                style={{ transform: 'rotate(45deg)' }}
+              >
+                <path d="M5 12l6 6 6-6" />
+              </svg>
             </CTAButton>
           )}
           {secondaryCTA && (
-            <CTAButton variant="secondary" href={secondaryCTA.href} size="lg">
+            <CTAButton
+              variant="secondary"
+              href={secondaryCTA.href}
+              size="lg"
+              style={{
+                backgroundColor: 'transparent',
+                color: onCyan,
+                border: '2px solid onCyan',
+              }}
+            >
               {secondaryCTA.label}
             </CTAButton>
           )}
