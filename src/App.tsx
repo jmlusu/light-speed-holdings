@@ -8,6 +8,7 @@ import { HomePage } from './pages/HomePage';
 import { WhatWeDoPage } from './pages/WhatWeDoPage';
 import { AiCompanyBuilderPage } from './pages/AiCompanyBuilderPage';
 import { SolutionsPage } from './pages/SolutionsPage';
+import { SolutionDetailPage } from './pages/solutions';
 import { SectorsPage } from './pages/SectorsPage';
 import { UseCasesPage } from './pages/UseCasesPage';
 import { UseCaseDetailPage } from './pages/UseCaseDetailPage';
@@ -27,6 +28,7 @@ const HomePageRoute = withSite(HomePage);
 const WhatWeDoPageRoute = withSite(WhatWeDoPage);
 const AiCompanyBuilderPageRoute = withSite(AiCompanyBuilderPage);
 const SolutionsPageRoute = withSite(SolutionsPage);
+const SolutionDetailPageRoute = withSite(SolutionDetailPage);
 const SectorsPageRoute = withSite(SectorsPage);
 const SectorDetailPageRoute = withSite(SectorDetailPage);
 const AiAssessmentPageRoute = withSite(AiAssessmentPage);
@@ -86,6 +88,7 @@ export const App: React.FC = () => {
           { path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
           { path: 'haomtgv', element: <HaomtgvPageRoute /> },
           { path: 'solutions', element: <SolutionsPageRoute /> },
+          { path: 'solutions/:slug', element: <SolutionDetailPageRoute /> },
           { path: 'sectors', element: <SectorsPageRoute /> },
           { path: 'sectors/:slug', element: <SectorDetailPageRoute /> },
           { path: 'use-cases', element: <UseCasesPage /> },
