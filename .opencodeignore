@@ -125,3 +125,12 @@ tmp/
 *.7z
 *.mp4
 *.mp3
+
+# Documentation redesign ignore
+docs/redesign/
+
+# Documentation redesign ignore
+docs/redesign/
+
+# Documentation redesign ignore
+docs/redesign/
