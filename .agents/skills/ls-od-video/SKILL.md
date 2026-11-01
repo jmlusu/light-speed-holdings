@@ -60,7 +60,7 @@ stretched into 9:16 fails the safe-area rule and the type scale at once.
 
 - **Canvas:** `1080 × 1920`, 30 fps, 60 s max (Reels/TikTok cut at 60 s; a
   60-second short is the target, 15 s is the floor).
-- **Backdrop:** Navy `#070A40`, full bleed, ~80% of the frame.
+- **Backdrop:** Navy `#070A40`, full bleed, ~60% of the frame.
 - **Soundwave:** animated Cyan `#00BFFF` waveform, the single motion element.
   Keep it in the lower third behind the subtitle band, amplitude driven by the
   narration envelope, never a static decoration. Cyan is instrumentation here,
@@ -171,8 +171,8 @@ Motion defaults come from
 The file's `## LightSpeed Holdings` section overrides the generic defaults,
 including the cyan-on-dark and pure-white cautions:
 
-- Navy `#070A40` carries about 80% of the composition. Red `#E63946` is the
-  action color at about 10%. Cyan `#00BFFF` is instrumentation at about 10%.
+- Navy `#070A40` carries about 60% of the composition. Red `#E63946` is the
+  action color at about 20%. Cyan `#00BFFF` is instrumentation at about 20%.
 - Light surfaces use Morning Mist `#F7F8F9`; nested dark panels use Deep
   Mineral `#121518`. No other hues, gradients, glow, or pure `#000`.
 - Arial, with Helvetica as fallback, is the only typeface. Display weights are
@@ -195,7 +195,7 @@ including the cyan-on-dark and pure-white cautions:
   argued series.
 - Do not rebrand the CEO dashboard, use off-palette colors, use the accent
   left-stripe card pattern as decoration, center body copy, or exceed roughly
-  10% red or cyan in any scene.
+  20% red or cyan in any scene.
 
 Do not introduce a second, conflicting override layer. The LightSpeed section
 in `house-style.md` is the source of truth.

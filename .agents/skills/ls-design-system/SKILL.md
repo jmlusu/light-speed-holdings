@@ -48,7 +48,7 @@ pick it up.
 | Dark Grey | `#6B7280` | Secondary text, captions |
 | Light Text Grey | `#9CA3AF` | Tertiary text on dark surfaces |
 
-~80% navy / 10% red / 10% cyan on brand-dominant surfaces. Accents are accents — never let them overpower navy.
+~60% navy / 20% red / 20% cyan on brand-dominant surfaces (60/20/20). Navy stays dominant — red and cyan are accents that support the hierarchy, never displace it.
 
 ### Typography
 

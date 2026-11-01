@@ -23,7 +23,7 @@
 - **`static/brand/BRAND_GUIDELINES.md`** — Quick reference doc for agents.
 - **Logo suite** — 31 files in `brand/logo/` covering 8 concepts (`logo-full`, `logo-light-bg`, `logo-dark-bg`, `logo-mark`, `logo-mark-mono`, `logo-avatar`, `logo-favicon`, `logo-og`), each as SVG + PNG with transparent twins where the base was opaque. Current guidance: `brand/guidelines/brand-guidelines.md` § 3.
 - **Print assets** — Business cards (front/back, 5 formats), letterheads (2 designs, SVG/PDF/PNG), email signatures (2 designs).
-- **Brand tokens reflect the correct palette:** navy `#070A40`, red `#E63946`, cyan `#00BFFF`, grey-light `#F2F2F2`, white `#FFFFFF`, grey-dark `#6B7280`, grey-light-text `#9CA3AF`. The 80/10/10 ratio rule is documented.
+- **Brand tokens reflect the correct palette:** navy `#070A40`, red `#E63946`, cyan `#00BFFF`, grey-light `#F2F2F2`, white `#FFFFFF`, grey-dark `#6B7280`, grey-light-text `#9CA3AF`. The 60/20/20 ratio rule is documented.
 
 **Readiness Score: 4/5**
 

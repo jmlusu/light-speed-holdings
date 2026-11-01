@@ -7,7 +7,7 @@ Build a standalone, strategically designed AI Company Builder page for the Light
 **Success Criteria:**
 - Page loads with LCP < 2.5s on 4G connection
 - All interactive elements (carousels, filters, toggles) are accessible via keyboard and screen reader
-- Brand compliance: navy `#070A40`, red `#E63946`, cyan `#00BFFF` dominant with 80/10/10 ratio
+- Brand compliance: navy `#070A40`, red `#E63946`, cyan `#00BFFF` dominant with 60/20/20 ratio
 - Page is fully responsive from 320px to 1440px+
 - Zero references to "honest status discipline" or provenance-based access tiers
 - All animations respect `prefers-reduced-motion`
@@ -122,13 +122,13 @@ src/
 - **Hooks:** `use` prefix, camelCase (e.g., `useSWR.js`, `useReducedMotion.js`)
 - **Utility functions:** camelCase, `*Util.js` (e.g., `reducedMotion.js`)
 
-### Color Usage (80/10/10 Rule)
+### Color Usage (60/20/20 Rule)
 
 | Usage | CSS Class | Context |
 |-------|-----------|---------|
-| Navy dominant (80%) | `text-ls-navy`, `bg-ls-navy/80`, `border-ls-grey-dark` | Headings, primary backgrounds, card borders |
-| Red accent (10%) | `text-ls-red`, `bg-ls-red/10`, `border-ls-red/40`, `ring-ls-red/30` | CTAs, badge backgrounds, hover states, governance highlights |
-| Cyan accent (10%) | `text-ls-cyan` | Links, pillar icons, accent elements on dark surfaces |
+| Navy dominant (60%) | `text-ls-navy`, `bg-ls-navy/80`, `border-ls-grey-dark` | Headings, primary backgrounds, card borders |
+| Red accent (20%) | `text-ls-red`, `bg-ls-red/10`, `border-ls-red/40`, `ring-ls-red/30` | CTAs, badge backgrounds, hover states, governance highlights |
+| Cyan accent (20%) | `text-ls-cyan` | Links, pillar icons, accent elements on dark surfaces |
 
 ### TypeScript Conventions
 
@@ -214,7 +214,7 @@ export const PrincipleCard: React.FC<PrincipleCardProps> = ({
 ### Always Do (non-negotiable)
 
 - Run `npm run lint && npx tsc --noEmit && npm test` before any commit
-- Follow the 80/10/10 navy/red/cyan color rule — never use off-palette colors as dominants
+- Follow the 60/20/20 navy/red/cyan color rule — never use off-palette colors as dominants
 - Honor `prefers-reduced-motion` — all animations must have a static fallback
 - Use existing `Reveal` component for staggered reveals (do not create new IntersectionObserver logic)
 - Keep the page silent on "honest status discipline" — no provenance, no access-tier badges, no "proven/pilot/fieldable" labels on this page
