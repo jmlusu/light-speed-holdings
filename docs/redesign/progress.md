@@ -11,7 +11,7 @@
 | 09 | Home | | | |
 | 10 | What We Do | | | |
 | 11 | Solutions | | | |
-| 12 | Use Cases | | | |
+| 12 | **Use Cases** | done | Working filters with URL round-trips; FilterBar selects Status/Sector/Problem Category/Solution Category + search; filtering updates grid AND URL query string; "Featured Use Cases" card grid with StatusBadge, title, body, TagChips, ArrowLink; detail template with evidence section ("no fabricated client evidence" rule); empty state for unmatched filter combinations; 390px vertical filter stack; build passes. |
 | 13 | Company Builder | | | |
 | 14 | Pharos Insights | | | |
 | 15 | HAOMTGV framework | | | |
