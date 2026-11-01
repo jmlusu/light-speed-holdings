@@ -28,12 +28,12 @@
 | **Center** | AI Venture Studio | Text: `--ls-on-navy`, Title XL 32pt |
 | **Bottom-center** | Client Presentation | Text: `--ls-grey-light-text`, Caption 12pt |
 | **Bottom-right** | Date: 2026-10-12 | Text: `--ls-grey-light-text`, Caption 12pt |
-| **Dividers** | Thin red accent line | `--ls-red` 1px line, 80/10/10 navy/red/cyan ratio |
+| **Dividers** | Thin red accent line | `--ls-red` 1px line, 60/20/20 navy/red/cyan ratio |
 
 **Slideoutline notes:**
 - No other text or elements outside the specified areas
 - Navy background extends to slide edges
-- Red accent line provides visual separation (sparingly used per 80/10/10 rule)
+- Red accent line provides visual separation (bounded accent per 60/20/20 rule)
 
 ---
 
@@ -51,8 +51,8 @@
 
 **Brand compliance:**
 - Navy rail on left per §5 of brand guidelines
-- 80/10/10 navy/red/cyan ratio maintained
-- Red used sparingly as accent only
+- 60/20/20 navy/red/cyan ratio maintained
+- Red used as a bounded accent, never as a dominant fill
 
 ---
 
@@ -72,7 +72,7 @@
 **Brand compliance:**
 - Color tokens used exclusively from `brand/tokens.md`
 - No new colors invented
-- Red used only as accent per 80/10/10 rule
+- Red used only as accent per 60/20/20 rule
 - Cyan used for tagline-on-navy and secondary accent
 
 ---
@@ -125,11 +125,11 @@
 | **Title** | "Technical Architecture (AI‑Agnostic System)" | `--ls-font-heading`, Title LG 28pt, `--ls-navy` |
 | **Model Mesh diagram** | Three‑layer mesh: Fallback Chains → Cost/Latency Router → Guardrail Proxy<br>→ Frontier, Open‑Weights, Local/Sovereign models | Diagram using `--ls-navy` for lines/borders, `--ls-red` for CTA callsout, `--ls-cyan` for links<br>Arrows in `--ls-cyan` on navy background |
 | **Engineering Directives table** | Universal Protocol Proxy, Model Cascade & Dynamic Cost Router, Deterministic Execution & State Tracking, Security & PII Guardrails | `--ls-navy` for directive names, `--ls-grey-dark` for descriptions, 14pt body |
-| **PII guardrails callout** | "Intermediary proxy layer redacts/hashes PII before LLM requests; schema validation on all outputs" | Red `--ls-red` background with white `--ls-on-navy` text in callout box (max 40% red per 80/10/10 rule) |
+| **PII guardrails callout** | "Intermediary proxy layer redacts/hashes PII before LLM requests; schema validation on all outputs" | Red `--ls-red` background with white `--ls-on-navy` text in callout box (max 40% red per 60/20/20 rule) |
 
 **Brand compliance:**
 - All colors from official token palette
-- Red used in callout but bounded by 80/10/10 rule
+- Red used in callout but bounded by 60/20/20 rule
 - Navy dominance maintained
 
 ---
@@ -167,7 +167,7 @@
 
 **Brand compliance:**
 - Cyan used for "first‑mover" highlight per palette
-- Red used for CTAs, bounded by 80/10/10
+- Red used for CTAs, bounded by 60/20/20
 - Navy dominance maintained
 
 ---
@@ -186,7 +186,7 @@
 | **Compliance coverage** | SOC2, GDPR, industry‑specific regulations mapped to agent actions | Body 14pt |
 
 **Brand compliance:**
-- Red used for CORS and PII callouts, within 80/10/10 rule
+- Red used for CORS and PII callouts, within 60/20/20 rule
 - Navy dominance for matrix and headers
 - No new colors introduced
 
@@ -274,8 +274,8 @@
 ### Color Usage Reference
 All slide backgrounds, text, and accents must use the following tokens (from `brand/tokens/brand-tokens.json`):
 - Navy: `#070A40` (`var(--ls-navy)`)
-- Red: `#E63946` (`var(--ls-red)`) — accent only, max 10% per 80/10/10 rule
-- Cyan: `#00BFFF` (`var(--ls-cyan)`) — accent/link on dark, 10% per rule
+- Red: `#E63946` (`var(--ls-red)`) — accent only, max 20% per 60/20/20 rule
+- Cyan: `#00BFFF` (`var(--ls-cyan)`) — accent/link on dark, max 20% per rule
 - White: `#FFFFFF` (`var(--ls-white)`)
 - Grey‑light: `#F2F2F2` (`var(--ls-grey-light)`) — for callout backgrounds
 - Grey‑dark: `#6B7280` (`var(--ls-grey-dark)`) — secondary text

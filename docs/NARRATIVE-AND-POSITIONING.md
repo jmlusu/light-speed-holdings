@@ -41,7 +41,7 @@ ASPIRE. ACT. ACHIEVE.
 - **Navy #070A40** – dominant color; used for primary surfaces, headline backgrounds, logo text, and the CEO-dashboard rail.
 - **Red #E63946** – accent color; reserved for signal-wave details, CTA highlights, and key numerical call-outs.
 - **Cyan #00BFFF** – accent color; used for shield bases, link styling on dark surfaces, and tagline rendering on navy.
-- **Ratio** – on brand-dominant surfaces apply roughly 80% navy / 10% red / 10% cyan. Do not deviate without a documented brand decision (color rules, brand-guidelines.md §32-34).
+- **Ratio** – on brand-dominant surfaces apply roughly 60% navy / 20% red / 20% cyan. Navy remains dominant; red and cyan are substantial accents, not rare highlights. This 60/20/20 ratio is itself a documented brand decision dated 2026-11-01, superseding the former 80/10/10 split — any further change requires its own documented brand decision (color rules, brand-guidelines.md §32-34).
 
 ### 3.2 Type Scale & Grid
 

@@ -9,9 +9,9 @@
 ### Colors
 ```css
 /* Primary */
---navy: #070A40;           /* Dominant: backgrounds, headlines, rails */
---red: #DC3641;            /* Accent (10%): signal waves, CTAs, highlights */
---cyan: #00BFFF;           /* Accent (10%): shield base, links on dark */
+--navy: #070A40;           /* Dominant (~60%): backgrounds, headlines, rails */
+--red: #DC3641;            /* Accent (~20%): signal waves, CTAs, highlights */
+--cyan: #00BFFF;           /* Accent (~20%): shield base, links on dark */
 
 /* Neutrals */
 --white: #FFFFFF;          /* Clean backgrounds, text on navy */

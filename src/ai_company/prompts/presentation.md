@@ -8,15 +8,15 @@ prompts to ensure brand compliance and consistent narrative framing.
 
 ## Brand Tokens ( enforced in all prompts )
 
-- **Navy**: `#070A40` — primary accent, used for ~80% of visual weight (left rail,
+- **Navy**: `#070A40` — primary accent, used for ~60% of visual weight (left rail,
   primary text, primary backgrounds)
-- **Red**: `#E63946` — secondary accent, used for ~10% of visual weight (highlight
+- **Red**: `#E63946` — secondary accent, used for ~20% of visual weight (highlight
   text, callout boxes, key metrics)
-- **Cyan**: `#00BFFF` — tertiary accent, used for ~10% of visual weight (links,
+- **Cyan**: `#00BFFF` — tertiary accent, used for ~20% of visual weight (links,
   secondary highlights, decorative elements)
 - **Grey**: `#F2F2F2` — background filler, used for non-brand areas
 
-**80/10/10 Rule**: Navy dominates at 80%, red and cyan each capped at 10% of total
+**60/20/20 Rule**: Navy dominates at 60%, red and cyan each capped at 20% of total
 visual accent. No single artifact may exceed these ratios without explicit override.
 
 ## Prompt Templates
@@ -129,7 +129,7 @@ Brand enforcement:
 
 ### Prompt Compliance
 
-- All prompt templates MUST reference the brand tokens and 80/10/10 rule
+- All prompt templates MUST reference the brand tokens and 60/20/20 rule
 - Slide-specific references (e.g., "Slide 12 explicitly references...") must appear
   exactly as specified — these are validation checkpoints
 - No AI-generated wording that violates the brand voice (no generic "cutting-edge"

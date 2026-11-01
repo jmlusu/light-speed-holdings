@@ -18,10 +18,10 @@ from pptx.util import Inches, Pt
 REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
 
-# Brand Colors (80/10/10 rule)
-NAVY = RGBColor(0x07, 0x0A, 0x40)  # 80% — primary, left rail, main text
-RED = RGBColor(0xE6, 0x39, 0x46)  # 10% — highlights, key decisions, calls to action
-CYAN = RGBColor(0x00, 0xBF, 0xFF)  # 10% — secondary highlights, tech emphasis
+# Brand Colors (60/20/20 rule)
+NAVY = RGBColor(0x07, 0x0A, 0x40)  # 60% — primary, left rail, main text
+RED = RGBColor(0xE6, 0x39, 0x46)  # 20% — highlights, key decisions, calls to action
+CYAN = RGBColor(0x00, 0xBF, 0xFF)  # 20% — secondary highlights, tech emphasis
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)  # Content backgrounds
 GREY = RGBColor(0xF2, 0xF2, 0xF2)  # Non-brand backgrounds, KPI boxes
 DARK_GREY = RGBColor(0x6B, 0x72, 0x80)  # Secondary text
@@ -498,7 +498,7 @@ def create_technology_innovation_slide(prs):
         "",
         "Core Components:",
         "  •  AgentLoop — Multi-turn reasoning with tool execution and governance",
-        "  •  CostTracker — Real-time LLM spend monitoring with 80/10/10 rule enforcement",
+        "  •  CostTracker — Real-time LLM spend monitoring with 60/20/20 rule enforcement",
         "  •  HITLGate — Human approval for irreversible actions",
         "  •  MessageBus — JSON task queue for agent coordination",
         "  •  ModelRouter — Provider fallback chain (OpenAI → Anthropic → DeepSeek → Gemini)",
@@ -587,7 +587,7 @@ def create_roadmap_slide(prs):
         Inches(5.8),
         Inches(8.5),
         Inches(0.5),
-        "80/10/10 rule enforced across all visual elements",
+        "60/20/20 rule enforced across all visual elements",
         font_size=12,
         color=GREY,
     )
@@ -680,7 +680,7 @@ def create_financial_overview_slide(prs):
         ("5", "Years to autonomy"),
         ("$500K", "Seed raise target"),
         ("3", "Offer families (A, B, C)"),
-        ("80/10/10", "Brand color rule"),
+        ("60/20/20", "Brand color rule"),
     ]
     for i, (value, label) in enumerate(kpis):
         col = i % 2
@@ -824,7 +824,7 @@ def create_future_outlook_slide(prs):
         "•  Q3 2027 — Autonomous mode live — self-governing AI company",
         "•  2028 — $2M+ ARR with 5+ paying pilot clients",
         "•  2028 — Phase 5: fully autonomous AI company operation",
-        "•  Ongoing — 80/10/10 brand rule enforced across all artifacts",
+        "•  Ongoing — 60/20/20 brand rule enforced across all artifacts",
     ]
     add_bullet_list(
         slide, Inches(0.8), Inches(2.3), Inches(8.5), Inches(3.5), outlook, font_size=13, color=NAVY
@@ -939,7 +939,7 @@ def create_closing_thesis_slide(prs):
         "The moment is right for AI-native company building — ",
         "and Lightspeed Holdings is the vehicle.",
         "",
-        "•  80/10/10 brand rule: navy dominance, red/cyan accents, grey filler",
+        "•  60/20/20 brand rule: navy dominance, red/cyan accents, grey filler",
         "•  Governance gated: all decisions flow through 5-tier approval matrix",
         "•  Cost-transparent: built-in LLM spend monitoring per agent",
         "•  Human-over-automated: HITL gates on irreversible operations",

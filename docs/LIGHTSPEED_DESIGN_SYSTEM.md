@@ -158,7 +158,7 @@ The repository currently carries three token layers that do not fully agree. **D
 6. **Success/Verified** → `cyan` (not green — cyan is our trust signal)
 7. **Warning/Pilot** → `red` (per honesty badge system)
 8. **Never use orange** as primary brand accent (Directive §5)
-9. **80/10/10 rule** — navy-dominant surfaces (≈80%), red and cyan as accents (≈10% each); red never used as a large fill
+9. **60/20/20 rule** — navy-dominant surfaces (≈60%), red and cyan as bounded accents (≈20% each); red never used as a large fill
 
 ### CSS Custom Properties (actual names in the codebase)
 
@@ -623,7 +623,7 @@ Required variants (canonical filenames in `brand/logo/`):
 - **African context, authentic** — real people, real work, contemporary settings (§8, §39). *Real* is literal: human imagery is only ever real, consented, commissioned photography holding a model or property release. AI-generated people and avatars are prohibited — see Generated Imagery below
 - **No stereotypes** — *"Avoid stereotypical poverty imagery."* (Directive line 2067); no "staring at a laptop" cliché; no generic stock-photo smiles (lines 1088, §19 Type A)
 - **Authentic leadership** — leadership imagery shows competence and context, not posed headshot grids (line 1278); no headshots at all, generated or otherwise
-- **Controlled accent use** — cyan/red appear as light and signal in imagery, never as an all-over grade (§5 80/10/10)
+- **Controlled accent use** — cyan/red appear as light and signal in imagery, never as an all-over grade (§5 60/20/20)
 
 ### Generated Imagery
 

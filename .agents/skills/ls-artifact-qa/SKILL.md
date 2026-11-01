@@ -63,7 +63,7 @@ Create the inspectable artifact first:
 ### 2. Brand QA (against `ls-design-system` tokens)
 - [ ] Palette = navy #070A40 / red #E63946 / cyan #00BFFF / greys / white ONLY
 - [ ] Generated/infographic visuals pass the palette checker (green) before APPROVE — `uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.py <image> --tolerance 3`
-- [ ] Navy dominant (~80%); red/cyan as accents (~10% each)
+- [ ] Navy dominant at roughly 60/20/20 (≈60% navy, 20% red, 20% cyan)
 - [ ] Type = Arial stack, sizes from the brand scale
 - [ ] Logo = official asset (path under `brand/logo/` canonical or `static/brand/logo/` mirror), never recreated, clear space respected
 - [ ] Tagline correct: "ASPIRE. ACT. ACHIEVE."

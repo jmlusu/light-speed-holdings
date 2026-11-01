@@ -6,6 +6,31 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.7.0] - 2026-11-01
+
+### Changed
+
+- **Brand colour usage ratio moved from 80/10/10 to 60/20/20** - on
+  brand-dominant surfaces the composition guide is now roughly 60% navy / 20%
+  red / 20% cyan, up from the previous roughly 80% navy / 10% red / 10% cyan.
+  Navy remains the dominant colour; red and cyan each move to a real 20% share
+  instead of a decorative accent. The approved-by-CEO decision is recorded in
+  the three canonical sources that carry the rule:
+  `brand/guidelines/brand-guidelines.md` (Color Rules), `brand/tokens.md`
+  (Color rules), and
+  `brand/guidelines/LightSpeed_Holdings_Organization_Design_System_v1.1.md`
+  section 5.2. Wording that framed red and cyan as something to use
+  "sparingly" was replaced rather than left standing next to the new ratio.
+- **No hex tokens changed** - `navy #070A40`, `red #E63946` and
+  `cyan #00BFFF` are untouched, and so is every other palette value, on-surface
+  text pairing and RGB channel. This release changes a composition guideline
+  only; no asset, logo, CSS variable or token file was regenerated.
+- **Mirrors regenerated** - `static/brand/guidelines/brand-guidelines.md` and
+  `public/brand/guidelines/brand-guidelines.md` were rebuilt from the canonical
+  source with `pwsh scripts/build/sync-brand.ps1` and confirmed byte-for-byte
+  in sync with `pwsh scripts/build/sync-brand.ps1 -Verify`. They are generated
+  files: edit the canonical source, never the mirrors.
+
 ## [1.6.0] - 2026-10-27
 
 ### Added
