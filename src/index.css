@@ -8,6 +8,9 @@
 @theme {
   --font-sans: Arial, "Helvetica Neue", Helvetica, sans-serif;
   --font-display: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  /* Handwritten annotations (hero marginalia). Locally installed script faces
+     only — no web-font request, no third-party host. */
+  --font-annotation: "Segoe Script", "Bradley Hand", "Brush Script MT", cursive;
 }
 
 /* ── Calm Intelligence Design System ────────────────────── */
