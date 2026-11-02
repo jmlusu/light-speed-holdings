@@ -9,7 +9,6 @@ import { getSectorsBySolution } from '@/data/sector-registry';
 
 interface SolutionDetailProps {
   params: { slug: string };
-  location: import('react-router-dom').UseLocation;
 }
 
 export const SolutionDetailPage: React.FC<SolutionDetailProps> = ({ params }) => {

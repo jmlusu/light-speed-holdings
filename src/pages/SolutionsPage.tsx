@@ -44,7 +44,6 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ theme }) => {
         ))}
 
         <DomainTile
-          sol={GOVERNANCE_SOLUTION}
           title={GOVERNANCE_SOLUTION.title}
           description={GOVERNANCE_SOLUTION.description}
           to={GOVERNANCE_SOLUTION.to}
