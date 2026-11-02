@@ -1,0 +1,136 @@
+# ==============================================================================
+# Comprehensive .opencodeignore / .ignore Template
+# Optimized for Python & Node.js Workflows
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Dependency Trees & Virtual Environments
+# (Prevent ingesting massive package directories into prompt context)
+# ------------------------------------------------------------------------------
+node_modules/
+.venv/
+venv/
+ENV/
+env/
+.tox/
+.nox/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# ------------------------------------------------------------------------------
+# 2. Lockfiles & Package Manifest Dumps
+# (Large auto-generated lockfiles spike cache reads during directory sweeps)
+# ------------------------------------------------------------------------------
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+Pipfile.lock
+poetry.lock
+uv.lock
+
+# ------------------------------------------------------------------------------
+# 3. Build Outputs, Bundles & Compiled Assets
+# ------------------------------------------------------------------------------
+dist/
+build/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+.astro/
+*.egg-info/
+.eggs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.dll
+*.dylib
+*.exe
+*.min.js
+*.min.css
+*.map
+*.bundle.js
+
+# ------------------------------------------------------------------------------
+# 4. Databases, Storage & Local State
+# ------------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.log
+*.pstat
+*.prof
+
+# ------------------------------------------------------------------------------
+# 5. Testing, Coverage & Audit Artifacts
+# ------------------------------------------------------------------------------
+coverage/
+.nyc_output/
+htmlcov/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.lcov
+reports/evidence/
+
+# ------------------------------------------------------------------------------
+# 6. Sensitive Data, Keys & Environment Variables
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+secrets/
+credentials/
+
+# ------------------------------------------------------------------------------
+# 7. IDE, System & Temporary Files
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.tmp/
+tmp/
+
+# ------------------------------------------------------------------------------
+# 8. Large Non-Text & Binary Media Assets
+# (Prevents wasting context windows on unparseable media blobs)
+# ------------------------------------------------------------------------------
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+*.svg
+*.pdf
+*.zip
+*.tar.gz
+*.7z
+*.mp4
+*.mp3
+
+# Documentation redesign ignore
+docs/redesign/
+
+# Documentation redesign ignore
+docs/redesign/
+
+# Documentation redesign ignore
+docs/redesign/
