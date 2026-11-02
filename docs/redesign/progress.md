@@ -11,6 +11,7 @@
 | 09 | Home | | | |
 | 10 | What We Do | | | |
 | 11 | Solutions | done | | Rebuilt /solutions matching ref-07-solutions.png + detail template |
+| 11 | Solutions | | | |
 | 12 | Use Cases | | | |
 | 13 | Company Builder | | | |
 | 14 | Pharos Insights | | | |
