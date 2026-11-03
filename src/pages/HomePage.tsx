@@ -198,7 +198,11 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               <ArticleCard
                 key={article.id}
                 theme={theme}
-                {...article}
+                title={article.title}
+                description={article.excerpt}
+                category={article.category}
+                ctaText="Read full article"
+                ctaUrl={`/article/${article.slug}`}
                 onRequestBriefing={onRequestBriefing}
               />
             ))}
