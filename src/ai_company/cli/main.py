@@ -98,6 +98,11 @@ _LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
         "app",
         "Foaster-style AI consulting engagements",
     ),
+    "metrics": (
+        "ai_company.cli.metrics",
+        "metrics_app",
+        "Operational metrics and health monitoring",
+    ),
 }
 
 
@@ -477,7 +482,7 @@ def status() -> None:
     omniroute_url = os.environ.get("OMNIROUTE_API_BASE", "http://localhost:20128")
     if omniroute_key:
         try:
-            import httpx2 as httpx
+            import httpx
 
             resp = httpx.get(f"{omniroute_url}/health", timeout=3.0)
             if resp.status_code == 200:
