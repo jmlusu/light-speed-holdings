@@ -4,6 +4,8 @@ import { Target } from 'lucide-react';
 
 interface PathwayCardProps {
   id: string;
+  /** 1-based position in the pathway list; rendered as the "PATH n" marker. */
+  index?: number;
   title: string;
   intent: string;
   body: string;
@@ -16,6 +18,7 @@ interface PathwayCardProps {
 
 export const PathwayCard: React.FC<PathwayCardProps> = ({
   id,
+  index,
   title,
   intent,
   body,
@@ -39,7 +42,7 @@ export const PathwayCard: React.FC<PathwayCardProps> = ({
           {intent}
         </span>
         <span className={`font-body text-[10px] font-bold tracking-widest ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-          PATH {1}
+          {typeof index === 'number' ? `PATH ${index}` : null}
         </span>
       </div>
 
@@ -62,7 +65,7 @@ export const PathwayCard: React.FC<PathwayCardProps> = ({
           <span>{primaryLabel}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 transition-transform group-hover:translate-x-0.5"
+            className="w-4 h-4 transition-transform group-hover:translate-x-0.5"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"

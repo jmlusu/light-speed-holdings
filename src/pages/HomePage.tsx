@@ -1,5 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { CtaBand } from '../components/site/CtaBand';
+import { FaqSection } from '../components/site/FaqSection';
 import { StatusBadge } from '../site/StatusBadge';
 import { CategoryChip } from '../site/CategoryChip';
 import { PathwayCard } from '../site/PathwayCard';
@@ -24,13 +26,12 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           ? 'bg-ls-white/95'
           : 'bg-ls-navy/80'}
         `}
-        aria-hidden="true"
       >
-        {/* Light-trails road image with dark overlay */}
+        {/* Brand hero image with dark overlay */}
         <img
-          src="/brand/digital/light-trails-road.jpg"
-          alt="Light trails road image"
-          className="object-cover w-full h-full transition-opacity duration-500 ease-out"
+          src="/brand/digital/Homepage_Hero_High_fidelity.jpeg"
+          alt=""
+          className="absolute inset-0 object-cover w-full h-full transition-opacity duration-500 ease-out"
         />
         <div
           className={`absolute inset-0 flex items-center justify-center pointer-events-none ${isLight
@@ -71,10 +72,10 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
                 </button>
               </div>
             </div>
-            {/* Logo lockup over light-trails */}
+            {/* Logo lockup over the hero image */}
             <div className="relative pt-20">
               <img
-                src="/brand/logo/ls-white-gradient.svg"
+                src="/logo-full-v2.svg"
                 alt="LightSpeed logo"
                 className="max-w-xs"
               />
@@ -105,7 +106,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             <span className="inline-flex items-center gap-2 rounded-full border px-2.5 py-1 font-body text-[10px] font-bold tracking-widest text-ls-red/60">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4"
+                className="w-4 h-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -125,6 +126,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             {homeCopy.pathwayCards.map((card, idx) => (
               <PathwayCard
                 key={card.id}
+                index={idx + 1}
                 theme={theme}
                 {...card}
                 onRequestBriefing={onRequestBriefing}
@@ -132,14 +134,14 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             ))}
           </div>
           <div className="mt-8 text-center">
-            <a
-              href="/ask"
+            <Link
+              to="/ask"
               className="inline-flex items-center gap-1.5 font-body text-xs font-bold tracking-widest uppercase text-ls-red transition-colors hover:text-ls-red/80"
             >
               Not sure which path fits? Ask LightSpeed
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4"
+                className="w-4 h-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -149,7 +151,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               >
                 <path d="M5 12.55a11 11 0 0 1 14.08 0" />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -159,7 +161,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
 
       {/* 4. Solutions grid with status chips */}
       <section
-        className={`py-24 sm:py-32 md:py-36 bg-ls-gray-light dark:bg-ls-navy/50`}
+        className={`py-24 sm:py-32 md:py-36 bg-ls-mist-subtle dark:bg-ls-navy/50`}
         aria-label="Solutions grid"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -198,8 +200,11 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               <ArticleCard
                 key={article.id}
                 theme={theme}
-                {...article}
-                onRequestBriefing={onRequestBriefing}
+                title={article.title}
+                excerpt={article.excerpt}
+                category={article.category}
+                slug={article.slug}
+                readTime={article.readTime}
               />
             ))}
           </div>
@@ -216,6 +221,9 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         onRequestBriefing={onRequestBriefing}
         ctaLevel="primary"
       />
+
+      {/* 7. FAQ — target of the footer /#faq link */}
+      <FaqSection id="faq" theme={theme} />
     </div>
   );
 };
