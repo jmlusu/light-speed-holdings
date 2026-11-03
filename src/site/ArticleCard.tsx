@@ -12,6 +12,8 @@ export interface ArticleCardProps {
   ctaText: string;
   ctaUrl: string;
   imageUrl?: string;
+  theme: 'light' | 'dark';
+  onRequestBriefing?: (summary?: string) => void;
 }
 
 export const ArticleCard: React.FC<ArticleCardProps> = ({
@@ -21,25 +23,19 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   ctaText,
   ctaUrl,
   imageUrl,
+  theme,
 }) => {
   return (
     <article className="bg-ls-white rounded-lg overflow-hidden shadow-sm border-y border-ls-navy/10 hover:shadow-md transition-shadow duration-200 max-w-sm mx-auto">
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt={title}
-          className="w-full h-48 object-cover"
-        )}
-      }
+      {imageUrl && <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />}
       <div className="p-5">
         <h3 className="text-ls-heading-lg font-semibold text-ls-navy mb-2 line-clamp-2">{title}</h3>
         <p className="text-ls-body-sm text-ls-teal line-clamp-3">{description}</p>
-        <CategoryChip className="mt-3" category={category} />
+        <CategoryChip category={category} theme={theme} />
         <CtaBand
-          className="mt-3 w-full"
-          variant="outline"
+          theme={theme}
           text={ctaText}
-          href={ctaUrl}
+          ctaTo={ctaUrl}
         />
       </div>
     </article>

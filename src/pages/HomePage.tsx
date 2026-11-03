@@ -4,7 +4,7 @@ import { StatusBadge } from '../site/StatusBadge';
 import { CategoryChip } from '../site/CategoryChip';
 import { PathwayCard } from '../site/PathwayCard';
 import { ArticleCard } from '../site/ArticleCard';
-import { HaomtgvGVSection } from '../components/home/HAOMTGVSection';
+import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
 import { VisitorPathsSection } from '../components/home/VisitorPathsSection';
 import homeCopy from '../data/homeCopy';
 
@@ -132,8 +132,8 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Link
-              to="/ask"
+            <a
+              href="/ask"
               className="inline-flex items-center gap-1.5 font-body text-xs font-bold tracking-widest uppercase text-ls-red transition-colors hover:text-ls-red/80"
             >
               Not sure which path fits? Ask LightSpeed
@@ -149,13 +149,13 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               >
                 <path d="M5 12.55a11 11 0 0 1 14.08 0" />
               </svg>
-            </Link>
+            </a>
           </div>
         </div>
       </section>
 
       {/* 3. H-A-O-M-T-G-V node diagram (responsive at 390px) */}
-      <HaomtgvGVSection theme={theme} />
+      <HAOMTGVSection theme={theme} />
 
       {/* 4. Solutions grid with status chips */}
       <section
