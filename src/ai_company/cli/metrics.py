@@ -87,6 +87,113 @@ def agent_task_completion(
         typer.echo("INFO: No tasks found in inbox for this period.")
 
 
+@metrics_app.command("cost")
+def cost_metrics(
+    period: str = typer.Option("30d", help="Time period (e.g., 1d, 7d, 30d)"),
+    agent: Optional[str] = typer.Option(None, help="Filter by agent ID"),
+) -> None:
+    """Calculate cost metrics for agent or all agents.
+
+    Uses the SQLite cost tracker backend for efficient aggregation.
+    Supports filtering by agent_id for per-agent cost attribution.
+    """
+    from ai_company.data.cost_analytics import CostAnalytics
+    from ai_company.data.database import Database
+
+    days = int(period.rstrip("d"))
+    cutoff = datetime.now() - timedelta(days=days)
+
+    # Initialize database and cost analytics
+    db = Database()
+    analytics = CostAnalytics(db)
+
+    # Get agent breakdown
+    if agent:
+        agent_total = analytics.get_agent_total_by_id(agent)
+        agent_daily = analytics.agent_daily_costs_by_id(agent, days=days)
+        agent_breakdown = {
+            "agent_id": agent,
+            "total_cost_usd": round(agent_total, 6),
+            "period": period,
+            "total_days": days,
+            "daily_breakdown": [
+                {
+                    "day": r["day"],
+                    "total_cost_usd": round(r["total_cost"], 6),
+                    "prompt_tokens": r["prompt_tokens"],
+                    "completion_tokens": r["completion_tokens"],
+                    "calls": r["calls"],
+                }
+                for r in agent_daily
+            ],
+        }
+    else:
+        # Get all-agent breakdown
+        agent_breakdown_list = analytics.breakdown_by_agent_id(days=days)
+        agent_breakdown = {
+            "agent_breakdown": [
+                {
+                    "agent_id": r["agent_id"],
+                    "total_cost_usd": round(r["cost_usd"], 6),
+                    "prompt_tokens": r["prompt_tokens"],
+                    "completion_tokens": r["completion_tokens"],
+                    "calls": r["calls"],
+                }
+                for r in agent_breakdown_list
+            ],
+            "total_cost_usd": round(sum(r["cost_usd"] for r in agent_breakdown_list), 6),
+            "total_prompt_tokens": sum(r["prompt_tokens"] for r in agent_breakdown_list),
+            "total_completion_tokens": sum(r["completion_tokens"] for r in agent_breakdown_list),
+            "total_calls": sum(r["calls"] for r in agent_breakdown_list),
+        }
+
+    # Get daily cost trend for the period
+    daily_trend = analytics.daily_cost_trend(days=days)
+
+    typer.echo("Cost Metrics Summary")
+    typer.echo(f"Period: {period}")
+    if agent:
+        typer.echo(f"Agent: {agent}")
+        typer.echo(f"Total Cost: ${agent_total:.6f}")
+    else:
+        typer.echo(f"Total Cost: ${agent_breakdown['total_cost_usd']:.6f}")
+    typer.echo(
+        f"Total Prompt Tokens: {agent_breakdown.get('total_prompt_tokens', sum(r['prompt_tokens'] for r in agent_breakdown_list))}"
+    )
+    typer.echo(
+        f"Total Completion Tokens: {agent_breakdown.get('total_completion_tokens', sum(r['completion_tokens'] for r in agent_breakdown_list))}"
+    )
+    typer.echo(
+        f"Total Calls: {agent_breakdown.get('total_calls', sum(r['calls'] for r in agent_breakdown_list))}"
+    )
+    typer.echo("")
+
+    if agent:
+        typer.echo(f"Agent '{agent}' cost over {period}:")
+        for day in agent_breakdown["daily_breakdown"]:
+            typer.echo(
+                f"  {day['day']}: ${day['total_cost_usd']:.6f} "
+                f"({day['prompt_tokens']} prompt + {day['completion_tokens']} completion, "
+                f"{day['calls']} calls)"
+            )
+    else:
+        typer.echo(f"Cost by agent over {period}:")
+        for entry in agent_breakdown.get("agent_breakdown", []):
+            typer.echo(
+                f"  {entry['agent_id']}: ${entry['total_cost_usd']:.6f} "
+                f"({entry['prompt_tokens']} prompt + {entry['completion_tokens']} completion, "
+                f"{entry['calls']} calls)"
+            )
+
+    typer.echo("")
+    typer.echo(f"Daily cost trend (last {days} days):")
+    for day in daily_trend:
+        typer.echo(
+            f"  {day['day']}: ${day['total_cost']:.6f} "
+            f"({day['call_count']} calls, {day['agent_count']} agents, {day['model_count']} models)"
+        )
+
+
 @metrics_app.command("dead-letter")
 def dead_letter_report(
     status: str = typer.Option("unresolved", help="Filter by status (unresolved/resolved/all)"),

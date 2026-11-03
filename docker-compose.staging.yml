@@ -14,7 +14,7 @@ services:
       target: runtime
     container_name: ai-company-dashboard-staging
     ports:
-      - "${STAGING_DASHBOARD_PORT:-8421}:8420"
+      - "${STAGING_DASHBOARD_PORT:-8422}:8420"
     volumes:
       - ./.opencode:/app/.opencode
       - ./company:/app/company

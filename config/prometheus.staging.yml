@@ -1,7 +1,8 @@
 # Prometheus configuration — AI Company Builder staging
 #
 # The dashboard container internally listens on 8420.
-# docker-compose.staging.yml maps host:8421 -> container:8420.
+# docker-compose.staging.yml maps host:8422 -> container:8420.
+# (Port 8421 temporarily occupied by athena-frontend-staging external project.)
 # Prometheus scrapes inside the Docker network, so it targets the
 # container's internal port (8420), not the host-mapped port.
 #
