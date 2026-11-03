@@ -41,22 +41,70 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       <VisitorPathsSection theme={theme} />
       {/* 3. H-A-O-M-T-G-V operating philosophy */}
       <HAOMTGVSection theme={theme} />
-      {/* 4. Solutions: Practical Business Outcomes */}
-      <SolutionsSection theme={theme} />
-      {/* 5. AI Company Builder: Opportunity → Design → Build → Deploy → Govern → Measure */}
-      <AICompanyBuilderSection theme={theme} />
-      {/* 6. 90-Role Workforce */}
-      <WorkforceSection theme={theme} />
-      {/* 7. Sectors + Use Cases (combined, evidence-status vocabulary) */}
-      <UseCasesSection theme={theme} />
-      {/* 8. Insights: Pharos thought leadership */}
-      <InsightsSection theme={theme} />
-      {/* 9. About: Mission, Values, What We Promise Whom */}
-      <AboutSection theme={theme} />
-      {/* 10. FAQ: Straight answers (footer link target /#faq) */}
-      <FaqSection theme={theme} id="faq" />
-      {/* CTA: Start a Conversation */}
-      <BriefingSection theme={theme} />
+{/* 4. Solutions grid with status chips */}
+      <section
+        className={`py-24 sm:py-32 md:py-36 bg-ls-gray-light dark:bg-ls-navy/50`}
+        aria-label="Solutions grid"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight font-display text-ls-navy">
+              Practical Business Outcomes
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+            {homeCopy.solutionsGrid.map((solution) => (
+              <div
+                key={solution.id}
+                className="rounded-3xl p-5 border flex flex-col gap-3 group hover:shadow-xl transition-shadow"
+              >
+                <StatusBadge status={solution.status} theme={theme} />
+                <h3 className="font-display font-bold text-base tracking-tight">
+                  {solution.title}
+                </h3>
+                <p className="text-sm sm:text-base leading-relaxed text-ls-grey-dark/60">
+                  {solution.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Pharos teaser — 3 ArticleCards with CategoryChips */}
+      <section
+        className={`py-24 sm:py-32 md:py-36 bg-ls-white dark:bg-ls-navy`}
+        aria-label="Pharos teaser"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {homeCopy.pharosTeaser.map((article) => (
+              <ArticleCard
+                key={article.id}
+                theme={theme}
+                title={article.title}
+                description={article.excerpt}
+                category={article.category}
+                ctaText="Read full article"
+                ctaUrl={`/article/${article.slug}`}
+                onRequestBriefing={onRequestBriefing}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. CTABand at bottom */}
+      <CtaBand
+        theme={theme}
+        title="Start a Conversation"
+        text="Tell us where your organisation is today. We will be honest about whether we can help, and exactly what it takes to start."
+        ctaLabel="Start a Conversation"
+        ctaTo="/contact"
+        onRequestBriefing={onRequestBriefing}
+        ctaLevel="primary"
+      />
+    </div>
     </div>
   </div>
 );
