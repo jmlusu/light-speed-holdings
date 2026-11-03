@@ -19,6 +19,9 @@
       "package-lock.json"
     ]
   },
+  "worktree": {
+    "directory": ".worktrees"
+  },
   "agent": {
     "default": {
       "maxContextTokens": 64000,
