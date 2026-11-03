@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '@lightspeed/design-system/utils/cn';
+import { cn } from '@lightspeed/design-system';
 
 export interface TagChipProps {
   label: string;

@@ -8,7 +8,7 @@ import { HomePage } from './pages/HomePage';
 import { WhatWeDoPage } from './pages/WhatWeDoPage';
 import { AiCompanyBuilderPage } from './pages/AiCompanyBuilderPage';
 import { SolutionsPage } from './pages/SolutionsPage';
-import { SolutionDetailPage } from './pages/solutions';
+import { SolutionDetailPage } from './pages/SolutionDetailPage';
 import { SectorsPage } from './pages/SectorsPage';
 import { UseCasesPage } from './pages/UseCasesPage';
 import { UseCaseDetailPage } from './pages/UseCaseDetailPage';
