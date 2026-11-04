@@ -48,17 +48,20 @@ class CostAnalytics:
         self,
         model: str,
         provider: str,
-        agent_id: str,
         agent_name: str,
         task_id: str,
         prompt_tokens: int,
         completion_tokens: int,
         cost_usd: float,
+        agent_id: str = "",
         iteration: int = 1,
         metadata: dict[str, Any] | None = None,
         timestamp: str | None = None,
     ) -> int:
         """Record a single LLM usage event.
+
+        ``agent_id`` is optional for backward compatibility: when omitted it
+        falls back to ``agent_name`` so per-agent attribution still works.
 
         Returns the row ID of the inserted record.
         """
@@ -73,7 +76,7 @@ class CostAnalytics:
                 model,
                 provider,
                 agent_name,
-                agent_id,
+                agent_id or agent_name,
                 task_id,
                 prompt_tokens,
                 completion_tokens,
@@ -471,6 +474,7 @@ class CostAnalytics:
                     self.record_usage(
                         model=rec.get("model", ""),
                         provider=rec.get("provider", ""),
+                        agent_id=rec.get("agent_id", ""),
                         agent_name=rec.get("agent_name", ""),
                         task_id=rec.get("task_id", ""),
                         prompt_tokens=rec.get("prompt_tokens", 0),

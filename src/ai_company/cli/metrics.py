@@ -1,8 +1,7 @@
 import json
-from datetime import datetime, timedelta
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import typer
 
@@ -25,7 +24,6 @@ def agent_task_completion(
 ) -> None:
     """Calculate Agent Task Completion rate."""
     days = int(period.rstrip("d"))
-    cutoff = datetime.now() - timedelta(days=days)
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
 
     inbox_path = Path(".opencode/inbox.json")
@@ -44,12 +42,6 @@ def agent_task_completion(
 
     filtered_tasks = []
     for task in tasks:
-        created_at = task.get("created_at") or task.get("timestamp") or ""
-        try:
-            if created_at.endswith("Z"):
-                created_at = created_at[:-1] + "+00:00"
-            task_time = datetime.fromisoformat(created_at)
-        except (ValueError, TypeError, AttributeError):
         try:
             task_time = _parse_timestamp(task.get("created_at") or task.get("timestamp"))
         except (ValueError, TypeError):
@@ -75,16 +67,6 @@ def agent_task_completion(
             for line in f:
                 try:
                     entry = json.loads(line)
-                    ts = entry.get("first_failed_at") or entry.get("last_failed_at") or ""
-                    if ts.endswith("Z"):
-                        ts = ts[:-1] + "+00:00"
-                    entry_time = datetime.fromisoformat(ts)
-                    if entry_time >= cutoff and (
-                        agent is None
-                        or str(entry.get("agent_id", "")).lower() == str(agent).lower()
-                    ):
-                        dead_letter_count += 1
-                except (json.JSONDecodeError, ValueError, TypeError, AttributeError):
                     entry_time = _parse_timestamp(
                         entry.get("first_failed_at") or entry.get("last_failed_at")
                     )
@@ -130,51 +112,33 @@ def cost_metrics(
     from ai_company.data.database import Database
 
     days = int(period.rstrip("d"))
-    cutoff = datetime.now() - timedelta(days=days)
 
     # Initialize database and cost analytics
     db = Database()
     analytics = CostAnalytics(db)
 
+    agent_total = 0.0
+    total_cost = 0.0
+    total_prompt = 0
+    total_completion = 0
+    total_calls = 0
+    agent_daily: list[dict[str, Any]] = []
+    agent_rows: list[dict[str, Any]] = []
+
     # Get agent breakdown
     if agent:
         agent_total = analytics.get_agent_total_by_id(agent)
         agent_daily = analytics.agent_daily_costs_by_id(agent, days=days)
-        agent_breakdown = {
-            "agent_id": agent,
-            "total_cost_usd": round(agent_total, 6),
-            "period": period,
-            "total_days": days,
-            "daily_breakdown": [
-                {
-                    "day": r["day"],
-                    "total_cost_usd": round(r["total_cost"], 6),
-                    "prompt_tokens": r["prompt_tokens"],
-                    "completion_tokens": r["completion_tokens"],
-                    "calls": r["calls"],
-                }
-                for r in agent_daily
-            ],
-        }
+        total_prompt = sum(r["prompt_tokens"] for r in agent_daily)
+        total_completion = sum(r["completion_tokens"] for r in agent_daily)
+        total_calls = sum(r["calls"] for r in agent_daily)
     else:
         # Get all-agent breakdown
-        agent_breakdown_list = analytics.breakdown_by_agent_id(days=days)
-        agent_breakdown = {
-            "agent_breakdown": [
-                {
-                    "agent_id": r["agent_id"],
-                    "total_cost_usd": round(r["cost_usd"], 6),
-                    "prompt_tokens": r["prompt_tokens"],
-                    "completion_tokens": r["completion_tokens"],
-                    "calls": r["calls"],
-                }
-                for r in agent_breakdown_list
-            ],
-            "total_cost_usd": round(sum(r["cost_usd"] for r in agent_breakdown_list), 6),
-            "total_prompt_tokens": sum(r["prompt_tokens"] for r in agent_breakdown_list),
-            "total_completion_tokens": sum(r["completion_tokens"] for r in agent_breakdown_list),
-            "total_calls": sum(r["calls"] for r in agent_breakdown_list),
-        }
+        agent_rows = analytics.breakdown_by_agent_id(days=days)
+        total_cost = sum(r["cost_usd"] for r in agent_rows)
+        total_prompt = sum(r["prompt_tokens"] for r in agent_rows)
+        total_completion = sum(r["completion_tokens"] for r in agent_rows)
+        total_calls = sum(r["calls"] for r in agent_rows)
 
     # Get daily cost trend for the period
     daily_trend = analytics.daily_cost_trend(days=days)
@@ -185,31 +149,25 @@ def cost_metrics(
         typer.echo(f"Agent: {agent}")
         typer.echo(f"Total Cost: ${agent_total:.6f}")
     else:
-        typer.echo(f"Total Cost: ${agent_breakdown['total_cost_usd']:.6f}")
-    typer.echo(
-        f"Total Prompt Tokens: {agent_breakdown.get('total_prompt_tokens', sum(r['prompt_tokens'] for r in agent_breakdown_list))}"
-    )
-    typer.echo(
-        f"Total Completion Tokens: {agent_breakdown.get('total_completion_tokens', sum(r['completion_tokens'] for r in agent_breakdown_list))}"
-    )
-    typer.echo(
-        f"Total Calls: {agent_breakdown.get('total_calls', sum(r['calls'] for r in agent_breakdown_list))}"
-    )
+        typer.echo(f"Total Cost: ${total_cost:.6f}")
+    typer.echo(f"Total Prompt Tokens: {total_prompt}")
+    typer.echo(f"Total Completion Tokens: {total_completion}")
+    typer.echo(f"Total Calls: {total_calls}")
     typer.echo("")
 
     if agent:
         typer.echo(f"Agent '{agent}' cost over {period}:")
-        for day in agent_breakdown["daily_breakdown"]:
+        for day in agent_daily:
             typer.echo(
-                f"  {day['day']}: ${day['total_cost_usd']:.6f} "
+                f"  {day['day']}: ${day['total_cost']:.6f} "
                 f"({day['prompt_tokens']} prompt + {day['completion_tokens']} completion, "
                 f"{day['calls']} calls)"
             )
     else:
         typer.echo(f"Cost by agent over {period}:")
-        for entry in agent_breakdown.get("agent_breakdown", []):
+        for entry in agent_rows:
             typer.echo(
-                f"  {entry['agent_id']}: ${entry['total_cost_usd']:.6f} "
+                f"  {entry['agent_id']}: ${entry['cost_usd']:.6f} "
                 f"({entry['prompt_tokens']} prompt + {entry['completion_tokens']} completion, "
                 f"{entry['calls']} calls)"
             )
@@ -251,7 +209,6 @@ def dead_letter_report(
 
     typer.echo(f"Dead-letter entries ({status}): {len(entries)}")
     for entry in entries[:limit]:
-        ts = entry.get("first_failed_at", "Unknown")
         ts = entry.get("first_failed_at") or "Unknown"
         reason = entry.get("failure_reason", "Unknown")
         agent = entry.get("agent_id", "unknown")

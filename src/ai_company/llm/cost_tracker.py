@@ -96,12 +96,12 @@ class UsageRecord:
     timestamp: str
     model: str
     provider: str
-    agent_id: str
     agent_name: str
     task_id: str
     prompt_tokens: int
     completion_tokens: int
     cost_usd: float
+    agent_id: str = ""
     iteration: int = 1
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -164,15 +164,18 @@ class CostTracker:
         self,
         model: str,
         provider: str,
-        agent_id: str,
         agent_name: str,
         task_id: str,
         prompt_tokens: int,
         completion_tokens: int,
+        agent_id: str = "",
         iteration: int = 1,
         metadata: dict[str, Any] | None = None,
     ) -> UsageRecord:
         """Record a single LLM usage event and persist to JSONL.
+
+        ``agent_id`` is optional for backward compatibility: when omitted it
+        falls back to ``agent_name`` so per-agent attribution still works.
 
         Returns the created ``UsageRecord``.
         """
@@ -184,7 +187,7 @@ class CostTracker:
             timestamp=datetime.now(timezone.utc).isoformat(),
             model=model,
             provider=provider,
-            agent_id=agent_id,
+            agent_id=agent_id or agent_name,
             agent_name=agent_name,
             task_id=task_id,
             prompt_tokens=max(0, int(prompt_tokens)),
@@ -211,6 +214,7 @@ class CostTracker:
                 self._cost_analytics.record_usage(
                     model=record.model,
                     provider=record.provider,
+                    agent_id=record.agent_id,
                     agent_name=record.agent_name,
                     task_id=record.task_id,
                     prompt_tokens=record.prompt_tokens,
@@ -451,8 +455,15 @@ class CostTracker:
                         self._task_costs[task_id] = self._task_costs.get(task_id, 0.0) + cost
 
                         # Backward compatibility: older log records predate
-                        # the agent_id field; default it to agent_name so
-                        # the record can still be reconstructed.
+                        # token fields; default them to 0 instead of dropping
+                        # the record during replay.
+                        rec_dict.setdefault("prompt_tokens", 0)
+                        rec_dict.setdefault("completion_tokens", 0)
+                        rec_dict["prompt_tokens"] = max(0, int(rec_dict["prompt_tokens"]))
+                        rec_dict["completion_tokens"] = max(0, int(rec_dict["completion_tokens"]))
+                        # Older records also predate the agent_id field;
+                        # default it to agent_name so the record can still
+                        # be reconstructed.
                         agent_id = rec_dict.get("agent_id", rec_dict.get("agent_name", ""))
                         rec_dict["agent_id"] = agent_id
 

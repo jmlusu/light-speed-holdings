@@ -172,6 +172,8 @@ Rotate keys every 90 days (scheduled), immediately on suspected compromise, when
 
 Full procedure: [docs/KEY-ROTATION.md](docs/KEY-ROTATION.md). Dashboard RBAC keys: [docs/DASHBOARD_KEY_ROTATION.md](docs/DASHBOARD_KEY_ROTATION.md).
 
+**LLM provider keys:** `OPENCODE_API_KEY` (primary), `GEMINI_API_KEY` (fallback), and optional `DEEPSEEK_API_KEY`, `KIMI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `MIMO_API_KEY`.
+
 ## 12 Ports — Vite App and Server Monitoring
 
 **Assigned ports (2026-10-07):**
