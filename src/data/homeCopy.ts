@@ -146,3 +146,10 @@ export const pharosTeaser: ArticleCard[] = [
     readTime: '4 min read',
   },
 ];
+];
+
+export default {
+  pathwayCards,
+  solutionsGrid,
+  pharosTeaser,
+};

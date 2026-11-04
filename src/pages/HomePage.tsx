@@ -75,6 +75,10 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             <div className="relative pt-20">
               <img
                 src="/brand/logo/ls-white-gradient.svg"
+            {/* Logo lockup over the hero image */}
+            <div className="relative pt-20">
+              <img
+                src="/logo-full-v2.svg"
                 alt="LightSpeed logo"
                 className="max-w-xs"
               />
@@ -106,6 +110,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-4 h-4"
+                className="w-4 h-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -125,6 +130,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             {homeCopy.pathwayCards.map((card, idx) => (
               <PathwayCard
                 key={card.id}
+                index={idx + 1}
                 theme={theme}
                 {...card}
                 onRequestBriefing={onRequestBriefing}
@@ -140,6 +146,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-4 h-4"
+                className="w-4 h-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -160,6 +167,11 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       {/* 4. Solutions grid with status chips */}
       <section
         className={`py-24 sm:py-32 md:py-36 bg-ls-gray-light dark:bg-ls-navy/50`}
+      <HAOMTGVSection theme={theme} />
+
+      {/* 4. Solutions grid with status chips */}
+      <section
+        className={`py-24 sm:py-32 md:py-36 bg-ls-mist-subtle dark:bg-ls-navy/50`}
         aria-label="Solutions grid"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -200,6 +212,11 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
                 theme={theme}
                 {...article}
                 onRequestBriefing={onRequestBriefing}
+                title={article.title}
+                excerpt={article.excerpt}
+                category={article.category}
+                slug={article.slug}
+                readTime={article.readTime}
               />
             ))}
           </div>
@@ -216,6 +233,9 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         onRequestBriefing={onRequestBriefing}
         ctaLevel="primary"
       />
+
+      {/* 7. FAQ — target of the footer /#faq link */}
+      <FaqSection id="faq" theme={theme} />
     </div>
   );
 };
