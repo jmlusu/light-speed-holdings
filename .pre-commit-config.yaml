@@ -152,6 +152,9 @@ repos:
         name: validate CEO override for root config files
         entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/lint/validate-root-config.ps1
         language: system
+        # commit-msg stage matches `files` against the commit-message filename,
+        # never against staged paths, so always run and let the script inspect
+        # the staged file list itself.
         pass_filenames: false
-        files: '^(AGENTS\.md|opencode\.json)$'
+        always_run: true
         stages: [commit-msg]
