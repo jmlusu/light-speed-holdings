@@ -1,9 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.schema.json",
   "smallModel": "opencode/gpt-5.1-codex",
-  "plugin": [
-    "@omniroute/opencode-plugin"
-  ],
   "permission": {
     "edit": "allow",
     "bash": "allow"
@@ -18,6 +15,9 @@
       "docs/redesign/**",
       "package-lock.json"
     ]
+  },
+  "worktree": {
+    "directory": ".worktrees"
   },
   "agent": {
     "default": {
