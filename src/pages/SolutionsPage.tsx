@@ -189,7 +189,7 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ theme }) => {
               <SolutionCard
                 sol={sol}
                 theme={theme}
-                to="/contact"
+                to={`/solutions/${sol.slug}`}
                 id={sol.slug}
                 sectors={getSectorsBySolution(sol.slug)}
               />
