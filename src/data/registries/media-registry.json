@@ -103,6 +103,15 @@
       "note": "1200x630 PNG Open Graph card showing only the LightSpeed mark, wordmark and 'ASPIRE. ACT. ACHIEVE.' tagline; no embedded text metadata. It matches the dimensions and content of the canonical card public/brand/logo/logo-og.png but is not byte-identical, and no generation record exists in the repo, so origin is recorded as unknown rather than guessed. Licence position is based on depicted content (company marks only); confirm provenance with Marketing."
     },
     {
+      "id": "homepage-hero-high-fidelity",
+      "path": "/brand/digital/Homepage_Hero_High_fidelity.jpeg",
+      "kind": "photograph",
+      "origin": "unknown",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "Capture and vendor provenance for this 498 KB JPEG are not recorded anywhere in the repository; the file simply sits in the owned brand asset tree at public/brand/digital/. It is treated as company-owned marketing imagery on that basis alone. Confirm authorship and any third-party licence with Marketing before reusing it outside the site.",
+      "note": "Rendered by src/pages/HomePage.tsx as a full-bleed hero background beneath a 40-60% black overlay, so the image is never shown at full opacity. Replaced a reference to /brand/digital/light-trails-road.jpg, a path that never existed in the tree."
+    },
+    {
       "id": "hero-background",
       "path": "/hero-background.jpg",
       "kind": "missing",

@@ -1,11 +1,21 @@
 import json
 from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
 import typer
 
 metrics_app = typer.Typer(help="Operational metrics and health monitoring")
+
+
+def _parse_timestamp(value: object) -> Optional[datetime]:
+    """Parse an ISO-8601 timestamp into a timezone-aware UTC datetime."""
+    if not isinstance(value, str) or not value:
+        return None
+    text = value[:-1] + "+00:00" if value.endswith("Z") else value
+    parsed = datetime.fromisoformat(text)
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
 
 
 @metrics_app.command("atc")
@@ -16,6 +26,7 @@ def agent_task_completion(
     """Calculate Agent Task Completion rate."""
     days = int(period.rstrip("d"))
     cutoff = datetime.now() - timedelta(days=days)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
 
     inbox_path = Path(".opencode/inbox.json")
     dead_letter_path = Path("data/orchestrator/dead_letter.jsonl")
@@ -39,6 +50,11 @@ def agent_task_completion(
                 created_at = created_at[:-1] + "+00:00"
             task_time = datetime.fromisoformat(created_at)
         except (ValueError, TypeError, AttributeError):
+        try:
+            task_time = _parse_timestamp(task.get("created_at") or task.get("timestamp"))
+        except (ValueError, TypeError):
+            continue
+        if task_time is None:
             continue
         if task_time >= cutoff and (
             agent is None or str(task.get("agent_id", "")).lower() == str(agent).lower()
@@ -69,6 +85,19 @@ def agent_task_completion(
                     ):
                         dead_letter_count += 1
                 except (json.JSONDecodeError, ValueError, TypeError, AttributeError):
+                    entry_time = _parse_timestamp(
+                        entry.get("first_failed_at") or entry.get("last_failed_at")
+                    )
+                    if (
+                        entry_time is not None
+                        and entry_time >= cutoff
+                        and (
+                            agent is None
+                            or str(entry.get("agent_id", "")).lower() == str(agent).lower()
+                        )
+                    ):
+                        dead_letter_count += 1
+                except (json.JSONDecodeError, ValueError, TypeError):
                     continue
 
     typer.echo(f"Period: {period}")
@@ -223,6 +252,7 @@ def dead_letter_report(
     typer.echo(f"Dead-letter entries ({status}): {len(entries)}")
     for entry in entries[:limit]:
         ts = entry.get("first_failed_at", "Unknown")
+        ts = entry.get("first_failed_at") or "Unknown"
         reason = entry.get("failure_reason", "Unknown")
         agent = entry.get("agent_id", "unknown")
         typer.echo(f"  - [{ts}] {reason} (agent: {agent})")

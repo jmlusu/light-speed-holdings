@@ -244,7 +244,7 @@ The CEO Dashboard (internal) and the Vite/React app (external, §12) are **two i
 4. CORS allowlist entries (incl. legacy `:3000`/`:5173`) are permitted browser origins, not port assignments.
 5. Bare `uv run ai-company dashboard` still defaults to 8420 (legacy local default); development launches must pass `--port 8421`.
 
-**Resolved (2026-11-03):** The CEO Dashboard staging port conflict with athena-frontend-staging has been resolved. This repository's staging dashboard now uses host port **8422** → container 8420 (`docker-compose.staging.yml` updated). The default host 8421 → container 8420 mapping is now available for use when the athena-frontend-staging project releases port 8421. See `docs/PORTS-MONITORING-2026-10-07.md` for full resolution details.
+**Transient conflict (2026-10-07):** host 8421 is currently held by the unrelated `athena-frontend-staging` container (separate project), so the staging dashboard is temporarily published on 8422. The assigned development port remains 8421 — restore the default mapping when Athena no longer needs 8421.
 
 ## 14 Agent skills
 
