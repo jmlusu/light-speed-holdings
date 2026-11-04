@@ -37,7 +37,7 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 
 ## 4 Context Loading
 
-1. Read this file.
+1. This file is already loaded into context — do not re-read it.
 2. Read [ECL](docs/ECL.md) for change lifecycle and context rules.
 3. If `harness/changes/active/summary.md` exists, read active change files before any task-specific docs.
 4. If no active change exists and `harness/evolution/pending.md` exists, read it before `docs/STATUS.md`.
@@ -107,7 +107,8 @@ Staging dashboard runs on host port **8421** (maps to container 8420; production
 | Generator / template | `python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"` |
 | CLI commands | `ai-company --help` + `ai-company <command> --help` |
 | Models / orchestrator | `pytest` |
-| Any source change | `ruff check src/ && mypy src/ && pytest` |
+| Any source change | `ruff check src/`, then `mypy src/`, then `pytest` — separate commands, not chained (no `&&` in PowerShell 5.1, see §17) |
+| Frontend (Vite/React) | `npx tsc --noEmit`, then `npm run build` |
 | Harness / docs | `pwsh scripts/maintenance/lint-ecl.ps1` |
 
 ## 7 Safety Boundaries
@@ -167,50 +168,9 @@ See §6 Verification — the single source of the minimum-verification table.
 
 ## 11 Security — Key Rotation Procedure
 
-See also: [docs/DASHBOARD_KEY_ROTATION.md](docs/DASHBOARD_KEY_ROTATION.md) for detailed dashboard RBAC key rotation procedures.
+Rotate keys every 90 days (scheduled), immediately on suspected compromise, when team members with access leave, and after any security incident. NEVER commit `.env` to git (it is gitignored).
 
-**When to rotate:**
-- Every 90 days (scheduled)
-- Immediately on suspected compromise
-- When team members with access leave
-- After any security incident
-
-**Procedure:**
-1. **Generate new keys** for each provider/service (OpenCode, Gemini, Dashboard RBAC keys)
-2. **Update local `.env`** with new values — NEVER commit `.env` to git (it's gitignored)
-3. **Update deployed environments** (staging, production) via your secrets manager / platform:
-   - GitHub Actions secrets for CI/CD
-   - Docker / container platform secrets for runtime
-   - Cloud provider secret stores (AWS Secrets Manager, GCP Secret Manager, Azure Key Vault)
-4. **Verify health endpoints** respond with new keys:
-   - `curl http://<host>:8420/health` (production)
-   - `curl http://<host>:8421/health` (staging)
-5. **Revoke old keys** after confirming new ones work across all environments
-6. **Update `.env.example`** placeholders if key format/naming changed
-7. **Document rotation** in CHANGELOG.md with date and reason
-
-**Dashboard RBAC keys** (in priority order):
-- `DASHBOARD_ADMIN_KEY` — full access (also accepts `DASHBOARD_API_KEY` as alias)
-- `DASHBOARD_APPROVE_KEY` — approve/reject tasks
-- `DASHBOARD_RUN_KEY` — execute tasks, read KPIs
-- `DASHBOARD_API_KEY` — legacy single-key mode (admin alias)
-
-**LLM Provider keys:**
-- `OPENCODE_API_KEY` — primary (Big Pickle)
-- `GEMINI_API_KEY` — fallback (gemini-3.5-flash)
-- Optional: `DEEPSEEK_API_KEY`, `KIMI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `MIMO_API_KEY`
-
-**Verification commands:**
-```bash
-# Local verification
-uv run python -c "from dotenv import load_dotenv; load_dotenv(); from ai_company.security.rbac import verify_keys; verify_keys()"
-
-# Staging verification
-curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" http://localhost:8421/health
-
-# Production verification (adjust host/port)
-curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" https://api.example.com/health
-```
+Full procedure: [docs/KEY-ROTATION.md](docs/KEY-ROTATION.md). Dashboard RBAC keys: [docs/DASHBOARD_KEY_ROTATION.md](docs/DASHBOARD_KEY_ROTATION.md).
 
 ## 12 Ports — Vite App and Server Monitoring
 
@@ -261,7 +221,7 @@ directly — and say honestly which you did. Full rules and the cross-reference 
 ### Skills CLI install hygiene
 
 Run `git status` after any `npx skills` (skills CLI) command, before continuing with the task.
-A single-skill install with `--skill` currently installs every skill in the registry (38 of 1 on
+A single-skill install with `--skill` currently installs every skill in the registry (38 skills installed instead of 1, on
 2026-10-12); the extras show up as untracked `.agents/skills/` paths — revert the ones you did
 not ask for in the same session. Commit `skills-lock.json` only in its corrected state: it lists
 every installed skill, so `skills update` restores anything still listed in it.
@@ -280,19 +240,11 @@ Single-context repo (no `CONTEXT.md`/`CONTEXT-MAP.md` yet) — read `AGENTS.md`,
 
 ### Creative Production Stack (ls-* skills)
 
-Branded creative output routes through a layered skill stack. All `ls-*` skills live in `.agents/skills/`.
-
-**Layers (in order):**
-
-| Layer | Skill(s) | Role |
-|-------|----------|------|
-| Brand base | `ls-design-system` | ALWAYS loaded first by any creative skill; brand tokens live in `brand/tokens/` (canonical-only, not mirrored) + `brand/guidelines/`; `static/brand/` + `public/brand/` mirror other brand assets — see `brand/CANONICAL_SOURCES.md` |
-| Orchestrator | `ls-creative-director` | Brief intake (artifact/audience/objective/narrative/visual language) → routes to one production skill + support skills |
-| Production | `ls-frontend-design`, `ls-presentation-design`, `ls-document-design`, `ls-social-media-design`, `ls-brand-advertising` | Generate the artifact, delegating rendering to existing engines (python-pptx, Vite React SPA at repo-root `src/`, k-dense-*, Playwright) |
-| Support | `ls-diagramming`, `ls-documentation-engineering`, `ls-visual-storytelling` | Diagram/graphic/doc-IA assets used inside produced artifacts |
-| Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes Playwright visual checks via `ls-artifact-qa` skill (see `.agents/skills/ls-artifact-qa/`) |
+Branded creative output routes through the `ls-*` skills in `.agents/skills/`. Layer order: `ls-design-system` (brand base, ALWAYS loaded first) → `ls-creative-director` (brief intake, routes to one production skill plus support skills) → production (`ls-frontend-design`, `ls-presentation-design`, `ls-document-design`, `ls-social-media-design`, `ls-brand-advertising`) with support (`ls-diagramming`, `ls-documentation-engineering`, `ls-visual-storytelling`) → `ls-artifact-qa` (gatekeeper, ALWAYS last).
 
 **Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.
+
+Brand tokens: `brand/tokens/` + `brand/guidelines/` (canonical; see `brand/CANONICAL_SOURCES.md`). Layer table and QA scope: [docs/agents/creative-stack.md](docs/agents/creative-stack.md).
 
 ## 15 Evidence, Honesty and Execution Integrity Policy
 
@@ -327,23 +279,24 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 
 ## 16 Known Issues Tracker (Permanent Record)
 
-**Purpose:** This section explicitly documents known issues and their fixes to prevent the recurring pattern of documentation being lost. Add new entries below; do not remove existing entries without a replacement fix.
+The full tracker (every row, date and status) lives in [`docs/KNOWN-ISSUES.md`](docs/KNOWN-ISSUES.md). Add new issues there as new rows; never delete a row without a documented replacement fix. Standing directives distilled from it:
 
-| Issue | Fix | Date Identified | Date Fixed | Status |
-|-------|-----|-----------------|------------|--------|
-| **Dev cold-start probe timeout** — First `npm run dev` request exceeds 15s timeout while Vite optimizes the dependency graph (~1676 modules). Cold start: port binds ~2.5s, first request ~6.3s. | Documented tolerance: automated health checks must retry once after `VITE ready in ...` log line, allow ≥30s timeout. No code change required. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
-| **Port conflict / server startup failure** — Leftover `node.exe` processes bind ports 1440/1441, causing Vite to fall back or fail. | Always kill lingering `node.exe` processes (`taskkill /F /IM node.exe`) before restarting. Verify ports free with `netstat -an | findstr "1440 1441"`. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
-| **Dashboard port conflict (staging)** — Host 8421 held by `athena-frontend-staging` (separate project), staging dashboard published on 8422. | Assigned development port remains 8421 — restore default mapping when Athena no longer needs 8421. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
-| **CEO Dashboard vs Vite/React boundary** — Two independent applications with separate ports, runtimes, and health checks. | Hard port assignment: dashboard production=8420, development=8421. Vite/React uses 1440/1441. Never serve one on the other's port. | 2026-10-07 | 2026-10-07 | ✅ Fixed |
-| **Local/remote main divergence (squash-merge ancestry break)** — Local `main` diverged from `origin/main` after PR #433 squash-merge (`794e793b`): local main had 7 unmerged commits (junk files, ECL fixes, brand collage) whose content landed via squash but whose SHAs did not. `git pull`/`git merge` would have conflicted; `git reset --hard origin/main` required. Junk files (`tmp.txt`, `website-stabilization-mission.md`) landed on main via #430. | After squash-merge: `git fetch && git reset --hard origin/main`. Salvage PR `chore/post-reconciliation-cleanup` removes junk, salvages unique branch content (BUG-*.md, verify-port-bindings.ps1, test_scorers.py, ceo-memo, MISSION.md, Solutions PNG), deletes stale branches. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
-| **Vercel ignoreCommand ENOENT (script stripped by `.vercelignore`)** — PR #449's skip-filter shipped `ignoreCommand: bash scripts/deploy/vercel-ignore-build.sh` but `.vercelignore` excluded the whole `scripts/` tree. Vercel runs `ignoreCommand` inside the filtered working copy → exit 127 ENOENT on every deploy. PR #450's bare `!/scripts/deploy/...` negation was inert (gitignore cannot re-include under an excluded parent dir). | Parent-chain pattern in `.vercelignore` (`/scripts/*`, `!/scripts/deploy/`, `/scripts/deploy/*`, `!/scripts/deploy/vercel-ignore-build.sh`). Guard extended in `scripts/test/check-vercelignore.py` (STATIC_REQUIRED / STATIC_EXCLUDED). Live-verified on `dpl_HxUdMUNLCpGsdSdD4Qv8LUoWVVGi` (#452 merge → BUILD → READY). | 2026-10-12 | 2026-10-13 | ✅ Fixed |
-| **Vercel ignoreCommand exit-code inversion** — Script used Unix intuition (exit 0=build, 1=skip); Vercel contract is **exit 0=skip (CANCELED), exit ≥1=build**. Masked by the ENOENT (exit 127 always builds) until #452's parent-chain fix let the script run; first live run `dpl_EzKiYqykZhC8dJSnc4T9DCgwq2ed` exited 0 with a "building." message and was CANCELED. Vercel KB + Academy call the inversion "the most common mistake." | Flipped all three exit points in `scripts/deploy/vercel-ignore-build.sh` (no-PREV→1, site-changed→1, no-changes→0); corrected `docs/DEPLOYMENT.md` §7. Local 3-path verification + live production proof: build on #452 merge, skip (CANCELED) on #453 docs-only merge (`2e7c9512`). Safe default under `set -euo pipefail` remains "build." | 2026-10-13 | 2026-10-13 | ✅ Fixed |
+- After a squash-merge, local `main` diverges from `origin/main`: run `git fetch`, then `git reset --hard origin/main` — only when local `main` holds no unpushed work you still need.
+- Vercel `ignoreCommand` contract: exit 0 = skip (CANCELED), exit ≥1 = build. `.vercelignore` must keep `scripts/deploy/vercel-ignore-build.sh` reachable using the parent-chain pattern (`/scripts/*`, `!/scripts/deploy/`, `/scripts/deploy/*`, `!/scripts/deploy/vercel-ignore-build.sh`); `scripts/test/check-vercelignore.py` guards it.
+- Dev server cold start and port conflicts: see §12. Dashboard vs Vite/React ports: see §13.
 
-**Rules for this section:**
-- Entries are tracked by date and status; do not delete without replacement
-- New issues must be added as new rows, not appended to existing entries
-- Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
-- Before removing any entry, a replacement fix must be documented
+## 17 Windows / PowerShell 5.1 Rules
+
+The default shell is Windows PowerShell 5.1. Full incident record: [`docs/agents/tool-issues.md`](docs/agents/tool-issues.md) (add new issues there as new rows).
+
+- No `&&` — run commands as separate steps, or use `pwsh -Command "cd 'path'; & command"`.
+- `-First` / `-Last` take positive numbers only.
+- PowerShell expands `$(...)` and `$vars` and splits nested quotes before the native command sees them. Write multi-statement PowerShell, and any one-liner containing `$(...)`, `$vars` or nested quoting (including heredocs and line continuations), to a temp `.ps1` and run it with `powershell -File <path>.ps1`. Inline `gh --jq` expressions must be single-quoted, single-field, with no string literals.
+- `gh pr merge`: run it from `C:\Users\jmlus\light-speed-holdings`, never from a temp worktree. Then `git push origin --delete <branch>` and `git fetch --prune` from the main checkout.
+- Worktree removal failing with "Filename too long": `git config --global core.longpaths true` (one-time); fallback `cmd /c rmdir /S /Q "<path>"`.
+- After `harness-change.ps1 reindex`, if `git status` shows ` M harness/changes/INDEX.json` with an empty `git diff`, restore it with `git checkout -- harness/changes/INDEX.json`.
+- Cherry-pick stuck in a conflict state: stage all resolutions and `git cherry-pick --continue`, or abort and merge instead.
+- After resolving merge conflicts in, or editing, a `.tsx` file, run `npx tsc --noEmit` and fix errors before committing; keep JSX inside `return (...)`.
 
 ## 18 Governance Protocol — CEO Override for Root Config Files
 
@@ -367,7 +320,7 @@ The files `AGENTS.md` and `opencode.json` are **root configuration files** that 
 
 ### 18.3 Audit Log
 
-All successful overrides are logged immutably to [`docs/governance-audit.md`](docs/governance-audit.md) with:
+All successful overrides are appended to [`docs/governance-audit.md`](docs/governance-audit.md) with:
 - Timestamp
 - Actor (git config user.name)
 - Files modified
@@ -383,6 +336,8 @@ This protocol is enforced by a **pre-commit hook** (`scripts/lint/validate-root-
 - Validates the commit message for the override tag
 - Blocks the commit with a clear error message if the tag is missing
 - Appends an audit entry to `docs/governance-audit.md` if the tag is present
+
+The tag is plain text and does not authenticate the committer. Agents must never add it on their own authority — only the Human CEO supplies the override reason.
 
 ### 18.5 Usage Examples
 
@@ -400,43 +355,20 @@ git commit -m "Update agent permissions"  # FAILS - no override tag
 
 If the hook causes issues, remove it from `.pre-commit-config.yaml` and delete `scripts/lint/validate-root-config.ps1`. The audit log at `docs/governance-audit.md` can be retained for history or archived.
 
----
+## 19 Token and Context Efficiency
 
-## 17 Tool Usage Issues (Session Records)
+- Read each file once per session.
+- Use grep or line ranges for big files.
+- Don't re-read after an edit unless a test or build fails.
+- Stop and ask after three calls with no new information.
+- Put a `steps` cap on the build agent.
+## 20 Deck Generation
 
-| Issue | Fix | Date Identified | Date Fixed | Status |
-|-------|-----|-----------------|------------|--------|
-| **PowerShell Select-Object validation** — `$input | Select-Object -First $n` fails with "Cannot validate argument on parameter 'First'. The -30 argument is less than the minimum allowed range 0". PowerShell 5.1 does not accept negative numbers for `-First`/`-Last` parameters. | Use positive numbers only, or avoid `-First`/`-Last` and pipe through other means. | 2026-10-11 | 🟡 In Progress |
-| **PowerShell `&&` token not valid separator** — `cd "path" && command` fails in PowerShell 5.1 with "The token '&&' is not a valid statement separator in this version". Known limitation, not a bug; this row merges the duplicate "(manual test)" entry, which listed the same issue with a contradictory status. | Run commands separately, or use `pwsh -Command "cd 'path'; & command"`. | 2026-10-11 | 2026-10-12 | ⚠️ Workaround |
-| **Git cherry-pick stuck in conflict state** — Cherry-pick of commit `3d37314c` (logo v2) got stuck showing "all conflicts fixed: run git cherry-pick --continue" but wouldn't complete. | Use `git cherry-pick --continue` after ensuring all conflict resolutions are staged, or abort and use merge instead. | 2026-10-11 | 🟡 In Progress |
-| **Git merge conflicts in FloatingNav.tsx** — PR #431 merge blocked due to FloatingNav.tsx TS1128 error from merge conflict resolution. The governance overlay section was placed outside the `return (` statement during conflict resolution. | Manually restructure JSX to put governance section inside return, then merge the fix branch into main. | 2026-10-11 | ✅ Fixed |
-| **TypeScript check failures after file edits** — After editing FloatingNav.tsx, `npx tsc --noEmit` kept failing on same lines due to duplicate governance sections (unused `governanceOverlay` variable + governance outside return). | Remove unused variables entirely, ensure single governance section inside return statement. | 2026-10-11 | ✅ Fixed |
-| **Bash/PowerShell command execution issues** — Multiple bash tool calls had syntax issues with PowerShell heredocs, line continuations, and string quoting due to different quoting rules between Windows PowerShell 5.1 and bash/cmd. | Use `pwsh -Command` with proper escaping, or break complex commands into simpler steps with careful quoting. | 2026-10-11 | ⚠️ Workaround |
-| **PowerShell `$(...)` expands inside double-quoted `--jq` arguments** — `gh pr view --jq "state=$(.state)"` fails with `(.state) was not recognized` because PowerShell evaluates `$(...)` before `gh` receives the string. Recurred in-session 2026-10-12, so the fix is now a standing directive, not a one-off note. Single-quoting is not sufficient by itself: PS 5.1 does not escape embedded double quotes when building native command lines, so a `--jq` expression containing string literals gets split into multiple arguments (`accepts at most 1 arg(s), received 2`). | **Directive:** write multi-statement PowerShell — or any one-liner containing `$(...)`, `$vars`, or nested quoting — to a temp `.ps1` file and run it with `powershell -File <path>.ps1`. When staying inline, single-quote `gh --jq` expressions (`gh pr view --jq '.state'`) so PowerShell never expands them; keep `--jq` expressions single-field with no string literals, and for expressions that need literals use a `.ps1` file. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
-| **INDEX.json EOL-only phantom diff after reindex** — `harness-change.ps1` `Get-IndexJson` used PS 5.1 `ConvertTo-Json`, which emits CRLF, while `.gitattributes` forces `eol=lf` for `harness/changes/INDEX.json`. After every `reindex`, `git status` shows ` M harness/changes/INDEX.json` with an empty `git diff`. | Fixed at source: `Get-IndexJson` now normalizes `` `r`n `` → `` `n `` before `Write-Text`. `lint-ecl.ps1` unaffected (semantic compare). Until merged, restore with `git checkout -- harness/changes/INDEX.json`. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
-| **Windows `Filename too long` deleting git worktrees** — `git worktree remove` fails (rc 255) on worktrees with deep `node_modules` paths exceeding MAX_PATH 260. | Set `git config --global core.longpaths true` (Git for Windows native fix, one-time). Non-git fallback: `cmd /c rmdir /S /Q "<path>"`. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
-| **INDEX.json unsorted after reindex (sort no-op)** — `Sort-Object id` on the entry list does not sort `[ordered]` hashtables in Windows PowerShell 5.1 (keys resolve unordered), so reindex emitted parking→archive enumeration order while the committed index is globally id-sorted; every reindex produced a full-file diff. | Changed to `Sort-Object { $_.id }` (script-block form sorts OrderedDictionary correctly; verified side-by-side). Complements BUG-93e21736a (Get-ChildItem Name sort within each location). | 2026-10-12 | 2026-10-12 | ✅ Fixed |
-| **`gh pr merge` run from a temp worktree** — branch cleanup (`--delete-branch`) is scoped to the checkout that runs the merge, so the main repo keeps a stale local branch while the worktree branch state diverges from origin after squash-merge. | **Directive:** run `gh pr merge` from the main repo directory (`C:\Users\jmlus\light-speed-holdings`), never from a temp worktree; then delete the remote branch explicitly with `git push origin --delete <branch>` and prune local leftovers with `git fetch --prune` from the main checkout. | 2026-10-12 | 2026-10-12 | ✅ Fixed |
-| **Worktrees created outside the repository without consent** - three P1 worktrees were created under `%TEMP%\opencode\` using raw `git worktree add`, although `.agents/skills/using-git-worktrees/SKILL.md` requires consent first, prefers the native tool, and defaults to a project-local `.worktrees/`. No data left the machine and every branch was pushed to `origin` before cleanup, but the working copies sat outside the repository's backup and ignore rules. | **Standing rule (AGENTS.md section 7):** ask consent before creating any worktree. Worktrees live in `.worktrees/` at the repo root (gitignored) because the native tool places them outside the repository. Use `git worktree add .worktrees/<name> -b <branch> origin/main`; never `%TEMP%`. | 2026-10-25 | 2026-10-25 | Fixed |
+Trigger word: `generate` (in a prompt about the pitch deck). Script: `static/brand/templates/generate-pitch-deck.py` — converts `ai_venture_studio_client_presentation.md` (Part 5) into a 13-slide PPTX using brand tokens from `brand/tokens/`.
 
-**Rules for this section:**
-- Entries are tracked by date and status; do not delete without replacement
-- New issues must be added as new rows, not appended to existing entries
-- Status values: `🟡 In Progress`, `✅ Fixed`, `❌ Cant Fix`, `⚠️ Workaround`
-- Before removing any entry, a replacement fix must be documented
-
-## Deck Generation Navigation
-
-Pointer: static/brand/templates/generate-pitch-deck.py --- Adapted script that converts ai_venture_studio_client_presentation.md (Part 5) into a 13-slide PPTX using brand tokens from brand/tokens/.
-
-Branches (trigger reaching):
-- ai_venture_studio_client_presentation.md is present and complete ---> run uv run python static/brand/templates/generate-pitch-deck.py
-- Presentation spec ai_venture_studio_client_presentation_deck_spec.md needs review first ---> read spec, verify slide count (13), then run script
-- Brand compliance check brand/guidelines/brand-guidelines.md Sec. 9 must pass ---> verify navy rail, color palette, type scale before delivery
-- CTO validation: PORTFOLIO D (Consumer Platforms) must appear in Slide 4 ---> confirmed via company-registry.yaml agent roles
-
-Leading word: generate --- when this word is invoked in a prompt, the agent reaches the pointer and the three resources above.
-
-One source of truth: company-registry.yaml --- agent roles and KPIs (ATC >90%, velocity <60d, correction ratio, 3x capital efficiency) are the single source of truth; the deck references these but the registry is authoritative.
-
-Cut identity: The brand tokens (navy #070A40, red #E63946, cyan #00BFFF) and compliance checklist (Sec. 9) are also defined in brand/tokens/brand-tokens.json and brand/guidelines/brand-guidelines.md; this pointer directs to the primary references only.
+- If `ai_venture_studio_client_presentation.md` is present and complete → run `uv run python static/brand/templates/generate-pitch-deck.py`.
+- If `ai_venture_studio_client_presentation_deck_spec.md` needs review first → read the spec, verify slide count (13), then run the script.
+- Before delivery, brand compliance (`brand/guidelines/brand-guidelines.md` Sec. 9) must pass → verify navy rail, color palette and type scale.
+- CTO validation: PORTFOLIO D (Consumer Platforms) must appear on Slide 4, confirmed via `company-registry.yaml` agent roles.
+- One source of truth: `company-registry.yaml` — agent roles and KPIs (ATC >90%, velocity <60d, correction ratio, 3x capital efficiency) are authoritative; the deck only references them.
+- Brand tokens (navy #070A40, red #E63946, cyan #00BFFF) and the compliance checklist (Sec. 9) are defined in `brand/tokens/brand-tokens.json` and `brand/guidelines/brand-guidelines.md`.
