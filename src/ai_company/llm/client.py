@@ -620,6 +620,7 @@ class LLMClient:
                 record = cost_tracker.record_usage(
                     model=response.model,
                     provider=response.provider,
+                    agent_id=agent_name,
                     agent_name=agent_name,
                     task_id=task_id,
                     prompt_tokens=usage.prompt_tokens,
@@ -660,6 +661,7 @@ class LLMClient:
                     analytics.record_usage(
                         model=response.model,
                         provider=response.provider,
+                        agent_id=agent_name,
                         agent_name=agent_name,
                         task_id=task_id,
                         prompt_tokens=usage.prompt_tokens,

@@ -4,35 +4,28 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         USER'S MACHINE                              │
+│                            USER'S MACHINE                           │
 │                                                                     │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │                      OpenCode CLI/Desktop                    │   │
-│  │                                                              │   │
-│  │  opencode.json                                               │   │
-│  │  ┌────────────────────────────────────────────────────────┐  │   │
-│  │  │  "model": "auto"                                        │  │   │
-│  │  │  "plugin": ["@omniroute/opencode-plugin"]               │  │   │
-│  │  │  "provider": {                                          │  │   │
-│  │  │    "omniroute": {                                       │  │   │
-│  │  │      "baseURL": "http://localhost:20128/v1"             │  │   │
-│  │  │    }                                                    │  │   │
-│  │  │  }                                                      │  │   │
-│  │  └────────────────────────────────────────────────────────┘  │   │
-│  │                                                              │   │
-│  │  ┌─────────────────────────┐                                 │   │
-│  │  │  @omniroute/            │                                 │   │
-│  │  │  opencode-plugin        │──── GET /v1/models ────┐       │   │
-│  │  │  (startup: fetches      │     (model catalog)    │       │   │
-│  │  │   live model list)      │                        │       │   │
-│  │  └─────────────────────────┘                        │       │   │
-│  │                                                     │       │   │
-│  │  ┌─────────────────────────┐                        │       │   │
-│  │  │  @ai-sdk/               │                        │       │   │
-│  │  │  openai-compatible      │── POST /v1/chat/ ─────┤       │   │
-│  │  │  (HTTP transport)       │    completions         │       │   │
-│  │  └─────────────────────────┘                        │       │   │
-│  └─────────────────────────────────────────────────────┼───────┘   │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │                      OpenCode CLI/Desktop                     │  │
+│  │                                                               │  │
+│  │  opencode.json                                                │  │
+│  │  ┌────────────────────────────────────────────────────────┐   │  │
+│  │  │  "model": "auto",                                      │   │  │
+│  │  │  "provider": {                                         │   │  │
+│  │  │    "omniroute": {                                      │   │  │
+│  │  │      "baseURL": "http://localhost:20128/v1",           │   │  │
+│  │  │      "models": { ... }   (static, no plugin)           │   │  │
+│  │  │    }                                                   │   │  │
+│  │  │  }                                                     │   │  │
+│  │  └────────────────────────────────────────────────────────┘   │  │
+│  │                                                               │  │
+│  │  ┌─────────────────────────┐                                  │  │
+│  │  │  @ai-sdk/               │                                  │  │
+│  │  │  openai-compatible      │── POST /v1/chat/ ──────┐         │  │
+│  │  │  (HTTP transport)       │                        │         │  │
+│  │  └─────────────────────────┘                        │         │  │
+│  └─────────────────────────────────────────────────────┼─────────┘  │
 │                                                        │           │
 │  ┌─────────────────────────────────────────────────────▼───────┐   │
 │  │                   OmniRoute Server                          │   │
@@ -97,6 +90,10 @@
 │  + 340+ more providers (290+ with free tiers)                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+> **Note:** The `@omniroute/opencode-plugin` was removed — it never worked in this
+> project. Model IDs therefore come only from the static `provider.omniroute.models`
+> list in `opencode.json`; nothing is fetched from OmniRoute at startup.
 
 ## Model Selection Flow
 
@@ -216,9 +213,10 @@ User sends: model: "auto"
 ```
 STARTUP:
   OpenCode starts
-    → plugin calls GET http://localhost:20128/v1/models
-    → returns 632 model IDs from all connected providers
-    → populates OpenCode's model picker
+    → reads the static model list from opencode.json
+      (provider.omniroute.models)
+    → no plugin is loaded; no model-catalog request is made
+    → model picker shows only the statically declared model IDs
 
 REQUEST:
   User types message
@@ -242,8 +240,8 @@ FALLBACK (if provider fails):
 
 | Component | File | Purpose |
 |-----------|------|---------|
-| Plugin config | `opencode.json` | Plugin + provider registration |
-| Plugin runtime | `@omniroute/opencode-plugin` | Fetches live model catalog |
+| Provider config | `opencode.json` | Static provider + model registration (no plugin) |
+| Model catalog | `opencode.json` → `provider.omniroute.models` | Static list of model IDs offered in the picker |
 | AI SDK transport | `@ai-sdk/openai-compatible` | HTTP layer for OpenAI-compatible APIs |
 | Auto-Combo scorer | `open-sse/services/autoCombo/scoring.ts` | 13-factor scoring function |
 | Virtual factory | `open-sse/services/autoCombo/virtualFactory.ts` | Builds candidate pool per-request |

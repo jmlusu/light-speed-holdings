@@ -220,3 +220,4 @@ output/marketing-site/
 
 # Deck gate reports: machine-local, carry absolute paths, never committed
 static/brand/templates/*.verify.json
+EMERGENCY_RESCUE/

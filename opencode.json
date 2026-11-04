@@ -1,9 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.schema.json",
   "smallModel": "opencode/gpt-5.1-codex",
-  "plugin": [
-    "@omniroute/opencode-plugin"
-  ],
   "permission": {
     "edit": "allow",
     "bash": "allow"
@@ -19,6 +16,9 @@
       "package-lock.json"
     ]
   },
+  "worktree": {
+    "directory": ".worktrees"
+  },
   "agent": {
     "default": {
       "maxContextTokens": 64000,
@@ -30,20 +30,6 @@
       "type": "remote",
       "url": "https://mcp.resend.com/mcp",
       "enabled": false
-    },
-    "open-design": {
-      "type": "local",
-      "command": [
-        "C:\\Program Files\\nodejs\\node.exe",
-        "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\apps\\daemon\\dist\\cli.js",
-        "mcp",
-        "--daemon-url",
-        "http://127.0.0.1:7456"
-      ],
-      "enabled": false,
-      "environment": {
-        "OD_DATA_DIR": "C:\\Users\\jmlus\\light-speed-holdings\\open-design\\.od"
-      }
     }
   },
   "provider": {

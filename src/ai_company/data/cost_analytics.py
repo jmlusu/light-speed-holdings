@@ -53,25 +53,30 @@ class CostAnalytics:
         prompt_tokens: int,
         completion_tokens: int,
         cost_usd: float,
+        agent_id: str = "",
         iteration: int = 1,
         metadata: dict[str, Any] | None = None,
         timestamp: str | None = None,
     ) -> int:
         """Record a single LLM usage event.
 
+        ``agent_id`` is optional for backward compatibility: when omitted it
+        falls back to ``agent_name`` so per-agent attribution still works.
+
         Returns the row ID of the inserted record.
         """
         ts = timestamp or datetime.now(timezone.utc).isoformat()
         cursor = self._db.execute(
             """INSERT INTO cost_records
-               (timestamp, model, provider, agent_name, task_id,
+               (timestamp, model, provider, agent_name, agent_id, task_id,
                 prompt_tokens, completion_tokens, cost_usd, iteration, metadata)
-               VALUES (?,?,?,?,?,?,?,?,?,?)""",
+               VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
             (
                 ts,
                 model,
                 provider,
                 agent_name,
+                agent_id or agent_name,
                 task_id,
                 prompt_tokens,
                 completion_tokens,
@@ -131,13 +136,58 @@ class CostAnalytics:
         )
         return row["total"] if row else 0.0
 
-    def get_agent_total(self, agent_name: str) -> float:
-        """Return total cost for a specific agent."""
+    def get_agent_total(self, agent_identifier: str) -> float:
+        """Return total cost for a specific agent.
+
+        Supports both agent_name and agent_id. Matches if either field
+        contains the given identifier (OR logic).
+        """
         row = self._db.fetchone(
-            "SELECT COALESCE(SUM(cost_usd), 0) as total FROM cost_records WHERE agent_name = ?",
-            (agent_name,),
+            """SELECT COALESCE(SUM(cost_usd), 0) as total FROM cost_records
+               WHERE agent_name = ? OR agent_id = ?""",
+            (agent_identifier, agent_identifier),
         )
         return row["total"] if row else 0.0
+
+    def get_agent_total_by_id(self, agent_id: str) -> float:
+        """Return total cost for a specific agent_id."""
+        row = self._db.fetchone(
+            "SELECT COALESCE(SUM(cost_usd), 0) as total FROM cost_records WHERE agent_id = ?",
+            (agent_id,),
+        )
+        return row["total"] if row else 0.0
+
+    def breakdown_by_agent_id(self, days: int = 30) -> list[dict[str, Any]]:
+        """Cost breakdown by agent_id over the last *days* days."""
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+        return self._db.fetchall(
+            """SELECT agent_id,
+                      SUM(cost_usd) as cost_usd,
+                      SUM(prompt_tokens) as prompt_tokens,
+                      SUM(completion_tokens) as completion_tokens,
+                      COUNT(*) as calls
+               FROM cost_records
+               WHERE timestamp >= ?
+               GROUP BY agent_id
+               ORDER BY cost_usd DESC""",
+            (cutoff,),
+        )
+
+    def agent_daily_costs_by_id(self, agent_id: str, days: int = 30) -> list[dict[str, Any]]:
+        """Return daily cost breakdown for a specific agent_id."""
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+        return self._db.fetchall(
+            """SELECT date(timestamp) as day,
+                      SUM(cost_usd) as total_cost,
+                      SUM(prompt_tokens) as prompt_tokens,
+                      SUM(completion_tokens) as completion_tokens,
+                      COUNT(*) as calls
+               FROM cost_records
+               WHERE agent_id = ? AND timestamp >= ?
+               GROUP BY day
+               ORDER BY day""",
+            (agent_id, cutoff),
+        )
 
     def daily_summary(self, day: str | None = None) -> dict[str, Any]:
         """Full summary for a given day."""
@@ -424,6 +474,7 @@ class CostAnalytics:
                     self.record_usage(
                         model=rec.get("model", ""),
                         provider=rec.get("provider", ""),
+                        agent_id=rec.get("agent_id", ""),
                         agent_name=rec.get("agent_name", ""),
                         task_id=rec.get("task_id", ""),
                         prompt_tokens=rec.get("prompt_tokens", 0),

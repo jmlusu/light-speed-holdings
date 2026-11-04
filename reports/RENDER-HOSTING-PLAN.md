@@ -74,10 +74,10 @@ Each agent gets rendered with:
 
 ## Hosting/Deployment Configuration
 
-### Staging Environment (port 8421)
+### Staging Environment (port 8422)
 ```bash
 docker compose -f docker-compose.staging.yml up --build
-# Port mapping: host 8421 → container 8420
+# Port mapping: host 8422 → container 8420
 ```
 
 ### Production Environment (port 8420)

@@ -29,4 +29,13 @@ Ports probed: development `npm run dev` on **http://localhost:1441**, production
    are free (`netstat -an | findstr "1440 1441"` shows no listeners) and restart with
    `npm run dev` (1441) or `npm run preview` (1440).
 
+3. **CEO Dashboard staging port conflict (2026-11-03 — RESOLVED):** Host port 8421 was
+   conflicted by the external `athena-frontend-staging` project, causing the CEO Dashboard
+   staging to temporarily use port 8422. Resolution: this repository's `docker-compose.staging.yml`
+   was updated to map host port 8422 → container 8420 (changed from 8421), and the
+   `config/prometheus.staging.yml` was updated to reflect the new port. The default host
+   8421 → container 8420 mapping is now available. AGENTS.md §13 transient conflict note
+   has been updated to reflect resolution. Dashboard health checks and port guards continue
+   to function correctly with the new mapping.
+
 Servers were stopped and ports 1440/1441 released after the session.

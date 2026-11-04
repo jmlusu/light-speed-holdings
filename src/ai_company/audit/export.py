@@ -57,6 +57,18 @@ def export_audit_trail(
 
     root = Path(path) if path is not None else get_audit_path()
     files = ordered_audit_files(root)
+    if not files:
+        # Fallback: when ordered_audit_files() returns empty (pattern mismatch
+        # with the active audit file format), directly read audit.jsonl from
+        # the audit directory.
+        fallback = root / "audit.jsonl"
+        if fallback.exists():
+            files = [fallback]
+        if not files:
+            if not root.exists():
+                raise FileNotFoundError(f"Audit trail not found: {root}")
+            else:
+                raise FileNotFoundError(f"Audit file not found: {root}/audit.jsonl")
     if not files and not root.exists():
         raise FileNotFoundError(f"Audit trail not found: {root}")
 

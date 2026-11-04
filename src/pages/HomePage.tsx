@@ -158,7 +158,6 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
 
       {/* 3. H-A-O-M-T-G-V node diagram (responsive at 390px) */}
       <HAOMTGVSection theme={theme} />
-
       {/* 4. Solutions grid with status chips */}
       <section
         className={`py-24 sm:py-32 md:py-36 bg-ls-mist-subtle dark:bg-ls-navy/50`}
@@ -201,6 +200,11 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
                 key={article.id}
                 theme={theme}
                 title={article.title}
+                description={article.excerpt}
+                category={article.category}
+                ctaText="Read full article"
+                ctaUrl={`/article/${article.slug}`}
+                onRequestBriefing={onRequestBriefing}
                 excerpt={article.excerpt}
                 category={article.category}
                 slug={article.slug}
@@ -221,6 +225,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         onRequestBriefing={onRequestBriefing}
         ctaLevel="primary"
       />
+    </div>
 
       {/* 7. FAQ — target of the footer /#faq link */}
       <FaqSection id="faq" theme={theme} />

@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 # Schema DDL
 # ---------------------------------------------------------------------------
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 
 SCHEMA_SQL = """
 -- Tasks (replaces .opencode/inbox.json)
@@ -137,6 +137,7 @@ CREATE TABLE IF NOT EXISTS cost_records (
     model               TEXT NOT NULL,
     provider            TEXT NOT NULL,
     agent_name          TEXT NOT NULL,
+    agent_id            TEXT NOT NULL DEFAULT '',
     task_id             TEXT NOT NULL,
     prompt_tokens       INTEGER NOT NULL DEFAULT 0,
     completion_tokens   INTEGER NOT NULL DEFAULT 0,
@@ -147,6 +148,7 @@ CREATE TABLE IF NOT EXISTS cost_records (
 
 CREATE INDEX IF NOT EXISTS idx_cost_ts ON cost_records(timestamp);
 CREATE INDEX IF NOT EXISTS idx_cost_agent ON cost_records(agent_name);
+CREATE INDEX IF NOT EXISTS idx_cost_agent_id ON cost_records(agent_id);
 CREATE INDEX IF NOT EXISTS idx_cost_task ON cost_records(task_id);
 CREATE INDEX IF NOT EXISTS idx_cost_model ON cost_records(model);
 CREATE INDEX IF NOT EXISTS idx_cost_provider ON cost_records(provider);
@@ -393,6 +395,14 @@ MIGRATIONS: dict[int, list[str]] = {
         CREATE INDEX IF NOT EXISTS idx_audit_ts_type ON audit_events(timestamp, event_type);
         CREATE INDEX IF NOT EXISTS idx_audit_task_status ON audit_events(task_id, event_type, severity);
         """,
+    ],
+    6: [
+        # Agent-level cost attribution: ``cost_records.agent_id`` was added to
+        # SCHEMA_SQL for fresh databases, but databases already at v5 never
+        # received the column. Add it here (init_schema tolerates the
+        # "duplicate column name" error when the column already exists).
+        "ALTER TABLE cost_records ADD COLUMN agent_id TEXT NOT NULL DEFAULT '';",
+        "CREATE INDEX IF NOT EXISTS idx_cost_agent_id ON cost_records(agent_id);",
     ],
 }
 

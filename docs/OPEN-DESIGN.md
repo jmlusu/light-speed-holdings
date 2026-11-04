@@ -122,6 +122,24 @@ Prefer running the installer (it resolves the live daemon URL and data dir). If
 you hand-edit, do not commit machine-specific absolute paths to the repo — keep
 them in the global config.
 
+**Where the entry lives (2026-10-28):** the repo `opencode.json` no longer carries an
+`open-design` MCP entry. It used to — with absolute Windows paths to `node.exe`, the
+daemon `cli.js`, and `OD_DATA_DIR` — so every machine needed a different copy, and
+"local runtime edits" stashes of `opencode.json` became routine. That churn is what
+blanked provider `baseURL` values and the daemon URL on 2026-10-28. The entry now
+lives only in the global config:
+
+```bash
+node open-design/apps/daemon/dist/cli.js mcp install opencode   # writes ~/.config/opencode/opencode.json
+```
+
+A fresh clone needs that one command to get OpenDesign into OpenCode, and the
+committed config stays portable. Any commit touching `opencode.json` requires a
+`[CEO-OVERRIDE: ...]` tag (AGENTS.md §18), enforced locally by the
+`validate-root-config` pre-commit hook (`scripts/lint/validate-root-config.ps1`).
+There is no server-side workflow backing it yet, so `git commit --no-verify`
+still bypasses the check.
+
 ## 5. Two Catalogues
 
 Open Design ships two separate catalogues. Pick the right one before naming an id.

@@ -101,6 +101,7 @@ class UsageRecord:
     prompt_tokens: int
     completion_tokens: int
     cost_usd: float
+    agent_id: str = ""
     iteration: int = 1
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -167,10 +168,14 @@ class CostTracker:
         task_id: str,
         prompt_tokens: int,
         completion_tokens: int,
+        agent_id: str = "",
         iteration: int = 1,
         metadata: dict[str, Any] | None = None,
     ) -> UsageRecord:
         """Record a single LLM usage event and persist to JSONL.
+
+        ``agent_id`` is optional for backward compatibility: when omitted it
+        falls back to ``agent_name`` so per-agent attribution still works.
 
         Returns the created ``UsageRecord``.
         """
@@ -182,6 +187,7 @@ class CostTracker:
             timestamp=datetime.now(timezone.utc).isoformat(),
             model=model,
             provider=provider,
+            agent_id=agent_id or agent_name,
             agent_name=agent_name,
             task_id=task_id,
             prompt_tokens=max(0, int(prompt_tokens)),
@@ -208,6 +214,7 @@ class CostTracker:
                 self._cost_analytics.record_usage(
                     model=record.model,
                     provider=record.provider,
+                    agent_id=record.agent_id,
                     agent_name=record.agent_name,
                     task_id=record.task_id,
                     prompt_tokens=record.prompt_tokens,
@@ -320,6 +327,7 @@ class CostTracker:
         end_date: str | None = None,
         model: str | None = None,
         agent_name: str | None = None,
+        agent_id: str | None = None,
     ) -> dict[str, Any]:
         """Query usage filtered by time period, model, and/or agent.
 
@@ -330,6 +338,10 @@ class CostTracker:
 
         Returns the same summary shape as :meth:`get_summary`, plus a
         ``by_agent`` breakdown.
+
+        Either ``agent_name`` or ``agent_id`` may be provided to filter
+        records. If both are provided, records matching either filter are
+        included (OR logic).
         """
         total_cost = 0.0
         total_prompt = 0
@@ -346,7 +358,13 @@ class CostTracker:
                 continue
             if model and rec.model != model:
                 continue
+            # Filter by agent_name or agent_id (OR logic if both provided)
+            agent_match = True
             if agent_name and rec.agent_name != agent_name:
+                agent_match = False
+            if agent_id and rec.agent_id != agent_id:
+                agent_match = False
+            if not agent_match:
                 continue
 
             total_cost += rec.cost_usd
@@ -363,8 +381,9 @@ class CostTracker:
             model_entry["completion_tokens"] += rec.completion_tokens
             model_entry["calls"] += 1
 
+            agent_entry_key = rec.agent_id if rec.agent_id else rec.agent_name
             agent_entry = by_agent.setdefault(
-                rec.agent_name,
+                agent_entry_key,
                 {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
             )
             agent_entry["cost_usd"] += rec.cost_usd
@@ -442,6 +461,11 @@ class CostTracker:
                         rec_dict.setdefault("completion_tokens", 0)
                         rec_dict["prompt_tokens"] = max(0, int(rec_dict["prompt_tokens"]))
                         rec_dict["completion_tokens"] = max(0, int(rec_dict["completion_tokens"]))
+                        # Older records also predate the agent_id field;
+                        # default it to agent_name so the record can still
+                        # be reconstructed.
+                        agent_id = rec_dict.get("agent_id", rec_dict.get("agent_name", ""))
+                        rec_dict["agent_id"] = agent_id
 
                         record = UsageRecord(**rec_dict)
                         self._records.append(record)

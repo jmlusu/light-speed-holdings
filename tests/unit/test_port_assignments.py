@@ -70,12 +70,12 @@ def test_dashboard_cli_default_port() -> None:
 
 
 def test_compose_mappings() -> None:
-    """docker-compose.yml: 8420:8420; staging default 8421 -> 8420."""
+    """docker-compose.yml: 8420:8420; staging default 8422 -> 8420."""
     prod = _read("docker-compose.yml")
     assert re.search(r'"8420:8420"', prod), "docker-compose.yml: expected host mapping 8420:8420"
     staging = _read("docker-compose.staging.yml")
-    assert re.search(r"\$\{STAGING_DASHBOARD_PORT:-8421\}:8420", staging), (
-        "docker-compose.staging.yml: expected staging default 8421->8420"
+    assert re.search(r"\$\{STAGING_DASHBOARD_PORT:-8422\}:8420", staging), (
+        "docker-compose.staging.yml: expected staging default 8422->8420"
     )
 
 

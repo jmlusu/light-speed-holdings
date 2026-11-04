@@ -439,6 +439,7 @@ class AgentLoop:
                     rec = self.cost_tracker.record_usage(
                         model=response.model,
                         provider=response.provider,
+                        agent_id=resolved_name,
                         agent_name=resolved_name,
                         task_id=task_id,
                         prompt_tokens=prompt_tok,
