@@ -104,13 +104,13 @@ const collectReferences = (): { site: Set<string>; nonSite: Set<string> } => {
 };
 
 describe('site media registry', () => {
-  it('registers exactly 13 assets (pinned)', () => {
-    // 13 = the 10 paths in site components/data + the 3 index.html shell icons.
+  it('registers exactly 14 assets (pinned)', () => {
+    // 14 = the 11 paths in site components/data + the 3 index.html shell icons.
     expect(
       registry.assets.length,
-      `media-registry.json should hold exactly 13 assets; found ${registry.assets.length}. ` +
+      `media-registry.json should hold exactly 14 assets; found ${registry.assets.length}. ` +
         'Update the registry and this pinned count together.',
-    ).toBe(13);
+    ).toBe(14);
   });
 
   it('covers every image path referenced by site source and index.html', () => {

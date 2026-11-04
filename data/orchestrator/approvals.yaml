@@ -5004,3 +5004,79 @@ requests:
   notes: null
   expires_at: '2026-10-28T13:29:45.968456Z'
   metacharacter_blocked: false
+- id: hitl-cc4cb05fe3dc
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-11-03T15:06:12.798045Z'
+  responded_at: '2026-11-03T15:06:14.196877Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-11-03T16:06:12.798045Z'
+  metacharacter_blocked: false
+- id: hitl-a51dc04929e8
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-11-03T15:06:13.351999Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-11-03T16:06:13.351999Z'
+  metacharacter_blocked: false
+- id: hitl-ea851124e632
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-11-03T15:06:13.753827Z'
+  responded_at: '2026-11-03T15:06:14.625236Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-11-03T16:06:13.753827Z'
+  metacharacter_blocked: false
+- id: hitl-0e59e6cd296c
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-11-03T15:06:18.101897Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-11-03T16:06:18.101897Z'
+  metacharacter_blocked: false
+- id: hitl-b5622b672e09
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-11-03T15:06:20.252279Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-11-03T15:05:20.664574Z'
+  metacharacter_blocked: false
