@@ -158,10 +158,6 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
 
       {/* 3. H-A-O-M-T-G-V node diagram (responsive at 390px) */}
       <HAOMTGVSection theme={theme} />
-{/* 4. Solutions grid with status chips */}
-      <section
-        className={`py-24 sm:py-32 md:py-36 bg-ls-gray-light dark:bg-ls-navy/50`}
-
       {/* 4. Solutions grid with status chips */}
       <section
         className={`py-24 sm:py-32 md:py-36 bg-ls-mist-subtle dark:bg-ls-navy/50`}
