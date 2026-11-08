@@ -142,6 +142,16 @@ data/*.db-shm
 data/*.db-wal
 data/*.db-journal
 
+# ai_company.db is a local SQLite mirror of results/cost_log.jsonl
+# (cost_records). Tracked-ness was the bug: the generic data/*.db
+# patterns above never apply to an already-tracked file, so a single
+# `git reset --hard` restored the stale 0-row committed blob and wiped
+# the live 117k-row mirror. Untracked via `git rm --cached`
+# (working-tree file kept); these explicit entries keep it ignored
+# out from under future re-adds and document the intent.
+data/ai_company.db
+data/ai_company.db-*
+
 # Legacy decoy audit DB at repo root (canonical trail: .opencode/audit)
 /audit/
 
