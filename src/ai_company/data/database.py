@@ -500,6 +500,34 @@ class Database:
         row = conn.execute("PRAGMA user_version").fetchone()
         return int(row[0]) if row else 0
 
+    @staticmethod
+    def _column_exists(conn: sqlite3.Connection, table: str, column: str) -> bool:
+        """Return True when ``table.column`` is already present."""
+        rows = conn.execute(f"PRAGMA table_info({table})").fetchall()
+        return column in {row["name"] for row in rows}
+
+    @staticmethod
+    def _add_column_applied(conn: sqlite3.Connection, sql: str) -> bool:
+        """Return True when *sql* is an already-applied ADD COLUMN.
+
+        Fresh databases get the final shape straight from ``SCHEMA_SQL``
+        (migration 1), so later ``ALTER TABLE ... ADD COLUMN`` statements
+        (e.g. migration 6's source/session/event/cache columns) would
+        otherwise only "work" by swallowing a duplicate-column error.
+        Checking ``PRAGMA table_info`` up front keeps the migration
+        conditional instead of relying on that exception path.
+        """
+        import re
+
+        match = re.match(
+            r"ALTER\s+TABLE\s+(\w+)\s+ADD\s+COLUMN\s+(\w+)",
+            sql.strip(),
+            re.IGNORECASE,
+        )
+        if match:
+            return Database._column_exists(conn, match.group(1), match.group(2))
+        return False
+
     def init_schema(self) -> None:
         """Apply all pending migrations in order (idempotent).
 
@@ -530,6 +558,15 @@ class Database:
 
         for target in range(current + 1, SCHEMA_VERSION + 1):
             for sql in MIGRATIONS.get(target, []):
+                if self._add_column_applied(conn, sql):
+                    # Conditional skip: SCHEMA_SQL already created this
+                    # column on fresh databases (see _add_column_applied).
+                    logger.info(
+                        "Migration %d ADD COLUMN already present, skipping: %.60s",
+                        target,
+                        sql.strip(),
+                    )
+                    continue
                 try:
                     conn.executescript(sql)
                 except sqlite3.OperationalError as exc:

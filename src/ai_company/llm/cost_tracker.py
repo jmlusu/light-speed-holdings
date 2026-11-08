@@ -33,6 +33,11 @@ logger = logging.getLogger(__name__)
 # lives in results/cost_log.jsonl (and the SQLite mirror); the in-memory
 # list is a bounded working set so long-running processes don't grow without
 # bound (same class of issue as _decision_log in autonomous.py).
+#
+# NOTE (D12): trimming ``_records`` must NOT evict dedup keys —
+# ``CostTracker._seen_event_ids`` is maintained separately and unbounded
+# so an idempotency guard never forgets an ``event_id`` just because the
+# working set rolled over.
 _MAX_RECORDS = 10_000
 
 # Approximate costs per 1M tokens (USD) — input and output.
@@ -164,8 +169,14 @@ class CostTracker:
         self._daily_cost: dict[str, float] = {}  # "YYYY-MM-DD" -> total
         self._task_costs: dict[str, float] = {}  # task_id -> total
         self._records: list[UsageRecord] = []
+        # D12: unbounded dedup set, separate from the bounded ``_records``
+        # working set so trimming records never forgets an event_id.
+        self._seen_event_ids: set[str] = set()
 
-        # Baseline for token savings computation (Phase 1-3 reduction tracking)
+        # Baseline for token savings computation (Phase 1-3 reduction tracking).
+        # Auto-captured from the first ai-company-cli record in
+        # ``record_usage``. (D4: the never-called file-baseline loader was
+        # removed as dead code; the auto-capture is the single source.)
         self._baseline_prompt_tokens: int = 0
 
         # SQLite write-through mirror (Sprint 2, S2.1)
@@ -177,32 +188,6 @@ class CostTracker:
         self._rebuild_accumulators()
 
         # Export aggregated summary so the dashboard reads real data
-        self._export_summary()
-
-    def _load_baseline_prompt_tokens(self) -> int:
-        """Load the baseline prompt token count from the cost tracker baseline file.
-
-        The baseline captures pre-Phase 1 prompt token usage for reduction percentage
-        comparison. If the file doesn't exist, returns 0 so token savings computation
-        gracefully defaults to 0 (no reduction computed until baseline is set).
-        """
-        try:
-            from ai_company.paths import get_project_root
-
-            baseline_path = (
-                get_project_root() / "data" / "orchestrator" / "cost_tracker_baseline.json"
-            )
-            if baseline_path.is_file():
-                import json
-
-                with open(baseline_path, encoding="utf-8") as f:
-                    base_data = json.load(f)
-                bpb = base_data.get("total_prompt_tokens", 0)
-                if isinstance(bpb, int) and bpb >= 0:
-                    return bpb
-        except Exception:  # noqa: BLE001 - non-fatal, defaults to 0
-            pass
-        return 0
         self._export_summary()
 
     # ── Public API ─────────────────────────────────────────────────
@@ -239,16 +224,47 @@ class CostTracker:
         # append, the SQLite mirror, and the summary export and return the
         # existing record. Callers passing event_id="" (CLI LLM calls)
         # always append.
-        if event_id:
-            for existing in self._records:
-                if existing.event_id == event_id:
-                    return existing
-
         cost = (
             float(cost_usd)
             if cost_usd is not None
             else self._calculate_cost(model, prompt_tokens, completion_tokens)
         )
+
+        if event_id:
+            # D12: check the unbounded seen-set (survives _records trimming);
+            # fall back to a scan for records seeded outside record_usage.
+            if event_id in self._seen_event_ids:
+                for existing in self._records:
+                    if existing.event_id == event_id:
+                        return existing
+                # Evicted from the bounded working set but already recorded:
+                # never re-persist (that would re-append to JSONL/SQLite and
+                # double-count). Return a detached record mirroring the
+                # arguments, flagged in metadata, so callers keep the
+                # "already recorded, no new row" contract.
+                return UsageRecord(
+                    timestamp=timestamp or datetime.now(timezone.utc).isoformat(),
+                    model=model,
+                    provider=provider,
+                    agent_name=agent_name,
+                    task_id=task_id,
+                    prompt_tokens=max(0, int(prompt_tokens)),
+                    completion_tokens=max(0, int(completion_tokens)),
+                    cost_usd=cost,
+                    iteration=iteration,
+                    files_read=files_read,
+                    source=source,
+                    session_id=session_id,
+                    event_id=event_id,
+                    cache_read=cache_read,
+                    cache_write=cache_write,
+                    cost_source=cost_source,
+                    metadata={**(metadata or {}), "dedup_evicted": True},
+                )
+            for existing in self._records:
+                if existing.event_id == event_id:
+                    self._seen_event_ids.add(event_id)
+                    return existing
 
         # Auto-capture baseline from first call if not yet set
         if self._baseline_prompt_tokens <= 0 and source == "ai-company-cli":
@@ -281,7 +297,11 @@ class CostTracker:
         self._daily_cost[day_key] = self._daily_cost.get(day_key, 0.0) + cost
         self._task_costs[task_id] = self._task_costs.get(task_id, 0.0) + cost
         self._records.append(record)
+        if event_id:
+            # D12: dedup keys live outside the bounded working set.
+            self._seen_event_ids.add(event_id)
         if len(self._records) > _MAX_RECORDS:
+            # Trimming evicts summaries inputs only; never the dedup set.
             del self._records[: len(self._records) - _MAX_RECORDS]
 
         # Persist to disk
@@ -432,12 +452,17 @@ class CostTracker:
         by_model: dict[str, dict[str, Any]] = {}
         by_agent: dict[str, dict[str, Any]] = {}
         by_source: dict[str, dict[str, Any]] = {}
+        # D5: true agent x model breakdown (nested agent -> model -> stats).
+        by_agent_model: dict[str, dict[str, dict[str, Any]]] = {}
 
         for rec in self._records:
             ts = rec.timestamp[:10]
-            if start_date and ts < start_date:
+            # D9: compare on the prefix truncated to the filter length so a
+            # month-granular bound ("YYYY-MM") matches its whole month
+            # instead of dropping every day in it ("2026-11-08" > "2026-11").
+            if start_date and ts[: len(start_date)] < start_date:
                 continue
-            if end_date and ts > end_date:
+            if end_date and ts[: len(end_date)] > end_date:
                 continue
             if model and rec.model != model:
                 continue
@@ -479,6 +504,15 @@ class CostTracker:
             source_entry["completion_tokens"] += rec.completion_tokens
             source_entry["calls"] += 1
 
+            combo_entry = by_agent_model.setdefault(rec.agent_name, {}).setdefault(
+                rec.model,
+                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
+            )
+            combo_entry["cost_usd"] += rec.cost_usd
+            combo_entry["prompt_tokens"] += rec.prompt_tokens
+            combo_entry["completion_tokens"] += rec.completion_tokens
+            combo_entry["calls"] += 1
+
         reduction_ratio = 0.0
         if total_prompt > 0 and self._baseline_prompt_tokens > 0:
             reduction_ratio = round((1 - total_prompt / self._baseline_prompt_tokens) * 100, 2)
@@ -494,6 +528,7 @@ class CostTracker:
             "by_model": by_model,
             "by_agent": by_agent,
             "by_source": by_source,
+            "by_agent_model": by_agent_model,
         }
 
     # ── Internal helpers ───────────────────────────────────────────
@@ -559,6 +594,8 @@ class CostTracker:
 
                         record = UsageRecord(**rec_dict)
                         self._records.append(record)
+                        if record.event_id:
+                            self._seen_event_ids.add(record.event_id)
                     except (json.JSONDecodeError, KeyError, TypeError, ValueError):
                         continue
             # Keep the in-memory working set bounded even on huge logs.
@@ -673,7 +710,7 @@ class CostTracker:
                 "by_agent": by_agent,
                 "by_source": by_source,
                 "daily_trend": daily_trend,
-                "by_agent_model": usage.get("by_model", {}),
+                "by_agent_model": usage.get("by_agent_model", {}),
                 "last_updated": datetime.now(timezone.utc).isoformat(),
                 "currency": "USD",
             }
