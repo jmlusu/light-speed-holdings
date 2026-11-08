@@ -152,6 +152,11 @@ class CostTracker:
         results_dir: Directory where cost_log.jsonl is written.
         daily_budget_usd: Maximum daily spend in USD. ``None`` = unlimited.
         task_budget_usd: Maximum per-task spend in USD. ``None`` = unlimited.
+        read_only: When True, no disk writes are performed — the tracker
+            replays the JSONL log into memory but skips JSONL appends,
+            the SQLite mirror, and the aggregated summary export.
+            ``no_write`` is accepted as an alias.
+        no_write: Alias for ``read_only`` (CLI ``--no-write`` passthrough).
     """
 
     def __init__(
@@ -161,10 +166,15 @@ class CostTracker:
         task_budget_usd: float | None = None,
         database: Any = None,
         export_path: str | Path | None = None,
+        read_only: bool = False,
+        no_write: bool = False,
     ) -> None:
         self.results_dir = Path(results_dir)
         self.daily_budget = daily_budget_usd
         self.task_budget = task_budget_usd
+        self.read_only: bool = bool(read_only or no_write)
+        # Alias so callers checking either name see the same state.
+        self.no_write: bool = self.read_only
 
         # Aggregated summary export path (defaults to data/orchestrator/cost_tracker.json
         # under the project root so the CEO dashboard can read real spend data).
@@ -184,16 +194,19 @@ class CostTracker:
         # removed as dead code; the auto-capture is the single source.)
         self._baseline_prompt_tokens: int = 0
 
-        # SQLite write-through mirror (Sprint 2, S2.1)
+        # SQLite write-through mirror (Sprint 2, S2.1). In read-only mode
+        # the mirror is never attached so no SQLite write can occur.
         self._cost_analytics = None
-        if database_is_usable(database):
+        if not self.read_only and database_is_usable(database):
             self._cost_analytics = CostAnalytics(database)
 
         # Rebuild accumulators from existing log
         self._rebuild_accumulators()
 
         # Export aggregated summary so the dashboard reads real data
-        self._export_summary()
+        # (skipped in read-only mode so `llm usage` never touches disk).
+        if not self.read_only:
+            self._export_summary()
 
     # ── Public API ─────────────────────────────────────────────────
 
@@ -309,11 +322,14 @@ class CostTracker:
             # Trimming evicts summaries inputs only; never the dedup set.
             del self._records[: len(self._records) - _MAX_RECORDS]
 
-        # Persist to disk
+        # Persist to disk (no-op in read-only mode; accumulators above
+        # still update so callers see correct in-memory totals).
         self._append_log(record)
 
-        # Mirror to SQLite when the data layer is active (best-effort)
-        if self._cost_analytics is not None:
+        # Mirror to SQLite when the data layer is active (best-effort).
+        # Read-only trackers never attach a mirror (see __init__), and
+        # are re-checked here so a post-init flag flip cannot write.
+        if self._cost_analytics is not None and not getattr(self, "read_only", False):
             try:
                 self._cost_analytics.record_usage(
                     model=record.model,
@@ -550,7 +566,13 @@ class CostTracker:
         return round(input_cost + output_cost, 8)
 
     def _append_log(self, record: UsageRecord) -> None:
-        """Append a usage record to the JSONL log file."""
+        """Append a usage record to the JSONL log file.
+
+        No-op in read-only mode so report-only callers (``llm usage``)
+        never mutate ``results/cost_log.jsonl``.
+        """
+        if getattr(self, "read_only", False):
+            return
         log_path = self.results_dir / "cost_log.jsonl"
         log_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -618,7 +640,12 @@ class CostTracker:
         to ``<project_root>/data/orchestrator/cost_tracker.json`` (D-6
         relocation) so the CEO dashboard can read real spend data without
         touching raw JSONL.
+
+        Returns ``None`` in read-only mode so the summary export is
+        suppressed even if :meth:`_export_summary` is invoked directly.
         """
+        if getattr(self, "read_only", False):
+            return None
         if self._export_path is not None:
             return self._export_path
         try:
@@ -657,7 +684,12 @@ class CostTracker:
         This file is the single source of truth that the CEO dashboard reads
         for real (not dummy) cost data.  The export is best-effort: any I/O
         error is logged at debug level and never crashes the agent.
+
+        No-op in read-only mode so report-only callers (``llm usage``)
+        never rewrite the summary file.
         """
+        if getattr(self, "read_only", False):
+            return
         export_path = self._resolve_export_path()
         if export_path is None:
             return
