@@ -38,7 +38,12 @@ logger = logging.getLogger(__name__)
 # ``CostTracker._seen_event_ids`` is maintained separately and unbounded
 # so an idempotency guard never forgets an ``event_id`` just because the
 # working set rolled over.
-_MAX_RECORDS = 10_000
+# Raised from 10_000 to cover the full Desktop backfill (117,847 records,
+# prompt ~1.62B) with headroom; the previous cap silently truncated
+# ``_records`` in ``_rebuild_accumulators`` and made ``get_usage_summary``
+# undercount totals. Tradeoff: larger in-memory working set (still bounded;
+# ~250k lightweight records is acceptable vs. streaming aggregation).
+_MAX_RECORDS = 250_000
 
 # Approximate costs per 1M tokens (USD) — input and output.
 # Source: public pricing pages as of 2025.  Update as prices change.
