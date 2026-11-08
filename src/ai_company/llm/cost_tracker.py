@@ -88,6 +88,55 @@ MODEL_COSTS: dict[str, dict[str, float]] = {
     "_default": {"input": 1.00, "output": 3.00},
 }
 
+# List-price "shadow" costs per 1M tokens (USD) — input and output.
+# Shadow cost reveals the economic burn behind free/router models whose
+# actual ``MODEL_COSTS`` price is 0.0: the same tokens are recomputed at
+# non-zero list rates, independent of ``cost_source`` (provider vs
+# recomputed). Shadow never affects budgets or ``cost_usd`` totals.
+#
+# Keys are the free/router ``by_model`` keys in
+# ``data/orchestrator/cost_tracker.json`` (full Desktop backfill:
+# 117,847 calls, prompt 1,622,661,224 / completion 90,502,784 at
+# $26.84 actual). Rates are anchored to existing ``MODEL_COSTS`` tiers,
+# not vendor quotes (no live pricing was fetched):
+# - mimo/deepseek families: 0.14/0.14 family anchor in ``MODEL_COSTS``.
+# - flash/lightning/small names: 0.50/1.50 (between gpt-4o-mini and default).
+# - ultra/super names: 2.50/10.00 (gpt-4o frontier tier in ``MODEL_COSTS``).
+# - all other free/router names: 1.00/3.00 (``_default`` anchor).
+# Unlisted ``*-free`` models fall back to ``_default`` 1.00/3.00 and are
+# flagged via ``metadata["shadow_cost_source"] == "shadow-default"``.
+SHADOW_COSTS: dict[str, dict[str, float]] = {
+    "crouton-alpha-free": {"input": 1.00, "output": 3.00},
+    "big-pickle": {"input": 1.00, "output": 3.00},
+    "nemotron-3.5-lightning-free": {"input": 0.50, "output": 1.50},
+    "nemotron-3.5-super-vl-free": {"input": 2.50, "output": 10.00},
+    "nemotron-3-ultra-free": {"input": 2.50, "output": 10.00},
+    "oc/nemotron-3.5-lightning-free": {"input": 0.50, "output": 1.50},
+    "oc/big-pickle": {"input": 1.00, "output": 3.00},
+    "deepseek-v4.1-flash-free": {"input": 0.14, "output": 0.28},
+    "deepseek-v4-flash-free": {"input": 0.14, "output": 0.28},
+    "mimo-v2.6-flash-free": {"input": 0.14, "output": 0.28},
+    "mimo-v2.5-free": {"input": 0.14, "output": 0.28},
+    "oc/mimo-v2.5-free": {"input": 0.14, "output": 0.28},
+    "longcat-2.5-preview-free": {"input": 1.00, "output": 3.00},
+    "longcat-2.0-free": {"input": 1.00, "output": 3.00},
+    "glm-5.3-flash-free": {"input": 0.50, "output": 1.50},
+    "minimax-m3.1-flash-free": {"input": 0.50, "output": 1.50},
+    "ling-3.1-flash-free": {"input": 0.50, "output": 1.50},
+    "ling-3.0-flash-fin-free": {"input": 0.50, "output": 1.50},
+    "muse-spark-1.3-contributor-free": {"input": 1.00, "output": 3.00},
+    "muse-spark-1.2-contributor-free": {"input": 1.00, "output": 3.00},
+    "laguna-s-2.1-free": {"input": 0.50, "output": 1.50},
+    "auto/best-free": {"input": 1.00, "output": 3.00},
+    "auto": {"input": 1.00, "output": 3.00},
+    "auto/coding": {"input": 1.00, "output": 3.00},
+    "auto/multimodal": {"input": 1.00, "output": 3.00},
+    "auto/reasoning": {"input": 1.00, "output": 3.00},
+    "auto/smart": {"input": 1.00, "output": 3.00},
+    "auto/fast": {"input": 1.00, "output": 3.00},
+    "_default": {"input": 1.00, "output": 3.00},
+}
+
 
 def _cost_per_token(model: str, token_type: str) -> float:
     """Return the cost per single token for a model.
@@ -108,6 +157,63 @@ def _cost_per_token(model: str, token_type: str) -> float:
     else:
         costs = MODEL_COSTS["_default"]
     return costs.get(token_type, 1.00) / 1_000_000
+
+
+def _shadow_rate_source(model: str) -> str:
+    """Classify where a model's shadow list rate comes from.
+
+    Returns one of:
+    - ``shadow-list`` — explicit ``SHADOW_COSTS`` entry (incl. ``oc/`` strip).
+    - ``paid-list`` — paid ``MODEL_COSTS`` entry (shadow == list price).
+    - ``local-free`` — zero-priced local model, shadow is genuinely 0.
+    - ``shadow-default`` — fell back to ``SHADOW_COSTS["_default"]``; the
+      shadow value is an estimate and callers flag it in metadata.
+    """
+    if model in SHADOW_COSTS:
+        return "shadow-list"
+    if model.startswith("oc/") and model[3:] in SHADOW_COSTS:
+        return "shadow-list"
+    if model in MODEL_COSTS:
+        rates = MODEL_COSTS[model]
+        if rates.get("input", 0.0) > 0 or rates.get("output", 0.0) > 0:
+            return "paid-list"
+        if "free" in model.lower():
+            return "shadow-default"
+        return "local-free"
+    return "shadow-default"
+
+
+def _shadow_cost_per_token(model: str, token_type: str) -> float:
+    """Return the shadow list cost per single token for a model.
+
+    Shadow is always tokens x list rate, independent of ``cost_source``:
+    explicit ``SHADOW_COSTS`` entries win, paid models use their
+    ``MODEL_COSTS`` list rate, local zero-priced models stay 0, and all
+    other (notably unlisted ``*-free``) models fall back to
+    ``SHADOW_COSTS["_default"]`` ($1.00/$3.00 per 1M).
+    """
+    if model in SHADOW_COSTS:
+        costs = SHADOW_COSTS[model]
+    elif model.startswith("oc/") and model[3:] in SHADOW_COSTS:
+        costs = SHADOW_COSTS[model[3:]]
+    elif model in MODEL_COSTS:
+        rates = MODEL_COSTS[model]
+        if rates.get("input", 0.0) > 0 or rates.get("output", 0.0) > 0:
+            return rates.get(token_type, 1.00) / 1_000_000
+        if "free" in model.lower():
+            costs = SHADOW_COSTS["_default"]
+        else:
+            return 0.0
+    else:
+        costs = SHADOW_COSTS["_default"]
+    return costs.get(token_type, 1.00) / 1_000_000
+
+
+def _shadow_cost(model: str, prompt_tokens: int, completion_tokens: int) -> float:
+    """Compute the shadow list cost in USD for a given token count."""
+    input_cost = max(0, int(prompt_tokens)) * _shadow_cost_per_token(model, "input")
+    output_cost = max(0, int(completion_tokens)) * _shadow_cost_per_token(model, "output")
+    return round(input_cost + output_cost, 8)
 
 
 @dataclass
@@ -132,6 +238,10 @@ class UsageRecord:
     cache_write: int = 0
     cost_source: str = "computed"
     metadata: dict[str, Any] = field(default_factory=dict)
+    # List-price shadow cost (USD): tokens x SHADOW_COSTS list rates,
+    # independent of cost_usd/cost_source. Default 0.0 keeps old
+    # JSONL/direct constructions valid; summaries recompute it when 0.
+    shadow_cost_usd: float = 0.0
 
     @property
     def total_tokens(self) -> int:
@@ -247,6 +357,12 @@ class CostTracker:
             if cost_usd is not None
             else self._calculate_cost(model, prompt_tokens, completion_tokens)
         )
+        # Shadow is ALWAYS tokens x SHADOW list rates, independent of
+        # whether cost came from the provider or was recomputed.
+        shadow_cost = self._calculate_shadow_cost(model, prompt_tokens, completion_tokens)
+        record_metadata = dict(metadata or {})
+        if _shadow_rate_source(model) == "shadow-default":
+            record_metadata["shadow_cost_source"] = "shadow-default"
 
         if event_id:
             # D12: check the unbounded seen-set (survives _records trimming);
@@ -277,7 +393,8 @@ class CostTracker:
                     cache_read=cache_read,
                     cache_write=cache_write,
                     cost_source=cost_source,
-                    metadata={**(metadata or {}), "dedup_evicted": True},
+                    metadata={**record_metadata, "dedup_evicted": True},
+                    shadow_cost_usd=shadow_cost,
                 )
             for existing in self._records:
                 if existing.event_id == event_id:
@@ -307,7 +424,8 @@ class CostTracker:
             cache_read=cache_read,
             cache_write=cache_write,
             cost_source=cost_source,
-            metadata=metadata or {},
+            metadata=record_metadata,
+            shadow_cost_usd=shadow_cost,
         )
 
         # Update accumulators (UTC day key matches the timestamp prefix)
@@ -466,6 +584,7 @@ class CostTracker:
         ``by_agent`` breakdown.
         """
         total_cost = 0.0
+        total_shadow_cost = 0.0
         total_prompt = 0
         total_saved = 0
         total_completion = 0
@@ -493,6 +612,16 @@ class CostTracker:
                 continue
 
             total_cost += rec.cost_usd
+            # Historic/direct records with shadow 0 (pre-shadow logs)
+            # recompute from tokens so the backfill reports a total.
+            rec_shadow = (
+                rec.shadow_cost_usd
+                if rec.shadow_cost_usd
+                else self._calculate_shadow_cost(
+                    rec.model, rec.prompt_tokens, rec.completion_tokens
+                )
+            )
+            total_shadow_cost += rec_shadow
             total_prompt += rec.prompt_tokens
             total_saved += rec.tokens_saved
             total_completion += rec.completion_tokens
@@ -500,36 +629,64 @@ class CostTracker:
 
             model_entry = by_model.setdefault(
                 rec.model,
-                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
+                {
+                    "cost_usd": 0.0,
+                    "shadow_cost_usd": 0.0,
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "calls": 0,
+                },
             )
             model_entry["cost_usd"] += rec.cost_usd
+            model_entry["shadow_cost_usd"] += rec_shadow
             model_entry["prompt_tokens"] += rec.prompt_tokens
             model_entry["completion_tokens"] += rec.completion_tokens
             model_entry["calls"] += 1
 
             agent_entry = by_agent.setdefault(
                 rec.agent_name,
-                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
+                {
+                    "cost_usd": 0.0,
+                    "shadow_cost_usd": 0.0,
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "calls": 0,
+                },
             )
             agent_entry["cost_usd"] += rec.cost_usd
+            agent_entry["shadow_cost_usd"] += rec_shadow
             agent_entry["prompt_tokens"] += rec.prompt_tokens
             agent_entry["completion_tokens"] += rec.completion_tokens
             agent_entry["calls"] += 1
 
             source_entry = by_source.setdefault(
                 rec.source,
-                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
+                {
+                    "cost_usd": 0.0,
+                    "shadow_cost_usd": 0.0,
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "calls": 0,
+                },
             )
             source_entry["cost_usd"] += rec.cost_usd
+            source_entry["shadow_cost_usd"] += rec_shadow
             source_entry["prompt_tokens"] += rec.prompt_tokens
             source_entry["completion_tokens"] += rec.completion_tokens
             source_entry["calls"] += 1
 
             combo_entry = by_agent_model.setdefault(rec.agent_name, {}).setdefault(
                 rec.model,
-                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
+                {
+                    "cost_usd": 0.0,
+                    "shadow_cost_usd": 0.0,
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "calls": 0,
+                },
             )
             combo_entry["cost_usd"] += rec.cost_usd
+            combo_entry["shadow_cost_usd"] += rec_shadow
             combo_entry["prompt_tokens"] += rec.prompt_tokens
             combo_entry["completion_tokens"] += rec.completion_tokens
             combo_entry["calls"] += 1
@@ -540,6 +697,7 @@ class CostTracker:
 
         return {
             "total_cost_usd": round(total_cost, 6),
+            "total_shadow_cost_usd": round(total_shadow_cost, 6),
             "total_prompt_tokens": total_prompt,
             "total_completion_tokens": total_completion,
             "total_tokens": total_prompt + total_completion,
@@ -564,6 +722,19 @@ class CostTracker:
         input_cost = max(0, int(prompt_tokens)) * _cost_per_token(model, "input")
         output_cost = max(0, int(completion_tokens)) * _cost_per_token(model, "output")
         return round(input_cost + output_cost, 8)
+
+    def _calculate_shadow_cost(
+        self,
+        model: str,
+        prompt_tokens: int,
+        completion_tokens: int,
+    ) -> float:
+        """Calculate the list-price shadow cost in USD for a token count.
+
+        Always tokens x ``SHADOW_COSTS`` (or paid list / ``_default``
+        fallback), independent of ``cost_usd``/``cost_source``.
+        """
+        return _shadow_cost(model, prompt_tokens, completion_tokens)
 
     def _append_log(self, record: UsageRecord) -> None:
         """Append a usage record to the JSONL log file.
@@ -618,6 +789,19 @@ class CostTracker:
                         rec_dict.setdefault("completion_tokens", 0)
                         rec_dict["prompt_tokens"] = max(0, int(rec_dict["prompt_tokens"]))
                         rec_dict["completion_tokens"] = max(0, int(rec_dict["completion_tokens"]))
+
+                        # Backfill shadow for pre-shadow logs so the full
+                        # backfill reports list-price burn; rows already
+                        # carrying shadow_cost_usd keep their stored value.
+                        _shadow_raw = rec_dict.get("shadow_cost_usd")
+                        if _shadow_raw is None or _shadow_raw == "":
+                            rec_dict["shadow_cost_usd"] = self._calculate_shadow_cost(
+                                str(rec_dict.get("model") or ""),
+                                rec_dict["prompt_tokens"],
+                                rec_dict["completion_tokens"],
+                            )
+                        else:
+                            rec_dict["shadow_cost_usd"] = float(_shadow_raw)
 
                         record = UsageRecord(**rec_dict)
                         self._records.append(record)
@@ -701,6 +885,7 @@ class CostTracker:
             by_model = {
                 model: {
                     "cost_usd": entry["cost_usd"],
+                    "shadow_cost_usd": entry.get("shadow_cost_usd", 0.0),
                     "prompt_tokens": entry["prompt_tokens"],
                     "completion_tokens": entry["completion_tokens"],
                     "calls": entry["calls"],
@@ -711,6 +896,7 @@ class CostTracker:
             by_agent = {
                 agent: {
                     "cost_usd": entry["cost_usd"],
+                    "shadow_cost_usd": entry.get("shadow_cost_usd", 0.0),
                     "prompt_tokens": entry["prompt_tokens"],
                     "completion_tokens": entry["completion_tokens"],
                     "calls": entry["calls"],
@@ -721,10 +907,16 @@ class CostTracker:
             by_source = {
                 src: {
                     "cost_usd": entry["cost_usd"],
+                    "shadow_cost_usd": entry.get("shadow_cost_usd", 0.0),
                     "prompt_tokens": entry["prompt_tokens"],
                     "completion_tokens": entry["completion_tokens"],
                     "calls": entry["calls"],
                 }
+                for src, entry in usage.get("by_source", {}).items()
+            }
+
+            by_source_shadow = {
+                src: entry.get("shadow_cost_usd", 0.0)
                 for src, entry in usage.get("by_source", {}).items()
             }
 
@@ -737,6 +929,7 @@ class CostTracker:
                 "total_budget": self._load_total_budget(),
                 "total_spent": usage["total_cost_usd"],
                 "llm_spend": usage["total_cost_usd"],
+                "total_shadow_cost_usd": usage["total_shadow_cost_usd"],
                 "total_prompt_tokens": usage["total_prompt_tokens"],
                 "total_completion_tokens": usage["total_completion_tokens"],
                 "total_tokens": usage["total_tokens"],
@@ -746,6 +939,7 @@ class CostTracker:
                 "by_model": by_model,
                 "by_agent": by_agent,
                 "by_source": by_source,
+                "by_source_shadow": by_source_shadow,
                 "daily_trend": daily_trend,
                 "by_agent_model": usage.get("by_agent_model", {}),
                 "last_updated": datetime.now(timezone.utc).isoformat(),
