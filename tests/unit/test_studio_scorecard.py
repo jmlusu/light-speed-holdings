@@ -198,7 +198,7 @@ def test_velocity_net_of_pauses(project: Path, monkeypatch: pytest.MonkeyPatch) 
 
 def test_correction_ratio_measurement_only(project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _write_tracker(project, _base_tracker())
-    now = "2026-10-07T12:00:00+00:00"
+    now = "2026-11-07T12:00:00+00:00"
     events = [_audit_event("tool_call", now) for _ in range(10)]
     events.append(_audit_event("hitl_denied", now))
     _stub_audit(monkeypatch, events)
