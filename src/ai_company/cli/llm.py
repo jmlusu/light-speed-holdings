@@ -16,10 +16,11 @@ from __future__ import annotations
 import json
 from datetime import date, timedelta
 from pathlib import Path
+from typing import Any
 
 import typer
 
-from ai_company.paths import get_data_root
+from ai_company.paths import get_data_root, get_database_path
 
 app = typer.Typer(help="LLM usage and cost tracking")
 
@@ -174,12 +175,33 @@ def sync_opencode(
     limit: int = typer.Option(500, "--limit", help="Max sessions to scan (default 500)"),
     db_path: str = typer.Option("", "--db-path", help="Override opencode.db path"),
     results_dir: str = typer.Option("", "--results-dir", help="Override results directory"),
+    no_sqlite: bool = typer.Option(
+        False,
+        "--no-sqlite",
+        help="JSONL-only mode (legacy): skip the SQLite cost_records mirror",
+    ),
 ) -> None:
     """Sync OpenCode Desktop usage into the canonical cost store.
 
     Reads ``opencode.db`` read-only and appends one record per Desktop
     session with ``source=opencode-desktop``. Idempotent: re-running
-    inserts 0 new rows (dedup on ``event_id``).
+    inserts 0 new rows (dedup on ``event_id``) across both stores.
+
+    By default each Desktop record is written to both ``cost_log.jsonl``
+    and the SQLite ``cost_records`` mirror (``data/ai_company.db`` via
+    ``get_database_path()``). Pass ``--no-sqlite`` to keep the legacy
+    JSONL-only behaviour.
+
+    WAL runbook (no daemon): OpenCode Desktop keeps its SQLite database
+    in WAL mode while running. This sync must stay WAL-safe by opening
+    the source database strictly ``mode=ro`` (URI ``mode=ro`` with
+    ``uri=True``) so readers never write to, lock, or checkpoint the
+    live Desktop WAL. Never-open-without-ro: never open ``opencode.db``
+    without ``mode=ro`` — a plain writable open would take a write lock
+    and could block or corrupt the running Desktop process. There is no
+    background daemon; each invocation is a short-lived read-only scan
+    followed by writes only to the canonical stores (JSONL + SQLite
+    mirror at ``data/ai_company.db``), never back to ``opencode.db``.
     """
     from ai_company.llm.cost_tracker import CostTracker
     from ai_company.llm.opencode_usage import iter_opencode_sessions
@@ -203,22 +225,93 @@ def sync_opencode(
         typer.echo(f"  prompt={total_prompt} completion={total_comp} cost=${total_cost}")
         return
 
-    tracker = CostTracker(results_dir=log_dir, database=None)
-    # Snapshot event_ids already in the store so a re-sync reports only new
-    # rows. CostTracker.record_usage early-outs on a duplicate event_id and
-    # returns the existing record without appending; whether the returned
+    database: Any = None
+    db_obj: Any = None
+    if not no_sqlite:
+        try:
+            from ai_company.data.database import Database
+
+            db_obj = Database(str(get_database_path()))
+            db_obj.init_schema()
+            database = db_obj
+        except Exception as exc:  # noqa: BLE001 - fall back to JSONL-only
+            typer.echo(
+                f"Warning: SQLite mirror unavailable ({exc}); continuing JSONL-only",
+                err=True,
+            )
+            database = None
+            db_obj = None
+
+    tracker = CostTracker(results_dir=log_dir, database=database)
+    if not no_sqlite and tracker._cost_analytics is None:
+        typer.echo(
+            "Warning: SQLite database not usable; continuing JSONL-only",
+            err=True,
+        )
+
+    # Snapshot event_ids from both stores so a re-sync reports only new
+    # rows and dedup holds across JSONL + SQLite. CostTracker.record_usage
+    # early-outs on a JSONL duplicate and CostAnalytics.record_usage early-
+    # outs on a SQLite duplicate (unique event_id); whether the returned
     # object is a fresh record (not the pre-existing one) tells whether a
-    # new row was actually appended.
-    seen_event_ids = {r.event_id for r in tracker._records if r.event_id}
+    # new JSONL row was actually appended.
+    jsonl_seen = {r.event_id for r in tracker._records if r.event_id}
+    sqlite_seen: set[str] = set()
+    if database is not None and tracker._cost_analytics is not None:
+        try:
+            rows = database.fetchall(
+                "SELECT event_id FROM cost_records WHERE event_id IS NOT NULL AND event_id != ''"
+            )
+            sqlite_seen = {str(row["event_id"]) for row in rows if row.get("event_id")}
+        except Exception:  # noqa: BLE001 - dedup probe is best-effort
+            sqlite_seen = set()
+
     inserted = 0
+    sqlite_backfilled = 0
     for rec in records:
         event_id = rec["event_id"]
+        in_jsonl = bool(event_id) and event_id in jsonl_seen
+        in_sqlite = bool(event_id) and event_id in sqlite_seen
+
+        if in_jsonl and in_sqlite:
+            continue
+
+        if in_jsonl and not in_sqlite:
+            # Already in JSONL from a pre-SQLite sync: backfill the SQLite
+            # mirror only, without appending a second JSONL row.
+            if tracker._cost_analytics is not None:
+                try:
+                    backfilled_id = tracker._cost_analytics.record_usage(
+                        model=rec["model"],
+                        provider=rec["provider"],
+                        agent_name=rec["agent_name"],
+                        task_id=rec["task_id"],
+                        prompt_tokens=rec["prompt_tokens"],
+                        completion_tokens=rec["completion_tokens"],
+                        cost_usd=rec["cost_usd"],
+                        iteration=rec["iteration"],
+                        files_read=rec["files_read"],
+                        source=rec["source"],
+                        session_id=rec["session_id"],
+                        event_id=event_id,
+                        cache_read=rec["cache_read"],
+                        cache_write=rec["cache_write"],
+                        cost_source=rec["cost_source"],
+                        metadata=rec["metadata"],
+                        timestamp=rec["timestamp"],
+                    )
+                    if backfilled_id:
+                        sqlite_seen.add(event_id)
+                        sqlite_backfilled += 1
+                except Exception:  # noqa: BLE001 - backfill is best-effort
+                    pass
+            continue
+
         existing = (
             next((r for r in tracker._records if r.event_id == event_id), None)
             if event_id
             else None
         )
-        was_seen = bool(event_id) and event_id in seen_event_ids
         returned = tracker.record_usage(
             model=rec["model"],
             provider=rec["provider"],
@@ -241,11 +334,19 @@ def sync_opencode(
         # Count only rows that were actually appended: the event_id was new
         # and record_usage created a fresh record instead of returning the
         # existing one. Empty event_id always appends.
-        if not was_seen and returned is not existing:
+        if returned is not existing:
             inserted += 1
             if event_id:
-                seen_event_ids.add(event_id)
+                jsonl_seen.add(event_id)
+                if tracker._cost_analytics is not None:
+                    sqlite_seen.add(event_id)
     typer.echo(
         f"Synced {inserted} OpenCode Desktop session(s) from {db_path or 'default opencode.db'}"
     )
+    if sqlite_backfilled:
+        typer.echo(
+            f"  backfilled {sqlite_backfilled} record(s) into SQLite mirror (already in JSONL)"
+        )
     typer.echo(f"Results dir: {log_dir}")
+    if db_obj is not None:
+        db_obj.close()
