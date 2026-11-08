@@ -129,6 +129,19 @@ repos:
         pass_filenames: false
         files: '^(\.vercelignore|vite\.config\.ts|scripts/test/check-vercelignore\.py|data/[^/]+/registry\.ts)$'
         stages: [pre-commit]
+
+  # Cost-tracker fake-data guard (PR #565): untagged non-zero
+  # data/orchestrator/cost_tracker.json is dummy spend. Same check runs in
+  # .github/workflows/ci.yml (lint job).
+  - repo: local
+    hooks:
+      - id: cost-tracker-guard
+        name: check cost_tracker.json has no untagged spend
+        entry: uv run python scripts/test/check-cost-tracker.py
+        language: system
+        pass_filenames: false
+        files: '^(data/orchestrator/cost_tracker\.json|scripts/test/check-cost-tracker\.py)$'
+        stages: [pre-commit]
  # Ruff: lint templates
   # Catches logic errors in generator scripts (like the tuple-vs-string bug
   # that surfaced in generate-pitch-deck.py). Runs on every commit.
