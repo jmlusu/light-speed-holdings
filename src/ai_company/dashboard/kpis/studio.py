@@ -130,7 +130,9 @@ class StudioScorecardCollector(KPICollector):
         capital, capital_quality, capital_error = self._capital(cfo, ventures_cfg)
         risk = self._risk_strip()
 
-        baseline_active, baseline_info = self._baseline_state(baseline_start, baseline_days)
+        baseline_active, baseline_info = self._baseline_state(
+            baseline_start, baseline_days, ventures_cfg, cfo
+        )
 
         kpis: dict[str, Any] = {
             "atc_rate": self._banded_kpi(
@@ -354,7 +356,13 @@ class StudioScorecardCollector(KPICollector):
     # Baseline + KPI shaping helpers
     # ------------------------------------------------------------------
 
-    def _baseline_state(self, start: str, window_days: int) -> tuple[bool, dict[str, Any]]:
+    def _baseline_state(
+        self,
+        start: str,
+        window_days: int,
+        ventures_cfg: dict[str, Any] | None = None,
+        cfo: dict[str, Any] | None = None,
+    ) -> tuple[bool, dict[str, Any]]:
         """Measurement-only window anchored at instrumentation_start."""
         info: dict[str, Any] = {
             "window_days": window_days,
@@ -362,8 +370,20 @@ class StudioScorecardCollector(KPICollector):
             "active": False,
             "days_elapsed": None,
         }
+        # If the store is empty (no ventures and CFO unratified), treat baseline as active
+        # This ensures honest "measurement-only" state when no data has been collected yet.
         if not start:
             info["note"] = "instrumentation_start unset — treating baseline as active"
+            info["active"] = True
+            return True, info
+        if (
+            ventures_cfg is not None
+            and cfo is not None
+            and not ventures_cfg
+            and not cfo.get("ratified", False)
+        ):
+            info["note"] = "empty store with unratified CFO — treating baseline as active"
+            info["active"] = True
             return True, info
         try:
             start_dt = datetime.fromisoformat(start.replace("Z", "+00:00"))

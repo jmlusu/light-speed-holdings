@@ -103,6 +103,7 @@ class UsageRecord:
     cost_usd: float
     tokens_saved: int = 0  # Tokens saved vs baseline (Phase 1-3 reduction tracking)
     iteration: int = 1
+    files_read: int = 0  # Number of files read during this task (Phase 4 tracking)
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -159,6 +160,7 @@ class CostTracker:
         self._rebuild_accumulators()
 
         # Export aggregated summary so the dashboard reads real data
+        self._export_summary()
 
     def _load_baseline_prompt_tokens(self) -> int:
         """Load the baseline prompt token count from the cost tracker baseline file.
@@ -197,6 +199,7 @@ class CostTracker:
         prompt_tokens: int,
         completion_tokens: int,
         iteration: int = 1,
+        files_read: int = 0,
         metadata: dict[str, Any] | None = None,
     ) -> UsageRecord:
         """Record a single LLM usage event and persist to JSONL.
@@ -221,6 +224,7 @@ class CostTracker:
             completion_tokens=max(0, int(completion_tokens)),
             cost_usd=cost,
             iteration=iteration,
+            files_read=files_read,
             metadata=metadata or {},
         )
 
@@ -366,6 +370,7 @@ class CostTracker:
         """
         total_cost = 0.0
         total_prompt = 0
+        total_saved = 0
         total_completion = 0
         call_count = 0
         by_model: dict[str, dict[str, Any]] = {}
@@ -384,6 +389,7 @@ class CostTracker:
 
             total_cost += rec.cost_usd
             total_prompt += rec.prompt_tokens
+            total_saved += rec.tokens_saved
             total_completion += rec.completion_tokens
             call_count += 1
 
@@ -405,12 +411,18 @@ class CostTracker:
             agent_entry["completion_tokens"] += rec.completion_tokens
             agent_entry["calls"] += 1
 
+        reduction_ratio = 0.0
+        if total_prompt > 0 and self._baseline_prompt_tokens > 0:
+            reduction_ratio = round((1 - total_prompt / self._baseline_prompt_tokens) * 100, 2)
+
         return {
             "total_cost_usd": round(total_cost, 6),
             "total_prompt_tokens": total_prompt,
             "total_completion_tokens": total_completion,
             "total_tokens": total_prompt + total_completion,
             "call_count": call_count,
+            "total_tokens_saved": total_saved,
+            "reduction_ratio": reduction_ratio,
             "by_model": by_model,
             "by_agent": by_agent,
         }
@@ -575,6 +587,8 @@ class CostTracker:
                 "total_prompt_tokens": usage["total_prompt_tokens"],
                 "total_completion_tokens": usage["total_completion_tokens"],
                 "total_tokens": usage["total_tokens"],
+                "total_tokens_saved": usage["total_tokens_saved"],
+                "reduction_ratio": usage["reduction_ratio"],
                 "call_count": usage["call_count"],
                 "by_model": by_model,
                 "by_agent": by_agent,
