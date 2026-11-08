@@ -54,19 +54,35 @@ class CostAnalytics:
         completion_tokens: int,
         cost_usd: float,
         iteration: int = 1,
+        files_read: int = 0,
+        source: str = "ai-company-cli",
+        session_id: str = "",
+        event_id: str = "",
+        cache_read: int = 0,
+        cache_write: int = 0,
+        cost_source: str = "computed",
         metadata: dict[str, Any] | None = None,
         timestamp: str | None = None,
     ) -> int:
         """Record a single LLM usage event.
 
-        Returns the row ID of the inserted record.
+        Returns the row ID of the inserted record, or 0 if ``event_id``
+        was already present (idempotent insert-or-ignore).
         """
         ts = timestamp or datetime.now(timezone.utc).isoformat()
+        if event_id:
+            existing = self._db.fetchone(
+                "SELECT id FROM cost_records WHERE event_id = ? LIMIT 1", (event_id,)
+            )
+            if existing is not None:
+                return 0
         cursor = self._db.execute(
             """INSERT INTO cost_records
                (timestamp, model, provider, agent_name, task_id,
-                prompt_tokens, completion_tokens, cost_usd, iteration, metadata)
-               VALUES (?,?,?,?,?,?,?,?,?,?)""",
+                prompt_tokens, completion_tokens, cost_usd, iteration,
+                files_read, source, session_id, event_id,
+                cache_read, cache_write, cost_source, metadata)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (
                 ts,
                 model,
@@ -77,6 +93,13 @@ class CostAnalytics:
                 completion_tokens,
                 cost_usd,
                 iteration,
+                files_read,
+                source,
+                session_id,
+                event_id or None,
+                cache_read,
+                cache_write,
+                cost_source,
                 json.dumps(metadata or {}, default=str),
             ),
         )
@@ -308,6 +331,22 @@ class CostAnalytics:
                FROM cost_records
                WHERE timestamp >= ?
                GROUP BY provider
+               ORDER BY cost_usd DESC""",
+            (cutoff,),
+        )
+
+    def breakdown_by_source(self, days: int = 30) -> list[dict[str, Any]]:
+        """Cost breakdown by source over the last *days* days."""
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+        return self._db.fetchall(
+            """SELECT source,
+                      SUM(cost_usd) as cost_usd,
+                      SUM(prompt_tokens) as prompt_tokens,
+                      SUM(completion_tokens) as completion_tokens,
+                      COUNT(*) as calls
+               FROM cost_records
+               WHERE timestamp >= ?
+               GROUP BY source
                ORDER BY cost_usd DESC""",
             (cutoff,),
         )

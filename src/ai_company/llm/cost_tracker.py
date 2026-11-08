@@ -61,6 +61,10 @@ MODEL_COSTS: dict[str, dict[str, float]] = {
     # MiMo (Xiaomi) models — list price per 1M tokens, cache-miss input
     "mimo-v2.5-pro": {"input": 0.435, "output": 0.87},
     "mimo-v2.5": {"input": 0.14, "output": 0.28},
+    # Free / router models seen in Desktop sessions (matched by substring)
+    "big-pickle": {"input": 0.0, "output": 0.0},
+    "crouton-alpha-free": {"input": 0.0, "output": 0.0},
+    "nemotron-3.5-lightning-free": {"input": 0.0, "output": 0.0},
     # Ollama / local models — effectively free
     "llama3.1:70b": {"input": 0.0, "output": 0.0},
     "llama3.1-8b-32k": {"input": 0.0, "output": 0.0},
@@ -85,7 +89,14 @@ def _cost_per_token(model: str, token_type: str) -> float:
     Returns:
         Cost in USD per single token.
     """
-    costs = MODEL_COSTS.get(model, MODEL_COSTS["_default"])
+    if model in MODEL_COSTS:
+        costs = MODEL_COSTS[model]
+    elif "free" in model.lower():
+        # Free-tier / router models (e.g. ``*-free``) are priced at zero
+        # even when not listed verbatim in ``MODEL_COSTS``.
+        return 0.0
+    else:
+        costs = MODEL_COSTS["_default"]
     return costs.get(token_type, 1.00) / 1_000_000
 
 
@@ -104,6 +115,12 @@ class UsageRecord:
     tokens_saved: int = 0  # Tokens saved vs baseline (Phase 1-3 reduction tracking)
     iteration: int = 1
     files_read: int = 0  # Number of files read during this task (Phase 4 tracking)
+    source: str = "ai-company-cli"  # ai-company-cli | opencode-desktop
+    session_id: str = ""
+    event_id: str = ""
+    cache_read: int = 0
+    cache_write: int = 0
+    cost_source: str = "computed"
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -200,22 +217,47 @@ class CostTracker:
         completion_tokens: int,
         iteration: int = 1,
         files_read: int = 0,
+        source: str = "ai-company-cli",
+        session_id: str = "",
+        event_id: str = "",
+        cache_read: int = 0,
+        cache_write: int = 0,
+        cost_source: str = "computed",
         metadata: dict[str, Any] | None = None,
+        cost_usd: float | None = None,
+        timestamp: str | None = None,
     ) -> UsageRecord:
         """Record a single LLM usage event and persist to JSONL.
 
-        Returns the created ``UsageRecord``.
+        Returns the created ``UsageRecord`` — or, when a non-empty
+        ``event_id`` was already recorded, the existing record without
+        persisting it again (idempotent insert-or-ignore).
         """
-        cost = self._calculate_cost(model, prompt_tokens, completion_tokens)
+        # Idempotency: when a non-empty event_id is already present in the
+        # JSONL-backed working set (e.g. a re-run of sync-opencode with
+        # database=None, where the SQLite check never engages), skip the
+        # append, the SQLite mirror, and the summary export and return the
+        # existing record. Callers passing event_id="" (CLI LLM calls)
+        # always append.
+        if event_id:
+            for existing in self._records:
+                if existing.event_id == event_id:
+                    return existing
+
+        cost = (
+            float(cost_usd)
+            if cost_usd is not None
+            else self._calculate_cost(model, prompt_tokens, completion_tokens)
+        )
 
         # Auto-capture baseline from first call if not yet set
-        if self._baseline_prompt_tokens <= 0:
+        if self._baseline_prompt_tokens <= 0 and source == "ai-company-cli":
             self._baseline_prompt_tokens = max(0, int(prompt_tokens))
 
         # OB5: timestamps are UTC so the JSONL log and the SQLite mirror
         # (CostAnalytics also writes UTC) stay consistent.
         record = UsageRecord(
-            timestamp=datetime.now(timezone.utc).isoformat(),
+            timestamp=timestamp or datetime.now(timezone.utc).isoformat(),
             model=model,
             provider=provider,
             agent_name=agent_name,
@@ -225,6 +267,12 @@ class CostTracker:
             cost_usd=cost,
             iteration=iteration,
             files_read=files_read,
+            source=source,
+            session_id=session_id,
+            event_id=event_id,
+            cache_read=cache_read,
+            cache_write=cache_write,
+            cost_source=cost_source,
             metadata=metadata or {},
         )
 
@@ -251,6 +299,13 @@ class CostTracker:
                     completion_tokens=record.completion_tokens,
                     cost_usd=record.cost_usd,
                     iteration=record.iteration,
+                    files_read=record.files_read,
+                    source=record.source,
+                    session_id=record.session_id,
+                    event_id=record.event_id,
+                    cache_read=record.cache_read,
+                    cache_write=record.cache_write,
+                    cost_source=record.cost_source,
                     metadata=record.metadata,
                     timestamp=record.timestamp,
                 )
@@ -357,6 +412,7 @@ class CostTracker:
         end_date: str | None = None,
         model: str | None = None,
         agent_name: str | None = None,
+        source: str | None = None,
     ) -> dict[str, Any]:
         """Query usage filtered by time period, model, and/or agent.
 
@@ -375,6 +431,7 @@ class CostTracker:
         call_count = 0
         by_model: dict[str, dict[str, Any]] = {}
         by_agent: dict[str, dict[str, Any]] = {}
+        by_source: dict[str, dict[str, Any]] = {}
 
         for rec in self._records:
             ts = rec.timestamp[:10]
@@ -385,6 +442,8 @@ class CostTracker:
             if model and rec.model != model:
                 continue
             if agent_name and rec.agent_name != agent_name:
+                continue
+            if source and rec.source != source:
                 continue
 
             total_cost += rec.cost_usd
@@ -411,6 +470,15 @@ class CostTracker:
             agent_entry["completion_tokens"] += rec.completion_tokens
             agent_entry["calls"] += 1
 
+            source_entry = by_source.setdefault(
+                rec.source,
+                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
+            )
+            source_entry["cost_usd"] += rec.cost_usd
+            source_entry["prompt_tokens"] += rec.prompt_tokens
+            source_entry["completion_tokens"] += rec.completion_tokens
+            source_entry["calls"] += 1
+
         reduction_ratio = 0.0
         if total_prompt > 0 and self._baseline_prompt_tokens > 0:
             reduction_ratio = round((1 - total_prompt / self._baseline_prompt_tokens) * 100, 2)
@@ -425,6 +493,7 @@ class CostTracker:
             "reduction_ratio": reduction_ratio,
             "by_model": by_model,
             "by_agent": by_agent,
+            "by_source": by_source,
         }
 
     # ── Internal helpers ───────────────────────────────────────────
@@ -575,6 +644,16 @@ class CostTracker:
                 for agent, entry in usage["by_agent"].items()
             }
 
+            by_source = {
+                src: {
+                    "cost_usd": entry["cost_usd"],
+                    "prompt_tokens": entry["prompt_tokens"],
+                    "completion_tokens": entry["completion_tokens"],
+                    "calls": entry["calls"],
+                }
+                for src, entry in usage.get("by_source", {}).items()
+            }
+
             daily_trend = [
                 {"date": day, "total_cost_usd": round(cost, 6)}
                 for day, cost in sorted(self._daily_cost.items())
@@ -592,6 +671,7 @@ class CostTracker:
                 "call_count": usage["call_count"],
                 "by_model": by_model,
                 "by_agent": by_agent,
+                "by_source": by_source,
                 "daily_trend": daily_trend,
                 "by_agent_model": usage.get("by_model", {}),
                 "last_updated": datetime.now(timezone.utc).isoformat(),

@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 # Schema DDL
 # ---------------------------------------------------------------------------
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 
 SCHEMA_SQL = """
 -- Tasks (replaces .opencode/inbox.json)
@@ -142,6 +142,13 @@ CREATE TABLE IF NOT EXISTS cost_records (
     completion_tokens   INTEGER NOT NULL DEFAULT 0,
     cost_usd            REAL NOT NULL DEFAULT 0.0,
     iteration           INTEGER NOT NULL DEFAULT 1,
+    files_read          INTEGER NOT NULL DEFAULT 0,
+    source              TEXT NOT NULL DEFAULT 'ai-company-cli',
+    session_id          TEXT NOT NULL DEFAULT '',
+    event_id            TEXT,
+    cache_read          INTEGER NOT NULL DEFAULT 0,
+    cache_write         INTEGER NOT NULL DEFAULT 0,
+    cost_source         TEXT NOT NULL DEFAULT 'computed',
     metadata            TEXT NOT NULL DEFAULT '{}'   -- JSON dict
 );
 
@@ -150,6 +157,9 @@ CREATE INDEX IF NOT EXISTS idx_cost_agent ON cost_records(agent_name);
 CREATE INDEX IF NOT EXISTS idx_cost_task ON cost_records(task_id);
 CREATE INDEX IF NOT EXISTS idx_cost_model ON cost_records(model);
 CREATE INDEX IF NOT EXISTS idx_cost_provider ON cost_records(provider);
+CREATE INDEX IF NOT EXISTS idx_cost_source ON cost_records(source);
+CREATE INDEX IF NOT EXISTS idx_cost_session ON cost_records(session_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_cost_event ON cost_records(event_id);
 
 -- Cost aggregations (daily/weekly/monthly summaries from CostAggregationPipeline)
 CREATE TABLE IF NOT EXISTS cost_aggregations (
@@ -393,6 +403,19 @@ MIGRATIONS: dict[int, list[str]] = {
         CREATE INDEX IF NOT EXISTS idx_audit_ts_type ON audit_events(timestamp, event_type);
         CREATE INDEX IF NOT EXISTS idx_audit_task_status ON audit_events(task_id, event_type, severity);
         """,
+    ],
+    6: [
+        # Unified usage tracker: source/session/event/cache columns on cost_records
+        "ALTER TABLE cost_records ADD COLUMN files_read INTEGER NOT NULL DEFAULT 0;",
+        "ALTER TABLE cost_records ADD COLUMN source TEXT NOT NULL DEFAULT 'ai-company-cli';",
+        "ALTER TABLE cost_records ADD COLUMN session_id TEXT NOT NULL DEFAULT '';",
+        "ALTER TABLE cost_records ADD COLUMN event_id TEXT;",
+        "ALTER TABLE cost_records ADD COLUMN cache_read INTEGER NOT NULL DEFAULT 0;",
+        "ALTER TABLE cost_records ADD COLUMN cache_write INTEGER NOT NULL DEFAULT 0;",
+        "ALTER TABLE cost_records ADD COLUMN cost_source TEXT NOT NULL DEFAULT 'computed';",
+        "CREATE INDEX IF NOT EXISTS idx_cost_source ON cost_records(source);",
+        "CREATE INDEX IF NOT EXISTS idx_cost_session ON cost_records(session_id);",
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_cost_event ON cost_records(event_id);",
     ],
 }
 
