@@ -1,41 +1,451 @@
 {
   "total_budget": 15000000.0,
-  "total_spent": 0.0264,
-  "llm_spend": 0.0264,
-  "total_prompt_tokens": 220,
-  "total_completion_tokens": 330,
-  "total_tokens": 550,
-  "call_count": 2,
+  "total_spent": 2.128198,
+  "llm_spend": 2.128198,
+  "total_prompt_tokens": 83657780,
+  "total_completion_tokens": 3008944,
+  "total_tokens": 86666724,
+  "total_tokens_saved": 0,
+  "reduction_ratio": 0.0,
+  "call_count": 500,
   "by_model": {
-    "gpt-4": {
-      "cost_usd": 0.0264,
-      "prompt_tokens": 220,
-      "completion_tokens": 330,
+    "crouton-alpha-free": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 51589030,
+      "completion_tokens": 659613,
+      "calls": 27
+    },
+    "nemotron-3.5-lightning-free": {
+      "cost_usd": 0.0220176,
+      "prompt_tokens": 26386328,
+      "completion_tokens": 2028391,
+      "calls": 456
+    },
+    "deepseek-v4.1-flash-free": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 450082,
+      "completion_tokens": 70140,
+      "calls": 9
+    },
+    "big-pickle": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 437969,
+      "completion_tokens": 33382,
       "calls": 2
+    },
+    "nemotron-3.5-super-vl-free": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 1129656,
+      "completion_tokens": 82800,
+      "calls": 1
+    },
+    "auto/coding": {
+      "cost_usd": 0.96931302,
+      "prompt_tokens": 2624178,
+      "completion_tokens": 102508,
+      "calls": 4
+    },
+    "auto/multimodal": {
+      "cost_usd": 1.136867,
+      "prompt_tokens": 1040537,
+      "completion_tokens": 32110,
+      "calls": 1
     }
   },
   "by_agent": {
-    "live_tracking": {
-      "cost_usd": 0.0264,
-      "prompt_tokens": 220,
-      "completion_tokens": 330,
+    "general": {
+      "cost_usd": 0.269604,
+      "prompt_tokens": 4428728,
+      "completion_tokens": 26179,
+      "calls": 9
+    },
+    "senior-backend-engineer": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 8384140,
+      "completion_tokens": 29400,
+      "calls": 6
+    },
+    "lead-backend": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 2332900,
+      "completion_tokens": 11218,
+      "calls": 1
+    },
+    "ciso": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 2064764,
+      "completion_tokens": 4868,
+      "calls": 1
+    },
+    "explore": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 1337628,
+      "completion_tokens": 28222,
+      "calls": 23
+    },
+    "chief-of-staff": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 2025056,
+      "completion_tokens": 6440,
+      "calls": 1
+    },
+    "build": {
+      "cost_usd": 1.8585936200000002,
+      "prompt_tokens": 56689406,
+      "completion_tokens": 2246567,
+      "calls": 218
+    },
+    "qa-lead": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 251932,
+      "completion_tokens": 3377,
+      "calls": 1
+    },
+    "test-engineering-lead": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 1636615,
+      "completion_tokens": 6627,
+      "calls": 3
+    },
+    "cto": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 1012378,
+      "completion_tokens": 14598,
       "calls": 2
+    },
+    "default": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 298669,
+      "completion_tokens": 18816,
+      "calls": 1
+    },
+    "board-strategy": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 70003,
+      "completion_tokens": 17149,
+      "calls": 1
+    },
+    "ai-safety-lead": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 34905,
+      "completion_tokens": 1850,
+      "calls": 1
+    },
+    "thought-leadership-author": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 41507,
+      "completion_tokens": 10311,
+      "calls": 1
+    },
+    "agentic-policy-analyst": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 38290,
+      "completion_tokens": 2954,
+      "calls": 1
+    },
+    "sales": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 38083,
+      "completion_tokens": 3846,
+      "calls": 1
+    },
+    "creative-director": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 53036,
+      "completion_tokens": 9260,
+      "calls": 1
+    },
+    "product-marketing-manager": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 58215,
+      "completion_tokens": 9094,
+      "calls": 1
+    },
+    "market-analyst": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 58843,
+      "completion_tokens": 5680,
+      "calls": 1
+    },
+    "plan": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 2400627,
+      "completion_tokens": 51777,
+      "calls": 52
+    },
+    "compaction": {
+      "cost_usd": 0.0,
+      "prompt_tokens": 402055,
+      "completion_tokens": 500711,
+      "calls": 174
+    }
+  },
+  "by_source": {
+    "opencode-desktop": {
+      "cost_usd": 2.1281976200000003,
+      "prompt_tokens": 83657780,
+      "completion_tokens": 3008944,
+      "calls": 500
     }
   },
   "daily_trend": [
     {
+      "date": "2026-10-21",
+      "total_cost_usd": 0.0
+    },
+    {
+      "date": "2026-10-22",
+      "total_cost_usd": 0.269604
+    },
+    {
+      "date": "2026-11-01",
+      "total_cost_usd": 1.2258
+    },
+    {
+      "date": "2026-11-03",
+      "total_cost_usd": 0.632794
+    },
+    {
+      "date": "2026-11-04",
+      "total_cost_usd": 0.0
+    },
+    {
+      "date": "2026-11-06",
+      "total_cost_usd": 0.0
+    },
+    {
+      "date": "2026-11-07",
+      "total_cost_usd": 0.0
+    },
+    {
       "date": "2026-11-08",
-      "total_cost_usd": 0.0264
+      "total_cost_usd": 0.0
     }
   ],
   "by_agent_model": {
-    "gpt-4": {
-      "cost_usd": 0.0264,
-      "prompt_tokens": 220,
-      "completion_tokens": 330,
-      "calls": 2
+    "general": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 4070498,
+        "completion_tokens": 16406,
+        "calls": 5
+      },
+      "nemotron-3.5-lightning-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 88950,
+        "completion_tokens": 9665,
+        "calls": 2
+      },
+      "auto/coding": {
+        "cost_usd": 0.269604,
+        "prompt_tokens": 269280,
+        "completion_tokens": 108,
+        "calls": 2
+      }
+    },
+    "senior-backend-engineer": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 8384140,
+        "completion_tokens": 29400,
+        "calls": 6
+      }
+    },
+    "lead-backend": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 2332900,
+        "completion_tokens": 11218,
+        "calls": 1
+      }
+    },
+    "ciso": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 2064764,
+        "completion_tokens": 4868,
+        "calls": 1
+      }
+    },
+    "explore": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 1193176,
+        "completion_tokens": 19623,
+        "calls": 3
+      },
+      "nemotron-3.5-lightning-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 144452,
+        "completion_tokens": 8599,
+        "calls": 20
+      }
+    },
+    "chief-of-staff": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 2025056,
+        "completion_tokens": 6440,
+        "calls": 1
+      }
+    },
+    "build": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 28674771,
+        "completion_tokens": 557052,
+        "calls": 5
+      },
+      "nemotron-3.5-lightning-free": {
+        "cost_usd": 0.0220176,
+        "prompt_tokens": 23051575,
+        "completion_tokens": 1438823,
+        "calls": 207
+      },
+      "big-pickle": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 437969,
+        "completion_tokens": 33382,
+        "calls": 2
+      },
+      "nemotron-3.5-super-vl-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 1129656,
+        "completion_tokens": 82800,
+        "calls": 1
+      },
+      "auto/coding": {
+        "cost_usd": 0.69970902,
+        "prompt_tokens": 2354898,
+        "completion_tokens": 102400,
+        "calls": 2
+      },
+      "auto/multimodal": {
+        "cost_usd": 1.136867,
+        "prompt_tokens": 1040537,
+        "completion_tokens": 32110,
+        "calls": 1
+      }
+    },
+    "qa-lead": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 251932,
+        "completion_tokens": 3377,
+        "calls": 1
+      }
+    },
+    "test-engineering-lead": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 1636615,
+        "completion_tokens": 6627,
+        "calls": 3
+      }
+    },
+    "cto": {
+      "crouton-alpha-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 955178,
+        "completion_tokens": 4602,
+        "calls": 1
+      },
+      "deepseek-v4.1-flash-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 57200,
+        "completion_tokens": 9996,
+        "calls": 1
+      }
+    },
+    "default": {
+      "nemotron-3.5-lightning-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 298669,
+        "completion_tokens": 18816,
+        "calls": 1
+      }
+    },
+    "board-strategy": {
+      "deepseek-v4.1-flash-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 70003,
+        "completion_tokens": 17149,
+        "calls": 1
+      }
+    },
+    "ai-safety-lead": {
+      "deepseek-v4.1-flash-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 34905,
+        "completion_tokens": 1850,
+        "calls": 1
+      }
+    },
+    "thought-leadership-author": {
+      "deepseek-v4.1-flash-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 41507,
+        "completion_tokens": 10311,
+        "calls": 1
+      }
+    },
+    "agentic-policy-analyst": {
+      "deepseek-v4.1-flash-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 38290,
+        "completion_tokens": 2954,
+        "calls": 1
+      }
+    },
+    "sales": {
+      "deepseek-v4.1-flash-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 38083,
+        "completion_tokens": 3846,
+        "calls": 1
+      }
+    },
+    "creative-director": {
+      "deepseek-v4.1-flash-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 53036,
+        "completion_tokens": 9260,
+        "calls": 1
+      }
+    },
+    "product-marketing-manager": {
+      "deepseek-v4.1-flash-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 58215,
+        "completion_tokens": 9094,
+        "calls": 1
+      }
+    },
+    "market-analyst": {
+      "deepseek-v4.1-flash-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 58843,
+        "completion_tokens": 5680,
+        "calls": 1
+      }
+    },
+    "plan": {
+      "nemotron-3.5-lightning-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 2400627,
+        "completion_tokens": 51777,
+        "calls": 52
+      }
+    },
+    "compaction": {
+      "nemotron-3.5-lightning-free": {
+        "cost_usd": 0.0,
+        "prompt_tokens": 402055,
+        "completion_tokens": 500711,
+        "calls": 174
+      }
     }
   },
-  "last_updated": "2026-11-08T08:49:00.480816+00:00",
+  "last_updated": "2026-11-08T12:17:51.776699+00:00",
   "currency": "USD"
 }

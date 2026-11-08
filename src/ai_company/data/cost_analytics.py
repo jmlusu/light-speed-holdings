@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
+import sqlite3
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -76,34 +77,45 @@ class CostAnalytics:
             )
             if existing is not None:
                 return 0
-        cursor = self._db.execute(
-            """INSERT INTO cost_records
-               (timestamp, model, provider, agent_name, task_id,
-                prompt_tokens, completion_tokens, cost_usd, iteration,
-                files_read, source, session_id, event_id,
-                cache_read, cache_write, cost_source, metadata)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-            (
-                ts,
-                model,
-                provider,
-                agent_name,
-                task_id,
-                prompt_tokens,
-                completion_tokens,
-                cost_usd,
-                iteration,
-                files_read,
-                source,
-                session_id,
-                event_id or None,
-                cache_read,
-                cache_write,
-                cost_source,
-                json.dumps(metadata or {}, default=str),
-            ),
-        )
-        self._db.commit()
+        # Insert; concurrent duplicate event_id inserts race the SELECT above.
+        # Catch the UNIQUE violation so the loser is a no-op (returns 0),
+        # same as the SELECT-hit path. NULL event_ids (empty here) never
+        # conflict under SQLite UNIQUE semantics, so only swallow when a
+        # real event_id was supplied; otherwise re-raise.
+        try:
+            cursor = self._db.execute(
+                """INSERT INTO cost_records
+                   (timestamp, model, provider, agent_name, task_id,
+                    prompt_tokens, completion_tokens, cost_usd, iteration,
+                    files_read, source, session_id, event_id,
+                    cache_read, cache_write, cost_source, metadata)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (
+                    ts,
+                    model,
+                    provider,
+                    agent_name,
+                    task_id,
+                    prompt_tokens,
+                    completion_tokens,
+                    cost_usd,
+                    iteration,
+                    files_read,
+                    source,
+                    session_id,
+                    event_id or None,
+                    cache_read,
+                    cache_write,
+                    cost_source,
+                    json.dumps(metadata or {}, default=str),
+                ),
+            )
+            self._db.commit()
+        except sqlite3.IntegrityError:
+            if event_id:
+                self._db.rollback()
+                return 0
+            raise
         return cursor.lastrowid or 0
 
     def check_budget(self, task_id: str, proposed_cost: float = 0.0) -> tuple[bool, str]:
@@ -428,9 +440,16 @@ class CostAnalytics:
     def import_from_jsonl(self, jsonl_path: str | Path) -> int:
         """Import usage records from the legacy ``cost_log.jsonl`` file.
 
-        Idempotent: records that already exist in the database (matched on
-        timestamp, model, provider, agent, task, and cost) are skipped, so
-        re-running the backfill never double-counts LLM spend.
+        Idempotent: records that already exist in the database are skipped
+        so re-running the backfill never double-counts LLM spend. Records
+        with a non-empty ``event_id`` are deduplicated on ``event_id``
+        alone (unique index); records without one fall back to the
+        composite (timestamp, model, provider, agent, task, tokens, cost)
+        match among event-less rows only.
+
+        All unified fields (``files_read``, ``source``, ``session_id``,
+        ``event_id``, ``cache_read``, ``cache_write``, ``cost_source``)
+        are preserved through the import.
 
         Returns the number of records imported.
         """
@@ -438,6 +457,14 @@ class CostAnalytics:
         if not path.exists():
             logger.warning("Legacy cost log not found: %s", path)
             return 0
+
+        def _int(value: Any, fallback: int) -> int:
+            if value is None:
+                return fallback
+            try:
+                return int(value)
+            except (TypeError, ValueError):
+                return fallback
 
         count = 0
         with open(path, "r", encoding="utf-8") as f:
@@ -447,33 +474,64 @@ class CostAnalytics:
                     continue
                 try:
                     rec = json.loads(line)
+                    if not isinstance(rec, dict):
+                        continue
                     timestamp = rec.get("timestamp")
                     cost_usd = rec.get("cost_usd", 0.0)
+                    if cost_usd is None:
+                        cost_usd = 0.0
+                    model = rec.get("model") or ""
+                    provider = rec.get("provider") or ""
+                    agent_name = rec.get("agent_name") or ""
+                    task_id = rec.get("task_id") or ""
+                    prompt_tokens = _int(rec.get("prompt_tokens", 0) or 0, 0)
+                    completion_tokens = _int(rec.get("completion_tokens", 0) or 0, 0)
+                    event_id = str(rec.get("event_id") or "")
+                    raw_metadata = rec.get("metadata", {})
+                    if isinstance(raw_metadata, str):
+                        try:
+                            parsed = json.loads(raw_metadata) if raw_metadata else {}
+                            metadata: dict[str, Any] = parsed if isinstance(parsed, dict) else {}
+                        except json.JSONDecodeError:
+                            metadata = {}
+                    elif isinstance(raw_metadata, dict):
+                        metadata = raw_metadata
+                    else:
+                        metadata = {}
                     if self._record_exists(
                         timestamp=timestamp,
-                        model=rec.get("model", ""),
-                        provider=rec.get("provider", ""),
-                        agent_name=rec.get("agent_name", ""),
-                        task_id=rec.get("task_id", ""),
+                        model=model,
+                        provider=provider,
+                        agent_name=agent_name,
+                        task_id=task_id,
                         cost_usd=cost_usd,
-                        prompt_tokens=rec.get("prompt_tokens", 0),
-                        completion_tokens=rec.get("completion_tokens", 0),
+                        prompt_tokens=prompt_tokens,
+                        completion_tokens=completion_tokens,
+                        event_id=event_id,
                     ):
                         continue
-                    self.record_usage(
-                        model=rec.get("model", ""),
-                        provider=rec.get("provider", ""),
-                        agent_name=rec.get("agent_name", ""),
-                        task_id=rec.get("task_id", ""),
-                        prompt_tokens=rec.get("prompt_tokens", 0),
-                        completion_tokens=rec.get("completion_tokens", 0),
+                    row_id = self.record_usage(
+                        model=model,
+                        provider=provider,
+                        agent_name=agent_name,
+                        task_id=task_id,
+                        prompt_tokens=prompt_tokens,
+                        completion_tokens=completion_tokens,
                         cost_usd=cost_usd,
-                        iteration=rec.get("iteration", 1),
-                        metadata=rec.get("metadata", {}),
+                        iteration=_int(rec.get("iteration") or 1, 1),
+                        files_read=_int(rec.get("files_read") or 0, 0),
+                        source=str(rec.get("source") or "ai-company-cli"),
+                        session_id=str(rec.get("session_id") or ""),
+                        event_id=event_id,
+                        cache_read=_int(rec.get("cache_read") or 0, 0),
+                        cache_write=_int(rec.get("cache_write") or 0, 0),
+                        cost_source=str(rec.get("cost_source") or "computed"),
+                        metadata=metadata,
                         timestamp=timestamp,
                     )
-                    count += 1
-                except (json.JSONDecodeError, KeyError):
+                    if row_id:
+                        count += 1
+                except (json.JSONDecodeError, KeyError, TypeError, ValueError):
                     continue
 
         logger.info("Imported %d cost records from %s", count, path)
@@ -490,13 +548,21 @@ class CostAnalytics:
         cost_usd: float,
         prompt_tokens: int,
         completion_tokens: int,
+        event_id: str = "",
     ) -> bool:
         """Return True if an identical cost record already exists."""
+        if event_id:
+            rows = self._db.fetchall(
+                "SELECT 1 FROM cost_records WHERE event_id = ? LIMIT 1",
+                (event_id,),
+            )
+            return bool(rows)
         rows = self._db.fetchall(
             """SELECT 1 FROM cost_records
                WHERE timestamp = ? AND model = ? AND provider = ?
                  AND agent_name = ? AND task_id = ?
                  AND cost_usd = ? AND prompt_tokens = ? AND completion_tokens = ?
+                 AND (event_id IS NULL OR event_id = '')
                LIMIT 1""",
             (
                 timestamp,
@@ -527,6 +593,11 @@ class CostAnalytics:
     def export_to_jsonl(self, jsonl_path: str | Path) -> Path:
         """Export all cost records to the legacy ``cost_log.jsonl`` format.
 
+        Preserves all unified fields (``files_read``, ``source``,
+        ``session_id``, ``event_id``, ``cache_read``, ``cache_write``,
+        ``cost_source``) so a round trip through :meth:`import_from_jsonl`
+        is lossless for everything the SQLite schema can store.
+
         Returns the path of the written file.
         """
         path = Path(jsonl_path)
@@ -536,6 +607,17 @@ class CostAnalytics:
 
         with open(path, "w", encoding="utf-8") as f:
             for row in rows:
+                raw_meta = row.get("metadata")
+                if isinstance(raw_meta, str) and raw_meta:
+                    try:
+                        parsed = json.loads(raw_meta)
+                        metadata: dict[str, Any] = parsed if isinstance(parsed, dict) else {}
+                    except json.JSONDecodeError:
+                        metadata = {}
+                elif isinstance(raw_meta, dict):
+                    metadata = raw_meta
+                else:
+                    metadata = {}
                 record = {
                     "timestamp": row["timestamp"],
                     "model": row["model"],
@@ -545,8 +627,15 @@ class CostAnalytics:
                     "prompt_tokens": row["prompt_tokens"],
                     "completion_tokens": row["completion_tokens"],
                     "cost_usd": row["cost_usd"],
-                    "iteration": row["iteration"],
-                    "metadata": json.loads(row.get("metadata", "{}")),
+                    "iteration": row.get("iteration") or 1,
+                    "files_read": row.get("files_read") or 0,
+                    "source": row.get("source") or "ai-company-cli",
+                    "session_id": row.get("session_id") or "",
+                    "event_id": row.get("event_id") or "",
+                    "cache_read": row.get("cache_read") or 0,
+                    "cache_write": row.get("cache_write") or 0,
+                    "cost_source": row.get("cost_source") or "computed",
+                    "metadata": metadata,
                 }
                 f.write(json.dumps(record, default=str) + "\n")
 
