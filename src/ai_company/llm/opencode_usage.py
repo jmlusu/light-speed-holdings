@@ -148,6 +148,11 @@ def normalize_message_row(
         cost_source = "provider"
     else:
         cost, cost_source = _recompute_cost(model, prompt, completion)
+    # Shadow is always tokens x list rates, independent of cost_source.
+    shadow_cost = _recompute_shadow_cost(model, prompt, completion)
+    message_metadata: dict[str, Any] = {"raw_cost": raw_cost}
+    if _shadow_rate_flag(model) == "shadow-default":
+        message_metadata["shadow_cost_source"] = "shadow-default"
     return {
         "model": model,
         "provider": provider or "opencode",
@@ -156,6 +161,7 @@ def normalize_message_row(
         "prompt_tokens": prompt,
         "completion_tokens": completion,
         "cost_usd": cost,
+        "shadow_cost_usd": shadow_cost,
         "iteration": 1,
         "files_read": max(0, int(files_read)),
         "source": "opencode-desktop",
@@ -164,7 +170,7 @@ def normalize_message_row(
         "cache_read": _num(cache.get("read")),
         "cache_write": _num(cache.get("write")),
         "cost_source": cost_source,
-        "metadata": {"raw_cost": raw_cost},
+        "metadata": message_metadata,
         "timestamp": _iso_from_ms(time_created),
     }
 
@@ -235,6 +241,28 @@ def _recompute_cost(
     return round(cost, 8), "recomputed-default"
 
 
+def _recompute_shadow_cost(
+    model: str,
+    prompt_tokens: int,
+    completion_tokens: int,
+) -> float:
+    """Recompute list-price shadow cost via ``SHADOW_COSTS``.
+
+    Always tokens x list rates, independent of ``cost_source`` (provider
+    vs recomputed) — see :func:`ai_company.llm.cost_tracker._shadow_cost`.
+    """
+    from ai_company.llm.cost_tracker import _shadow_cost
+
+    return _shadow_cost(model, prompt_tokens, completion_tokens)
+
+
+def _shadow_rate_flag(model: str) -> str:
+    """Return the shadow rate source for *model* (``shadow-default`` flags estimates)."""
+    from ai_company.llm.cost_tracker import _shadow_rate_source
+
+    return _shadow_rate_source(model)
+
+
 def normalize_session_row(
     *,
     session_id: str,
@@ -267,6 +295,11 @@ def normalize_session_row(
         cost_source = "provider"
     else:
         cost, cost_source = _recompute_cost(model, prompt, completion)
+    # Shadow is always tokens x list rates, independent of cost_source.
+    shadow_cost = _recompute_shadow_cost(model, prompt, completion)
+    session_metadata: dict[str, Any] = {"raw_cost": float(raw_cost or 0.0)}
+    if _shadow_rate_flag(model) == "shadow-default":
+        session_metadata["shadow_cost_source"] = "shadow-default"
     return {
         "model": model,
         "provider": provider or "opencode",
@@ -275,6 +308,7 @@ def normalize_session_row(
         "prompt_tokens": prompt,
         "completion_tokens": completion,
         "cost_usd": cost,
+        "shadow_cost_usd": shadow_cost,
         "iteration": 1,
         "files_read": 0,
         "source": "opencode-desktop",
@@ -283,7 +317,7 @@ def normalize_session_row(
         "cache_read": _num(tokens_cache_read),
         "cache_write": _num(tokens_cache_write),
         "cost_source": cost_source,
-        "metadata": {"raw_cost": float(raw_cost or 0.0)},
+        "metadata": session_metadata,
         "timestamp": _iso_from_ms(time_created),
     }
 
