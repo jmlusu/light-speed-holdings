@@ -40,17 +40,27 @@ def usage(
     ),
     json_output: bool = typer.Option(False, "--json", help="Emit JSON instead of a table"),
     results_dir: str = typer.Option("", "--results-dir", help="Override results directory"),
+    no_write: bool = typer.Option(
+        True,
+        "--no-write/--write",
+        help="Read-only report (default): never write the summary export. "
+        "--write restores the legacy export-on-report behaviour.",
+    ),
 ) -> None:
     """Show LLM token usage and cost for the last N days.
 
     Aggregates the executor's ``cost_log.jsonl`` by model, agent, and time
     period.  With no filters it reports the trailing ``--days`` window;
     use ``--model`` / ``--agent`` / ``--source`` to narrow the breakdown.
+
+    Report-only by default: the tracker is constructed read-only so
+    ``data/orchestrator/cost_tracker.json`` is never rewritten. Pass
+    ``--write`` to restore the legacy export-on-report behaviour.
     """
     from ai_company.llm.cost_tracker import CostTracker
 
     log_dir = Path(results_dir) if results_dir else _default_results_dir()
-    tracker = CostTracker(results_dir=log_dir)
+    tracker = CostTracker(results_dir=log_dir, read_only=no_write, no_write=no_write)
 
     end = date.today().isoformat()
     start = (date.today() - timedelta(days=max(0, days - 1))).isoformat()
@@ -180,6 +190,12 @@ def sync_opencode(
         "--no-sqlite",
         help="JSONL-only mode (legacy): skip the SQLite cost_records mirror",
     ),
+    no_write: bool = typer.Option(
+        False,
+        "--no-write",
+        help="Read-only scan: never write JSONL, the SQLite mirror, or the "
+        "summary export (dry-run against the canonical stores).",
+    ),
 ) -> None:
     """Sync OpenCode Desktop usage into the canonical cost store.
 
@@ -190,7 +206,8 @@ def sync_opencode(
     By default each Desktop record is written to both ``cost_log.jsonl``
     and the SQLite ``cost_records`` mirror (``data/ai_company.db`` via
     ``get_database_path()``). Pass ``--no-sqlite`` to keep the legacy
-    JSONL-only behaviour.
+    JSONL-only behaviour. Pass ``--no-write`` for a read-only scan that
+    never touches JSONL, the SQLite mirror, or the summary export.
 
     WAL runbook (no daemon): OpenCode Desktop keeps its SQLite database
     in WAL mode while running. This sync must stay WAL-safe by opening
@@ -227,7 +244,7 @@ def sync_opencode(
 
     database: Any = None
     db_obj: Any = None
-    if not no_sqlite:
+    if not no_sqlite and not no_write:
         try:
             from ai_company.data.database import Database
 
@@ -242,8 +259,13 @@ def sync_opencode(
             database = None
             db_obj = None
 
-    tracker = CostTracker(results_dir=log_dir, database=database)
-    if not no_sqlite and tracker._cost_analytics is None:
+    tracker = CostTracker(
+        results_dir=log_dir,
+        database=database,
+        read_only=no_write,
+        no_write=no_write,
+    )
+    if not no_sqlite and not no_write and tracker._cost_analytics is None:
         typer.echo(
             "Warning: SQLite database not usable; continuing JSONL-only",
             err=True,
@@ -340,8 +362,10 @@ def sync_opencode(
                 jsonl_seen.add(event_id)
                 if tracker._cost_analytics is not None:
                     sqlite_seen.add(event_id)
+    report_prefix = "[no-write] " if no_write else ""
     typer.echo(
-        f"Synced {inserted} OpenCode Desktop session(s) from {db_path or 'default opencode.db'}"
+        f"{report_prefix}Synced {inserted} OpenCode Desktop session(s) "
+        f"from {db_path or 'default opencode.db'}"
     )
     if sqlite_backfilled:
         typer.echo(
