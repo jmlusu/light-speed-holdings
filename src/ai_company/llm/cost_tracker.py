@@ -101,6 +101,7 @@ class UsageRecord:
     prompt_tokens: int
     completion_tokens: int
     cost_usd: float
+    tokens_saved: int = 0  # Tokens saved vs baseline (Phase 1-3 reduction tracking)
     iteration: int = 1
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -146,6 +147,9 @@ class CostTracker:
         self._task_costs: dict[str, float] = {}  # task_id -> total
         self._records: list[UsageRecord] = []
 
+        # Baseline for token savings computation (Phase 1-3 reduction tracking)
+        self._baseline_prompt_tokens: int = 0
+
         # SQLite write-through mirror (Sprint 2, S2.1)
         self._cost_analytics = None
         if database_is_usable(database):
@@ -155,6 +159,31 @@ class CostTracker:
         self._rebuild_accumulators()
 
         # Export aggregated summary so the dashboard reads real data
+
+    def _load_baseline_prompt_tokens(self) -> int:
+        """Load the baseline prompt token count from the cost tracker baseline file.
+
+        The baseline captures pre-Phase 1 prompt token usage for reduction percentage
+        comparison. If the file doesn't exist, returns 0 so token savings computation
+        gracefully defaults to 0 (no reduction computed until baseline is set).
+        """
+        try:
+            from ai_company.paths import get_project_root
+
+            baseline_path = (
+                get_project_root() / "data" / "orchestrator" / "cost_tracker_baseline.json"
+            )
+            if baseline_path.is_file():
+                import json
+
+                with open(baseline_path, encoding="utf-8") as f:
+                    base_data = json.load(f)
+                bpb = base_data.get("total_prompt_tokens", 0)
+                if isinstance(bpb, int) and bpb >= 0:
+                    return bpb
+        except Exception:  # noqa: BLE001 - non-fatal, defaults to 0
+            pass
+        return 0
         self._export_summary()
 
     # ── Public API ─────────────────────────────────────────────────
@@ -175,6 +204,10 @@ class CostTracker:
         Returns the created ``UsageRecord``.
         """
         cost = self._calculate_cost(model, prompt_tokens, completion_tokens)
+
+        # Auto-capture baseline from first call if not yet set
+        if self._baseline_prompt_tokens <= 0:
+            self._baseline_prompt_tokens = max(0, int(prompt_tokens))
 
         # OB5: timestamps are UTC so the JSONL log and the SQLite mirror
         # (CostAnalytics also writes UTC) stay consistent.
