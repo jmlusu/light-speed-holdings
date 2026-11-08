@@ -2,6 +2,7 @@
   "total_budget": 15000000.0,
   "total_spent": 0.0,
   "llm_spend": 0.0,
+  "total_shadow_cost_usd": 0.0,
   "total_prompt_tokens": 0,
   "total_completion_tokens": 0,
   "total_tokens": 0,
@@ -11,8 +12,9 @@
   "by_model": {},
   "by_agent": {},
   "by_source": {},
+  "by_source_shadow": {},
   "daily_trend": [],
   "by_agent_model": {},
-  "last_updated": "2026-11-08T16:53:14.926069+00:00",
+  "last_updated": "2026-11-08T17:58:08.086329+00:00",
   "currency": "USD"
 }
