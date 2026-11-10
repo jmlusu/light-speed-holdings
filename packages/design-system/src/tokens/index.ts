@@ -9,6 +9,7 @@ export * from './colors';
 export * from './typography';
 export * from './spacing';
 export * from './visual';
+export * from './brand-lightSpeed';
 
 import { colors } from './colors';
 import { typography } from './typography';

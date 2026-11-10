@@ -18,13 +18,15 @@ const renderNav = (
 const primaryNav = () => screen.getByRole('navigation', { name: 'Primary' });
 const toggle = () => screen.getByRole('button', { name: /toggle navigation menu/i });
 
-describe('FloatingNav — SPEC 8-item primary navigation', () => {
-  it('renders the eight SPEC links in order', () => {
+describe('FloatingNav — SPEC 10-item primary navigation', () => {
+  it('renders the ten SPEC links in order', () => {
     renderNav();
     const links = within(primaryNav()).getAllByRole('link');
     expect(links.map((l) => l.textContent)).toEqual([
       'Home',
       'What We Do',
+      'Pharos',
+      'Venture Studio',
       'AI Company Builder',
       'Solutions',
       'Use Cases',
@@ -38,6 +40,8 @@ describe('FloatingNav — SPEC 8-item primary navigation', () => {
     expect(NAV_LINKS.map((l) => l.name)).toEqual([
       'Home',
       'What We Do',
+      'Pharos',
+      'Venture Studio',
       'AI Company Builder',
       'Solutions',
       'Use Cases',

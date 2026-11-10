@@ -22,6 +22,8 @@ import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { HaomtgvPage } from './pages/HAOMTGVPage';
+import { PharosPage } from './pages/PharosPage';
+import { VentureStudioPage } from './pages/VentureStudioPage';
 
 
 const HomePageRoute = withSite(HomePage);
@@ -39,6 +41,8 @@ const ContactPageRoute = withSite(ContactPage);
 const PrivacyPageRoute = withSite(PrivacyPage);
 const TermsPageRoute = withSite(TermsPage);
 const HaomtgvPageRoute = withSite(HaomtgvPage);
+const PharosPageRoute = withSite(PharosPage);
+const VentureStudioPageRoute = withSite(VentureStudioPage);
 
 
 
@@ -85,6 +89,8 @@ export const App: React.FC = () => {
         children: [
           { index: true, element: <HomePageRoute /> },
           { path: 'what-we-do', element: <WhatWeDoPageRoute /> },
+          { path: 'pharos', element: <PharosPageRoute /> },
+          { path: 'venture-studio', element: <VentureStudioPageRoute /> },
           { path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
           { path: 'haomtgv', element: <HaomtgvPageRoute /> },
           { path: 'solutions', element: <SolutionsPageRoute /> },

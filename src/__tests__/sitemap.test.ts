@@ -40,7 +40,12 @@ describe('sitemap coverage', () => {
     expect(new Set(locs).size).toBe(locs.length);
   });
 
-  it('lists 44 URLs (21 pre-existing + 23 formerly orphaned)', () => {
-    expect(locs).toHaveLength(44);
+  it('lists the Pharos and Venture Studio pages', () => {
+    expect(locs).toContain(`${BASE}/pharos`);
+    expect(locs).toContain(`${BASE}/venture-studio`);
+  });
+
+  it('lists 46 URLs (23 pre-existing + 23 formerly orphaned)', () => {
+    expect(locs).toHaveLength(46);
   });
 });
