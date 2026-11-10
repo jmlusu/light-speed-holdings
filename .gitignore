@@ -251,3 +251,6 @@ output/marketing-site/
 
 # Deck gate reports: machine-local, carry absolute paths, never committed
 static/brand/templates/*.verify.json
+
+# Local prototype staging area (~120 MB of images), never committed
+_staging/
