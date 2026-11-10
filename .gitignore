@@ -8,6 +8,27 @@
 opencode.local.json
 
 # ==========================================
+# Confidential Client & Commercial Artifacts
+# ==========================================
+# Client-facing proposal/bid deliverables carry engagement values, client
+# names, budget structures, short codes and personal data. They belong in the
+# private engagement folder, never in this repository.
+# Incident 2026-11-10: 26 proposal files reached public `main` via PR #473
+# (broad `git add`). `.vercelignore` already excluded the directory from the
+# Vercel upload, which did nothing to stop GitHub exposure.
+# Enforced by: scripts/test/check-confidential-artifacts.py (pre-commit + CI)
+/proposal-deliverables/
+/proposals/
+/client-deliverables/
+/consulting-deliverables/
+/confidential/
+*Proposal*.docx
+*Proposal*.pptx
+*Proposal*.pdf
+*Executive-Summary*.docx
+*Executive-Summary*.pdf
+
+# ==========================================
 # Build Artifacts & Dependencies
 # ==========================================
 node_modules/
