@@ -486,6 +486,92 @@ def test_tracker_check_cache_budget_delegates(
     assert status.allowed is False
 
 
+def test_tracker_forwards_custom_cap_to_the_ladder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """``cap=N`` must reach the threshold ladder, not just be accepted.
+
+    With 900 cache-read tokens the default 50M cap is nowhere near a
+    threshold (``ok``), while ``cap=1000`` is 90% and must land on
+    ``compact``. A tracker that ignored ``cap`` would report ``ok`` twice.
+    """
+    monkeypatch.setattr(
+        opencode_usage,
+        "cache_read_tokens_for_day",
+        lambda day, db_path=None: 900,
+    )
+    tracker = CostTracker(
+        results_dir=str(tmp_path / "results"),
+        export_path=str(tmp_path / "cost_tracker.json"),
+    )
+    tracker._cost_analytics = CostAnalytics(database=_PoisonedDatabase())
+
+    default_status = tracker.check_cache_budget(DAY)
+    override_status = tracker.check_cache_budget(DAY, cap=1000)
+
+    assert (default_status.level, default_status.cap) == ("ok", DEFAULT_CACHE_READ_CAP)
+    assert default_status.allowed is True
+    assert (override_status.level, override_status.cap, override_status.used) == (
+        "compact",
+        1000,
+        900,
+    )
+    assert override_status.allowed is True
+    assert "90.0%" in (override_status.reason or "")
+
+
+@pytest.mark.parametrize("cap", [0, -1])
+def test_tracker_non_positive_cap_never_blocks(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, cap: int
+) -> None:
+    """A non-positive cap short-circuits to ``ok`` without reading the DB.
+
+    ``reason is None`` (not the fail-open "unavailable" text) is what proves
+    the clean short-circuit ran: the tracker swallows any exception from the
+    analytics call, so a reader that raised would still look like ``ok``.
+    """
+
+    def _boom(day: str, db_path: str | Path | None = None) -> int:
+        raise AssertionError("non-positive cap must not consult the usage DB")
+
+    monkeypatch.setattr(opencode_usage, "cache_read_tokens_for_day", _boom)
+    tracker = CostTracker(
+        results_dir=str(tmp_path / "results"),
+        export_path=str(tmp_path / "cost_tracker.json"),
+    )
+    tracker._cost_analytics = CostAnalytics(database=_PoisonedDatabase())
+
+    status = tracker.check_cache_budget(DAY, cap=cap)
+
+    assert status.level == "ok"
+    assert status.allowed is True
+    assert status.used == 0
+    assert status.reason is None
+
+
+class _RaisingCapAnalytics:
+    """Analytics stub that raises for any call, including one with *cap*."""
+
+    def check_cache_budget(self, day: str | None = None, cap: int | None = None) -> Any:
+        raise RuntimeError("usage db exploded")
+
+
+def test_tracker_fail_open_reports_caller_cap(tmp_path: Path) -> None:
+    """Fail-open must echo the caller's cap, never a fabricated default."""
+    tracker = CostTracker(
+        results_dir=str(tmp_path / "results"),
+        export_path=str(tmp_path / "cost_tracker.json"),
+    )
+    tracker._cost_analytics = _RaisingCapAnalytics()  # type: ignore[assignment]
+
+    status = tracker.check_cache_budget(DAY, cap=1234)
+
+    assert status.level == "ok"
+    assert status.allowed is True
+    assert status.cap == 1234
+    assert "cache budget unavailable" in (status.reason or "")
+
+
 # ── AgentLoop never aborts on a broken budget check ─────────────────
 
 
