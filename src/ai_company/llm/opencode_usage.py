@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 import logging
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -522,3 +522,195 @@ def count_opencode_sessions(
 ) -> int:
     """Count candidate Desktop sessions without reading bodies (diagnostic)."""
     return sum(1 for _ in iter_opencode_sessions(db_path, project=project, limit=10000))
+
+
+# ---------------------------------------------------------------------------
+# Read-only cache-read budget readers
+# ---------------------------------------------------------------------------
+#
+# These power the daily cache-read token cap. They are strictly read-only
+# (``mode=ro``) and fail soft: a missing or unreadable DB yields zeros/[] so a
+# metrics problem can never abort task execution.
+
+# Message tables in priority order. Both names may coexist in one DB (the
+# Desktop store keeps ``message`` for older rows and ``session_message`` for
+# newer ones), so callers union them and dedupe by message id.
+_MESSAGE_TABLES = ("message", "session_message")
+
+# Session tables: ``session_v2`` carries the suspension columns, ``session``
+# is the legacy shape without them.
+_SESSION_TABLES = ("session_v2", "session")
+
+_SESSION_FIELDS = (
+    "id",
+    "tokens_cache_read",
+    "time_created",
+    "time_suspended",
+    "resume_attempts",
+    "idle_outcome",
+    "cost",
+    "agent",
+    "model",
+)
+
+
+def _connect_readonly(db_path: str | Path | None) -> sqlite3.Connection | None:
+    """Open the usage DB read-only, or ``None`` when it is unavailable."""
+    path = _resolve_db_path(db_path)
+    if not path.exists():
+        logger.warning("OpenCode DB not found: %s", path)
+        return None
+    uri = f"file:{path.as_posix()}?mode=ro"
+    try:
+        conn = sqlite3.connect(uri, uri=True, timeout=5)
+    except sqlite3.Error:
+        logger.warning("Could not open OpenCode DB read-only: %s", path)
+        return None
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def _table_columns(conn: sqlite3.Connection) -> dict[str, set[str]]:
+    """Return ``{table_name: {column, ...}}`` for the connected DB."""
+    tables = [
+        str(row["name"])
+        for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+    ]
+    return {
+        table: {str(col["name"]) for col in conn.execute(f"PRAGMA table_info({table})")}
+        for table in tables
+    }
+
+
+def _day_bounds_ms(day: str) -> tuple[int, int] | None:
+    """Return the UTC ``[start, end)`` millisecond bounds for ``YYYY-MM-DD``."""
+    try:
+        start = datetime.strptime(day, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    except (TypeError, ValueError):
+        logger.warning("Invalid day %r for cache-read totals", day)
+        return None
+    return int(start.timestamp() * 1000), int((start + timedelta(days=1)).timestamp() * 1000)
+
+
+def cache_read_tokens_for_day(day: str, db_path: str | Path | None = None) -> int:
+    """Sum ``tokens.cache.read`` for messages created on *day* (UTC).
+
+    *day* is ``"YYYY-MM-DD"``. Both the ``message`` and ``session_message``
+    tables are read (a Desktop DB keeps one or the other per row range) and
+    rows are deduped by message id, so a DB that mirrors both table names is
+    never double counted. Rows whose ``data`` JSON lacks
+    ``tokens.cache.read`` contribute 0.
+
+    Returns 0 for a missing/unreadable DB or an unparsable *day*; never raises.
+    """
+    bounds = _day_bounds_ms(day)
+    if bounds is None:
+        return 0
+    start_ms, end_ms = bounds
+    conn = _connect_readonly(db_path)
+    if conn is None:
+        return 0
+    total = 0
+    seen: set[str] = set()
+    try:
+        columns_by_table = _table_columns(conn)
+        for table in _MESSAGE_TABLES:
+            table_columns = columns_by_table.get(table)
+            if not table_columns or not {"id", "time_created", "data"}.issubset(table_columns):
+                continue
+            try:
+                rows = conn.execute(
+                    f"SELECT id, data FROM {table} WHERE time_created >= ? AND time_created < ?",
+                    (start_ms, end_ms),
+                ).fetchall()
+            except sqlite3.Error:
+                logger.warning("Cache-read query failed on %s", table)
+                continue
+            for row in rows:
+                message_id = str(row["id"])
+                if message_id in seen:
+                    continue
+                seen.add(message_id)
+                tokens = _parse_json(row["data"]).get("tokens")
+                if not isinstance(tokens, dict):
+                    continue
+                cache = tokens.get("cache")
+                if not isinstance(cache, dict):
+                    continue
+                total += _num(cache.get("read"))
+    except sqlite3.Error:
+        logger.warning("Cache-read totals unavailable for %s", day)
+        return 0
+    finally:
+        conn.close()
+    return total
+
+
+def sessions_exceeding_cache_read(
+    threshold: int, db_path: str | Path | None = None
+) -> list[dict[str, Any]]:
+    """Return sessions whose ``tokens_cache_read`` exceeds *threshold*.
+
+    Unions ``session_v2`` (which has the suspension columns) and the legacy
+    ``session`` table, deduping by session id so ``session_v2`` fields win.
+    Columns absent from a table resolve to ``None``/``0`` — value access is
+    by key only, never positional.
+
+    Each dict has ``session_id``, ``tokens_cache_read``, ``time_created``,
+    ``time_suspended``, ``resume_attempts``, ``idle_outcome``, ``cost``,
+    ``agent``, ``model``; the list is ordered by cache-read tokens
+    descending. Returns ``[]`` for a missing/unreadable DB; never raises.
+    """
+    conn = _connect_readonly(db_path)
+    if conn is None:
+        return []
+    rows: list[dict[str, Any]] = []
+    try:
+        threshold_value = int(threshold)
+    except (TypeError, ValueError):
+        conn.close()
+        logger.warning("Invalid cache-read threshold %r", threshold)
+        return []
+    seen: set[str] = set()
+    try:
+        columns_by_table = _table_columns(conn)
+        for table in _SESSION_TABLES:
+            available = columns_by_table.get(table)
+            if not available or not {"id", "tokens_cache_read"}.issubset(available):
+                continue
+            selected = [field for field in _SESSION_FIELDS if field in available]
+            try:
+                table_rows = conn.execute(
+                    f"SELECT {', '.join(selected)} FROM {table} WHERE tokens_cache_read > ?",
+                    (threshold_value,),
+                ).fetchall()
+            except sqlite3.Error:
+                logger.warning("Cache-read session query failed on %s", table)
+                continue
+            for raw in table_rows:
+                rec = dict(raw)
+                session_id = str(rec.get("id") or "")
+                if not session_id or session_id in seen:
+                    continue
+                seen.add(session_id)
+                model, _provider = _parse_model(rec.get("model"))
+                rows.append(
+                    {
+                        "session_id": session_id,
+                        "tokens_cache_read": _num(rec.get("tokens_cache_read")),
+                        "time_created": rec.get("time_created"),
+                        "time_suspended": rec.get("time_suspended"),
+                        "resume_attempts": _num(rec.get("resume_attempts")),
+                        "idle_outcome": rec.get("idle_outcome"),
+                        "cost": _float(rec.get("cost")),
+                        "agent": str(rec.get("agent") or ""),
+                        "model": model,
+                    }
+                )
+    except sqlite3.Error:
+        logger.warning("Cache-read session lookup unavailable")
+        return []
+    finally:
+        conn.close()
+    rows.sort(key=lambda entry: int(entry["tokens_cache_read"]), reverse=True)
+    return rows

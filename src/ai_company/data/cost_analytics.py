@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import logging
 import sqlite3
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -16,6 +17,31 @@ from typing import Any
 from ai_company.data.database import Database
 
 logger = logging.getLogger(__name__)
+
+# Default daily ceiling for cache-read tokens (50M). Cache reads are the
+# dominant prompt-side cost driver on long Desktop sessions; the cap turns
+# that into a single, checkable number per UTC day.
+DEFAULT_CACHE_READ_CAP = 50_000_000
+
+
+@dataclass(frozen=True)
+class CacheBudgetStatus:
+    """Outcome of the daily cache-read token budget check.
+
+    ``level`` is one of ``"ok"``, ``"warn"`` and ``"compact"`` (log-only
+    stages) or ``"block"`` (the task must pause). ``reason`` is a short
+    human string naming the percentage and numbers, or ``None`` when ``ok``.
+    """
+
+    level: str
+    used: int
+    cap: int
+    reason: str | None
+
+    @property
+    def allowed(self) -> bool:
+        """False only at the ``block`` stage."""
+        return self.level != "block"
 
 
 class CostAnalytics:
@@ -146,6 +172,100 @@ class CostAnalytics:
                 )
 
         return True, "within budget"
+
+    # ── Cache-read budget (OpenCode usage DB) ─────────────────────────
+
+    def check_cache_budget(
+        self, day: str | None = None, cap: int | None = None
+    ) -> CacheBudgetStatus:
+        """Report cache-read token pressure for *day* against *cap*.
+
+        The number comes from the OpenCode usage DB via
+        :func:`ai_company.llm.opencode_usage.cache_read_tokens_for_day` —
+        never from ``self._db`` (``cost_records`` holds per-call spend, not
+        the Desktop session cache counters).
+
+        Thresholds are evaluated highest first so every stage is reachable:
+        ``>= cap`` blocks, ``>= 85%`` is ``compact``, ``>= 70%`` is ``warn``,
+        everything else is ``ok``. ``compact``/``warn`` are log-only.
+        """
+        target_day = day or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        effective_cap = DEFAULT_CACHE_READ_CAP if cap is None else int(cap)
+        if effective_cap <= 0:
+            # A non-positive cap carries no budget; never block on it.
+            return CacheBudgetStatus(level="ok", used=0, cap=0, reason=None)
+        # Lazily imported: ``ai_company.llm`` imports ``cost_tracker``, which
+        # imports this module — a module-level import would close that cycle.
+        from ai_company.llm.opencode_usage import cache_read_tokens_for_day
+
+        used = int(cache_read_tokens_for_day(target_day))
+        pct = used * 100 / effective_cap
+        detail = f"cache-read {pct:.1f}% of cap ({used:,}/{effective_cap:,} tokens)"
+        if used >= effective_cap:
+            return CacheBudgetStatus(
+                level="block",
+                used=used,
+                cap=effective_cap,
+                reason=f"{detail} — daily cap reached, task paused",
+            )
+        if used >= effective_cap * 85 // 100:
+            return CacheBudgetStatus(
+                level="compact",
+                used=used,
+                cap=effective_cap,
+                reason=f"{detail} — compaction advised",
+            )
+        if used >= effective_cap * 70 // 100:
+            return CacheBudgetStatus(level="warn", used=used, cap=effective_cap, reason=detail)
+        return CacheBudgetStatus(level="ok", used=used, cap=effective_cap, reason=None)
+
+    def get_runaway_sessions(self, threshold: int = DEFAULT_CACHE_READ_CAP) -> list[dict[str, Any]]:
+        """Return Desktop sessions whose cache-read tokens exceed *threshold*.
+
+        DB work is delegated to
+        :func:`ai_company.llm.opencode_usage.sessions_exceeding_cache_read`;
+        results are ordered by cache-read tokens descending.
+        """
+        from ai_company.llm.opencode_usage import sessions_exceeding_cache_read
+
+        return sessions_exceeding_cache_read(int(threshold))
+
+    def suspension_report(self, threshold: int = DEFAULT_CACHE_READ_CAP) -> str:
+        """Plain-text report of sessions over the cache-read *threshold*.
+
+        Values are read by key (never positional), so a legacy session row
+        without suspension columns still renders. A zero-cost session prints
+        ``cost: $0.0000`` and its separator like any other — no row is ever
+        dropped from the report.
+        """
+        sessions = self.get_runaway_sessions(threshold)
+        separator = "-" * 66
+        lines = [
+            f"Cache-read suspension report (threshold: {int(threshold):,} tokens)",
+            f"Sessions exceeding threshold: {len(sessions)}",
+            separator,
+        ]
+        if not sessions:
+            lines.append("No session exceeds the cache-read threshold.")
+            return "\n".join(lines)
+        for rec in sessions:
+            raw_cost = rec.get("cost")
+            cost_value = float(raw_cost) if raw_cost is not None else 0.0
+            lines.extend(
+                [
+                    f"session: {rec.get('session_id') or 'unknown'}",
+                    f"  cache_read: {int(rec.get('tokens_cache_read') or 0):,}",
+                    f"  cost: ${cost_value:.4f}",
+                    f"  agent: {rec.get('agent') or 'unknown'}"
+                    f"  model: {rec.get('model') or 'unknown'}",
+                    f"  created: {rec.get('time_created')}"
+                    f"  suspended: {rec.get('time_suspended')}"
+                    f"  resume_attempts: {rec.get('resume_attempts')}"
+                    f"  idle_outcome: {rec.get('idle_outcome')}",
+                    separator,
+                ]
+            )
+        return "\n".join(lines)
 
     # ── Aggregation queries ───────────────────────────────────────────
 
