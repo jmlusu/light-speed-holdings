@@ -12,7 +12,7 @@ import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from ai_company.data.database import Database
 
@@ -29,11 +29,13 @@ class CacheBudgetStatus:
     """Outcome of the daily cache-read token budget check.
 
     ``level`` is one of ``"ok"``, ``"warn"`` and ``"compact"`` (log-only
-    stages) or ``"block"`` (the task must pause). ``reason`` is a short
-    human string naming the percentage and numbers, or ``None`` when ``ok``.
+    stages) or ``"block"`` (the task must pause), enforced by the ``Literal``
+    annotation so a typo like ``"blok"`` fails type-checking instead of
+    silently failing open. ``reason`` is a short human string naming the
+    percentage and numbers, or ``None`` when ``ok``.
     """
 
-    level: str
+    level: Literal["ok", "warn", "compact", "block"]
     used: int
     cap: int
     reason: str | None

@@ -515,26 +515,36 @@ class CostTracker:
 
         return True, "within budget"
 
-    def check_cache_budget(self, day: str | None = None) -> CacheBudgetStatus:
+    def check_cache_budget(
+        self, day: str | None = None, cap: int | None = None
+    ) -> CacheBudgetStatus:
         """Return the daily cache-read token status for *day* (today UTC).
 
         Delegates to :meth:`CostAnalytics.check_cache_budget`, which reads the
-        OpenCode usage DB. This is metrics-only plumbing, so it fails **open**:
-        a missing SQLite mirror, an unreadable Desktop DB, or a broken
-        analytics object all resolve to an ``ok`` status with an explanatory
-        ``reason``. A budget-check failure must never abort a task.
+        OpenCode usage DB. The daily cap defaults to
+        :data:`DEFAULT_CACHE_READ_CAP` (50M tokens) but is **overridable per
+        call** via *cap*, so an operator or dashboard can change the limit
+        without editing source; ``cap`` is forwarded to the analytics ladder
+        unchanged (a non-positive cap never blocks).
+
+        This is metrics-only plumbing, so it fails **open**: a missing SQLite
+        mirror, an unreadable Desktop DB, or a broken analytics object all
+        resolve to an ``ok`` status with an explanatory ``reason``. Fail-open
+        statuses report the caller's *cap* when one was supplied (never a
+        fabricated default). A budget-check failure must never abort a task.
         """
+        effective_cap = DEFAULT_CACHE_READ_CAP if cap is None else cap
         analytics = self._cost_analytics
         if analytics is None or not hasattr(analytics, "check_cache_budget"):
-            return CacheBudgetStatus(level="ok", used=0, cap=DEFAULT_CACHE_READ_CAP, reason=None)
+            return CacheBudgetStatus(level="ok", used=0, cap=effective_cap, reason=None)
         try:
-            return analytics.check_cache_budget(day)
+            return analytics.check_cache_budget(day, cap)
         except Exception as exc:  # noqa: BLE001 - fail-open: metrics never block tasks
             logger.warning("Cache budget check unavailable: %s", exc)
             return CacheBudgetStatus(
                 level="ok",
                 used=0,
-                cap=DEFAULT_CACHE_READ_CAP,
+                cap=effective_cap,
                 reason=f"cache budget unavailable: {exc}",
             )
 
