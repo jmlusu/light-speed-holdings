@@ -11,10 +11,15 @@ interface FloatingNavProps {
   onToggleTheme?: () => void;
 }
 
-/** SPEC §8 primary navigation: eight items, Contact lives in the CTA button. */
+/**
+ * SPEC §8 primary navigation: ten items (Pharos and Venture Studio added after
+ * What We Do), Contact lives in the CTA button.
+ */
 export const NAV_LINKS = [
   { name: 'Home', href: '/' },
   { name: 'What We Do', href: '/what-we-do' },
+  { name: 'Pharos', href: '/pharos' },
+  { name: 'Venture Studio', href: '/venture-studio' },
   { name: 'AI Company Builder', href: '/ai-company-builder' },
   { name: 'Solutions', href: '/solutions' },
   { name: 'Use Cases', href: '/use-cases' },
