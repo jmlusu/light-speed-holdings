@@ -130,6 +130,20 @@ repos:
         files: '^(\.vercelignore|vite\.config\.ts|scripts/test/check-vercelignore\.py|data/[^/]+/registry\.ts)$'
         stages: [pre-commit]
 
+  # Confidential-artifact guard: this repo is public, so client proposals,
+  # commercial terms and personal data must never enter the index.
+  # Incident 2026-11-10 (proposal-deliverables/ reached public main via PR #473).
+  # Same check runs in .github/workflows/ci.yml (lint job).
+  - repo: local
+    hooks:
+      - id: confidential-artifacts
+        name: no confidential client artifacts tracked
+        entry: uv run python scripts/test/check-confidential-artifacts.py --staged
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
   # Cost-tracker fake-data guard (PR #565): untagged non-zero
   # data/orchestrator/cost_tracker.json is dummy spend. Same check runs in
   # .github/workflows/ci.yml (lint job).
