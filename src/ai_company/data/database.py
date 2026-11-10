@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 # Schema DDL
 # ---------------------------------------------------------------------------
 
-SCHEMA_VERSION = 6
+SCHEMA_VERSION = 7
 
 SCHEMA_SQL = """
 -- Tasks (replaces .opencode/inbox.json)
@@ -149,6 +149,7 @@ CREATE TABLE IF NOT EXISTS cost_records (
     cache_read          INTEGER NOT NULL DEFAULT 0,
     cache_write         INTEGER NOT NULL DEFAULT 0,
     cost_source         TEXT NOT NULL DEFAULT 'computed',
+    shadow_cost_usd     REAL NOT NULL DEFAULT 0.0,
     metadata            TEXT NOT NULL DEFAULT '{}'   -- JSON dict
 );
 
@@ -416,6 +417,12 @@ MIGRATIONS: dict[int, list[str]] = {
         "CREATE INDEX IF NOT EXISTS idx_cost_source ON cost_records(source);",
         "CREATE INDEX IF NOT EXISTS idx_cost_session ON cost_records(session_id);",
         "CREATE UNIQUE INDEX IF NOT EXISTS idx_cost_event ON cost_records(event_id);",
+    ],
+    7: [
+        # Shadow pricing: list-price economic burn persisted in cost_records
+        # so it survives without re-reading JSONL (schema v7).
+        "ALTER TABLE cost_records ADD COLUMN shadow_cost_usd REAL NOT NULL DEFAULT 0.0;",
+        "CREATE INDEX IF NOT EXISTS idx_cost_shadow ON cost_records(shadow_cost_usd);",
     ],
 }
 

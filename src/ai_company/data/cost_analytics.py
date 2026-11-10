@@ -88,10 +88,16 @@ class CostAnalytics:
         cache_read: int = 0,
         cache_write: int = 0,
         cost_source: str = "computed",
+        shadow_cost_usd: float = 0.0,
         metadata: dict[str, Any] | None = None,
         timestamp: str | None = None,
     ) -> int:
         """Record a single LLM usage event.
+
+        ``shadow_cost_usd`` is the list-price economic burn (tokens x
+        ``SHADOW_COSTS`` rates, see
+        :meth:`CostTracker._calculate_shadow_cost`); it is persisted in
+        ``cost_records.shadow_cost_usd`` so it survives without JSON.
 
         Returns the row ID of the inserted record, or 0 if ``event_id``
         was already present (idempotent insert-or-ignore).
@@ -114,8 +120,8 @@ class CostAnalytics:
                    (timestamp, model, provider, agent_name, task_id,
                     prompt_tokens, completion_tokens, cost_usd, iteration,
                     files_read, source, session_id, event_id,
-                    cache_read, cache_write, cost_source, metadata)
-                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    cache_read, cache_write, cost_source, shadow_cost_usd, metadata)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                 (
                     ts,
                     model,
@@ -133,6 +139,7 @@ class CostAnalytics:
                     cache_read,
                     cache_write,
                     cost_source,
+                    shadow_cost_usd,
                     json.dumps(metadata or {}, default=str),
                 ),
             )
@@ -568,8 +575,10 @@ class CostAnalytics:
         match among event-less rows only.
 
         All unified fields (``files_read``, ``source``, ``session_id``,
-        ``event_id``, ``cache_read``, ``cache_write``, ``cost_source``)
-        are preserved through the import.
+        ``event_id``, ``cache_read``, ``cache_write``, ``cost_source``,
+        ``shadow_cost_usd``) are preserved through the import. Records
+        without a stored shadow value import as ``0.0``; the v7 backfill
+        recomputes them via ``CostTracker._calculate_shadow_cost``.
 
         Returns the number of records imported.
         """
@@ -600,6 +609,14 @@ class CostAnalytics:
                     cost_usd = rec.get("cost_usd", 0.0)
                     if cost_usd is None:
                         cost_usd = 0.0
+                    shadow_raw = rec.get("shadow_cost_usd", 0.0)
+                    if shadow_raw is None or shadow_raw == "":
+                        shadow_cost_usd = 0.0
+                    else:
+                        try:
+                            shadow_cost_usd = float(shadow_raw)
+                        except (TypeError, ValueError):
+                            shadow_cost_usd = 0.0
                     model = rec.get("model") or ""
                     provider = rec.get("provider") or ""
                     agent_name = rec.get("agent_name") or ""
@@ -646,6 +663,7 @@ class CostAnalytics:
                         cache_read=_int(rec.get("cache_read") or 0, 0),
                         cache_write=_int(rec.get("cache_write") or 0, 0),
                         cost_source=str(rec.get("cost_source") or "computed"),
+                        shadow_cost_usd=shadow_cost_usd,
                         metadata=metadata,
                         timestamp=timestamp,
                     )
@@ -715,8 +733,9 @@ class CostAnalytics:
 
         Preserves all unified fields (``files_read``, ``source``,
         ``session_id``, ``event_id``, ``cache_read``, ``cache_write``,
-        ``cost_source``) so a round trip through :meth:`import_from_jsonl`
-        is lossless for everything the SQLite schema can store.
+        ``cost_source``, ``shadow_cost_usd``) so a round trip through
+        :meth:`import_from_jsonl` is lossless for everything the SQLite
+        schema can store.
 
         Returns the path of the written file.
         """
@@ -755,6 +774,7 @@ class CostAnalytics:
                     "cache_read": row.get("cache_read") or 0,
                     "cache_write": row.get("cache_write") or 0,
                     "cost_source": row.get("cost_source") or "computed",
+                    "shadow_cost_usd": row.get("shadow_cost_usd") or 0.0,
                     "metadata": metadata,
                 }
                 f.write(json.dumps(record, default=str) + "\n")
