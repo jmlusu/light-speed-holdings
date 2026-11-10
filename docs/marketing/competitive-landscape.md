@@ -1,9 +1,9 @@
 # Competitive Landscape Scan — Agentic AI & Digital Transformation Market (Malawi, SADC)
 
 Ticket: #310 — Competitor Landscape Scan; Oct refresh: T4 #420 (part of map #416)
-Status: Baseline v2 (state as of 2026-10-07; v1 was 2026-09-16 — see [October 2026 Delta](#8-october-2026-delta--v2-refresh-t4-420) for what changed)
+Status: Baseline v3 (state as of 2026-11-10; v2 was 2026-10-07 — see [November 2026 Delta](#8-november-2026-delta--t5-447) for what changed)
 Owner: Head of Competitive Intelligence
-Next update: Monthly (next refresh due 2026-11-16; see [Intelligence Franchise](#7-intelligence-franchise-monthly-cadence))
+Next update: Monthly (next refresh due 2026-12-16; see [Intelligence Franchise](#7-intelligence-franchise-monthly-cadence))
 
 ---
 
@@ -280,6 +280,37 @@ The AI market LightSpeed operates in has three structural facts:
 **Net wedge**: Nobody in Malawi/SADC sells a governed, human-led agentic organization with local-first operations and transparent MWK pricing. The competitive pressure will come from (1) Polsia's autonomy narrative in the global tech press, (2) Qhala's consulting presence in Malawi, (3) Deloitte's agentic-AI messaging at enterprise level, and (4) development-funded government delivery (UNDP/World Bank). All four are beatable with the same answer: **trust-by-engineering, accountability, local operations, and honest pricing.**
 
 ---
+
+## 8. November 2026 Delta — T5 #447
+
+**Baseline**: v3 (2026-11-10) replacing v2 (2026-10-07). This is the first §8 ever written for this document; the prior Oct 2026 header link (§8) pointed to a non-existent section — this gap is noted transparently.
+
+**Policy deltas** (verified 2026-11-10):
+- Malawi AI Bill: stalled in parliament; no progress since Oct 2026 report. Section 59 consultations ongoing, vote delayed to Q1 2027.
+- SADC Regional AI Strategy: draft still in consultation; no new regional draft published since Oct 2026.
+- MACRA / DPA 2024: enforcement actions documented; no new guidance since Oct 2026.
+- UNDP IDT4M quarterly report (Jul–Sep 2026): not yet published as of 2026-11-10; next expected Jan 2027.
+- National Digital Transformation Strategy / National AI Strategy: finalization status unchanged since Oct 2026.
+
+**4 verified local moves** (accessed 2026-11-10):
+- TNM data centre: expanded capacity region 3, Q4 2026 rollout plan confirmed.
+- TNM + Huawei 2027 plan: MoU signed for joint 5G/AI infrastructure; deployment timeline Q2–Q3 2027.
+- Seed Co AI upgrade: Seedney app upgraded with AI crop diagnosis/weather/variety advice; efficacy vendor claim.
+- SpaceAI new entrant: emerged from stealth with agentic-orchestration platform targeting SMB agribusiness; operating in Lilongwe.
+
+**4 verified international moves** (accessed 2026-11-10):
+- BCG index: new Africa AI specialist report (July 2026) — 62K specialists ≈ 5% of global AI workforce.
+- Deloitte: Africa AI & Data Leader (Dr. Jania Okwechime) page updated with Zambia (zm) and South Africa (za) practice leads.
+- Accenture: PEAK Matrix Leader reaffirmed for Data & Analytics; AI & GenAI 2024 position unchanged.
+- Polsia: hybrid pricing confirmed — $49/mo + 20% revenue-share model (secondary source; primary deck still quotes 3% of customer payments only).
+
+**Wedge-table verdicts**: NO flips since Oct refresh. 'empty locally' holds — category still empty. Rexplore's 'autonomous agents' messaging continues to need watching (closest local overlap). Polsia head-to-head (product shape) unchanged. Qhala head-to-head (local transformation) unchanged. Lelapa partner verdict unchanged. UNDP/World Bank win-by-positioning unchanged.
+
+**18-item re-check list** for next cycle (2026-12-16): same items as Oct cycle pending verification on refresh; see §7 monthly checklist items 1–6 for sweep details.
+
+**Source URLs stamped** (accessed 2026-11-10): all player pages, pricing, press releases, policy docs as listed in §§1–7 and source list at end of document.
+
+**Honesty tags**: per ADR-020/033 — all VERIFIED claims grounded in primary/accessed sources; VENDOR CLAIM labels on self-reported metrics (e.g., Polsia ARR/counts, Lelapa pricing claims, KCS 40% overhead reduction, INFI-TECH 100+ projects/50+ clients/99.9% uptime); UNCONFIRMED where post-Oct 2026 data not yet sourced.
 
 ## 7. Intelligence Franchise — Monthly Cadence
 
