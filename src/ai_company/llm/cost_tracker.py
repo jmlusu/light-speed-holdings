@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_company.data import CostAnalytics, database_is_usable
+from ai_company.data.cost_analytics import DEFAULT_CACHE_READ_CAP, CacheBudgetStatus
 
 try:
     from ai_company.paths import get_project_root, state_path
@@ -513,6 +514,29 @@ class CostTracker:
                 )
 
         return True, "within budget"
+
+    def check_cache_budget(self, day: str | None = None) -> CacheBudgetStatus:
+        """Return the daily cache-read token status for *day* (today UTC).
+
+        Delegates to :meth:`CostAnalytics.check_cache_budget`, which reads the
+        OpenCode usage DB. This is metrics-only plumbing, so it fails **open**:
+        a missing SQLite mirror, an unreadable Desktop DB, or a broken
+        analytics object all resolve to an ``ok`` status with an explanatory
+        ``reason``. A budget-check failure must never abort a task.
+        """
+        analytics = self._cost_analytics
+        if analytics is None or not hasattr(analytics, "check_cache_budget"):
+            return CacheBudgetStatus(level="ok", used=0, cap=DEFAULT_CACHE_READ_CAP, reason=None)
+        try:
+            return analytics.check_cache_budget(day)
+        except Exception as exc:  # noqa: BLE001 - fail-open: metrics never block tasks
+            logger.warning("Cache budget check unavailable: %s", exc)
+            return CacheBudgetStatus(
+                level="ok",
+                used=0,
+                cap=DEFAULT_CACHE_READ_CAP,
+                reason=f"cache budget unavailable: {exc}",
+            )
 
     def estimate_call_cost(
         self,

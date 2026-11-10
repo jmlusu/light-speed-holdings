@@ -270,6 +270,36 @@ class AgentLoop:
             use_complexity,
         )
 
+        # ── Daily cache-read budget gate ───────────────────────────────
+        # 70%/85% stages are log-only (surfaced by the status reason); only
+        # ``block`` stops the task. ``CostTracker.check_cache_budget`` is
+        # fail-open itself, but the except keeps the guarantee even for a
+        # custom tracker: a metrics failure must never abort a task.
+        if self.cost_tracker:
+            try:
+                cache_status = self.cost_tracker.check_cache_budget()
+            except Exception:  # noqa: BLE001 - defence in depth, never abort
+                logger.warning("Cache budget check raised; continuing task", exc_info=True)
+            else:
+                if not cache_status.allowed:
+                    logger.warning(
+                        "Cache-read budget blocked task: agent=%s task_id=%s level=%s reason=%s",
+                        resolved_name,
+                        task_id,
+                        cache_status.level,
+                        cache_status.reason,
+                    )
+                    return LoopResult(
+                        final_response="",
+                        iterations=0,
+                        tool_results=[],
+                        total_prompt_tokens=0,
+                        total_completion_tokens=0,
+                        total_cost_usd=0.0,
+                        done=False,
+                        error=f"Cache-read budget exceeded: {cache_status.reason}",
+                    )
+
         # Initialize conversation history manager
         history_manager = None
         if use_history_sum:
