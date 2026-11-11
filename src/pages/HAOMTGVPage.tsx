@@ -75,7 +75,7 @@ const PILLARS: Pillar[] = [
   },
 ];
 
-const BRAND_BAR = ['#070A40', '#E63946', '#00BFFF'];
+const BRAND_BAR = ['#070A40', '#DC3641', '#00BFFF'];
 
 export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme }) => {
   const isLight = theme === 'light';

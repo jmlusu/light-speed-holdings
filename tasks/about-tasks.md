@@ -120,7 +120,7 @@ Tasks are ordered by dependency, each completable in a single focused session. N
 **Description**: Build `src/components/BrandCarousel.tsx` featuring a carousel with 3+ slides auto-cycling with manual controls. Each slide integrates:
 - 1 illustration from `article-illustrations` skill (Grav character IP)
 - 1 Mermaid diagram from `ls-diagramming` skill (LightSpeed brand)
-- 1 infographic from `k-dense-infographics` or `ls-visual-storytelling` skill
+- 1 infographic from `ls-visual-storytelling` skill
 
 Carousel uses framer-motion for entrance transitions and CSS for auto-cycle.
 
@@ -189,9 +189,9 @@ Carousel uses framer-motion for entrance transitions and CSS for auto-cycle.
 
 ---
 
-## Task 9: Integrate k-dense-infographics or ls-visual-storytelling skill output
+## Task 9: Integrate ls-visual-storytelling skill output
 
-**Description**: Use either the `k-dense-infographics` or `ls-visual-storytelling` skill to generate a branded infographic for the About Page. Infographic should reinforce key brand messaging (leapfrogging opportunity, agentic AI operating systems, African markets).
+**Description**: Use the `ls-visual-storytelling` skill to generate a branded infographic for the About Page. Infographic should reinforce key brand messaging (leapfrogging opportunity, agentic AI operating systems, African markets).
 
 **Acceptance**:
 - 1 branded infographic generated and rendered on the About Page
@@ -201,7 +201,7 @@ Carousel uses framer-motion for entrance transitions and CSS for auto-cycle.
 - Light and dark theme variants available
 
 **Verify**:
-- Run the chosen skill (k-dense-infographics or ls-visual-storytelling)
+- Run the `ls-visual-storytelling` skill to generate the infographic
 - Inspect generated output for brand compliance
 - Check color usage against brand-tokens.json
 - `npm test -- --run`

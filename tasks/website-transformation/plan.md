@@ -20,7 +20,7 @@ Success is defined by the 25/25 Definition of Done (all criteria met).
 ### Design & Frontend
 - `ls-frontend-design` — On-brand React/Spa builder; enforces design system; targets repo-root Vite React SPA (React + Tailwind 4 + framer-motion + lucide + recharts); QA via Playwright → `ls-artifact-qa` (AGENTS.md:250)
 - `ls-presentation-design` — Board presentations, investor decks; branded 10x7.5in slides, navy left rail, navy/red/cyan palette, Arial scale (AGENTS.md:250)
-- `ls-visual-storytelling` — Message → visual narrative → medium choice (article-illustrations for Grav, k-dense-infographics for professional, Mermaid via ls-diagramming for structures, SVG/HTML one-pagers) → `ls-artifact-qa` gate (AGENTS.md:250)
+- `ls-visual-storytelling` — Message → visual narrative → medium choice (article-illustrations for Grav, ls-visual-storytelling for professional, Mermaid via ls-diagramming for structures, SVG/HTML one-pagers) → `ls-artifact-qa` gate (AGENTS.md:250)
 - `ls-brand-advertising` — Commercial creative; enforces on-brand (navy/red/cyan, official logo, tagline); per-platform ad dimensions automatic (AGENTS.md:250)
 - `ls-diagramming` — LightSpeed diagram engine; Mermaid (architecture/process/flow), SVG/D3 (custom data visuals), Kroki fallback; brand-palette restyle always (AGENTS.md:250)
 
@@ -44,7 +44,7 @@ Success is defined by the 25/25 Definition of Done (all criteria met).
 ### Specialized Skills (as needed)
 - `pharos-thought-leadership-lead` — Heads Pharos dept; turns engineering/research/experimentation/field observations into public intellectual work (AGENTS.md:251)
 - `pharos-media-pr` — Creates recurring Pharos visual formats (PHAROS BRIEF, FIELD NOTE, RESEARCH NOTE, SYSTEM MAP, DATA STORY, AI ECONOMICS, AFRICA WATCH) (AGENTS.md:251)
-- `k-dense-infographics` — 10 infographic types, 8 industry styles, colorblind-safe palettes; integrates research lookup/web search; Gemini quality review (AGENTS.md:237)
+- `ls-visual-storytelling` — Professional infographics and visual storytelling (replaces k-dense-infographics); integrates research lookup/web search; brand palette enforcement; `ls-artifact-qa` gate (AGENTS.md:237)
 - `article-illustrations` — Hand-drawn Grav character IP illustrations (AGENTS.md:237)
 - `k-dense-mermaid-skill` — Natural language → 11+ diagram types (.mmd validation); output PNG/SVG/PDF via mmdc/Kroki; vision self-checks on rendered PNGs (AGENTS.md:237)
 - `ls-documentation-engineering` — Diátaxis-classified content (tutorial/how-to/explanation/reference); READMEs, API docs, developer portals, release notes, changelogs, FAQs; wraps documentation-and-adrs skill for decision records (AGENTS.md:251)
@@ -87,7 +87,7 @@ Home, AI Company Builder, What We Do, Solutions, Use Cases, Sectors, Insights, A
 
 ### PHASE 5 — Media Implementation
 Per §19 Media Types A-K and §20 Media Placement Strategy; extract composition/color/light/material/typography/spacing/image treatment/motion/geometry from Pinterest references into reusable LightSpeed visual language; result should feel: "LightSpeed has its own visual identity inspired by these references" NOT "LightSpeed copied these websites."
-- Agents: `ls-visual-storytelling`, `ls-brand-advertising`, `k-dense-infographics`, `article-illustrations`, `k-dense-mermaid-skill`
+- Agents: `ls-visual-storytelling`, `ls-brand-advertising`, `article-illustrations`, `k-dense-mermaid-skill`
 - Key deliverables: hero imagery, H-A-O-M-T-G-V infographic, AI Company Builder org chart, model routing infographic, Africa AI economics infographic, use case cards, architecture diagrams, African maps, research visuals, human/leadership micro-illustrations
 - Risk: Medium-high (creative implementation)
 

@@ -19,7 +19,7 @@
   - **Research sprint**: `agentic_research_lead` produces evidence matrices for the next 3 posts (claim-to-source maps via `k-dense-research-lookup` + webfetch).
   - **Draft sprint**: `thought_leadership_author` writes Drafts v1 for Posts 1–3 in CEO "builder-writer-advocate" voice (1,200–1,800 words each, no emojis, evidence-led).
   - **CEO review**: Human CEO reviews drafts via GitHub PR (SLA: 48h, G2 gate). Reviews requested async via shared doc/PR.
-  - **Visual production**: `ls-visual-storytelling` + `k-dense-infographics` produce hero visual + 3 carousel cards per post, brand-enforced (navy/red/cyan, Arial type scale, 4px grid, logo, `™` on first company mention).
+  - **Visual production**: `ls-visual-storytelling` produces hero visual + 3 carousel cards per post, brand-enforced (navy/red/cyan, Arial type scale, 4px grid, logo, `™` on first company mention).
   - **Schedule & publish**: Post queued via Pharos publish queue (MCP) with `scheduledAt`; live POST fires when `PHAROS_LINKEDIN_*` env creds configured (default: dry-run receipt).
   - **Measure**: `marketing_kpi_collector` tracks impressions, engagement rate, comments, profile visits, follower growth, Substack subscribers.
 
@@ -62,7 +62,7 @@
 ## Open Questions
 
 - [RESOLVED: Post 1–3 research sprint runs sequential order (Post 1 first, then 2, then 3) to allow iterative evidence incorporation per the G2 CEO review gate.]
-- [RESOLVED: `ls-visual-storytelling` leads visual production workflow first, producing hero visual; `k-dense-infographics` produces carousel cards second; both feed into mandatory `ls-artifact-qa` gate per plan step 5.]
+- [RESOLVED: `ls-visual-storytelling` leads visual production workflow first, producing hero visual and 3 carousel cards; both feed into mandatory `ls-artifact-qa` gate per plan step 5.]
 
 ## Resolved Clarifications
 

@@ -11,7 +11,6 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`. 
 - **Core workflow**: Registry YAML → Jinja2 template → `.opencode/agents/*.md` + `company/*.yaml`
 - **Runtime shape**: Python 3.12+ CLI (Typer), no web server. Packages via setuptools, environments managed with uv.
 - **Start here**: [Architecture](docs/ARCHITECTURE.md), [Development](docs/DEVELOPMENT.md), [ECL](docs/ECL.md)
-- **LLM provider keys**: `OPENCODE_API_KEY` (primary), `GEMINI_API_KEY` (fallback); optional `MIMO_API_KEY`, `DEEPSEEK_API_KEY`, `KIMI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`. Keep them in local `.env` only — never commit secrets.
 
 ## 2 Core Workflow / Domain Model
 | Concept | Source | What Agents Need To Know |

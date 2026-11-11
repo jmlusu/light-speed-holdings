@@ -31,7 +31,6 @@
 | performance-optimizer | community | Performance |
 | prototype | community | Prototyping |
 | python-pptx-generator | community | Document Generation |
-| rayden-code | community | UI Components |
 | setup-matt-pocock-skills | community (mattpocock/skills) | Setup |
 | skill-check | community | Skill Validation |
 | squirrel | community (flyingsquirrel0419/squirrel-skill) | Full-cycle Dev |

@@ -37,7 +37,7 @@ Implement the LinkedIn AI-Native Series "AI-Native Organizations" (11 posts) as 
 - Each draft includes: research-evidence.md, x-thread.md, carousel-copy.md, substack-section.md, video-script.md, visuals/ directory, qa-report.md.
 
 ### 5. **Visual Assets** (Posts 1–3)
-- `ls-visual-storytelling` + `k-dense-infographics` produce per post:
+- `ls-visual-storytelling` produce per post:
   - Hero visual (1200×627) — framework diagram or org chart
   - 3 carousel cards (1200×627 each) — per the visual requirements table in the series plan
 - Brand enforcement: palette 80% navy / 10% red / 10% cyan; type: Arial scale (36/32/28/24/18/16/14/13/12pt); logo on navy; clear space 1× "L" height; `™` on first company mention; no emojis in visuals.

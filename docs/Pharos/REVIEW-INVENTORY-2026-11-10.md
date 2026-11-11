@@ -136,7 +136,7 @@
 ### Immediate (Week of Nov 10):
 1. **Resolve #194** — provision LinkedIn Company, X Professional, TikTok Business, YouTube Company, Substack publication accounts. Without this, zero social content can go live.
 2. **CEO review batch 2** — compile and submit Posts 4–11 drafts for CEO approval (single PR or shared doc). All 8 drafts exist with copy QA passed; only visual production and formal approval remain.
-3. **Visual production for Posts 4–11** — generate hero PNGs + 3 carousel cards per post using `ls-visual-storytelling` + `k-dense-infographics` + `ls-artifact-qa` gate.
+3. **Visual production for Posts 4–11** — generate hero PNGs + 3 carousel cards per post using `ls-visual-storytelling` + `ls-artifact-qa` gate.
 
 ### Short-term:
 4. **Whitepaper rendering** — decide route vs. PDF (gate B4); the paper is approved and ready.

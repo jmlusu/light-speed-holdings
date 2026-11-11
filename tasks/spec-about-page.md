@@ -22,7 +22,7 @@ Success is measured by: user engagement, clear communication of brand identity, 
 - **Brand tokens**: `brand/tokens/brand-tokens.json` (navy, red, cyan, type scale, grid, spacing)
 - **Illustrations**: `article-illustrations` skill (Grav character IP)
 - **Diagrams**: `ls-diagramming` skill (Mermaid diagrams)
-- **Infographics**: `k-dense-infographics` skill or `ls-visual-storytelling` skill
+- **Infographics**: `ls-visual-storytelling` skill
 - **Carousel**: Custom React carousel or `ls-frontend-design` pattern
 - **Animation**: Framer Motion for entrance/transition effects
 - **Testing**: Vitest + React Testing Library
@@ -154,7 +154,7 @@ The About Page is complete when all of the following are true:
    - Carousel with 3+ slides auto-cycling with manual controls
    - At least 1 illustration (Grav character via `article-illustrations` skill pathway)
    - At least 1 Mermaid diagram via `ls-diagramming` skill
-   - At least 1 infographic via `k-dense-infographics` or `ls-visual-storytelling` skill
+   - At least 1 infographic via `ls-visual-storytelling` skill
 5. **Accessibility**: WCAG AA compliant — contrast ratio ≥ 4.5:1, alt text on all images, keyboard-navigable carousel, focus management
 6. **Performance**: LCP < 2.5s, CLS < 0.1, FCP < 1.5s on local dev setup
 7. **CTA**: "Partner with LightSpeed Holdings Limited" button functions, routes to `/contact`
