@@ -39,6 +39,10 @@ jobs:
         # PR #565: untagged non-zero cost_tracker.json is dummy spend. Stdlib
         # only; reuses the setup-uv python above.
         run: uv run python scripts/test/check-cost-tracker.py
+      - name: Check no confidential artifacts tracked
+        # Repo is public: client proposals/commercial terms must never be
+        # tracked. Incident 2026-11-10 (proposal-deliverables/ on main).
+        run: uv run python scripts/test/check-confidential-artifacts.py
 
   typecheck:
     name: Type check (mypy)
