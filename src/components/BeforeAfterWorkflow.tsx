@@ -251,7 +251,6 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
           src="/brand/digital/Homepage_Hero_High_fidelity.jpeg"
           alt=""
           aria-hidden="true"
-          alt="Workflow Collapsing Sector Architecture"
           className="w-full h-full object-cover object-center opacity-40 dark:opacity-55 transition-opacity duration-500 filter brightness-95"
           loading="lazy"
           referrerPolicy="no-referrer"
@@ -777,12 +776,6 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
           INTERACTIVE INSPECTOR MODAL DRAWER
           ========================================================================= */}
       {inspectorPair && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="HAOMTGV workflow inspection"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in"
-        >
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
           <div className={`max-w-2xl w-full rounded-3xl p-6 sm:p-8 border shadow-2xl relative overflow-hidden ${
             isLight ? 'bg-white text-[#070A40] border-slate-300' : 'bg-[#070A40] text-white border-[#00BFFF]/40'
@@ -801,12 +794,6 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
                 </span>
               </div>
               <button
-                type="button"
-                onClick={() => setInspectorPair(null)}
-                aria-label="Close inspection"
-                className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4 text-white" aria-hidden="true" />
                 onClick={() => setInspectorPair(null)}
                 className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer"
               >

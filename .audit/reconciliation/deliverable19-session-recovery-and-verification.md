@@ -124,4 +124,3 @@ Two independent reviewers (`qa-lead`, `senior-frontend-engineer`) were run after
 | `npx tsc --noEmit` | Exit 0 |
 | `npx vitest run` | 16/16 files, 145/145 tests passed |
 | `npx vite build` | Success, 27.43s |
-
