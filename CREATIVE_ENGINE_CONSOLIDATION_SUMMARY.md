@@ -80,14 +80,47 @@ The `creative_director` agent was **already present** in the company registry:
 | Output saved in correct location | — (Phase 3 demo) |
 | Failure handling and rerun behavior | — (Phase 3 demo) |
 
-## Phase 2: Architecture and Integration
+## Phase 2: Architecture and Integration (Complete)
 
-The Creative Director is established as the primary orchestration entry point. The model router and approval system are integrated. The common brief pattern and execution manifest structure will be defined in Phase 3. Replaceable tool adapters are configured via the existing skill system.
+The Creative Director is established as the primary orchestration entry point
+in code, not just on paper. New package `src/ai_company/creative/`
+(implemented, tested — `tests/unit/test_creative_pipeline.py`, 32 tests,
+97% coverage; architecture detail in `docs/CREATIVE-PRODUCTION-ARCHITECTURE.md`):
+
+- **Structured creative brief** — `CreativeBrief` model enforcing the five-question
+  intake (artifact type, audience, objective, narrative, visual language) plus
+  handoff fields (structure, channels, CTA, QA scope, source research).
+- **Execution manifest** — `ExecutionManifest` recording run id, brief, skill chain,
+  agent assignments, model route, adapter availability, outputs, QA verdict,
+  human approval (kept separate from QA), warnings, errors and rerun lineage.
+  Persisted at `output/creative/<run_id>/manifest.json` after every stage.
+- **Model router integration** — routing calls the existing `ModelRouter.resolve()`
+  for the production specialist (per-agent overrides, tier rules, domain/task-type
+  detection unchanged). No second routing system was created.
+- **Creative Director routing table** — deterministic brief → skill chain
+  (`ls-design-system` first, one production skill, `ls-artifact-qa` last) →
+  specialist agent, validated against `company/agent-registry.json`.
+- **Knowledge workflow connection** — content-heavy briefs without `source_research`
+  (or with broken research paths) get explicit manifest warnings; production must
+  not invent facts.
+- **Replaceable tool adapters** — one interface, local-only probes, no paid APIs
+  or external transmission: `presentation` (wired MVP backend), `opendesign`
+  (probed, delegated to ls-od-* agent skills, not an MVP dependency),
+  `comfyui` (loopback probe, not an MVP dependency).
+- **QA + human approval gates** — deterministic QA floor (outputs exist, legacy red
+  `#E63946` absent, canonical `#DC3641` present); approval is only offered after
+  QA passes and is recorded separately (`qa_passed` ≠ `approved`); runs without an
+  approver park awaiting CEO approval.
+- **Failure and rerun** — adapter failures and missing adapters mark the run
+  `failed` with the error recorded; reruns create a new run linked via `retry_of`.
+
+Registry untouched (`company-registry.yaml` unchanged — registry baseline gate
+preserved); no dashboard, port, or deployment changes.
 
 ## Deliverables
 
 1. **Implementation summary** — Complete (this document)
-2. **Final architecture diagram** — To be produced in Phase 3
+2. **Final architecture diagram** — Interim ASCII architecture in `docs/CREATIVE-PRODUCTION-ARCHITECTURE.md` §1; final visual diagram in Phase 3
 3. **List of removed capabilities and reconciled references** — Complete (above)
 4. **Updated agent and skill assignments** — Creative Director registered; archify/rayden-code/k-dense-infographics removed
 5. **Workflow execution trace** — To be produced in Phase 3 MVP demonstration
