@@ -412,7 +412,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                           ? 'bg-ls-navy/10 shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_6px_18px_rgba(230,57,70,0.25)]'
                           : 'bg-ls-white/20 shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.3),0_6px_18px_rgba(230,57,70,0.35)]'
                         : isLight
-                        ? 'bg-ls-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_3px_10px_rgba(7,10,64,0.06)] hover:bg-ls-grey-light/50'
+                        ? 'bg-ls-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_3px_10px_rgba(7,10,64,0.06)] hover:bg-ls-grey-light-text/30'
                         : 'bg-ls-navy/60 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_3px_10px_rgba(0,0,0,0.3)] hover:bg-ls-white/5'
                     }`}
                   >
@@ -420,7 +420,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                       isSelected
                         ? 'bg-ls-red text-ls-white shadow-[0_0_10px_rgba(230,57,70,0.5)]'
                         : isLight
-                        ? 'bg-ls-grey-light/50'
+                        ? 'bg-ls-grey-light-text/30'
                         : 'bg-ls-white/10'
                     }`}>
                       {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
@@ -457,8 +457,10 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                 onClick={handleBack}
                 disabled={currentStep === 0}
                 className={`btn-milled btn-milled-secondary px-5 py-2.5 rounded-full text-xs font-bold tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
-                  currentStep === 0 ? 'opacity-30 cursor-not-allowed' : ''
-                }`}
+                  isLight
+                    ? 'border border-ls-navy/25 text-ls-navy hover:bg-ls-navy/5'
+                    : 'border border-ls-white/20 text-ls-white hover:bg-ls-white/5'
+                } ${currentStep === 0 ? 'opacity-30 cursor-not-allowed' : ''}`}
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Back</span>
@@ -468,7 +470,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                 type="button"
                 onClick={handleNext}
                 disabled={selectedOptionIndex === undefined}
-                className={`btn-milled btn-milled-primary px-7 py-3 rounded-full font-bold text-xs tracking-widest uppercase transition-all flex items-center gap-2.5 ${
+                className={`btn-milled btn-milled-primary bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 hover:bg-ls-red/90 px-7 py-3 rounded-full font-bold text-xs tracking-widest uppercase transition-all flex items-center gap-2.5 ${
                   selectedOptionIndex === undefined ? 'opacity-40 cursor-not-allowed' : ''
                 }`}
               >
@@ -500,7 +502,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="btn-milled btn-milled-secondary px-4 py-2 rounded-full text-xs font-bold tracking-wider transition-colors cursor-pointer inline-flex items-center gap-2"
+                  className="btn-milled btn-milled-secondary border border-ls-navy/25 text-ls-navy hover:bg-ls-navy/5 dark:border-ls-white/20 dark:text-ls-white px-4 py-2 rounded-full text-xs font-bold tracking-wider transition-colors cursor-pointer inline-flex items-center gap-2"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Retake Assessment</span>
@@ -598,7 +600,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                 <button
                   type="button"
                   onClick={handleRequestBriefing}
-                  className="btn-milled btn-milled-primary px-8 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase transition-all cursor-pointer shrink-0 flex items-center gap-2.5"
+                  className="btn-milled btn-milled-primary bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 hover:bg-ls-red/90 px-8 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase transition-all cursor-pointer shrink-0 flex items-center gap-2.5"
                 >
                   <span>Request Executive Advisory Briefing</span>
                   <ArrowRight className="w-4 h-4" />

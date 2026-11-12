@@ -98,3 +98,30 @@ Fixed by remapping to `/brand/digital/Homepage_Hero_High_fidelity.jpeg` (registe
 ## 6. Conclusion
 
 Both genuinely lost interactive artifacts identified by the prototype diff are recovered and verified by a clean typecheck, a fully green test suite, and a successful production build. Remaining open items are outside the frontend recovery scope: a sector-taxonomy product decision, a missing backend endpoint, and deployment-level Turnstile/hostname configuration.
+
+---
+
+## 7. Addendum — independent review findings
+
+Two independent reviewers (`qa-lead`, `senior-frontend-engineer`) were run after the first green build. QA returned PASS on all three gates. The frontend review found further real defects in the recovered components, which were then fixed and re-verified.
+
+| ID | Description | Severity | Status |
+|---|---|---|---|
+| D-11 | `AssessmentWizard` used `btn-milled` / `btn-milled-primary` / `btn-milled-secondary`, which have **no CSS definition anywhere in the repo** and carried no colour utilities — Back/Next/Retake/Request-Briefing rendered as uncoloured text | High | Fixed — primary buttons now use the repo idiom `bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 hover:bg-ls-red/90`; secondary buttons use a bordered navy/white treatment |
+| D-12 | `bg-ls-grey-light/50` used in the progress track and unselected radio dot; `--color-ls-grey-light` is not a defined token (only `--color-ls-grey-light-text`), so both rendered transparent | Medium | Fixed — remapped to `bg-ls-grey-light-text/30` |
+| D-13 | Modal lacked `role`/`aria-modal`; close button was icon-only with no accessible name; decorative background image carried a redundant `alt` | Medium | Fixed — added `role="dialog"`, `aria-modal="true"`, `aria-label`, button `type`/`aria-label`, and `alt=""` + `aria-hidden` on the scrim |
+
+### Not fixed after review (with rationale)
+- **Keyboard access to the 10 interactive workflow cards** (`BeforeAfterWorkflow.tsx:439,676`): they are `<div onClick>` with no `role`, `tabIndex`, or key handler, so the inspector is mouse-only. Fixing this requires restructuring each card into a `role="button"` with key handling; the component is prototype-inherited and this is a larger refactor than the recovery itself. Non-blocking, but a genuine a11y gap on `/what-we-do`.
+- **Escape-to-close / focus trap** on the same modal: needs an added effect and focus management; deferred with the item above.
+- **Light-theme contrast** (`text-[#00BFFF]` on white ≈2.0:1): prototype-inherited palette choice used across the recovered component; changing it diverges from the AI Studio visual reference and should be decided with brand sign-off.
+- **Colour drift** `#E63946` vs brand token `#DC3641`: intentional-looking in the prototype; normalising it changes the recovered visual. Left for brand review.
+- **Second build warning** `[file\:line]` CSS property: confirmed by QA to originate from third-party Open Design preview CSS bundled into the stylesheet, not from `src/`. Cosmetic.
+
+### Final gate results (after fixes)
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | Exit 0 |
+| `npx vitest run` | 16/16 files, 145/145 tests passed |
+| `npx vite build` | Success, 27.43s |
+
