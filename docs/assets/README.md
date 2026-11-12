@@ -10,7 +10,7 @@
 
 | # | Asset | Type | Dimensions | Production Skill | Status | QA |
 |---|-------|------|------------|------------------|--------|----|
-| 1 | `architecture.html` | Explorable HTML (archify) | 1200×800 responsive | `ls-diagramming` + `archify` | ⬜ Pending | ☐ |
+| 1 | `architecture.html` | Explorable HTML | 1200×800 responsive | `ls-diagramming` | ⬜ Pending | ☐ |
 | 2 | `grav-yaml-to-agents.png` | Grav illustration | 1920×1080 | `article-illustrations` | ⬜ Pending | ☐ |
 | 3 | `grav-governance.png` | Grav illustration | 1920×1080 | `article-illustrations` | ⬜ Pending | ☐ |
 | 4 | `campaign-hero-1200x600.png` | Campaign hero | 1200×600 | `ls-brand-advertising` | ⬜ Pending | ☐ |
@@ -61,9 +61,9 @@
 ```bash
 # From repo root
 cd docs/assets
-# Use archify skill or mermaid-cli
+# Render the Mermaid source with mermaid-cli
 npx -y @mermaid-js/mermaid-cli -i architecture.mmd -o architecture.svg
-# Then wrap in HTML with archify template for dark/light toggle
+# Then wrap in HTML with a dark/light toggle (ls-diagramming skill)
 ```
 
 ### Grav Illustrations

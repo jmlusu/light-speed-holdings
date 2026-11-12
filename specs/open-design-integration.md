@@ -140,7 +140,7 @@ AGENTS.md
 |--------|------|
 | Skills | Frontmatter parseable; every `od --skill` id referenced exists in `open-design/design-templates` |
 | Runtime | Manual smoke: `od daemon start --headless`, `od daemon status --json`, `od mcp --help` |
-| CI | `ruff`, `mypy`, `pytest`, generator drift, archify, ECL lint |
+| CI | `ruff`, `mypy`, `pytest`, generator drift, ECL lint |
 
 ## Boundaries
 
