@@ -249,7 +249,8 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <img
           src="/brand/digital/Homepage_Hero_High_fidelity.jpeg"
-          alt="Workflow Collapsing Sector Architecture"
+          alt=""
+          aria-hidden="true"
           className="w-full h-full object-cover object-center opacity-40 dark:opacity-55 transition-opacity duration-500 filter brightness-95"
           loading="lazy"
           referrerPolicy="no-referrer"
