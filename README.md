@@ -334,8 +334,11 @@ The web user interface is built with React 18, Vite, and Tailwind CSS.
 # Install Node dependencies
 npm install
 
-# Start Vite development server (runs on port 3000)
+# Start Vite development server (runs on port 1441)
 npm run dev
+
+# Start preview server (port 1440)
+npm run preview
 
 # Build production static assets (outputs to dist/)
 npm run build

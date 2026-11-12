@@ -1,0 +1,21 @@
+name: Verify Vite Dev Server
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  vite-check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pnpm install
+      - name: Start Vite dev server
+        run: pm2 start "C:\\Users\\jmlus\\light-speed-holdings\\scripts\\dev\\start-dev.ps1" --name "vite-dev"
+        timeout-minutes: 2
+      - name: Verify server responding
+        run: curl --output /dev/null --silent --fail http://127.0.0.1:1441/
+      - name: Stop Vite dev server
+        run: pm2 delete vite-dev
