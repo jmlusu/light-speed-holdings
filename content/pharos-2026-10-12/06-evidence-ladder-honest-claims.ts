@@ -9,7 +9,7 @@ export const article: InsightArticle = {
   readMins: 7,
   publishedAt: '2026-10-12',
   source:
-    'research/site-claims-ledger.md · research/site-claims-audit.md · research/site-claims-index.yaml · src/data/registries/claims-registry.json · src/data/governance.ts · src/data/sectors.ts · src/data/insights.ts · docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/Pharos/manifesto-draft.md',
+    'research/site-claims-ledger.md · research/site-claims-audit.md · research/site-claims-index.yaml · src/data/registries/claims-registry.json · src/data/governance.ts · src/data/sectors.ts · src/data/insights.ts · docs/pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/pharos/manifesto-draft.md',
   blocks: [
     {
       kind: 'p',

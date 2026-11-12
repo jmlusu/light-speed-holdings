@@ -19,7 +19,7 @@
       "logoAltMismatchCount": 0,
       "headingCount": 13,
       "emptyHeadingCount": 0,
-      "screenshot": "docs/Pharos/qa/_probe-oss-1280x800.png"
+      "screenshot": "docs/pharos/qa/_probe-oss-1280x800.png"
     },
     {
       "viewport": {
@@ -39,7 +39,7 @@
       "logoAltMismatchCount": 0,
       "headingCount": 13,
       "emptyHeadingCount": 0,
-      "screenshot": "docs/Pharos/qa/_probe-oss-375x667.png"
+      "screenshot": "docs/pharos/qa/_probe-oss-375x667.png"
     }
   ]
 }

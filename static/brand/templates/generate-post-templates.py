@@ -4,7 +4,7 @@ LightSpeed Holdings — Social Post Template Generator (P1 #311 + P2/P3 #316)
 
 Generates the six foundational P1 and six P2/P3 secondary social post
 templates as branded PNGs using Pillow. Copy is REAL LightSpeed copy sourced
-from `docs/Pharos/positioning.md` and the brand tokens (never lorem ipsum).
+from `docs/pharos/positioning.md` and the brand tokens (never lorem ipsum).
 
 Templates produced (names == canonical file names, see
 `static/brand/templates/social-templates/TEMPLATE_SPECS.md`):

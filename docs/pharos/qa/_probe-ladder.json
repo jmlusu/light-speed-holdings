@@ -19,7 +19,7 @@
       "logoAltMismatchCount": 0,
       "headingCount": 15,
       "emptyHeadingCount": 0,
-      "screenshot": "docs/Pharos/qa/_probe-ladder-1280x800.png"
+      "screenshot": "docs/pharos/qa/_probe-ladder-1280x800.png"
     },
     {
       "viewport": {
@@ -39,7 +39,7 @@
       "logoAltMismatchCount": 0,
       "headingCount": 15,
       "emptyHeadingCount": 0,
-      "screenshot": "docs/Pharos/qa/_probe-ladder-375x667.png"
+      "screenshot": "docs/pharos/qa/_probe-ladder-375x667.png"
     }
   ]
 }

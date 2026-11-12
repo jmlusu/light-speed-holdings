@@ -65,6 +65,7 @@ POSTS = [
     {
         "n": 1,
         "layer": "H",
+        "card_total": 3,
         "title": "What is an AI-Native Organization?",
         "stat": "5-tier approval matrix  ·  cryptographic human sign-off  ·  reversible delegation",
         "cover_title": [("What is an AI-Native Organization?", "titlexl", "white")],
@@ -102,6 +103,7 @@ POSTS = [
     {
         "n": 2,
         "layer": "A",
+        "card_total": 3,
         "title": "What does 90 AI agents actually mean?",
         "stat": "90 personas in one registry  ·  20 departments  ·  RACI reporting chains",
         "cover_title": [("90", "titlexl", "red"), (" Agents, 20 Departments", "titlexl", "white")],
@@ -141,6 +143,7 @@ POSTS = [
     {
         "n": 3,
         "layer": "O",
+        "card_total": 3,
         "title": "LightSpeed™ AI-native org structure",
         "stat": "1 message bus  ·  JSON task queue  ·  dead-letter replay  ·  computable org topology",
         "cover_title": [("The Orchestration Layer", "titlexl", "white")],
@@ -179,6 +182,7 @@ POSTS = [
     {
         "n": 4,
         "layer": "T",
+        "card_total": 5,
         "title": "What does H-A-O-M-T-G-V actually mean?",
         "stat": "7-layer framework: H→A→O→M→T→G→V, each layer depends on the one before it",
         "cover_title": [("H-A-O-M-T-G-V: One System", "titlexl", "white")],
@@ -540,7 +544,7 @@ def build_content_card(post: dict, card_idx: int) -> Image.Image:
         font=fnt,
         fill=COLORS["navy"],
     )
-    ind = f"{card_idx} / 3"
+    ind = f"{card_idx} / {post.get('card_total', 3)}"
     draw.text(
         (W - PAD - draw.textlength(ind, font=font("caption")), 48),
         ind,
@@ -607,7 +611,7 @@ def build_content_card(post: dict, card_idx: int) -> Image.Image:
 def build_cta_card(post: dict, card_idx: int) -> Image.Image:
     img = Image.new("RGB", (W, H), COLORS["navy"])
     draw = ImageDraw.Draw(img)
-    eyebrow_navy(draw, post["n"], card_idx, 5)
+    eyebrow_navy(draw, post["n"], card_idx, post.get("card_total", 5))
 
     draw.text(
         (PAD, 140), "Download the Monitor", font=font("titlelg", bold=True), fill=COLORS["white"]

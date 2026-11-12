@@ -9,7 +9,7 @@ export const article: InsightArticle = {
   readMins: 7,
   publishedAt: '2026-10-12',
   source:
-    'docs/Pharos/research-briefs/2026-10-12-ai-economics-sadc.md · docs/client-facing/USE-CASE-CATALOG.md · docs/marketing/competitive-landscape.md · content/drafts/faq.md · results/pestel-lightspeed-2026.md · src/data/insights.ts · docs/venture-studio/12-T3-call-scripts.md · docs/Pharos/articles/h-a-o-m-t-g-v-seven-layers.md · docs/Pharos/roadmap.md · docs/Pharos/case-study-pipeline.md',
+    'docs/pharos/research-briefs/2026-10-12-ai-economics-sadc.md · docs/client-facing/USE-CASE-CATALOG.md · docs/marketing/competitive-landscape.md · content/drafts/faq.md · results/pestel-lightspeed-2026.md · src/data/insights.ts · docs/venture-studio/12-T3-call-scripts.md · docs/pharos/articles/h-a-o-m-t-g-v-seven-layers.md · docs/pharos/roadmap.md · docs/pharos/case-study-pipeline.md',
   blocks: [
     {
       kind: 'p',

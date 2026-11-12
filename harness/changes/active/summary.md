@@ -18,6 +18,13 @@ tags:
   - competitive-landscape
   - t5-447
 validation_status: "pass"
+validation_results:
+  - "ruff check src/: PASS"
+  - "mypy src/: PASS (234 files)"
+  - "pytest: 2743 passed, 2 skipped, 67 deselected"
+  - "lint-ecl.ps1: PASS"
+  - "tsc --noEmit: PASS"
+  - "vitest: 145 passed"
 created_at: "2026-11-10"
 updated_at: "2026-11-12"
 session_id: "614ef677-9074-42ba-8904-3ad377641de6"
@@ -48,7 +55,7 @@ the entry-6 pattern for T4 #420.
 
 - `ruff check src/` - PASS (all checks passed)
 - `mypy src/` - PASS (234 source files, no issues)
-- `pytest` full non-e2e suite - PASS (see validation_results for the exact counts)
+- `pytest` full non-e2e suite - PASS (2743 passed, 2 skipped, 67 deselected; matches the CI command's deselection set)
 - `pwsh scripts/maintenance/lint-ecl.ps1` - PASS (ECL lint passed; ps-antipattern scan 29 files, 0 failures)
 - `npx tsc --noEmit` - PASS (site type check)
 - `npx vitest run` - PASS (16 files, 145 tests)

@@ -9,7 +9,7 @@ export const article: InsightArticle = {
   readMins: 7,
   publishedAt: '2026-10-12',
   source:
-    'src/ai_company/orchestrator/tier_rules.py · src/ai_company/executor/hitl_gate.py · src/ai_company/orchestrator/approval.py · docs/Pharos/pillars/02-5-tier-human-in-the-loop.md · docs/APPROVAL-UX-SPEC.md',
+    'src/ai_company/orchestrator/tier_rules.py · src/ai_company/executor/hitl_gate.py · src/ai_company/orchestrator/approval.py · docs/pharos/pillars/02-5-tier-human-in-the-loop.md · docs/APPROVAL-UX-SPEC.md',
   blocks: [
     {
       kind: 'p',

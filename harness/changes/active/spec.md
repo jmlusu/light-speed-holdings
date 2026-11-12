@@ -38,7 +38,7 @@
 
 ## Open Questions
 
-- [NEEDS CLARIFICATION: Should the missing October §8 gap be noted in the November section header or as a separate annotation?]
+- **Resolved:** the missing October delta is noted inside the November delta section itself, not in the section header - the header links to the new section and the section carries an honest note that the October entry was never written. Delivered in `docs/marketing/competitive-landscape.md` section 8.
   - The section header link (§8) currently points to a non-existent October delta; November refresh writes the first-ever §8 while adding an honest note about the October gap.
 
 ## Resolved Clarifications

@@ -9,7 +9,7 @@ export const article: InsightArticle = {
   readMins: 8,
   publishedAt: '2026-10-12',
   source:
-    'company-registry.yaml · src/ai_company/orchestrator/tier_rules.py · src/ai_company/orchestrator/approval.py · src/ai_company/orchestrator/message_bus.py · docs/Pharos/pillars/01-built-a-90-agent-company.md · docs/APPROVAL-UX-SPEC.md',
+    'company-registry.yaml · src/ai_company/orchestrator/tier_rules.py · src/ai_company/orchestrator/approval.py · src/ai_company/orchestrator/message_bus.py · docs/pharos/pillars/01-built-a-90-agent-company.md · docs/APPROVAL-UX-SPEC.md',
   blocks: [
     {
       kind: 'p',

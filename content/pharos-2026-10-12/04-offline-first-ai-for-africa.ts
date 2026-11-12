@@ -9,7 +9,7 @@ export const article: InsightArticle = {
   readMins: 8,
   publishedAt: '2026-10-12',
   source:
-    'docs/RESERVATIONS-STRATEGY.md · docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/Pharos/case-study-pipeline.md · src/ai_company/llm/providers/ · src/ai_company/model_router.py · research/site-claims-ledger.md',
+    'docs/RESERVATIONS-STRATEGY.md · docs/pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/pharos/case-study-pipeline.md · src/ai_company/llm/providers/ · src/ai_company/model_router.py · research/site-claims-ledger.md',
   blocks: [
     {
       kind: 'p',
