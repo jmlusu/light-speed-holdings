@@ -1,8 +1,8 @@
 ---
 title: "T5 competitive landscape Nov refresh (#447)"
 slug: "t5-competitive-landscape-nov-refresh-447"
-status: "in_progress"
-location: "active"
+status: "completed"
+location: "archive"
 phase: "validate"
 intake_status: "approved"
 spec_review: "approved"
