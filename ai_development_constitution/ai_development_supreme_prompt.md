@@ -863,7 +863,7 @@ plus the department and function sub-apps
 
 agents, board, executives, departments, specialists, decision, governance,
 executor, dashboard, consulting, customer-success, hr, legal, marketing, sales,
-media, mcp, publishing, llm, orchestrator, archify, onboarding, models, init
+media, mcp, publishing, llm, orchestrator, onboarding, models, init
 
 actual: roughly 37 subcommands are registered in cli/main.py (lazy sub-apps) and
 cli/ holds 34 modules. There is no build, registry, templates or report command.
