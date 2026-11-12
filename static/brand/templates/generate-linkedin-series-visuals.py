@@ -2,7 +2,7 @@
 """Generate the AI-Native Organizations LinkedIn series visuals.
 
 Produces 12 PNGs (1200x627) — one hero + three carousel cards per post — for
-Posts 1-3 of the series, into docs/Pharos/linkedin-series/post-0N/visuals/.
+Posts 1-3 of the series, into docs/pharos/linkedin-series/post-0N/visuals/.
 
 Brand: colors and type scale are read from brand/tokens/brand-tokens.json
 (canonical-first, mirrors per generate-post-templates.py). Every rendered pixel
@@ -55,6 +55,7 @@ LAYER_NAMES = {
     "H": "H — HUMAN PURPOSE & AUTHORITY",
     "A": "A — AGENTIC WORKFORCE",
     "O": "O — ORCHESTRATION & ORGANIZATION",
+    "T": "T — TOOLS & ACTIONS",
 }
 TAGLINE = "ASPIRE. ACT. ACHIEVE."
 SERIES_URL = "lightspeedholdings.vercel.app"
@@ -80,6 +81,22 @@ POSTS = [
             ),
             "pills": ["autonomous", "HITL-approved", "reviewed", "snoozed", "cleared"],
         },
+        "card3": {
+            "headline": [("5-Tier HITL Approval", "titlemd", "navy")],
+            "body": (
+                "Every agentic decision flows through: autonomous → HITL-approved → "
+                "reviewed → snoozed → cleared. Audit trails ensure accountability."
+            ),
+            "pills": [],
+        },
+        "card4": {
+            "headline": [("Sovereign Data Defaults", "titlemd", "navy")],
+            "body": (
+                "For Malawi/SADC: DPA 2017/2024 + GDPR by default. Offline-first, "
+                "local models. Visible variable cost. 90-day pilot, no lock-in."
+            ),
+            "pills": [],
+        },
         "cta_sub": "Explore how AI-native patterns apply in Malawi.",
     },
     {
@@ -100,6 +117,22 @@ POSTS = [
             "body": (
                 "Eight recurring revenue products sustain the agent economy "
                 "without upfront capital requirements."
+            ),
+            "pills": [],
+        },
+        "card3": {
+            "headline": [("5-Tier HITL Approval", "titlemd", "navy")],
+            "body": (
+                "Every agentic decision flows through: autonomous → HITL-approved → "
+                "reviewed → snoozed → cleared. Audit trails ensure accountability."
+            ),
+            "pills": [],
+        },
+        "card4": {
+            "headline": [("8 Recurring Revenue Products", "titlemd", "navy")],
+            "body": (
+                "Eight recurring revenue products sustain the agent economy without "
+                "upfront capital requirements."
             ),
             "pills": [],
         },
@@ -125,7 +158,63 @@ POSTS = [
             "stat_big": ("30s", "TTL cache per department metric"),
             "pills": ["capacity", "activity", "trend", "risk"],
         },
+        "card3": {
+            "headline": [("9 Workflow Definitions", "titlemd", "navy")],
+            "body": (
+                "Step tracking + SLA monitoring. Nine orchestrated workflows with "
+                "automatic CEO dashboard surfacing."
+            ),
+            "pills": [],
+        },
+        "card4": {
+            "headline": [("Org Metrics per Department", "titlemd", "navy")],
+            "body": (
+                "graph/engine.py OrgNode returns capacity, activity, trend, and risk "
+                "for every department."
+            ),
+            "pills": ["capacity", "activity", "trend", "risk"],
+        },
         "cta_sub": "Explore how orchestration patterns apply in Malawi.",
+    },
+    {
+        "n": 4,
+        "layer": "T",
+        "title": "What does H-A-O-M-T-G-V actually mean?",
+        "stat": "7-layer framework: H→A→O→M→T→G→V, each layer depends on the one before it",
+        "cover_title": [("H-A-O-M-T-G-V: One System", "titlexl", "white")],
+        "cover_body": (
+            "The 7-layer framework is not a checklist. Each layer depends on the "
+            "one before it. No layer is valuable on its own: H → A → O → M → T → G → V."
+        ),
+        "card2": {
+            "headline": [("H: Human Purpose & Authority", "titlemd", "navy")],
+            "body": (
+                "Strategy, ethics, leadership, relationships, and final accountability "
+                "stay with named humans. Agents are delegates, never principals. "
+                "Five-tier approval matrix (ADR-017) ensures every agentic decision "
+                "is reversible and auditable."
+            ),
+            "pills": ["autonomous", "HITL-approved", "reviewed", "snoozed", "cleared"],
+        },
+        "card3": {
+            "headline": [("A: Agentic Workforce", "titlemd", "navy")],
+            "body": (
+                "90 role-bounded agents in one registry, each with domain scope and "
+                "permission boundary. Agent Utilization KPI-003 measures engagement. "
+                "Permissioned tool sandbox: 7 tools only."
+            ),
+            "pills": [],
+        },
+        "card4": {
+            "headline": [("O: Orchestration", "titlemd", "navy")],
+            "body": (
+                "One message bus. 20 departments own agent capacity. Crash-safe, "
+                "idempotent task queue. Nine workflow definitions with SLA monitoring. "
+                "Org metrics as a live graph."
+            ),
+            "pills": [],
+        },
+        "cta_sub": "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context.",
     },
 ]
 
@@ -381,6 +470,7 @@ def build_hero(post: dict) -> Image.Image:
         "H": "H — Human Purpose & Authority: what should humans remain accountable for?",
         "A": "A — Agentic Workforce: what work can AI agents perform?",
         "O": "O — Orchestration & Organization: how do agents coordinate?",
+        "T": "T — Tools & Actions: what tools enable agent activity?",
     }[post["layer"]]
     y = draw_wrapped(
         draw, layer_q, font("subtitle"), COLORS["cyan"], PAD, y + 24, W - 2 * PAD, 30, max_lines=2
@@ -397,7 +487,7 @@ def build_cover(post: dict, card_idx: int) -> Image.Image:
     """Navy cover card (carousel card 1)."""
     img = Image.new("RGB", (W, H), COLORS["navy"])
     draw = ImageDraw.Draw(img)
-    eyebrow_navy(draw, post["n"], card_idx, 3)
+    eyebrow_navy(draw, post["n"], card_idx, 5)
 
     cursor = draw_segments(draw, post["cover_title"], PAD, 150)
     if cursor > W - PAD:  # overflow guard (segments too wide) -> wrap fallback
@@ -517,7 +607,7 @@ def build_content_card(post: dict, card_idx: int) -> Image.Image:
 def build_cta_card(post: dict, card_idx: int) -> Image.Image:
     img = Image.new("RGB", (W, H), COLORS["navy"])
     draw = ImageDraw.Draw(img)
-    eyebrow_navy(draw, post["n"], card_idx, 3)
+    eyebrow_navy(draw, post["n"], card_idx, 5)
 
     draw.text(
         (PAD, 140), "Download the Monitor", font=font("titlelg", bold=True), fill=COLORS["white"]
@@ -547,12 +637,54 @@ def build_cta_card(post: dict, card_idx: int) -> Image.Image:
     return img
 
 
+def build_card4(post: dict, card_idx: int) -> Image.Image:
+    """Card 4: navy card with headline and body text."""
+    img = Image.new("RGB", (W, H), COLORS["navy"])
+    draw = ImageDraw.Draw(img)
+    eyebrow_navy(draw, post["n"], card_idx, 5)
+
+    # Headline
+    y = draw_segments(draw, post["card4"]["headline"], PAD, 150)
+    if y > W - PAD:
+        y = draw_wrapped(
+            draw,
+            "".join(t for t, _, _ in post["card4"]["headline"]),
+            font("titlemd", bold=True),
+            COLORS["navy"],
+            PAD,
+            150,
+            W - 2 * PAD,
+            42,
+            max_lines=2,
+        )
+    else:
+        y = 150 + S["titlemd"]
+
+    y += 24
+
+    # Body
+    y = draw_wrapped(
+        draw,
+        post["card4"]["body"],
+        font("subtitle"),
+        COLORS["grey-light-text"],
+        PAD,
+        y,
+        W - 2 * PAD,
+        32,
+        max_lines=4,
+    )
+
+    footer_navy(draw, img)
+    return img
+
+
 # -------------------------------------------------------------------- main
 
 
 def out_dir(post_n: int) -> Path:
     root = Path(__file__).resolve().parents[3]
-    return root / "docs" / "Pharos" / "linkedin-series" / f"post-{post_n:02d}" / "visuals"
+    return root / "docs" / "pharos" / "linkedin-series" / f"post-{post_n:02d}" / "visuals"
 
 
 def generate() -> list[Path]:
@@ -565,6 +697,8 @@ def generate() -> list[Path]:
             "carousel-1-1200x627.png": build_cover(post, 1),
             "carousel-2-1200x627.png": build_content_card(post, 2),
             "carousel-3-1200x627.png": build_cta_card(post, 3),
+            "carousel-4-1200x627.png": build_card4(post, 4),
+            "carousel-5-1200x627.png": build_cta_card(post, 5),
         }
         for name, img in assets.items():
             img = snap_to_palette(img)
@@ -599,7 +733,7 @@ def verify(paths: list[Path]) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate LinkedIn series visuals (Posts 1-3)")
+    parser = argparse.ArgumentParser(description="Generate LinkedIn series visuals (Posts 1-4)")
     parser.add_argument(
         "--verify", action="store_true", help="re-open outputs and check dims + palette"
     )

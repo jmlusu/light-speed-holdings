@@ -17,7 +17,7 @@ def stdio() -> None:
     MCP clients (Claude/Desktop, OpenCode, etc.) speak by default. Set
     ``DASHBOARD_RUN_KEY`` / ``DASHBOARD_APPROVE_KEY`` / ``DASHBOARD_ADMIN_KEY``
     to enable RBAC; read tools require ``run``, ``publish_queue`` requires
-    ``approve``. Set ``PHAROS_DOCS_DIR`` to point at the docs/Pharos corpus.
+    ``approve``. Set ``PHAROS_DOCS_DIR`` to point at the docs/pharos corpus.
     """
     from ai_company.mcp.server import PharosMcpServer
 

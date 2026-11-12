@@ -5,8 +5,8 @@ third-party MCP SDK:
 
 - ``knowledge_graph_query`` — GraphEngine over the loaded CompanyRegistry.
 - ``memory_recall`` — MemoryStore semantic/string recall.
-- ``research_lookup`` — keyword scan of the ``docs/Pharos`` regional corpus.
-- ``pharos_reference`` — read a ``docs/Pharos`` document by name (path-safe).
+- ``research_lookup`` — keyword scan of the ``docs/pharos`` regional corpus.
+- ``pharos_reference`` — read a ``docs/pharos`` document by name (path-safe).
 - ``publish_queue`` — write tool; enqueues a platform-ready artifact
   (requires ``approve``/``admin`` RBAC role).
 
@@ -41,7 +41,7 @@ SERVER_VERSION = "0.1.0"
 _RANK = {"run": 0, "approve": 1, "admin": 2}
 
 _DOCS_DIR_ENV = "PHAROS_DOCS_DIR"
-_MAIN_TREE_DOCS = "docs/Pharos"
+_MAIN_TREE_DOCS = "docs/pharos"
 
 
 def _static_text(content: str) -> dict[str, Any]:
@@ -249,7 +249,7 @@ class PharosMcpServer:
             },
             {
                 "name": "research_lookup",
-                "description": "Keyword search the Pharos regional corpus under docs/Pharos. Returns matching .md documents with snippets.",
+                "description": "Keyword search the Pharos regional corpus under docs/pharos. Returns matching .md documents with snippets.",
                 "inputSchema": {
                     "type": "object",
                     "properties": {
@@ -260,7 +260,7 @@ class PharosMcpServer:
             },
             {
                 "name": "pharos_reference",
-                "description": "Read a Pharos reference document from docs/Pharos (e.g. 'README', 'positioning', 'stakeholder-map'). Path-safe.",
+                "description": "Read a Pharos reference document from docs/pharos (e.g. 'README', 'positioning', 'stakeholder-map'). Path-safe.",
                 "inputSchema": {
                     "type": "object",
                     "properties": {"name": {"type": "string"}},
@@ -385,7 +385,7 @@ class PharosMcpServer:
             return cast(
                 dict[str, Any],
                 self._sanitize_payload(
-                    {"error": "docs/Pharos corpus not found in this workspace", "found": False}
+                    {"error": "docs/pharos corpus not found in this workspace", "found": False}
                 ),
             )
 

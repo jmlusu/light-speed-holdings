@@ -7,7 +7,7 @@
 
 ## Setup / Intake
 
-- [ ] T001 Review `spec.md` and `plan.md` gates before implementation.
+- [x] T001 Review `spec.md` and `plan.md` gates before implementation (spec approved; plan approved; see `reviews/review.md`).
 
 ## Implementation
 
@@ -23,4 +23,4 @@
 
 ## Deferred Tasks
 
-- Gap 5 correction in social-media-positioning-status.md — tracked separately; not part of this change.
+- None in this change. The Gap 5 correction in `docs/marketing/social-media-positioning-status.md` is tracked separately and was not part of this refresh.

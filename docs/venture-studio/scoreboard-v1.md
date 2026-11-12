@@ -32,6 +32,8 @@ Studio · reporting period · CEO: Jack Mlusu
 4. **CFO rollup:** CFO-owned section, MWK/USD dual display; `realized_value` = contracted ARR + verified cost-avoidance only. Dashboard rollup deferred to T2.
 5. **30-day baseline:** measurement-only from instrumentation start, split by archetype A/B/C; rolling targets set after.
 6. **T4 #420 competitive landscape refresh:** Oct 2026 delta vs. baseline v1 (2026-09-16); 4 local moves verified (TNM data centre, TNM+Huawei 2027 plan, Seed Co AI upgrade, SpaceAI new entrant), 4 international moves verified (BCG index, Deloitte, Accenture, Polsia pricing); wedge-table verdicts NO flips — category "empty locally" holds; position LightSpeed as only governed human-led agentic org with Malawi-first ops, transparent MWK pricing, HITL audit trails, RBAC; monitor unconfirmed/re-check list (18 items) next cycle 2026-11-16.
+7. **T5 #447 competitive landscape refresh:** Nov 2026 delta vs. baseline v2 (2026-10-07); §8 "November 2026 Delta" written (first-ever §8); 4 verified local moves (TNM data centre, TNM+Huawei 2027 plan, Seed Co AI upgrade, SpaceAI new entrant); 4 verified international moves (BCG index, Deloitte, Accenture, Polsia hybrid pricing); wedge-table verdicts NO flips — category "empty locally" holds; baseline v3 header updated; §7 monthly checklist advanced to 2026-12-16; honesty tags VERIFIED / VENDOR CLAIM / UNCONFIRMED per ADR-020/033; note the missing Oct §8 gap transparently added.
+8. **T1 — What counts as scoreboard v1?** (#417) — wayfinder:grilling. Frontier.
 
 ## Row 2 — Portfolio
 
