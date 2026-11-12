@@ -26,6 +26,12 @@
     }
   },
   "mcp": {
+    "gbrain-lightspeed": {
+      "type": "local",
+      "command": ["C:/Users/jmlus/.bun/bin/gbrain.exe", "serve", "--surface", "verbs"],
+      "environment": { "GBRAIN_HOME": "C:/Users/jmlus/brains/lightspeed" },
+      "enabled": true
+    },
     "resend": {
       "type": "remote",
       "url": "https://mcp.resend.com/mcp",

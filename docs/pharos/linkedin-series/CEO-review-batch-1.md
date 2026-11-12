@@ -97,7 +97,7 @@ Every claim in draft-v1.md files is traceable to:
 ## Pending Items Blocking Launch
 
 1. **Issue #194:** Platform account provisioning (Facebook, Instagram, X, LinkedIn Company, TikTok, YouTube, Substack all "Pending (#194)")
-2. **Visual asset production:** Hero + 3 carousel cards per post via `ls-visual-storytelling` + `k-dense-infographics` — in progress (Step 6)
+2. **Visual asset production:** Hero + 3 carousel cards per post via `ls-visual-storytelling` — in progress (Step 6)
 3. ~~**CEO approval:** Review and sign-off on drafts v1 for Posts 1-3~~ — ✅ Approved 2026-09-28
 
 ## Files for CEO Review

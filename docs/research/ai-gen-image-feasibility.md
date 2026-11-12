@@ -39,10 +39,10 @@ Source: `docs/adr/018-comfyui-media-generation.md:3` (`**Status:** Proposed`), d
 
 | Skill | Files present | What it actually invokes | Local or network? |
 |-------|---------------|--------------------------|-------------------|
-| `k-dense-infographics` | **SKILL.md only (12 lines, frontmatter, no body, no scripts)** | Nothing. Description promises "Nano Banana Pro AI … Gemini-powered quality review" (`.agents/skills/k-dense-infographics/SKILL.md:3`) but the skill contains no instructions, scripts, endpoints, or keys. | N/A — inert stub |
+| `k-dense-infographics` | **Removed — obsolete capability** | Removed. Was a 12-line stub with no scripts, endpoints, or keys. Skill directory removed. |
 | `article-illustrations` | SKILL.md, README, LICENSE, 4 example PNGs | Instructs the agent to call a **`generate_image` tool** (`.agents/skills/article-illustrations/SKILL.md:257`). That tool is **not defined anywhere in `.opencode/` config** (grep `generate_image` → no matches) — it is an Antigravity/Gemini-CLI-native tool (README:9, README:116). | Would be network + Google account; **not invocable in this OpenCode environment** |
 | `ls-brand-advertising` | SKILL.md + `scripts/brief-generator.js` | `brief-generator.js` **makes no HTTP call** — it only prints a JSON brief (`model: 'gemini-2.5-flash-image'`, brand palette, platform dimensions) for piping into a `task` delegation (`.agents/skills/ls-brand-advertising/scripts\brief-generator.js:46-58`). SKILL.md:54 routes photographic/illustration assets to the `media-generation-owner` subagent — which has no working infra (§1). | Emits a brief only; the consuming path is dead |
-| `ls-visual-storytelling` | SKILL.md + `scripts/check_brand_palette.py` | Routes infographics to `k-dense-infographics` (the stub), then **post-render** palette remap + local deterministic checker `check_brand_palette.py` + `ls-artifact-qa` (`.agents/skills/ls-visual-storytelling\SKILL.md:38,63-73`) | Post-render QA is fully local; the render step is the dead stub |
+| `ls-visual-storytelling` | SKILL.md + `scripts/check_brand_palette.py` | Routes infographics via LightSpeed brand palette enforcement + `ls-artifact-qa` gate (`.agents/skills/ls-visual-storytelling\SKILL.md:38,63-73`) | Post-render QA is fully local; palette remap via `check_brand_palette.py` + `ls-artifact-qa` final gate |
 | `ls-diagramming` | SKILL.md | Mermaid locally; **Kroki** (`https://kroki.io`) as fallback renderer (`.agents/skills/ls-diagramming\SKILL.md:34`) | Local first; Kroki fallback = Tier B public endpoint (see §3) |
 
 ### Working, fully-local asset tooling in-repo today
@@ -115,7 +115,6 @@ No AI image-generation path functions end-to-end: ComfyUI install absent, `comfy
 - `.opencode/reminders/2026-09-07-comfyui-recap.md` (install → removal, pending API-mode reinstall)
 - `config/tool_allowlist.yaml:38-40`, `src/ai_company/executor/tool_runner.py:118-120`, `company-registry.yaml:3876`, `.opencode/agents/media-generation-owner.md`
 - `src/ai_company/media/` directory listing; `docker-compose*.yml`; `.opencode/opencode.json`
-- `.agents/skills/k-dense-infographics/SKILL.md`; `.agents/skills/article-illustrations/SKILL.md:257` + `README.md`; `.agents/skills/ls-brand-advertising/SKILL.md:54` + `scripts/brief-generator.js`; `.agents/skills/ls-visual-storytelling/SKILL.md:38,63-73`; `.agents/skills/ls-diagramming/SKILL.md:34`
 - `static/brand/templates/generate-*.py` (import scan: PIL-only)
 - `docs/APPROVED-VENDORS.md` (v1.0, 2026-09-23)
 - `docs/SKILL_CURATION_POLICY.md:181-219` (§ Skill Third-Party Transmission Ban)

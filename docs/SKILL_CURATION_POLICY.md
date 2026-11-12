@@ -114,7 +114,7 @@ mv .agents/skills-staging/<name> .agents/skills/<name>/
 ## Current Skill Inventory (38 Skills)
 
 ### Original 28 (Antigravity Bundle)
-`agenttrace-session-audit`, `api-endpoint-builder`, `ax-extract-workflow`, `brooks-lint`, `bug-hunter`, `codebase-audit-pre-push`, `diagnosing-bugs`, `ecl-harness-engineer`, `effective-agent-skills`, `find-skills`, `global-chat-agent-discovery`, `hono`, `improve-codebase-architecture`, `jq`, `logic-lens`, `performance-optimizer`, `prototype`, `python-pptx-generator`, `rayden-code`, `setup-matt-pocock-skills`, `skill-check`, `squirrel`, `tdd`, `technical-change-tracker`, `tmux`, `tree-ring-memory`, `triage`
+`agenttrace-session-audit`, `api-endpoint-builder`, `ax-extract-workflow`, `brooks-lint`, `bug-hunter`, `codebase-audit-pre-push`, `diagnosing-bugs`, `ecl-harness-engineer`, `effective-agent-skills`, `find-skills`, `global-chat-agent-discovery`, `hono`, `improve-codebase-architecture`, `jq`, `logic-lens`, `performance-optimizer`, `prototype`, `python-pptx-generator`, `setup-matt-pocock-skills`, `skill-check`, `squirrel`, `tdd`, `technical-change-tracker`, `tmux`, `tree-ring-memory`, `triage`
 
 ### Added 2026-08-07 (Addy Osmani — Tier 1)
 | Skill | Source | Installs | Collision Assessment |

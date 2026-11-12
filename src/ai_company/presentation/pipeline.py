@@ -399,7 +399,7 @@ def _write_pptxgen_json(path: str, spec: PresentationSpec) -> None:
     # Brand tokens enforcement
     brand_tokens = {
         "navy": "#070A40",
-        "red": "#E63946",
+        "red": "#DC3641",
         "cyan": "#00BFFF",
         "grey": "#F2F2F2",
     }

@@ -142,7 +142,7 @@
 |---|----------|-------|----------|--------|
 | 11 | P3 | **Bandit Low-severity issues across codebase** | 61 Low issues concentrated in ETL/data modules | These are primarily pattern-matching artifacts from SQL strings and subprocess calls in data pipelines. Evaluate whether `# nosec` disables are appropriate or if code restructuring is warranted. |
 | 12 | P3 | **Code coverage optimization** | pytest suite (2703 tests) | Review e2e test exclusion (`-m "not e2e"`) and ensure adequate coverage without timeout penalties in CI. |
-| 13 | P3 | **Archify diagram drift detection** | `archify-check` CI job | Verify diagrams remain in sync with registry after agent changes. |
+| 13 | P3 | **Archify diagram drift detection** | — | Drift detection no longer archived; verify diagrams via registry baseline. |
 
 ---
 

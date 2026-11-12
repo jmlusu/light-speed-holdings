@@ -71,7 +71,7 @@ Drafts v1 for Posts 1–3 rewritten to full LinkedIn long-form spec and **approv
 - Framework layer (H-A-O-M-T-G-V) explicitly named in each draft (H, A, O respectively).
 - Malawi/SADC context present in each draft (sovereign data, low-bandwidth, 90-day pilot).
 - CTA aligned: Build / Evidence / Shape in all three drafts.
-- Visual production: `ls-visual-storytelling` leads hero visual, `k-dense-infographics` produces carousel cards; both feed mandatory `ls-artifact-qa` gate.
+- Visual production: `ls-visual-storytelling` leads hero visual and produces carousel cards; feed mandatory `ls-artifact-qa` gate.
 - CEO review batch: Posts 1–3 together, 48h SLA via G2 gate. Decision: **approved 2026-09-28**.
 - Card selection (visuals): P1 = Definition / 5-Tier HITL / CTA; P2 = 90 Agents / 8 Products / CTA; P3 = Orchestration Layer / Org Metrics / CTA. Rhythm navy → white → navy.
 - Renderer: Pillow generator with exact token-palette snap (canonical `brand/tokens/brand-tokens.json` first); icon logo on navy (alpha-trimmed), full logo on white (near-white bg normalized to avoid grey box).

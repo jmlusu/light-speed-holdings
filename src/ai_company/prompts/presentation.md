@@ -10,7 +10,7 @@ prompts to ensure brand compliance and consistent narrative framing.
 
 - **Navy**: `#070A40` — primary accent, used for ~60% of visual weight (left rail,
   primary text, primary backgrounds)
-- **Red**: `#E63946` — secondary accent, used for ~20% of visual weight (highlight
+- **Red**: `#DC3641` — secondary accent, used for ~20% of visual weight (highlight
   text, callout boxes, key metrics)
 - **Cyan**: `#00BFFF` — tertiary accent, used for ~20% of visual weight (links,
   secondary highlights, decorative elements)

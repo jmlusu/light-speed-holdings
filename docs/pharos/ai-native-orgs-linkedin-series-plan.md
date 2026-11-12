@@ -55,7 +55,7 @@ RESEARCH → DRAFT → CEO REVIEW → VISUALS → QA → SCHEDULE → PUBLISH �
 | **1. Research Brief** | `agentic_research_lead` | `k-dense-research-lookup` + webfetch | Evidence matrix + claim-to-source map (1–2 hrs) | — |
 | **2. Draft v1** | `thought_leadership_author` | CEO voice profile (semantic memory) | LinkedIn long-form (1,200–1,800 words) | Internal QA |
 | **3. CEO Review** | Human CEO | Async (GitHub PR / shared doc) | Approved / revisions requested | **HITL Gate** |
-| **4. Visual Production** | `ls-visual-storytelling` + `k-dense-infographics` | Brand-enforced infographics/diagrams | 1 hero visual + 3 carousel cards per post | `ls-artifact-qa` |
+| **4. Visual Production** | `ls-visual-storytelling` | Brand-enforced infographics/diagrams | 1 hero visual + 3 carousel cards per post | `ls-artifact-qa` |
 | **5. Atomization** | `thought_leadership_author` + `content_creator` | `ls-social-media-design` | X thread, LinkedIn carousel, Substack newsletter section, 1-min video script | — |
 | **6. Final QA** | `ls-artifact-qa` | Playwright probe + brand checklist | APPROVE / FIX → re-render | **Mandatory Gate** |
 | **7. Schedule** | `thought_leadership_lead` | Pharos publish queue (MCP) | Queued with `scheduledAt` | — |
@@ -172,7 +172,7 @@ RESEARCH → DRAFT → CEO REVIEW → VISUALS → QA → SCHEDULE → PUBLISH �
 ### Production Pipeline
 
 ```
-Research Data → k-dense-infographics (Nano Banana Pro) → ls-visual-storytelling (brand enforcement) → ls-artifact-qa → Static assets
+Research Data → ls-visual-storytelling (brand enforcement) → ls-artifact-qa → Static assets
 ```
 
 **Brand Enforcement Rules:**
@@ -439,7 +439,7 @@ pharos/linkedin-series/post-01/
 4. **Research Sprint** — `agentic_research_lead` produces evidence matrices for Posts 1–3 (Week 1)
 5. **Draft Sprint** — `thought_leadership_author` writes Drafts v1 for Posts 1–3 (Week 1–2)
 6. **CEO Review Batch 1** — Posts 1–3 drafts submitted together (efficiency)
-7. **Visual Production** — `ls-visual-storytelling` + `k-dense-infographics` for Posts 1–3
+7. **Visual Production** — `ls-visual-storytelling` for Posts 1–3
 8. **Launch** — Post 1 publishes Monday 2026-10-05 07:00 CAT
 
 ---

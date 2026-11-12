@@ -281,7 +281,7 @@ Africa (54 countries)
 | Type A (Hero) | Photography (commissioned) / Midjourney v6 + Photoshop | — |
 | Type B, C, D, E, G, H, K | **Archify** skill (SVG/HTML) / Figma → SVG | Manual SVG |
 | Type F (Use Case Cards) | Archify + custom SVG templates | — |
-| Type I (Pharos) | Archify / Recharts / k-dense-infographics skill | Python (matplotlib) → SVG |
+| Type I (Pharos) | Archify / Recharts | Python (matplotlib) → SVG |
 | Type J (Leadership) | Photography (commissioned) | — |
 
 ### Asset Pipeline

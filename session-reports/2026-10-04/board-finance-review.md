@@ -175,7 +175,7 @@ Athena separation and backend boundaries **must complete before Track A launch**
 | **Athena separation incomplete at launch** | Medium | $25K–$40K (rework + risk) | Athena separation = Track A gate (QA line 2001) |
 | **Backend boundary leaks** | Medium | $20K–$50K (security + credibility) | Automated tests for "no internal data in public build" |
 | **Content registry sync failures** | Medium | $15K–$25K | CI pipeline validates registry → site consistency |
-| **Media production bottleneck** | High | $20K–$40K | Phase 5 media can use programmatic generation (k-dense-infographics, ls-diagramming) for 60% of assets |
+| **Media production bottleneck** | High | $20K–$40K | Phase 5 media can use programmatic generation (ls-diagramming) for 60% of assets |
 | **Claims governance process slows publishing** | Medium | $10K–$20K | Pre-approve claim templates; batch review weekly |
 
 ### Budget Guardrails for Two-Track

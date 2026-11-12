@@ -492,7 +492,7 @@ export const Icon3D: React.FC<Icon3DProps> = ({
             <circle cx="32" cy="32" r="16" fill={`url(#${glassGradId})`} stroke={`url(#${cyanGradId})`} strokeWidth="1" />
             {/* 3D Metallic Gold Needle */}
             <polygon points="32,16 36,32 32,30 28,32" fill={`url(#${goldGradId})`} stroke="#FFF7CC" strokeWidth="0.8" />
-            <polygon points="32,48 36,32 32,34 28,32" fill="#E63946" stroke="#FFFFFF" strokeWidth="0.8" />
+            <polygon points="32,48 36,32 32,34 28,32" fill="#DC3641" stroke="#FFFFFF" strokeWidth="0.8" />
             <circle cx="32" cy="32" r="3" fill={`url(#${goldGradId})`} />
           </g>
         );

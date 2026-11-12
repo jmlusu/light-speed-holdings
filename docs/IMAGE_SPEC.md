@@ -136,7 +136,7 @@ Every rendered `<img>` or media container **must** carry these attributes for QA
 
 ### 3.5 Illustrations (`illustration` kind) — Grav IP / Generated
 
-- **Source:** `article-illustrations` skill (Grav hand-drawn) or `k-dense-infographics` (AI-generated)
+- **Source:** `article-illustrations` skill (Grav hand-drawn)
 - **Stored at:** `public/assets/illustrations/<slug>.svg|.png`
 - **Palette:** Must pass through `ls-design-system` (navy/red/cyan, Arial, 4px grid)
 - **Dimensions:** Declared in `ContentMedia` — typically 800×600 (4:3) or 1200×675 (16:9)
@@ -201,7 +201,7 @@ Add `media: ContentMediaSet` to:
 |------|------|-------|--------|
 | 1. Brand sync | `scripts/build/sync-brand.ps1` | `brand/**` | `public/brand/**`, `static/brand/**` |
 | 2. Screenshot gen | `visual_check.cjs` (CI) | Staging URLs | `public/assets/screenshots/**` |
-| 3. Illustration gen | `article-illustrations` / `k-dense-infographics` | Briefs | `public/assets/illustrations/**` |
+| 3. Illustration gen | `article-illustrations` | Briefs | `public/assets/illustrations/**` |
 | 4. Vite build | `vite build` | `public/**` + `src/**` | `dist/**` (hashed filenames) |
 
 **Vite config:** `public/` copied as-is to `dist/`. No image transformation (YAGNI — sharp not in deps).

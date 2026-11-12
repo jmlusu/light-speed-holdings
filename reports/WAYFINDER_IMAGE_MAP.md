@@ -155,10 +155,10 @@ type ContentMedia =
 
 | Asset Type | Tool | Governance |
 |------------|------|------------|
-| Article illustrations (Grav) | `article-illustrations` skill → `k-dense-infographics` | `ls-artifact-qa` gate |
-| Infographics / explainer graphics | `ls-visual-storytelling` → `k-dense-infographics` | `ls-artifact-qa` gate |
-| Social campaign assets | `ls-social-media-design` → `k-dense-infographics` | `ls-artifact-qa` gate |
-| Brand advertising | `ls-brand-advertising` → ComfyUI / k-dense | `ls-artifact-qa` gate |
+| Article illustrations (Grav) | `article-illustrations` skill | `ls-artifact-qa` gate |
+| Infographics / explainer graphics | `ls-visual-storytelling` | `ls-artifact-qa` gate |
+| Social campaign assets | `ls-social-media-design` | `ls-artifact-qa` gate |
+| Brand advertising | `ls-brand-advertising` | `ls-artifact-qa` gate |
 
 > **Rule**: No stock photos, no fake people, no illustrative stand-ins (IMAGE_STRATEGY §21-22, Principle 3).
 

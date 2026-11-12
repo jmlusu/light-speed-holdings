@@ -121,17 +121,17 @@ The content calendar, pillar rotation, waterfall workflow, platform rules, and o
 
 ### 1.5 Asset Generation Capability
 
-**`k-dense-infographics`:** Present in `.agents/skills/`. Description confirms: "Creates professional infographics using Nano Banana Pro AI with smart iterative refinement; supports 10 infographic types, 8 industry styles, colorblind-safe palettes." However, the SKILL.md is minimal (12 lines); it appears to be a stub or entry point that routes to a larger system. The skill is referenced by `ls-social-media-design` for producing branded infographics for social channels.
+**`ls-visual-storytelling`:** Present in `.agents/skills/`. Creates professional infographics with LightSpeed brand palette enforcement and `ls-artifact-qa` gate. This is the primary infographic generation skill for branded social content.
 
 **`article-illustrations`:** Present in `.agents/skills/`. 398-line comprehensive skill for hand-drawn article illustrations featuring the Grav character IP. Produces 16:9 landscape illustrations. While creative and distinctive, this skill produces a specific aesthetic (hand-drawn, white background, minimal) that may not align with the LightSpeed brand's navy/red/cyan palette. The skill does not explicitly reference LightSpeed brand tokens; it has its own color palette (black, light grey, faint color).
 
-**`ls-visual-storytelling`:** Present in `.agents/skills/`. Routes to `k-dense-infographics` for professional infographics and enforces brand palette on top. This is the bridge between raw infographic generation and brand compliance.
+**`ls-visual-storytelling`:** Present in `.agents/skills/`. Creates professional infographics with LightSpeed brand palette enforcement and `ls-artifact-qa` gate. This is the primary infographic generation skill for branded social content; routes brand enforcement post-render.
 
 **`generate-social-assets.py`:** Functional Pillow script that generates profile and banner images for LinkedIn, Twitter/X, GitHub. Outputs to `static/brand/social/`. Uses correct brand colors. However, it only generates profile/header images, not post content, carousels, quote cards, or any of the 12 template types specified in TEMPLATE_SPECS.md.
 
 **Readiness Score: 3/5**
 
-The infographic pipeline exists (k-dense-infographics → ls-visual-storytelling → ls-artifact-qa) and the profile/banner generator works. But the actual social post content generators are missing: the 12 templates are specified but not built. The article-illustrations skill has its own aesthetic that doesn't align with LightSpeed brand tokens, so it would need brand-palette enforcement to be usable for branded social content.
+The infographic pipeline exists (`ls-visual-storytelling` → `ls-artifact-qa`) and the profile/banner generator works. But the actual social post content generators are missing: the 12 templates are specified but not built. The article-illustrations skill has its own aesthetic that doesn't align with LightSpeed brand tokens, so it would need brand-palette enforcement to be usable for branded social content.
 
 ---
 
@@ -219,8 +219,6 @@ The `article-illustrations` skill uses its own aesthetic (hand-drawn, white back
 7. **Launch the content engine.** Following the 4-phase implementation plan (Phase 1: Engine Launch, Weeks 3-6), publish the first 3 pillar pieces across all platforms using the waterfall workflow. Target: LinkedIn 2-3x/week, X 5-10x/day (CEO), YouTube 1 long + 4 Shorts/week.
 
 8. **Build remaining P2/P3 templates.** Lower-third, hook card, end-screen CTA, chapter marker, Facebook Group cover, email newsletter header.
-
-9. **Integrate k-dense-infographics with brand tokens.** Ensure the infographic pipeline enforces LightSpeed brand palette (navy/red/cyan) on top of its output. This makes the infographic → social post pathway seamless.
 
 10. **Begin newsletter production.** The content calendar specifies "The Malawi Agentic AI Monitor" as a monthly flagship. The email newsletter header template (P3) needs to be built and the first issue planned for end of Phase 1.
 

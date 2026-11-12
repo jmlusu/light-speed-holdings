@@ -14,7 +14,7 @@ interface HighLevelOverviewSectionProps {
  *
  * Brand compliance (Sec. 9 brand-guidelines.md):
  - Navy: #070A40 (headlines, rail, primary surfaces)
- - Red: #E63946 (accents, CTAs, key highlights)
+ - Red: #DC3641 (accents, CTAs, key highlights)
  - Cyan: #00BFFF (links on dark, taglines on navy)
  - Arial type scale: displayXL 36pt → caption 12pt
  - 4px spacing grid base unit
