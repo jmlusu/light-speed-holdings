@@ -109,10 +109,6 @@ src/ai_company/
 │       ├── marketing.py        # Marketing KPIs
 │       ├── sales.py            # Sales KPIs
 │       └── customer_success.py # Customer Success KPIs
-├── archify/                    # Archify diagram generation + rendering
-│   ├── __init__.py             # Public API: generate_specs, deliver, validate, compare
-│   ├── converter.py            # Registry → JSON IR (architecture/workflow/sequence/dataflow)
-│   └── renderer.py             # Node.js CLI wrapper (validate/deliver/compare)
 ├── doctor/                     # System diagnostics
 │   ├── __init__.py             # Doctor CLI entry point
 │   └── checks.py               # Individual check functions
@@ -223,7 +219,6 @@ config/*.yaml (19 files)
 | Workflow | `workflow/engine.py:WorkflowEngine` | Workflow execution engine |
 | Memory | `memory/engine.py:MemoryStore` | 6-type memory persistence |
 | Graph | `graph/engine.py:GraphEngine` | 4-type graph construction |
-| Archify | `archify/converter.py:generate_specs` | Registry → Archify JSON IR diagrams |
 | Audit | `audit/writer.py:AuditWriter` | JSONL audit trail |
 | Dashboard | `dashboard/app.py:app` | FastAPI REST API |
 | KPIs | `dashboard/kpis/__init__.py:collect_all_kpis()` | 7-department KPI collection |

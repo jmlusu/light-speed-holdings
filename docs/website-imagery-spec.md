@@ -191,14 +191,14 @@ ls-creative-director (brief intake)
 | Field | Specification |
 |-------|---------------|
 | **Section** | Architecture / Technical Deep-Dive |
-| **Artifact Type** | Explorable standalone HTML with inline SVG (archify export) |
+| **Artifact Type** | Explorable standalone HTML with inline SVG |
 | **Audience** | Engineers, architects, security reviewers, procurement |
 | **Core Thesis** | YAML → Jinja2 → OpenCode agents → MessageBus → Governance |
 | **Dimensions** | 1200×800 (responsive SVG) |
-| **Production Chain** | `ls-diagramming` + `ls-design-system` + `archify` → `ls-artifact-qa` |
+| **Production Chain** | `ls-diagramming` + `ls-design-system` → `ls-artifact-qa` |
 | **Output** | `docs/assets/architecture.html` (embeddable via iframe or inline) |
 
-#### Diagram Layers (Mermaid → archify)
+#### Diagram Layers (Mermaid → HTML)
 
 ```mermaid
 flowchart TB
@@ -630,7 +630,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
 ```
 docs/
 └── assets/
-    ├── architecture.html                 # Explorable architecture (archify export)
+    ├── architecture.html                 # Explorable architecture (Mermaid → HTML)
     ├── grav-yaml-to-agents.png           # Grav illustration #1 (1920×1080)
     ├── grav-governance.png               # Grav illustration #2 (1920×1080)
     ├── campaign-hero-1200x600.png        # Website hero
@@ -682,7 +682,7 @@ cat brand/tokens/brand-tokens.json
 
 ### Phase 2: Architecture Diagram (Static, High Priority)
 ```bash
-# Generate via archify (Mermaid → explorable HTML)
+# Generate via mermaid-cli (Mermaid → explorable HTML)
 # Input: docs/assets/architecture.mmd (the mermaid above)
 # Output: docs/assets/architecture.html
 # Verify: open in browser, test dark/light toggle, check palette
