@@ -18,7 +18,7 @@ interface PharosPageProps {
 /**
  * Pharos department page.
  *
- * Content is sourced from docs/Pharos/README.md, docs/Pharos/positioning.md and
+ * Content is sourced from docs/pharos/README.md, docs/pharos/positioning.md and
  * data/claims/registry.ts (CLM-020). This page publishes no metrics and no
  * client outcomes - it describes the programme, its three pillars, the formats
  * it publishes and the essays that already exist in src/data/insights.ts.

@@ -9,7 +9,7 @@ export const article: InsightArticle = {
   readMins: 8,
   publishedAt: '2026-10-12',
   source:
-    'docs/Pharos/research-briefs/2026-10-12-open-source-costs.md · docs/Pharos/research-briefs/2026-10-12-africa-open-source-ecosystem.md · pyproject.toml · package-lock.json · src/ai_company/llm/providers/ · src/ai_company/llm/cost_tracker.py · src/ai_company/llm/client.py · docs/adr/004-multi-provider-llm.md · docs/ARCHITECTURE_REMOTE_RUNTIME.md · docs/Pharos/case-study-pipeline.md',
+    'docs/pharos/research-briefs/2026-10-12-open-source-costs.md · docs/pharos/research-briefs/2026-10-12-africa-open-source-ecosystem.md · pyproject.toml · package-lock.json · src/ai_company/llm/providers/ · src/ai_company/llm/cost_tracker.py · src/ai_company/llm/client.py · docs/adr/004-multi-provider-llm.md · docs/ARCHITECTURE_REMOTE_RUNTIME.md · docs/pharos/case-study-pipeline.md',
   blocks: [
     {
       kind: 'p',

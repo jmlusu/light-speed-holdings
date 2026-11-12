@@ -30,6 +30,30 @@ export type ArticleCard = {
   readTime: string;
 };
 
+export type ValuePillar = {
+  title: string;
+  description: string;
+};
+
+export const VALUES: ValuePillar[] = [
+  {
+    title: 'AI-Native First',
+    description: 'We build AI-native companies where constraints are real (infrastructure gaps, talent development, regulatory evolution), then scale.',
+  },
+  {
+    title: 'Evidence Over Claims',
+    description: 'Every public statement is labeled: Proven in-house, In pilot, Fieldable, or In development. No blurring the line.',
+  },
+  {
+    title: 'Governed by Design',
+    description: 'Five-tier human approval, append-only audit trails, and regional compliance are architecture, not bolt-ons.',
+  },
+  {
+    title: 'African Intelligence',
+    description: 'Pharos turns our engineering into public intellectual work: SADC governance frameworks, Malawi AI Strategy engagement, regional policy.',
+  },
+];
+
 export const pathwayCards: PathwayCard[] = [
   {
     id: 'business-leaders',

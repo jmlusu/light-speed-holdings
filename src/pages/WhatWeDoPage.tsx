@@ -7,6 +7,7 @@ import { CtaBand } from '../components/site/CtaBand';
 import { RelatedLinks } from '../components/site/RelatedLinks';
 import { HonestyBadge } from '../components/site/HonestyBadge';
 import { Reveal } from '../components/Reveal';
+import { BeforeAfterWorkflow } from '../components/BeforeAfterWorkflow';
 import { OFFER_FAMILIES } from '../data/offerFamilies';
 import { solutions, GOVERNANCE_SOLUTION, honestyLabel } from '../data/siteContent';
 import { getSectorsBySolution } from '../data/sector-registry';
@@ -171,6 +172,10 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
           </div>
         </div>
       </section>
+
+      {/* 3b. WORKFLOW COLLAPSING ARCHITECTURE (BEFORE / AFTER SIMULATOR)
+          Recovered from AI Studio prototype (WhatWeDoPage §BeforeAfterWorkflow). */}
+      <BeforeAfterWorkflow theme={theme} />
 
       {/* 4. COMMERCIAL CATALOG: INTERACTIVE (PACKAGES / SOLUTIONS / INDUSTRIES) */}
       <section

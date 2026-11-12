@@ -42,7 +42,7 @@ export const insightArticles: InsightArticle[] = [
         'Token prices are not the binding constraint in Malawi. Connectivity costs 8.45% of GNI per capita. Open-source AI cost is an architecture argument, with limits.',
     },
     source:
-      'docs/Pharos/research-briefs/2026-10-12-open-source-costs.md · docs/Pharos/research-briefs/2026-10-12-africa-open-source-ecosystem.md · pyproject.toml · package-lock.json · src/ai_company/llm/providers/ · src/ai_company/llm/cost_tracker.py · src/ai_company/llm/client.py · docs/adr/004-multi-provider-llm.md · docs/ARCHITECTURE_REMOTE_RUNTIME.md · docs/Pharos/case-study-pipeline.md',
+      'docs/pharos/research-briefs/2026-10-12-open-source-costs.md · docs/pharos/research-briefs/2026-10-12-africa-open-source-ecosystem.md · pyproject.toml · package-lock.json · src/ai_company/llm/providers/ · src/ai_company/llm/cost_tracker.py · src/ai_company/llm/client.py · docs/adr/004-multi-provider-llm.md · docs/ARCHITECTURE_REMOTE_RUNTIME.md · docs/pharos/case-study-pipeline.md',
     correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
@@ -175,7 +175,7 @@ export const insightArticles: InsightArticle[] = [
         'A dollar list price divided by the exchange rate died with the 44% kwacha devaluation. Kwacha ladders, dollar retainers, mobile-money rails built in from day one. Honest dual-currency pricing.',
     },
     source:
-      'docs/Pharos/research-briefs/2026-10-12-ai-economics-sadc.md · docs/client-facing/USE-CASE-CATALOG.md · docs/marketing/competitive-landscape.md · content/drafts/faq.md · results/pestel-lightspeed-2026.md · src/data/insights.ts · docs/venture-studio/12-T3-call-scripts.md · docs/Pharos/articles/h-a-o-m-t-g-v-seven-layers.md · docs/Pharos/roadmap.md · docs/Pharos/case-study-pipeline.md',
+      'docs/pharos/research-briefs/2026-10-12-ai-economics-sadc.md · docs/client-facing/USE-CASE-CATALOG.md · docs/marketing/competitive-landscape.md · content/drafts/faq.md · results/pestel-lightspeed-2026.md · src/data/insights.ts · docs/venture-studio/12-T3-call-scripts.md · docs/pharos/articles/h-a-o-m-t-g-v-seven-layers.md · docs/pharos/roadmap.md · docs/pharos/case-study-pipeline.md',
     correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
@@ -282,7 +282,7 @@ export const insightArticles: InsightArticle[] = [
         'A permission system that gates everything drowns humans. One that gates nothing is not a company. The tier table lives in code; a timeout never means yes. CEO sign-off is the final gate for irreversible actions.',
     },
     source:
-      'src/ai_company/orchestrator/tier_rules.py · src/ai_company/executor/hitl_gate.py · src/ai_company/orchestrator/approval.py · docs/Pharos/pillars/02-5-tier-human-in-the-loop.md · docs/APPROVAL-UX-SPEC.md',
+      'src/ai_company/orchestrator/tier_rules.py · src/ai_company/executor/hitl_gate.py · src/ai_company/orchestrator/approval.py · docs/pharos/pillars/02-5-tier-human-in-the-loop.md · docs/APPROVAL-UX-SPEC.md',
     correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
@@ -377,7 +377,7 @@ export const insightArticles: InsightArticle[] = [
         '91 agents (90 AI + 1 human CEO) across 20 departments. What the registry, message bus, and five-tier approval gate actually do. Human CEO as the final accountable authority.',
     },
     source:
-      'company-registry.yaml · src/ai_company/orchestrator/tier_rules.py · src/ai_company/orchestrator/approval.py · src/ai_company/orchestrator/message_bus.py · docs/Pharos/pillars/01-built-a-90-agent-company.md · docs/APPROVAL-UX-SPEC.md',
+      'company-registry.yaml · src/ai_company/orchestrator/tier_rules.py · src/ai_company/orchestrator/approval.py · src/ai_company/orchestrator/message_bus.py · docs/pharos/pillars/01-built-a-90-agent-company.md · docs/APPROVAL-UX-SPEC.md',
     correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
@@ -473,7 +473,7 @@ export const insightArticles: InsightArticle[] = [
         'Low-bandwidth is the design brief, not a footnote. How offline-first routing, a zero-cloud boundary, and local models answer the four reservations: bandwidth, data protection, technology debt, and AI skepticism.',
     },
     source:
-      'docs/RESERVATIONS-STRATEGY.md · docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/Pharos/case-study-pipeline.md · src/ai_company/llm/providers/ · src/ai_company/model_router.py · research/site-claims-ledger.md',
+      'docs/RESERVATIONS-STRATEGY.md · docs/pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/pharos/case-study-pipeline.md · src/ai_company/llm/providers/ · src/ai_company/model_router.py · research/site-claims-ledger.md',
     blocks: [
       {
         kind: 'p',
@@ -575,7 +575,7 @@ export const insightArticles: InsightArticle[] = [
         'Every public claim gets a class and a source, and occasionally gets cut. What the ledger killed, and what buyers should demand. Honesty badges reflect evidence tiers.',
     },
     source:
-      'research/site-claims-ledger.md · research/site-claims-audit.md · research/site-claims-index.yaml · src/data/registries/claims-registry.json · src/data/governance.ts · src/data/sectors.ts · src/data/insights.ts · docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/Pharos/manifesto-draft.md',
+      'research/site-claims-ledger.md · research/site-claims-audit.md · research/site-claims-index.yaml · src/data/registries/claims-registry.json · src/data/governance.ts · src/data/sectors.ts · src/data/insights.ts · docs/pharos/pillars/03-agentic-ai-resource-constrained-africa.md · docs/pharos/manifesto-draft.md',
     blocks: [
       {
         kind: 'p',
@@ -679,7 +679,7 @@ export const insightArticles: InsightArticle[] = [
         'Southern Africa is writing its AI rules in public. Why accountability-first architecture will set the terms for everyone else. SADC Agentic AI Governance Framework: four principles for member-state adoption.',
     },
     source:
-      'docs/Pharos/policy-drafts/sadc-agentic-ai-governance-framework.md · pillars/03-agentic-ai-resource-constrained-africa.md · research/site-claims-ledger.md',
+      'docs/pharos/policy-drafts/sadc-agentic-ai-governance-framework.md · pillars/03-agentic-ai-resource-constrained-africa.md · research/site-claims-ledger.md',
     blocks: [
       {
         kind: 'p',
@@ -751,7 +751,7 @@ export const insightArticles: InsightArticle[] = [
         'Bandwidth, data protection, technology debt and AI skepticism are real. The engineering answers are already concrete. Human CEO perspective on government deployments.',
     },
     source:
-      'docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · pillars/01-built-a-90-agent-company.md · company-registry.yaml (91 agents / 20 departments)',
+      'docs/pharos/pillars/03-agentic-ai-resource-constrained-africa.md · pillars/01-built-a-90-agent-company.md · company-registry.yaml (91 agents / 20 departments)',
     correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
@@ -815,7 +815,7 @@ export const insightArticles: InsightArticle[] = [
         'Most organisations adopt AI the way they adopted email: they buy tools, hand them to people, and hope for a transformation. The test that separates tool use from an operating model. Human CEO on tool use vs operating model.',
     },
     source:
-      'docs/Pharos/linkedin-series/post-01 (draft-v1, feed-v1) · pillars/01-built-a-90-agent-company.md · docs/client-facing/USE-CASE-CATALOG.md',
+      'docs/pharos/linkedin-series/post-01 (draft-v1, feed-v1) · pillars/01-built-a-90-agent-company.md · docs/client-facing/USE-CASE-CATALOG.md',
     correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {

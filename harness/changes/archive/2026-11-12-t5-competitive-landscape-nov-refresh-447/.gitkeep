@@ -1,0 +1,6 @@
+# Keeps harness/changes/active/ present in git.
+#
+# lint-ecl.ps1 requires the directory to exist so an active ECL change can be
+# parked or archived into it. Git does not track empty directories, so this
+# placeholder is the only thing keeping the path alive between changes.
+# Do not delete.

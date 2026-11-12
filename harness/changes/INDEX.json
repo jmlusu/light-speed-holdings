@@ -2102,5 +2102,33 @@
         "phase":  "validate",
         "spec_review":  "approved",
         "session_id":  "4ba27b38-e001-4583-a268-99c12d32653a"
+    },
+    {
+        "id":  "2026-11-12-t5-competitive-landscape-nov-refresh-447",
+        "title":  "T5 competitive landscape Nov refresh (#447)",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        ""
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     ""
+                 ],
+        "decisions":  [
+                          "- Baseline v3 header references §8 and the v2 date, so a reader arriving after the refresh can see what moved and when.",
+                          "- Wedge-table verdicts stay \"NO flips\": the November moves are real but do not close the local category gap, so the \"empty locally\" claim is retained on evidence rather than dropped for narrative convenience.",
+                          "- The October §8 gap is disclosed in the delta section instead of being reconstructed; reconstructing it would have meant inventing history.",
+                          "- Gap 5 (the stale \"no competitive landscape document exists\" claim in `social-media-positioning-status.md`) stays out of scope and is deferred, not silently dropped."
+                      ],
+        "validation_status":  "pass",
+        "slug":  "t5-competitive-landscape-nov-refresh-447",
+        "path":  "harness/changes/archive/2026-11-12-t5-competitive-landscape-nov-refresh-447",
+        "updated_at":  "2026-11-12",
+        "phase":  "validate",
+        "spec_review":  "approved",
+        "session_id":  "614ef677-9074-42ba-8904-3ad377641de6"
     }
 ]

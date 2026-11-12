@@ -8,7 +8,7 @@ import { PathwayCard } from '../site/PathwayCard';
 import { ArticleCard } from '../site/ArticleCard';
 import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
 import { VisitorPathsSection } from '../components/home/VisitorPathsSection';
-import homeCopy from '../data/homeCopy';
+import homeCopy, { VALUES } from '../data/homeCopy';
 
 interface HomePageProps {
   theme: 'light' | 'dark';
@@ -30,7 +30,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         {/* Brand hero image with dark overlay */}
         <img
           src="/brand/digital/Homepage_Hero_High_fidelity.jpeg"
-          alt=""
+          alt="Lilongwe at dawn with network visualization overlay - cinematic view of Malawi's capital at sunrise with digital grid overlay representing connected AI agents"
           className="absolute inset-0 object-cover w-full h-full transition-opacity duration-500 ease-out"
         />
         <div
@@ -57,7 +57,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
                 {/* Crimson pill CTA */}
                 <button
                   onClick={() => onRequestBriefing?.('Start a Conversation')}
-                  className="rounded-full px-6 py-3 text-xs font-bold tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-colors hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ls-red focus-visible:ring-offset-2"
+                  className="rounded-full px-6 py-3 text-xs font-bold tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-colors hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ls-cyan focus-visible:ring-offset-2"
                   aria-label="Start a Conversation"
                 >
                   Start a Conversation
@@ -65,7 +65,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
                 {/* Outline play CTA */}
                 <button
                   onClick={() => onRequestBriefing?.('Request an AI Readiness Assessment')}
-                  className="rounded-full px-6 py-3 text-xs font-bold tracking-widest uppercase border border-ls-red text-ls-red shadow-lg shadow-ls-red/20 transition-colors hover:bg-ls-red/10 hover:scale-[1.01] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ls-red focus-visible:ring-offset-2"
+                  className="rounded-full px-6 py-3 text-xs font-bold tracking-widest uppercase border border-ls-red text-ls-red shadow-lg shadow-ls-red/20 transition-colors hover:bg-ls-red/10 hover:scale-[1.01] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ls-cyan focus-visible:ring-offset-2"
                   aria-label="Request an AI Readiness Assessment"
                 >
                   Request an AI Readiness Assessment
@@ -95,6 +95,74 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         onRequestBriefing={onRequestBriefing}
         ctaLevel="primary"
       />
+
+      {/* 1b. Introductory value pillars — four pillars establishing the value framework */}
+      <section
+        className={`py-24 sm:py-32 md:py-36 bg-ls-white dark:bg-ls-navy`}
+        aria-label="Value pillars"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight font-display text-ls-navy">
+              Our Value Framework
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {VALUES.map((val, idx) => (
+              <div
+                key={val.title}
+                className="p-4 rounded-3xl border hover:shadow-xl transition-shadow text-center"
+              >
+                <span className="font-body text-[10px] font-bold tracking-widest text-ls-red uppercase mb-2">{val.title}</span>
+                <p className="text-sm sm:text-base leading-relaxed text-ls-grey-dark/60">
+                  {val.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 1c. Five-tier Human Approval Matrix — preserved from AI Studio prototype */}
+      <section
+        className={`py-24 sm:py-32 md:py-36 bg-ls-mist-subtle dark:bg-ls-navy/50`}
+        aria-label="Five-tier human approval matrix"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight font-display text-ls-navy">
+              Five-Tier Human Approval Matrix
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
+              <span className="text-4xl font-black text-ls-cyan">1</span>
+              <h3 className="mt-2 text-sm font-bold text-ls-navy">Auto</h3>
+              <p className="text-xs text-ls-grey-dark/60">Routine monitoring and alerts</p>
+            </div>
+            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
+              <span className="text-4xl font-black text-ls-cyan">2</span>
+              <h3 className="mt-2 text-sm font-bold text-ls-navy">Department Lead</h3>
+              <p className="text-xs text-ls-grey-dark/60">Procurement triggers</p>
+            </div>
+            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
+              <span className="text-4xl font-black text-ls-cyan">3</span>
+              <h3 className="mt-2 text-sm font-bold text-ls-navy">Executive</h3>
+              <p className="text-xs text-ls-grey-dark/60">Final report sign-off</p>
+            </div>
+            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
+              <span className="text-4xl font-black text-ls-cyan">4</span>
+              <h3 className="mt-2 text-sm font-bold text-ls-navy">Board</h3>
+              <p className="text-xs text-ls-grey-dark/60">Governance oversight</p>
+            </div>
+            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
+              <span className="text-4xl font-black text-ls-cyan">5</span>
+              <h3 className="mt-2 text-sm font-bold text-ls-navy">Expiry sweep</h3>
+              <p className="text-xs text-ls-grey-dark/60">Pending approvals review</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* 2. "How would you like to engage" with 4 PathwayCards */}
       <section
@@ -136,7 +204,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           <div className="mt-8 text-center">
             <Link
               to="/ask"
-              className="inline-flex items-center gap-1.5 font-body text-xs font-bold tracking-widest uppercase text-ls-red transition-colors hover:text-ls-red/80"
+              className="inline-flex items-center gap-1.5 font-body text-xs font-bold tracking-widest uppercase text-ls-navy transition-colors hover:text-ls-navy/80"
             >
               Not sure which path fits? Ask LightSpeed
               <svg

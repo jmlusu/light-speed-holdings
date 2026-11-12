@@ -1,6 +1,6 @@
 /* Pharos department content.
  *
- * Source of truth: docs/Pharos/README.md, docs/Pharos/positioning.md and
+ * Source of truth: docs/pharos/README.md, docs/pharos/positioning.md and
  * data/claims/registry.ts (CLM-020, "8 formats ... across 19 topics").
  * Every string here traces to one of those documents - no invented claims,
  * no invented metrics. Update the source documents first, then this file.
@@ -54,7 +54,7 @@ export const pharosFormats: string[] = [
   'AFRICA_WATCH',
 ];
 
-/** Operating principles, verbatim from docs/Pharos/README.md. */
+/** Operating principles, verbatim from docs/pharos/README.md. */
 export const pharosPrinciples: string[] = [
   'Lead with working systems and measured results before policy language.',
   'Localise hard: power, connectivity, existing ministry data, procurement cycles.',
