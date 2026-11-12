@@ -10,6 +10,14 @@
 - Updated `.pre-commit-config.yaml` to remove archify exclude patterns
 - Updated `AUDIT_REPORT.md` to remove archify drift detection entry
 - Updated `docs/ARCHIFY-USAGE.md` to document capability removal
+- **Follow-up (Nov 2026): completed the Python surface removal** — deleted
+  `src/ai_company/cli/archify.py`, the `src/ai_company/archify/` package
+  (converter/renderer), `tests/unit/test_archify.py`, `tests/cli/test_cli_archify.py`,
+  and the `archify` lazy sub-app registration in `cli/main.py`. The renderer
+  depended on the already-deleted skill checkout, so `validate`/`deliver`/`compare`
+  could never run; stale references cleaned in `docs/ARCHITECTURE.md`,
+  `docs/assets/`, `docs/website-imagery-spec.md`, `specs/open-design-integration.md`
+  and `ai_development_constitution/`.
 
 **2. `rayden-code`**
 - Removed from `docs/archive/2026-08-11-pre-restructure/SKILL_INTEGRATION_ANALYSIS.md` skills table

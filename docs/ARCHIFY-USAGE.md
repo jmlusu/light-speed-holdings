@@ -1,12 +1,13 @@
 # Archify Diagram Generation — REMOVED
 
-This capability has been removed as an obsolete LightSpeed skill. The `archify` skill and its CLI surface `ai-company archify` are no longer operational.
+This capability has been removed as an obsolete LightSpeed skill. The `archify` skill, its CLI surface `ai-company archify`, and the Python package `ai_company.archify` are no longer operational.
 
 **Removal rationale:**
 - `archify` was an external diagram generation skill (source: tt-a1i/archify) that produced SVG/HTML architecture, workflow, sequence, and dataflow diagrams from JSON specifications.
-- The skill directory `.opencode/skills/archify/` has been removed.
-- The CI `archify-check` step has been removed from `.github/workflows/ci.yml`.
-- No active dependencies on archify remain in the production workflow.
+- The skill directory `.opencode/skills/archify/` has been removed (Nov 2026).
+- The CI `archify-check` step has been removed from `.github/workflows/ci.yml` (Nov 2026).
+- The `ai-company archify` CLI sub-app (`src/ai_company/cli/archify.py`), the `ai_company.archify` package (`converter.py`, `renderer.py`), and their tests have been removed (Nov 2026). The renderer depended on the deleted skill checkout, so `validate`/`deliver`/`compare` could never run after the skill removal; `generate` produced JSON IR that nothing could render.
+- No active dependencies on archify remain in the codebase.
 
 **Current diagram generation approach:**
 - Use `ls-diagramming` skill for Mermaid/SVG diagram generation with Kroki fallback.
