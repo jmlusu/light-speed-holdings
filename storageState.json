@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:1440",
+      "localStorage": [
+        {
+          "name": "lightspeed_theme",
+          "value": "dark"
+        }
+      ]
+    }
+  ]
+}
