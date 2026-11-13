@@ -38,8 +38,8 @@ export const HaomtgvInfographic: React.FC<HaomtgvInfographicProps> = ({ theme })
 
         <Reveal>
           <figure
-            className={`mx-auto max-w-4xl rounded-3xl border p-3 sm:p-4 ring-1 ring-ls-cyan/25 shadow-xl ${
-              isLight ? 'bg-ls-white/95 border-ls-grey-dark' : 'bg-ls-navy/80 border-ls-white/15'
+            className={`mx-auto max-w-4xl rounded-3xl p-3 sm:p-4 shadow-xl ${
+              isLight ? 'bg-ls-white/95' : 'bg-ls-navy/80'
             }`}
           >
             <img

@@ -13,10 +13,10 @@ export interface HonestyLabel {
 }
 
 export const TONE_STYLES: Record<HonestyTone, string> = {
-  proven: 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan',
-  pilot: 'border-ls-red/40 bg-ls-red/10 text-ls-red',
-  fieldable: 'border-ls-grey-light-text/40 bg-ls-grey-light-text/10 text-ls-grey-light-text',
-  development: 'border-ls-grey-dark/40 bg-ls-grey-dark/10 text-ls-grey-dark',
+  proven: 'bg-ls-cyan/10 text-ls-cyan',
+  pilot: 'bg-ls-red/10 text-ls-red',
+  fieldable: 'bg-ls-grey-light-text/10 text-ls-grey-light-text',
+  development: 'bg-ls-grey-dark/10 text-ls-grey-dark',
 };
 
 /* Canonical badge-label → tone mapper for string honestyBadge fields
@@ -65,10 +65,25 @@ export const insightCategories: string[] = [
   'AI implementation',
 ];
 
-export const insightTeasers: { title: string; topic: string; to: string }[] = [
-  { title: 'Cutting AI Costs With Open Source: Why the Architecture Matters More Than the Arithmetic', topic: 'COST ARCHITECTURE', to: '/insights/open-source-cost-architecture' },
-  { title: 'Pricing Agentic AI in a Dual Economy: Kwacha Ladders, Dollar Retainers, and Paying for What You Run', topic: 'AI PRICING', to: '/insights/dual-economy-ai-pricing' },
-  { title: 'The Five-Tier Approval Matrix: How Friction Scales With Risk in a 90-Agent Company', topic: 'AI GOVERNANCE', to: '/insights/five-tier-approval-matrix' },
+export const insightTeasers: { title: string; topic: string; to: string; image?: string }[] = [
+  {
+    title: 'Cutting AI Costs With Open Source: Why the Architecture Matters More Than the Arithmetic',
+    topic: 'COST ARCHITECTURE',
+    to: '/insights/open-source-cost-architecture',
+    image: '/src/assets/images/pharos_ai_orchestration_1793514971486.jpg'
+  },
+  {
+    title: 'Pricing Agentic AI in a Dual Economy: Kwacha Ladders, Dollar Retainers, and Paying for What You Run',
+    topic: 'AI PRICING',
+    to: '/insights/dual-economy-ai-pricing',
+    image: '/src/assets/images/pharos_africa_infrastructure_1793514971621.jpg'
+  },
+  {
+    title: 'The Five-Tier Approval Matrix: How Friction Scales With Risk in a 90-Agent Company',
+    topic: 'AI GOVERNANCE',
+    to: '/insights/five-tier-approval-matrix',
+    image: '/src/assets/images/pharos_ai_governance_1793514972204.jpg'
+  },
   { title: 'Inside a 90-Agent Company: What the Registry, the Queue, and the Approval Gate Actually Do', topic: 'AI COMPANY BUILDING', to: '/insights/inside-a-90-agent-company' },
   { title: 'Offline-First AI for Africa: Designing for Bandwidth, Sovereignty, and Mobile-Money Reality', topic: 'AI IN AFRICA', to: '/insights/offline-first-ai-for-africa' },
   { title: 'The Evidence Ladder: How Every Public Claim Gets a Class, and What Buyers Should Demand', topic: 'EVIDENCE & PROOF', to: '/insights/evidence-ladder-honest-claims' },
@@ -81,6 +96,7 @@ export const solutions = [
   {
     slug: 'ai-company-builder',
     title: 'AI Company Builder',
+    image: '/src/assets/images/solution_company_builder_1793514972767.jpg',
 description: 'Build governed AI companies with 89 AI agents and 1 Human CEO (90 operating roles). A 5-tier approval matrix, append-only SHA-256 sealed audit trails, and 4 governance gates ensure every action is accountable.',
      eyebrow: 'AI OPERATING MODEL',
      proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
@@ -114,6 +130,7 @@ description: 'Build governed AI companies with 89 AI agents and 1 Human CEO (90 
   {
     slug: 'digital-presence',
     title: 'Digital Presence',
+    image: '/src/assets/images/solution_workflow_collapsing_1793514973725.jpg',
     description: 'Mobile-first websites, e-commerce stores, and brand identities built for African operating realities, with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.',
     eyebrow: 'MOBILE-FIRST DESIGN',
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
@@ -146,6 +163,7 @@ description: 'Build governed AI companies with 89 AI agents and 1 Human CEO (90 
   {
     slug: 'business-automation',
     title: 'Business Process Automation',
+    image: '/src/assets/images/solution_agentic_automation_1793514973368.jpg',
     description: 'WhatsApp-native assistants, automated document pipelines, and intelligent form workflows that connect your team to the tools they need without app downloads.',
     eyebrow: 'WORKFLOW AUTOMATION',
     proof: { label: 'In pilot', tone: 'pilot' as const },
@@ -179,6 +197,7 @@ description: 'Build governed AI companies with 89 AI agents and 1 Human CEO (90 
   {
     slug: 'enterprise-deployment',
     title: 'Enterprise Deployment',
+    image: '/src/assets/images/solution_market_intelligence_1793514973546.jpg',
     description: 'Full-scale AI agent deployment across departments with RBAC, 5-tier approval governance, and offline-first sovereignty on local infrastructure.',
     eyebrow: 'SCALED DEPLOYMENT',
     proof: { label: 'In pilot', tone: 'pilot' as const },
@@ -243,6 +262,7 @@ description: 'Build governed AI companies with 89 AI agents and 1 Human CEO (90 
 
 export const GOVERNANCE_SOLUTION = {
   title: 'The Governance Solution',
+  image: '/src/assets/images/pharos_ai_governance_1793514972204.jpg',
   description: 'LightSpeed Holdings implements a 5-tier human-in-the-loop approval system where no client-facing deliverable ships without human sign-off. The platform enforces 4 mandatory governance gates (Contract, DPA, Compliance, Security) before any engagement begins. Every action is recorded on an append-only audit trail with SHA-256 seals.',
   lead: 'The human sign-off layer that makes agent deployment safe',
   proof: { label: 'Proven in-house', tone: 'proven' as const },

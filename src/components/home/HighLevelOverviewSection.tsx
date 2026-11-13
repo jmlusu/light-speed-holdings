@@ -18,7 +18,7 @@ interface HighLevelOverviewSectionProps {
  - Cyan: #00BFFF (links on dark, taglines on navy)
  - Arial type scale: displayXL 36pt → caption 12pt
  - 4px spacing grid base unit
- - 60/20/20 color rule (navy dominant, red/cyan accents)
+ - 80/10/10 color rule (navy dominant, red/cyan accents)
  - Tagline "ASPIRE. ACT. ACHIEVE." on first mention with ™
  */
 export const HighLevelOverviewSection: React.FC<HighLevelOverviewSectionProps> = ({ theme }) => {
@@ -66,17 +66,16 @@ export const HighLevelOverviewSection: React.FC<HighLevelOverviewSectionProps> =
           {OVERVIEW_ITEMS.map((item, idx) => (
             <Reveal key={item.title} delay={idx * 0.04}>
               <article
-                className={`h-full rounded-3xl p-5 border flex flex-col gap-3 ${
+                className={`h-full rounded-3xl p-5 flex flex-col gap-3 ${
                   isLight
-                    ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md'
-                    : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'}
-                ${item.title === 'Thesis in Practice' ? 'ring-1 ring-ls-red/30' : ''}`}
+                    ? 'bg-ls-white/95 text-ls-navy shadow-md'
+                    : 'bg-ls-navy/80 text-ls-white shadow-xl'}`}
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-3">
                     <span
                       aria-hidden="true"
-                      className="flex w-10 h-10 items-center justify-center rounded-full border border-ls-red/40 bg-ls-red/10 font-display font-black text-ls-red text-lg"
+                      className="flex w-10 h-10 items-center justify-center rounded-full bg-ls-red/10 font-display font-black text-ls-red text-lg"
                     >
                       {idx + 1}
                     </span>
@@ -92,7 +91,7 @@ export const HighLevelOverviewSection: React.FC<HighLevelOverviewSectionProps> =
         </div>
 
         {/* Transition to HAOMTGV */}
-        <div className="pt-8 border-t" style={{ borderColor: isLight ? '#E5E7EB' : '#1F2937' }}>
+        <div className="pt-8">
 <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               The HAOMTGV operating philosophy (Chapter 03) translates this overview into
               a 7-layer control model: Human → Agents → Orchestration → Memory → Tools →

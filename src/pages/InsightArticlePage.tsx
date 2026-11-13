@@ -81,12 +81,12 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
   if (!article) return <Navigate to="/insights" replace />;
 
   const isLight = theme === 'light';
-  const bodyText = isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text';
-  const headingText = isLight ? 'text-ls-navy' : 'text-ls-white';
-  const cardShell = `rounded-3xl border p-6 h-full flex flex-col gap-2 transition-all scroll-mt-28 ${
+  const bodyText = isLight ? 'text-slate-800' : 'text-slate-100';
+  const headingText = isLight ? 'text-ls-navy' : 'text-white';
+  const cardShell = `rounded-3xl p-6 h-full flex flex-col gap-2 transition-all scroll-mt-28 ${
     isLight
-      ? 'border-ls-grey-dark/30 bg-ls-white hover:border-ls-red/50'
-      : 'border-ls-white/15 bg-ls-navy/80 hover:border-ls-red/50'
+      ? 'bg-ls-white shadow-sm hover:shadow-md'
+      : 'bg-ls-navy/80 shadow-xl hover:shadow-2xl'
   }`;
   const related = solutions.filter((s) => article.relatedSolutions.includes(s.slug));
   const relatedSectors = sectors.filter((s) => article.relatedSectors.includes(s.id));
@@ -97,20 +97,20 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         return (
           <h2
             key={i}
-            className={`pt-8 text-xl sm:text-2xl font-black tracking-tight font-display ${headingText}`}
+            className={`pt-6 pb-1 text-xl sm:text-2xl font-black tracking-tight font-display ${headingText}`}
           >
             {block.text}
           </h2>
         );
       case 'p':
         return (
-          <p key={i} className={`text-sm sm:text-base leading-relaxed ${bodyText}`}>
+          <p key={i} className={`text-base sm:text-lg leading-relaxed ${bodyText}`}>
             {block.text}
           </p>
         );
       case 'ul':
         return (
-          <ul key={i} className={`list-disc pl-5 space-y-2.5 text-sm sm:text-base leading-relaxed ${bodyText}`}>
+          <ul key={i} className={`list-disc pl-5 space-y-3 text-base sm:text-lg leading-relaxed ${bodyText}`}>
             {block.items.map((item, j) => (
               <li key={j}>{item}</li>
             ))}
@@ -120,13 +120,17 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         return (
           <blockquote
             key={i}
-            className={`border-l-4 border-ls-red pl-5 py-1 italic text-sm sm:text-base leading-relaxed ${
-              isLight ? 'text-ls-navy' : 'text-ls-white'
+            className={`my-6 px-6 py-5 rounded-2xl italic text-base sm:text-lg leading-relaxed border-l-4 border-ls-red ${
+              isLight
+                ? 'bg-red-50/70 text-ls-navy'
+                : 'bg-red-950/30 text-white'
             }`}
           >
             <p>{block.text}</p>
             {block.cite && (
-              <cite className={`mt-2 block not-italic text-xs font-body font-bold tracking-wider ${bodyText}`}>
+              <cite className={`mt-3 block not-italic text-xs font-bold tracking-wider uppercase ${
+                isLight ? 'text-slate-600' : 'text-slate-300'
+              }`}>
                 – {block.cite}
               </cite>
             )}
@@ -137,9 +141,51 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
     }
   };
 
+  const [readingProgress, setReadingProgress] = React.useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const currentProgress = (window.scrollY / totalHeight) * 100;
+        setReadingProgress(Math.min(100, Math.max(0, currentProgress)));
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Contextual article hero image mapping based on slug
+  let articleHeroImage = '/src/assets/images/pharos_editorial_hero_1793817662034.jpg';
+  if (article.slug === 'open-source-cost-architecture' || article.slug === 'dual-economy-ai-pricing') {
+    articleHeroImage = '/src/assets/images/pharos_article_thumb_cost_1793817753722.jpg';
+  } else if (article.slug === 'five-tier-approval-matrix' || article.slug === 'evidence-ladder-honest-claims') {
+    articleHeroImage = '/src/assets/images/pharos_article_thumb_gov_1793817768084.jpg';
+  } else if (article.slug === 'sadc-ai-opportunity' || article.slug === 'agentic-ai-african-governments') {
+    articleHeroImage = '/src/assets/images/pharos_article_thumb_sadc_1793817783127.jpg';
+  } else if (article.slug === 'inside-a-90-agent-company') {
+    articleHeroImage = '/src/assets/images/agent_network_topology_1793816821318.jpg';
+  }
+
   return (
     <>
+      {/* Restrained Reading Progress Indicator */}
+      <div className="fixed top-0 left-0 right-0 h-1 z-50 bg-transparent pointer-events-none">
+        <div
+          className="h-full bg-ls-cyan transition-all duration-150 ease-out"
+          style={{ width: `${readingProgress}%` }}
+          aria-hidden="true"
+        />
+      </div>
+
       <PageIntro theme={theme} eyebrow={`INSIGHTS // ${article.topic}`} title={article.title} lead={article.dek}>
+        <div className="flex flex-wrap gap-2 mt-4">
+          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider ${
+            isLight ? 'bg-cyan-500/10 text-cyan-600 border border-cyan-500/20' : 'bg-cyan-950/50 text-cyan-400 border border-cyan-800'
+          }`}>
+            {article.topic}
+          </span>
+        </div>
         <div
           className={`mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 font-body text-[11px] font-bold tracking-widest uppercase ${
             isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
@@ -152,10 +198,10 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
           <span className="text-ls-red">{article.category}</span>
         </div>
         <div
-          className={`mt-4 max-w-2xl rounded-2xl border px-4 py-3 font-body text-[11px] leading-relaxed ${
+          className={`mt-4 max-w-2xl rounded-2xl px-4 py-3 font-body text-[11px] leading-relaxed ${
             isLight
-              ? 'border-ls-grey-dark/30 bg-ls-white text-ls-grey-dark'
-              : 'border-ls-white/15 bg-ls-navy/80 text-ls-grey-light-text'
+              ? 'bg-ls-white text-ls-grey-dark shadow-sm'
+              : 'bg-ls-navy/80 text-ls-grey-light-text shadow-md'
           }`}
         >
           <span className="font-bold tracking-widest text-ls-red">SOURCES </span>
@@ -163,15 +209,57 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         </div>
       </PageIntro>
 
+      {/* Featured Editorial Article Hero Visual */}
+      <section className="px-6 lg:px-12 max-w-4xl mx-auto w-full pt-6">
+        <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] rounded-3xl overflow-hidden border border-white/10 shadow-xl bg-slate-950">
+          <img
+            src={articleHeroImage}
+            alt={`${article.title} architectural illustration`}
+            className="w-full h-full object-cover filter saturate-110"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
+            <span className="text-[10px] font-mono font-bold tracking-widest text-cyan-300 uppercase px-3 py-1 rounded-full bg-black/70 backdrop-blur-sm border border-cyan-500/30">
+              Pharos Canon // Grounded Research
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* Operating Model Context Callout */}
+      <section aria-label="Operating Model Context" className="px-6 lg:px-12 max-w-4xl mx-auto w-full pt-8">
+        <div
+          role="region"
+          className={`longform-contrast-layer rounded-3xl p-6 sm:p-8 font-body text-xs sm:text-sm leading-relaxed transition-all ${
+            isLight
+              ? 'bg-cyan-50/85 border border-cyan-200/80 text-ls-navy'
+              : 'bg-cyan-950/40 border border-cyan-500/25 text-slate-100'
+          }`}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
+            <span className="font-bold tracking-widest text-xs uppercase font-mono text-cyan-700 dark:text-cyan-300">
+              OPERATING MODEL CONTEXT // ARCHITECTURAL DISTINCTION
+            </span>
+          </div>
+          <p className="font-bold text-base sm:text-lg mb-2 font-display text-ls-navy dark:text-white">
+            LightSpeed Internal Reference Fleet vs. Client Implementations
+          </p>
+          <p className={isLight ? 'text-slate-700' : 'text-slate-200'}>
+            The <strong>89 AI agents + 1 Human CEO</strong> operating model documented across Pharos research is LightSpeed Holdings&apos; internal reference architecture and stress-tested production benchmark. For enterprise, institutional, and SME client engagements, LightSpeed designs and deploys <strong>configurable AI agent teams scaling from 1 to N+ agents</strong> according to specific business requirements, complexity, and workload. Clients are never required to adopt an 89+1 or fixed-size workforce; sovereign human decision authority and multi-tier approval governance remain strictly enforced regardless of team scale.
+          </p>
+        </div>
+      </section>
+
       {/* Dated correction note (honesty policy: body text stays unchanged) */}
       {article.correction && (
-        <section aria-label="Correction" className="px-4 sm:px-8 max-w-3xl mx-auto w-full pt-6">
+        <section aria-label="Correction" className="px-6 lg:px-12 max-w-4xl mx-auto w-full pt-6">
           <div
             role="note"
-            className={`rounded-2xl border px-4 py-3 font-body text-[11px] leading-relaxed ${
+            className={`longform-contrast-layer rounded-2xl px-6 py-4 font-body text-xs sm:text-sm leading-relaxed ${
               isLight
-                ? 'border-ls-red/40 bg-ls-white text-ls-grey-dark'
-                : 'border-ls-red/50 bg-ls-navy/80 text-ls-grey-light-text'
+                ? 'bg-red-50/80 text-slate-800 border-red-200'
+                : 'bg-red-950/40 text-slate-100 border-red-500/30'
             }`}
           >
             <span className="font-bold tracking-widest text-ls-red">CORRECTION </span>
@@ -180,13 +268,15 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         </section>
       )}
 
-      {/* Article body */}
-      <article className="px-4 sm:px-8 max-w-3xl mx-auto w-full pt-6 pb-4 space-y-5">
-        {article.blocks.map(renderBlock)}
-      </article>
+      {/* Article body with subtle high-contrast background layer */}
+      <section className="px-6 lg:px-12 max-w-4xl mx-auto w-full pt-6 pb-6">
+        <article className="longform-contrast-layer rounded-3xl p-6 sm:p-10 lg:p-12 space-y-6">
+          {article.blocks.map(renderBlock)}
+        </article>
+      </section>
 
       {/* §16 related concepts: solutions + sectors */}
-      <section aria-label="Related thinking" className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-2">
+      <section aria-label="Related thinking" className="px-6 lg:px-12 max-w-7xl mx-auto w-full pt-12 pb-2">
         <div className="space-y-10">
           <div>
             <span className="text-xs font-body font-bold tracking-widest text-ls-red">
@@ -228,13 +318,13 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
       </section>
 
       {/* §16 related-thinking CTAs: primary "Explore Related Thinking" + secondary actions */}
-      <section aria-label="Related thinking" className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-4">
+      <section aria-label="Related thinking" className="px-6 lg:px-12 max-w-7xl mx-auto w-full pt-12 pb-4">
         <Reveal>
           <div
-            className={`rounded-3xl border p-8 sm:p-10 text-center space-y-5 ${
+            className={`rounded-3xl p-8 sm:p-10 text-center space-y-5 ${
               isLight
-                ? 'border-ls-grey-dark/30 bg-ls-white text-ls-navy'
-                : 'border-ls-white/15 bg-ls-navy/80 text-ls-white'
+                ? 'bg-ls-white text-ls-navy shadow-sm'
+                : 'bg-ls-navy/80 text-ls-white shadow-xl'
             }`}
           >
             <span className="text-xs font-body font-bold tracking-widest text-ls-red uppercase">
@@ -246,40 +336,40 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
               <Link
                 to="/insights"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]"
+                className="btn-milled btn-milled-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all hover:bg-ls-red/90"
               >
                 Explore Related Thinking
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
               </Link>
               <Link
-                to="/ask"
-                className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all hover:bg-ls-red/10 ${
+                to="/contact"
+                className={`btn-milled btn-milled-secondary inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase transition-all ${
                   isLight
-                    ? 'border-ls-red text-ls-navy hover:text-ls-red'
-                    : 'border-ls-red/60 text-ls-white hover:text-ls-red'
+                    ? 'bg-ls-red/10 text-ls-navy hover:bg-ls-red/20 hover:text-ls-red'
+                    : 'bg-ls-red/20 text-ls-white hover:bg-ls-red/30 hover:text-ls-red'
                 }`}
               >
-                Ask LightSpeed
+                Contact Us
               </Link>
               <Link
                 to="/solutions"
-                className={`inline-flex items-center px-5 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all hover:bg-ls-red/10 ${
+                className={`btn-milled btn-milled-secondary inline-flex items-center px-5 py-3 rounded-full font-bold text-xs tracking-widest uppercase transition-all ${
                   isLight
-                    ? 'border-ls-grey-dark/40 text-ls-navy hover:text-ls-red'
-                    : 'border-ls-white/25 text-ls-white hover:text-ls-red'
+                    ? 'bg-ls-grey-light text-ls-navy hover:text-ls-red hover:bg-ls-grey-light/80'
+                    : 'bg-white/10 text-ls-white hover:text-ls-red hover:bg-white/15'
                 }`}
               >
                 Explore Solutions
               </Link>
               <Link
-                to="/contact"
-                className={`inline-flex items-center px-5 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all hover:bg-ls-red/10 ${
+                to="/haomtgv"
+                className={`btn-milled btn-milled-secondary inline-flex items-center px-5 py-3 rounded-full font-bold text-xs tracking-widest uppercase transition-all ${
                   isLight
-                    ? 'border-ls-grey-dark/40 text-ls-navy hover:text-ls-red'
-                    : 'border-ls-white/25 text-ls-white hover:text-ls-red'
+                    ? 'bg-ls-grey-light text-ls-navy hover:text-ls-red hover:bg-ls-grey-light/80'
+                    : 'bg-white/10 text-ls-white hover:text-ls-red hover:bg-white/15'
                 }`}
               >
-                Contact
+                HAOMTGV Architecture
               </Link>
             </div>
           </div>
@@ -293,7 +383,7 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         links={[
           { to: '/insights', label: 'All Insights' },
           { to: '/solutions', label: 'Solutions' },
-          { to: '/ask', label: 'Ask LightSpeed' },
+          { to: '/contact', label: 'Contact Us' },
         ]}
       />
     </>

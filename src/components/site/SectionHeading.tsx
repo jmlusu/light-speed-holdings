@@ -18,13 +18,13 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({ theme, eyebrow, 
   const Heading = level;
   return (
     <div className={`text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3 ${
-      isLight ? 'text-ls-navy' : 'text-ls-white'
+      isLight ? 'text-ls-navy' : 'text-white'
     }`}>
-      <span className="text-xs font-body font-bold tracking-widest text-ls-red">{eyebrow}</span>
+      <span className="text-xs font-body font-bold tracking-widest text-[#DC3641] uppercase">{eyebrow}</span>
       <Heading className="text-3xl sm:text-5xl font-black tracking-tight font-display">{title}</Heading>
       {lead && (
         <p className={`text-sm sm:text-base leading-relaxed ${
-          isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
+          isLight ? 'text-ls-grey-dark font-medium' : 'text-[#9CA3AF]'
         }`}>
           {lead}
         </p>

@@ -36,7 +36,7 @@ export const SiteLayout: React.FC = () => {
         url: window.location.origin + pathname,
       });
     } else {
-      document.title = `LIGHTSPEED HOLDINGS | ${pathname === '/' ? 'AI-Native Company Builder' : pathname.replace('/', '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`;
+      document.title = `LIGHTSPEED HOLDINGS LIMITED™ | ASPIRE. ACT. ACHIEVE.`;
     }
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -60,32 +60,41 @@ export const SiteLayout: React.FC = () => {
   }, [pathname, hash]);
 
   return (
-    <>
-      <a href="#main-content" className="skip-link">
-        Skip to content
-      </a>
+    <div className="min-h-screen bg-[#F2F2F2] dark:bg-[#070A40] text-ls-navy dark:text-white relative overflow-hidden selection:bg-[#00BFFF] selection:text-[#070A40]">
+      {/* Global Cinematic Atmosphere Backdrop */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
+        {/* Radial spotlight & navy gradient vignettes */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_var(--tw-gradient-stops))] from-[#00BFFF]/10 via-[#070A40]/85 to-[#070A40]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#070A40]/30 via-transparent to-[#070A40]/80" />
+      </div>
 
-      <FloatingNav
-        onRequestBriefing={onRequestBriefing}
-        theme={theme}
-        onToggleTheme={onToggleTheme}
-      />
+      <div className="relative z-10 min-h-screen flex flex-col">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
 
-      <main id="main-content" tabIndex={-1} className="pt-20 focus:outline-none">
-        <Outlet />
-      </main>
+        <FloatingNav
+          onRequestBriefing={onRequestBriefing}
+          theme={theme}
+          onToggleTheme={onToggleTheme}
+        />
 
-      <SiteFooter theme={theme} />
+        <main id="main-content" tabIndex={-1} className="focus:outline-none flex-1">
+          <Outlet />
+        </main>
 
-      <ExecutiveBriefingModal
-        isOpen={isBriefingOpen}
-        onClose={closeBriefing}
-        prefillSummary={briefingSummary}
-        theme={theme}
-      />
+        {pathname !== '/' && <SiteFooter theme={theme} />}
 
-      <BackToTop theme={theme} />
-    </>
+        <ExecutiveBriefingModal
+          isOpen={isBriefingOpen}
+          onClose={closeBriefing}
+          prefillSummary={briefingSummary}
+          theme={theme}
+        />
+
+        <BackToTop theme={theme} />
+      </div>
+    </div>
   );
 };
 

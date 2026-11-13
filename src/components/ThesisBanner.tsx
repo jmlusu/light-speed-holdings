@@ -9,7 +9,7 @@ export const ThesisBanner: React.FC<ThesisBannerProps> = ({ theme }) => {
   const isLight = theme === 'light';
 
   return (
-    <div className={`rounded-3xl border px-6 px-10 py-8 text-center relative overflow-hidden ${isLight ? 'chassis-milled-light' : 'chassis-milled-dark'}`}>
+    <div className={`rounded-3xl px-6 px-10 py-8 text-center relative overflow-hidden ${isLight ? 'chassis-milled-light' : 'chassis-milled-dark'}`}>
 
       <p className="text-[11px] font-body font-bold tracking-[0.35em] text-ls-red uppercase mb-3">
         Our Thesis

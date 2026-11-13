@@ -27,20 +27,20 @@ export const NotFoundPage: React.FC = () => {
           <Stack direction="horizontal" gap={3} justify="center" wrap>
             <Link
               to="/"
-              className={`px-6 py-3.5 rounded-full font-bold text-xs tracking-widest transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
+              className={`btn-milled btn-milled-primary px-6 py-3.5 rounded-full font-bold text-xs tracking-widest transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 isDark
-                  ? 'bg-ls-red hover:bg-ls-red text-ls-white'
-                  : 'bg-ls-navy hover:bg-ls-navy text-ls-white'
+                  ? 'bg-ls-red text-ls-white'
+                  : 'bg-ls-navy text-ls-white'
               }`}
             >
               <span>Back to home</span>
             </Link>
             <Link
               to="/contact"
-              className={`px-6 py-3.5 rounded-full font-bold text-xs tracking-widest border transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
+              className={`btn-milled btn-milled-secondary px-6 py-3.5 rounded-full font-bold text-xs tracking-widest transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 isDark
-                  ? 'bg-ls-navy/80 hover:bg-ls-navy text-ls-grey-light-text hover:text-ls-white border-ls-white/15'
-                  : 'bg-ls-white hover:bg-ls-grey-light text-ls-navy border-ls-grey-dark hover:border-ls-red'
+                  ? 'bg-white/10 hover:bg-white/15 text-ls-grey-light-text hover:text-ls-white'
+                  : 'bg-ls-grey-light hover:bg-ls-grey-light/80 text-ls-navy hover:text-ls-red'
               }`}
             >
               <span>Contact us</span>

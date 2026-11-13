@@ -26,7 +26,7 @@ export const HaomtgvGlyphGallery: React.FC<HaomtgvGlyphGalleryProps> = ({ theme 
           theme={theme}
           eyebrow="THE SEVEN GLYPHS"
           title="H-A-O-M-T-G-V Glyphs"
-          lead="Type K micro-illustrations: a single-color line-art glyph system for each HAOMTGV layer — brand cyan throughout, Governance marked in red."
+          lead="Type K micro-illustrations: a single-color line-art glyph system for each HAOMTGV layer, with brand cyan throughout and Governance marked in red."
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -38,11 +38,11 @@ export const HaomtgvGlyphGallery: React.FC<HaomtgvGlyphGalleryProps> = ({ theme 
             return (
               <Reveal key={asset.id} delay={idx * 0.04}>
                 <article
-                  className={`h-full rounded-3xl p-5 border flex flex-col gap-3 transition-transform duration-300 hover:-translate-y-1 ${
+                  className={`h-full rounded-3xl p-5 flex flex-col gap-3 transition-transform duration-300 hover:-translate-y-1 ${
                     isLight
-                      ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md'
-                      : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
-                  } ${isGovernance ? 'ring-1 ring-ls-red/30' : 'ring-1 ring-ls-cyan/20'}`}
+                      ? 'bg-ls-white/95 text-ls-navy shadow-md'
+                      : 'bg-ls-navy/80 text-ls-white shadow-xl'
+                  }`}
                 >
                   <img
                     src={asset.src.svg}
@@ -55,10 +55,10 @@ export const HaomtgvGlyphGallery: React.FC<HaomtgvGlyphGalleryProps> = ({ theme 
                   <div className="flex items-center gap-3">
                     <span
                       aria-hidden="true"
-                      className={`flex w-10 h-10 shrink-0 items-center justify-center rounded-full border font-display font-black text-lg ${
+                      className={`flex w-10 h-10 shrink-0 items-center justify-center rounded-full font-display font-black text-lg ${
                         isGovernance
-                          ? 'border-ls-red/40 bg-ls-red/10 text-ls-red'
-                          : 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan'
+                          ? 'bg-ls-red/10 text-ls-red'
+                          : 'bg-ls-cyan/10 text-ls-cyan'
                       }`}
                     >
                       {letter}

@@ -37,9 +37,9 @@ export const ClosingCTASection: React.FC<{ theme: 'light' | 'dark' }> = ({ theme
 
             <Link
               to="/what-we-do"
-              className={`px-5 py-3.5 rounded-full font-bold text-xs tracking-widest border transition-all shadow-xs cursor-pointer active:scale-[0.98] ${isLight
-                  ? 'border-ls-red text-ls-red bg-transparent hover:bg-ls-red/10 shadow-xs'
-                  : 'border-ls-cyan text-ls-cyan bg-transparent hover:bg-ls-cyan/10 hover:border-ls-cyan shadow-sm shadow-ls-cyan/20'}
+              className={`px-5 py-3.5 rounded-full font-bold text-xs tracking-widest transition-all shadow-xs cursor-pointer active:scale-[0.98] ${isLight
+                  ? 'text-ls-red bg-transparent hover:bg-ls-red/10 shadow-xs'
+                  : 'text-ls-cyan bg-transparent hover:bg-ls-cyan/10 shadow-sm shadow-ls-cyan/20'}
                 }`}
             >
               <span>How It Works</span>

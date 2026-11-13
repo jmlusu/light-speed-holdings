@@ -4,6 +4,7 @@ import { Brain, Bot, GitBranch, HardDrive, Wrench, ShieldCheck, TrendingUp, type
 import { SectionHeading } from '../site/SectionHeading';
 import { Reveal } from '../Reveal';
 import { HomeSection } from './HomeSection';
+import { HAOMTGVVisualization } from './HAOMTGVVisualization';
 
 interface HAOMTGVSectionProps {
   theme: 'light' | 'dark';
@@ -77,55 +78,58 @@ const PILLARS: Pillar[] = [
 /** Chapter 01 - the H-A-O-M-T-G-V operating philosophy. */
 export const HAOMTGVSection: React.FC<HAOMTGVSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
+
   return (
-    <HomeSection id="haomtgv" label="H-A-O-M-T-G-V operating philosophy" theme={theme}>
-      <SectionHeading
-        theme={theme}
-        eyebrow="OPERATING PHILOSOPHY"
-        title="H-A-O-M-T-G-V"
-        lead="How LightSpeed thinks about AI-native operations: Human authority through Agents, Orchestration, Memory, and Tools, with Governance as an integral control layer and Value as the only score that counts. Not a linear pipeline; a working model."
-      />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {PILLARS.map((pillar, idx) => (
-          <Reveal key={pillar.id} delay={idx * 0.04}>
-            <article
-              className={`h-full rounded-3xl p-5 border flex flex-col gap-3 ${
-                isLight
-                  ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md'
-                  : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
-              } ${pillar.id === 'governance' ? 'ring-1 ring-ls-red/30' : ''}`}
-            >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-3">
-                  <span
-                    aria-hidden="true"
-                    className="flex w-10 h-10 items-center justify-center rounded-full border border-ls-red/40 bg-ls-red/10 font-display font-black text-ls-red text-lg"
-                  >
-                    {pillar.letter}
-                  </span>
-                  <h3 className="font-display font-bold text-base tracking-tight">{pillar.title}</h3>
-                </div>
-                <pillar.Icon className="w-4 h-4 text-ls-cyan" aria-hidden="true" />
-              </div>
-              <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                {pillar.description}
-              </p>
-            </article>
-          </Reveal>
-        ))}
+    <section
+      id="haomtgv"
+      aria-label="H-A-O-M-T-G-V operating philosophy"
+      tabIndex={-1}
+      className={`relative w-full py-[100px] px-6 lg:px-12 scroll-mt-28 overflow-hidden transition-colors duration-300 ${
+        isLight ? 'bg-[#F7F8F9] text-ls-navy' : 'bg-[#070A40] text-white'
+      }`}
+    >
+      {/* Background Brand and Hero Visual */}
+      <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
+        <img
+          src="/brand/digital/LightSpeed brand and hero visual.jpeg"
+          alt="LightSpeed brand and hero visual"
+          className="w-full h-full object-cover object-center transition-all duration-700 opacity-75 dark:opacity-85 filter saturate-110 brightness-100"
+          loading="lazy"
+        />
+        {/* Atmosphere Scrim Overlay (Lightened for enhanced image clarity) */}
+        <div
+          className={`absolute inset-0 transition-colors duration-500 ${
+            isLight
+              ? 'bg-gradient-to-b from-[#F7F8F9]/65 via-[#F7F8F9]/35 to-[#F7F8F9]/65'
+              : 'bg-gradient-to-b from-[#070A40]/70 via-[#070A40]/45 to-[#070A40]/70'
+          }`}
+        />
       </div>
-      <p className={`mt-6 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-        Human direction is not a checkpoint at the end. It is present at every layer. Governance (G) is how that authority stays enforceable when agents act at scale.
-      </p>
-      <div className="mt-4">
-        <Link
-          to="/haomtgv"
-          className="inline-flex items-center gap-1.5 font-body text-[11px] font-bold tracking-widest uppercase text-ls-red transition-colors hover:text-ls-red/80"
-        >
-          Explore the full framework →
-        </Link>
+
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
+        <SectionHeading
+          theme={theme}
+          eyebrow="OPERATING PHILOSOPHY"
+          title="H-A-O-M-T-G-V"
+          lead="How LightSpeed thinks about AI-native operations: Human authority through Agents, Orchestration, Memory, and Tools, with Governance as an integral control layer and Value as the only score that counts. Not a linear pipeline; a working model."
+        />
+        <div className="mt-12 mb-12">
+          <HAOMTGVVisualization theme={theme} />
+        </div>
+
+        <p className={`mt-6 text-xs leading-relaxed ${isLight ? 'text-slate-600 font-medium' : 'text-[#9CA3AF]'}`}>
+          Human direction is not a checkpoint at the end. It is present at every layer. Governance (G) is how that authority stays enforceable when agents act at scale.
+        </p>
+        <div className="mt-4">
+          <Link
+            to="/haomtgv"
+            className="inline-flex items-center gap-1.5 font-body text-[11px] font-bold tracking-widest uppercase text-[#00BFFF] transition-colors hover:text-[#DC3641]"
+          >
+            Explore the full framework →
+          </Link>
+        </div>
       </div>
-    </HomeSection>
+    </section>
   );
 };
 

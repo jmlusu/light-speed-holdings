@@ -21,7 +21,7 @@ export const RelatedLinks: React.FC<RelatedLinksProps> = ({ theme, links }) => {
 
   return (
     <nav
-      className="px-4 sm:px-8 max-w-7xl mx-auto w-full py-8"
+      className="px-6 lg:px-12 max-w-7xl mx-auto w-full py-8"
       aria-label="Related sections"
     >
       <p

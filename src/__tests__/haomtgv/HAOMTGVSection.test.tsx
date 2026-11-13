@@ -25,26 +25,22 @@ describe('HAOMTGVSection', () => {
     expect(screen.getByText('H-A-O-M-T-G-V')).toBeInTheDocument();
   });
 
-  it('renders all 7 pillar cards', () => {
-    renderSection('dark');
-    const pillars = ['Human', 'Agents', 'Orchestration', 'Memory', 'Tools', 'Governance', 'Value'];
-    pillars.forEach((pillar) => {
-      expect(screen.getByText(pillar)).toBeInTheDocument();
-    });
-  });
-
-  it('renders Lucide icons for each pillar', () => {
+  it('renders the section lead', () => {
     renderSection('light');
-    // Each pillar should have an icon (svg element)
-    const svgs = document.querySelectorAll('svg');
-    expect(svgs.length).toBeGreaterThanOrEqual(7);
+    expect(screen.getByText(/How LightSpeed thinks about AI-native operations/)).toBeInTheDocument();
   });
 
-  it('applies governance ring accent on Governance pillar', () => {
+  it('renders the interactive visualization with one selector per layer', () => {
     renderSection('dark');
-    const governanceCard = screen.getByText('Governance').closest('article');
-    expect(governanceCard).toHaveClass('ring-1');
-    expect(governanceCard).toHaveClass('ring-ls-red/30');
+    const buttons = screen.getAllByRole('button');
+    expect(buttons).toHaveLength(7);
+    expect(buttons.map((b) => b.textContent?.charAt(0))).toEqual(['H', 'A', 'O', 'M', 'T', 'G', 'V']);
+  });
+
+  it('opens on the Human layer by default', () => {
+    renderSection('dark');
+    expect(screen.getByRole('heading', { level: 3, name: 'Human Authority' })).toBeInTheDocument();
+    expect(screen.getByText(/Human intent sits above the system/)).toBeInTheDocument();
   });
 
   it('renders governance callout paragraph', () => {
@@ -52,37 +48,21 @@ describe('HAOMTGVSection', () => {
     expect(screen.getByText(/Human direction is not a checkpoint at the end/)).toBeInTheDocument();
   });
 
-  it('applies correct theme classes for light mode', () => {
+  it('links to the full framework page', () => {
     renderSection('light');
-    const firstCard = screen.getByText('Human').closest('article');
-    expect(firstCard).toHaveClass('bg-ls-white/95');
-    expect(firstCard).toHaveClass('border-ls-grey-dark');
-    expect(firstCard).toHaveClass('text-ls-navy');
+    const link = screen.getByRole('link', { name: /Explore the full framework/i });
+    expect(link).toHaveAttribute('href', '/haomtgv');
   });
 
-  it('applies correct theme classes for dark mode', () => {
+  it('applies the dark theme surface to the section', () => {
     renderSection('dark');
-    const firstCard = screen.getByText('Human').closest('article');
-    expect(firstCard).toHaveClass('bg-ls-navy/80');
-    expect(firstCard).toHaveClass('border-ls-white/15');
-    expect(firstCard).toHaveClass('text-ls-white');
+    const section = screen.getByRole('region', { name: /h-a-o-m-t-g-v operating philosophy/i });
+    expect(section).toHaveClass('bg-[#070A40]');
   });
 
-  it('renders pillar descriptions', () => {
-    renderSection('dark');
-    expect(screen.getByText(/People set intent, own outcomes, and hold final decision authority/)).toBeInTheDocument();
-    expect(screen.getByText(/Specialized AI roles with explicit scopes/)).toBeInTheDocument();
-    expect(screen.getByText(/Deterministic routing of tasks, data, and decisions/)).toBeInTheDocument();
-    expect(screen.getByText(/Persistent contextual state across long-running work/)).toBeInTheDocument();
-    expect(screen.getByText(/Isolated execution environments for APIs, data, and actions/)).toBeInTheDocument();
-    expect(screen.getByText(/A control layer woven through the model/)).toBeInTheDocument();
-    expect(screen.getByText(/Measured business outcomes \(cost, latency, quality, and adoption\)/)).toBeInTheDocument();
-  });
-
-  it('uses Reveal component for staggered animation', () => {
-    renderSection('dark');
-    // Reveal wraps each article - verify articles exist with proper structure
-    const articles = document.querySelectorAll('article');
-    expect(articles.length).toBe(7);
+  it('applies the light theme surface to the section', () => {
+    renderSection('light');
+    const section = screen.getByRole('region', { name: /h-a-o-m-t-g-v operating philosophy/i });
+    expect(section).toHaveClass('bg-[#F7F8F9]');
   });
 });

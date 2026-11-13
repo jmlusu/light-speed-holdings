@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShieldCheck } from 'lucide-react';
 import { PageIntro } from '../components/site/PageIntro';
 import { CtaBand } from '../components/site/CtaBand';
 
@@ -66,26 +67,48 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ theme }) => {
         lead="Last updated: September 2026. This page explains what we collect, why, and the rights you hold over your data. It is written to be read, not to be indexed."
       />
 
-      <section className={`px-4 sm:px-8 max-w-3xl mx-auto w-full pt-12 pb-4 ${
-        isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
-      }`}>
-        {SECTIONS.map((section) => (
-          <div key={section.heading} className="mb-10">
-            <h2 className={`font-display font-bold text-lg sm:text-xl tracking-tight ${
-              isLight ? 'text-ls-navy' : 'text-ls-white'
-            }`}>
-              {section.heading}
-            </h2>
-            {section.paragraphs.map((p) => (
-              <p key={p} className="mt-3 text-sm leading-relaxed">
-                {p}
-              </p>
+      <section className="px-6 lg:px-12 max-w-4xl mx-auto w-full pt-10 pb-16">
+        <div className="longform-contrast-layer rounded-3xl p-6 sm:p-10 lg:p-12 space-y-10">
+          {/* Legal Counsel Disclaimer Box */}
+          <div className={`p-4 sm:p-5 rounded-2xl flex items-start gap-3.5 ${
+            isLight
+              ? 'bg-cyan-50/80 text-ls-navy border border-cyan-200/70'
+              : 'bg-cyan-950/40 text-slate-100 border border-cyan-500/20 shadow-md'
+          }`}>
+            <ShieldCheck className="w-5 h-5 text-ls-cyan shrink-0 mt-0.5" aria-hidden="true" />
+            <p className="text-xs sm:text-sm leading-relaxed font-medium">
+              <strong className="font-bold text-ls-red">Disclaimer: </strong>
+              The information provided on this page serves as LightSpeed Holdings Limited’s general digital operational baseline. Bespoke client engagements, enterprise licenses, and specific project deliverables are governed by executed Master Services Agreements (MSAs) and Statements of Work (SOWs) reviewed by qualified legal counsel.
+            </p>
+          </div>
+
+          <div className="space-y-10">
+            {SECTIONS.map((section) => (
+              <div key={section.heading}>
+                <h2 className={`font-display font-bold text-lg sm:text-xl tracking-tight mb-3 ${
+                  isLight ? 'text-ls-navy' : 'text-white'
+                }`}>
+                  {section.heading}
+                </h2>
+                <div className="space-y-3">
+                  {section.paragraphs.map((p) => (
+                    <p key={p} className={`text-sm sm:text-base leading-relaxed ${
+                      isLight ? 'text-slate-800' : 'text-slate-100'
+                    }`}>
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
-        ))}
-        <p className="text-xs leading-relaxed opacity-70">
-          LightSpeed Holdings Limited, Lilongwe, Malawi. Questions about this policy reach a human through the contact page.
-        </p>
+
+          <p className={`text-xs leading-relaxed pt-6 border-t ${
+            isLight ? 'border-slate-200 text-slate-500' : 'border-white/10 text-slate-400'
+          }`}>
+            LightSpeed Holdings Limited, Lilongwe, Malawi. Questions about this policy reach a human through the contact page.
+          </p>
+        </div>
       </section>
 
       <CtaBand theme={theme} />

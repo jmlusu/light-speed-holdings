@@ -17,19 +17,18 @@ export interface HomeImmersiveCopy {
 }
 
 export const homeImmersiveCopy: HomeImmersiveCopy = {
-  heroEyebrow: 'LIGHTSPEED HOLDINGS // AI-NATIVE COMPANY BUILDER',
-  heroTitle: 'The AI-native company builder',
-  heroTitleAccent: 'that ships.',
+  heroEyebrow: 'AI-NATIVE OPERATING MODEL',
+  heroTitle: "Human Direction.",
+  heroTitleAccent: 'Intelligent Execution.',
   heroLead:
-    'Agentic AI systems based in Malawi, building for Africa. 89 AI agents + 1 Human CEO, 20 departments, five-tier human approval.',
-  heroCta: CTAS.primary.label,
+    'LightSpeed Holdings is building an AI-native operating model that brings human judgment together with coordinated AI, clear governance and a focus on practical outcomes.',
+  heroCta: 'WHAT WE DO',
   chapters: [
     { id: 'haomtgv', num: '01', label: 'HAOMTGV' },
-    { id: 'ai-company-builder', num: '02', label: 'AI Builder' },
-    { id: 'workforce', num: '03', label: 'Workforce' },
-    { id: 'use-cases', num: '04', label: 'Use Cases' },
-    { id: 'insights', num: '05', label: 'Insights' },
-    { id: 'briefing', num: '06', label: 'Briefing' },
+    { id: 'paths', num: '02', label: 'Choose Path' },
+    { id: 'solutions', num: '03', label: 'Solutions' },
+    { id: 'insights', num: '04', label: 'Insights' },
+    { id: 'about', num: '05', label: 'About' },
   ],
   scrimHint: 'Every claim is labeled. Every number is auditable.',
 };

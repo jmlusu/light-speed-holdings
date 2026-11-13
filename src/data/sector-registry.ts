@@ -1,17 +1,15 @@
 /* LightSpeed Holdings - Canonical Sector Registry (CUSTOMER_JOURNEY_CONVERSION_ARCHITECTURE §12)
-   Six canonical sectors: the five per MASTER_SPEC and TARGET_ARCHITECTURE, plus
-   Academia and Research (CEO direction, 2026-10-12 - homepage sector cards).
+   Canonical source of truth: 10 target sectors loaded from sector-registry.json.
    Evidence tiers: PROVEN / CURRENT / DEMO / FUTURE (mapped from SECTOR_TIERS).
-   One canonical source per sector fact. Only claim sector experience where evidence exists.
-   Source: sectors.ts (evidence) + MASTER_SPEC §11 (canonical 5 slugs). */
+   One canonical source per sector fact. Only claim sector experience where evidence exists. */
 
 import type { HonestyLabel, HonestyTone } from './siteContent';
-import { sectors as legacySectors, SECTOR_TIERS } from './sectors';
+import rawSectors from './registries/sector-registry.json';
 
 export type SectorStatusTone = HonestyTone;
 
 export interface Sector {
-  id: string;           // Canonical slug: financial-services, healthcare, agriculture, education, government
+  id: string;           // Canonical slug
   title: string;
   description: string;
   status: HonestyLabel;
@@ -38,78 +36,47 @@ export const sectorTierLegend: { tier: HonestyLabel; desc: string }[] = [
   { tier: SECTOR_TIERS_CANONICAL.future, desc: 'Roadmap target: no evidence yet, and we say so.' },
 ];
 
-/* Helper to find legacy sector by partial ID match */
-function findLegacySector(ids: string[]): typeof legacySectors[0] | undefined {
-  return legacySectors.find(s => ids.some(id => s.id.includes(id) || id.includes(s.id)));
+/** Parse badge string into HonestyLabel with appropriate visual tone */
+export function parseHonestyBadge(badge: string): HonestyLabel {
+  const b = badge.toUpperCase();
+  if (b.includes('PROVEN')) return { label: 'PROVEN EXPERIENCE', tone: 'proven' };
+  if (b.includes('CURRENT')) return { label: 'CURRENT CAPABILITY', tone: 'pilot' };
+  if (b.includes('PILOT')) return { label: 'IN PILOT', tone: 'pilot' };
+  if (b.includes('FIELDABLE')) return { label: 'FIELDABLE', tone: 'fieldable' };
+  if (b.includes('DEMO')) return { label: 'DEMONSTRATION', tone: 'fieldable' };
+  if (b.includes('FUTURE')) return { label: 'FUTURE OPPORTUNITY', tone: 'development' };
+  return { label: badge, tone: 'development' };
 }
 
-/* Six canonical sectors - mapped from legacy sectors where evidence exists */
-export const sectors: Sector[] = [
-  {
-    id: 'financial-services',
-    title: 'Financial Services',
-    description: 'Risk classification, audit trails, and regulatory reporting for banks and microfinance.',
-    status: SECTOR_TIERS_CANONICAL.proven,
-    evidence:
-      'Governed multi-agent compliance automation proven in LightSpeed\'s own operations: 5-tier approval gating and SHA-256 sealed audit trails. No client deployment yet.',
-    region: ['Malawi', 'SADC'],
-    relevantSolutions: ['ai-company-builder', 'enterprise-deployment', 'business-automation'],
-  },
-  {
-    id: 'healthcare',
-    title: 'Healthcare',
-    description: 'Data pipelines, reporting automation, and decision support for clinics and health systems.',
-    status: SECTOR_TIERS_CANONICAL.future,
-    evidence:
-      'Offline-first, sovereignty-first architecture is designed for clinical data, but LightSpeed has no healthcare deployment yet. Listed honestly as a roadmap target.',
-    region: ['Malawi', 'SADC'],
-    relevantSolutions: ['enterprise-deployment', 'business-automation'],
-  },
-  {
-    id: 'agriculture',
-    title: 'Agriculture',
-    description: 'Supply-chain intelligence, mobile-money coordination, and climate-data pipelines for rural economies.',
-    status: SECTOR_TIERS_CANONICAL.current,
-    evidence:
-      'WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, with mobile-money payments and supply chain tracking, serving 1,200 members in pilot.',
-    region: ['Malawi', 'Mozambique', 'SADC'],
-    relevantSolutions: ['digital-presence', 'business-automation', 'enterprise-deployment'],
-  },
-  {
-    id: 'education',
-    title: 'Education',
-    description: 'Student management, credential verification, and data-driven policy for schools and universities.',
-    status: SECTOR_TIERS_CANONICAL.current,
-    evidence:
-      'Agent-driven student management at the University of Malawi: 3 departments onboarded, 5,000 records processed with append-only audit trails.',
-    region: ['Malawi', 'SADC'],
-    relevantSolutions: ['ai-company-builder', 'enterprise-deployment', 'business-automation'],
-  },
-  {
-    id: 'government',
-    title: 'Government and Public Sector',
-    description: 'Digital services, compliance automation, and data-driven policy for ministries and agencies.',
-    status: SECTOR_TIERS_CANONICAL.current,
-    evidence:
-      "Advisory work on Malawi's National AI Strategy consultation. Policy-level engagement so far; no ministerial production deployment claimed.",
-    region: ['Malawi', 'SADC'],
-    relevantSolutions: ['ai-company-builder', 'enterprise-deployment', 'boardroom-briefing'],
-  },
-  {
-    id: 'academia-research',
-    title: 'Academia and Research',
-    description: 'Research collaboration, governance methodology, and open evidence for universities and labs.',
-    status: SECTOR_TIERS_CANONICAL.current,
-    evidence:
-      "Convening of the Malawi Agentic AI Forum and advisory input to Malawi's National AI Strategy consultation, plus published governance frameworks and thought leadership open for academic review. No dedicated research-lab production deployment claimed.",
-    region: ['Malawi', 'SADC'],
-    relevantSolutions: ['ai-company-builder', 'boardroom-briefing'],
-  },
-];
+/* 10 canonical sectors mapped directly from sector-registry.json */
+export const sectors: Sector[] = rawSectors.sectors.map((item) => ({
+  id: item.id,
+  title: item.title,
+  description: item.description,
+  status: parseHonestyBadge(item.honestyBadge),
+  evidence: item.honestyNote,
+  region: item.region,
+  relevantSolutions: item.relevantSolutions,
+}));
 
-/* Helper to get sector by canonical ID */
+/* Alias map for backwards compatibility with legacy short slugs */
+const SLUG_ALIASES: Record<string, string> = {
+  'healthcare': 'healthcare-public-health',
+  'agriculture': 'agriculture-agritech',
+  'education': 'education-academia',
+  'government': 'government-public-sector',
+  'academia-research': 'research-universities',
+  'smes': 'smes-private-enterprise',
+  'nonprofit': 'development-nonprofit-organizations',
+  'tech': 'technology-digital-businesses',
+};
+
+/* Helper to get sector by canonical or legacy ID */
 export function getSectorById(id: string): Sector | undefined {
-  return sectors.find((s) => s.id === id);
+  const canonicalId = SLUG_ALIASES[id] || id;
+  return sectors.find(
+    (s) => s.id === canonicalId || s.id === id || s.id.startsWith(id) || id.startsWith(s.id)
+  );
 }
 
 /* Helper to get sectors by status tone */

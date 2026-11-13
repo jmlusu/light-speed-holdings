@@ -133,7 +133,7 @@ describe('HaomtgvGlyphGallery', () => {
     expect(screen.getByText('THE SEVEN GLYPHS')).toBeInTheDocument();
     expect(screen.getByText('H-A-O-M-T-G-V Glyphs')).toBeInTheDocument();
     expect(screen.getByText(/Type K micro-illustrations/)).toBeInTheDocument();
-    expect(screen.getByText(/brand cyan throughout, Governance marked in red/)).toBeInTheDocument();
+    expect(screen.getByText(/brand cyan throughout and Governance marked in red/)).toBeInTheDocument();
   });
 
   it('renders all 7 glyph cards in grid', () => {
@@ -156,24 +156,25 @@ describe('HaomtgvGlyphGallery', () => {
     });
   });
 
-  it('applies cyan ring for non-governance glyphs', () => {
+  it('marks non-governance glyphs with the cyan accent', () => {
     render(<HaomtgvGlyphGallery theme="dark" />);
-    const humanCard = screen.getByText('Human').closest('article');
-    expect(humanCard).toHaveClass('ring-1');
-    expect(humanCard).toHaveClass('ring-ls-cyan/20');
+    const badge = screen.getByText('Human').closest('article')?.querySelector('span[aria-hidden="true"]');
+    expect(badge).toHaveClass('bg-ls-cyan/10');
+    expect(badge).toHaveClass('text-ls-cyan');
+    expect(badge).not.toHaveClass('text-ls-red');
   });
 
-  it('applies red ring for governance glyph', () => {
+  it('marks the governance glyph with the red accent', () => {
     render(<HaomtgvGlyphGallery theme="light" />);
-    const governanceCard = screen.getByText('Governance').closest('article');
-    expect(governanceCard).toHaveClass('ring-1');
-    expect(governanceCard).toHaveClass('ring-ls-red/30');
+    const badge = screen.getByText('Governance').closest('article')?.querySelector('span[aria-hidden="true"]');
+    expect(badge).toHaveClass('bg-ls-red/10');
+    expect(badge).toHaveClass('text-ls-red');
+    expect(badge).not.toHaveClass('text-ls-cyan');
   });
 
   it('renders letter badge with correct color for non-governance', () => {
     render(<HaomtgvGlyphGallery theme="dark" />);
     const humanBadge = screen.getByText('Human').closest('article')?.querySelector('span[aria-hidden="true"]');
-    expect(humanBadge).toHaveClass('border-ls-cyan/40');
     expect(humanBadge).toHaveClass('bg-ls-cyan/10');
     expect(humanBadge).toHaveClass('text-ls-cyan');
   });
@@ -181,7 +182,6 @@ describe('HaomtgvGlyphGallery', () => {
   it('renders letter badge with red color for governance', () => {
     render(<HaomtgvGlyphGallery theme="light" />);
     const governanceBadge = screen.getByText('Governance').closest('article')?.querySelector('span[aria-hidden="true"]');
-    expect(governanceBadge).toHaveClass('border-ls-red/40');
     expect(governanceBadge).toHaveClass('bg-ls-red/10');
     expect(governanceBadge).toHaveClass('text-ls-red');
   });
@@ -201,16 +201,16 @@ describe('HaomtgvGlyphGallery', () => {
     render(<HaomtgvGlyphGallery theme="light" />);
     const firstCard = screen.getByText('Human').closest('article');
     expect(firstCard).toHaveClass('bg-ls-white/95');
-    expect(firstCard).toHaveClass('border-ls-grey-dark');
     expect(firstCard).toHaveClass('text-ls-navy');
+    expect(firstCard).not.toHaveClass('bg-ls-navy/80');
   });
 
   it('applies dark theme classes correctly', () => {
     render(<HaomtgvGlyphGallery theme="dark" />);
     const firstCard = screen.getByText('Human').closest('article');
     expect(firstCard).toHaveClass('bg-ls-navy/80');
-    expect(firstCard).toHaveClass('border-ls-white/15');
     expect(firstCard).toHaveClass('text-ls-white');
+    expect(firstCard).not.toHaveClass('bg-ls-white/95');
   });
 
   it('uses Reveal component for staggered animation', () => {

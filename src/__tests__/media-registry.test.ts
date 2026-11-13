@@ -71,6 +71,19 @@ const toPosix = (p: string) => p.split(sep).join('/');
  */
 const NON_SITE_PREFIX = 'src/ai_company/';
 
+/**
+ * `/src/assets/**` paths are Vite module assets, not `public/` files. The bundler
+ * resolves them from `src/assets/` at build time and emits them into `dist/assets/`
+ * with hashed names, so they can never be found by `publicFile()` and are outside
+ * the public media registry's remit. They are still checked — for existence on
+ * disk — by the dedicated suite below, so a dead bundled reference cannot slip in.
+ *
+ * Provenance gap: the 62 files under `src/assets/images/` carry no registry record
+ * yet. Recording them needs an origin/licence decision per file, which the repo
+ * does not currently evidence. Tracked as follow-up, not silently waived.
+ */
+const BUNDLED_ASSET_PREFIX = '/src/assets/';
+
 /** This guard file quotes image paths in its own assertions; skip it when scanning. */
 const SELF = 'src/__tests__/media-registry.test.ts';
 const MEDIA_TS_REGISTRY = 'src/data/media/registry.ts';
@@ -86,31 +99,40 @@ const siteSourceFiles = (): string[] => {
   return [...walk(join(ROOT, 'src')), join(ROOT, 'index.html')];
 };
 
-/** Image paths referenced by site source, and by the excluded dashboard app. */
-const collectReferences = (): { site: Set<string>; nonSite: Set<string> } => {
+/** Image paths referenced by site source, by the excluded dashboard app, and bundled. */
+const collectReferences = (): {
+  site: Set<string>;
+  nonSite: Set<string>;
+  bundled: Set<string>;
+} => {
   const site = new Set<string>();
   const nonSite = new Set<string>();
+  const bundled = new Set<string>();
 
   for (const file of siteSourceFiles()) {
     const rel = toPosix(relative(ROOT, file));
     if (rel === SELF || rel === MEDIA_TS_REGISTRY) continue;
     const target = rel.startsWith(NON_SITE_PREFIX) ? nonSite : site;
     for (const match of readFileSync(file, 'utf8').matchAll(IMAGE_REF)) {
-      target.add(match[1]);
+      if (match[1].startsWith(BUNDLED_ASSET_PREFIX)) {
+        bundled.add(match[1]);
+      } else {
+        target.add(match[1]);
+      }
     }
   }
 
-  return { site, nonSite };
+  return { site, nonSite, bundled };
 };
 
 describe('site media registry', () => {
-  it('registers exactly 14 assets (pinned)', () => {
-    // 14 = the 11 paths in site components/data + the 3 index.html shell icons.
+  it('registers exactly 26 assets (pinned)', () => {
+    // 26 = 13 public site assets + 10 aistudio backgrounds + 3 brand logos.
     expect(
       registry.assets.length,
-      `media-registry.json should hold exactly 14 assets; found ${registry.assets.length}. ` +
+      `media-registry.json should hold exactly 26 assets; found ${registry.assets.length}. ` +
         'Update the registry and this pinned count together.',
-    ).toBe(14);
+    ).toBe(26);
   });
 
   it('covers every image path referenced by site source and index.html', () => {
@@ -136,6 +158,26 @@ describe('site media registry', () => {
       'The src/ai_company/ exclusion should only ever cover the dashboard PWA icons. ' +
         `Found: ${[...nonSite].sort().join(', ')}`,
     ).toEqual(['/static/icons/icon-maskable.svg', '/static/icons/icon.svg']);
+  });
+
+  it('resolves every Vite-bundled /src/assets/ reference on disk', () => {
+    const { bundled } = collectReferences();
+
+    const missing = [...bundled]
+      .filter((assetPath) => !existsSync(join(ROOT, assetPath.replace(/^\/+/, ''))))
+      .sort();
+
+    expect(
+      missing,
+      `Bundled image reference(s) with no file on disk: ${missing.join(', ')} — the bundler ` +
+        'would fail or emit a broken URL.',
+    ).toEqual([]);
+
+    expect(
+      bundled.size,
+      `Expected the site to reference bundled assets under src/assets/; found ${bundled.size}. ` +
+        'If the last bundled reference was removed, drop this guard rather than leaving it vacuous.',
+    ).toBeGreaterThan(0);
   });
 
   it('gives every entry a rooted path, a kind, an origin and a licence', () => {

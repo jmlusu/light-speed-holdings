@@ -34,7 +34,7 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
     .filter((uc): uc is NonNullable<typeof uc> => Boolean(uc));
 
   return (
-    <HomeSection id="use-cases" label="Applications and opportunities" theme={theme}>
+    <HomeSection id="use-cases" label="Applications and opportunities" theme={theme} variant="primary">
       <SectionHeading
         theme={theme}
         eyebrow="APPLICATIONS & OPPORTUNITIES"
@@ -44,7 +44,7 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
 
       {/* Featured use cases with evidence status */}
       <div className="mb-10">
-        <h3 className={`font-body text-[10px] font-bold tracking-widest mb-4 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
+        <h3 className={`font-body text-[10px] font-bold tracking-widest mb-4 uppercase ${isLight ? 'text-ls-navy' : 'text-[#A0AEC0]'}`}>
           FEATURED USE CASES
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -52,22 +52,18 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
             <Reveal key={uc.id} delay={idx * 0.05}>
               <Link
                 to={`/use-cases/${uc.id}`}
-                className={`ripple-on h-full rounded-3xl p-5 border flex flex-col gap-3 transition-all hover:-translate-y-0.5 group ${
-                  isLight
-                    ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl'
-                    : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl'
-                }`}
+                className="ripple-on h-full rounded-3xl p-5 flex flex-col gap-3 transition-all hover:-translate-y-0.5 group shadow-none bg-transparent border-none"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <h4 className={`font-display font-bold text-sm tracking-tight group-hover:text-ls-red transition-colors ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
+                  <h4 className={`font-display font-bold text-sm tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-white group-hover:text-[#00BFFF]'}`}>
                     {uc.title}
                   </h4>
                   <HonestyBadge label={statusToHonesty(uc.status)} className="shrink-0" />
                 </div>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
                   {uc.problem}
                 </p>
-                <span className={`mt-auto inline-flex items-center gap-1.5 text-[11px] font-body font-bold tracking-widest ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'} group-hover:text-ls-red`}>
+                <span className={`mt-auto inline-flex items-center gap-1.5 text-[11px] font-body font-bold tracking-widest transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-[#00BFFF] group-hover:text-[#DC3641]'}`}>
                   VIEW USE CASE →
                 </span>
               </Link>
@@ -77,7 +73,7 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
         <div className="mt-4 text-center">
           <Link
             to="/use-cases"
-            className={`font-body text-xs font-bold tracking-widest hover:underline ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}
+            className={`font-body text-xs font-bold tracking-widest hover:underline ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
           >
             VIEW ALL USE CASES →
           </Link>
@@ -86,7 +82,7 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
 
       {/* Sectors with evidence tiers */}
       <div>
-        <h3 className={`font-body text-[10px] font-bold tracking-widest mb-4 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
+        <h3 className={`font-body text-[10px] font-bold tracking-widest mb-4 uppercase ${isLight ? 'text-ls-navy' : 'text-[#9CA3AF]'}`}>
           SECTORS
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -94,22 +90,18 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
             <Reveal key={sector.id} delay={(idx % 3) * 0.05}>
               <Link
                 to={`/sectors#${sector.id}`}
-                className={`ripple-on h-full rounded-3xl p-5 border flex flex-col gap-3 transition-all hover:-translate-y-0.5 group ${
-                  isLight
-                    ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl'
-                    : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl'
-                }`}
+                className="ripple-on h-full rounded-3xl p-5 flex flex-col gap-3 transition-all hover:-translate-y-0.5 group shadow-none bg-transparent border-none"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <span className="font-body text-[10px] font-bold tracking-widest text-ls-red uppercase">
+                  <span className="font-body text-[10px] font-bold tracking-widest text-[#DC3641] uppercase">
                     {sector.region?.join(' · ') ?? 'SECTOR'}
                   </span>
                   <HonestyBadge label={sector.status} />
                 </div>
-                <h4 className={`font-display font-bold text-sm tracking-tight ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
+                <h4 className={`font-display font-bold text-sm tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-white group-hover:text-[#00BFFF]'}`}>
                   {sector.title}
                 </h4>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
                   {sector.description}
                 </p>
               </Link>
@@ -118,16 +110,16 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
         </div>
         <div className="mt-4 text-center">
           <Link
-            to="/sectors"
-            className={`font-body text-xs font-bold tracking-widest hover:underline ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}
+            to="/what-we-do"
+            className={`font-body text-xs font-bold tracking-widest hover:underline ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
           >
-            VIEW ALL SECTORS &amp; EVIDENCE TIERS →
+            EXPLORE OUR APPROACH &amp; GOVERNANCE GATES →
             <ArrowRight className="inline w-3.5 h-3.5 ml-1" aria-hidden="true" />
           </Link>
         </div>
       </div>
 
-      <p className={`mt-8 text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+      <p className={`mt-8 text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#A0AEC0]'}`}>
         Across every engagement, we focus on the same outcome: useful intelligence, clear accountability, and systems people can actually operate. Not AI for its own sake. AI for work that matters.
       </p>
     </HomeSection>

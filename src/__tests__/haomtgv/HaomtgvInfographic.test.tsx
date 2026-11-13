@@ -65,24 +65,20 @@ describe('HaomtgvInfographic', () => {
     expect(figcaption).toHaveTextContent('H-A-O-M-T-G-V Framework');
   });
 
-  it('applies light theme classes to figure', () => {
+  it('applies light theme surface to figure', () => {
     render(<HaomtgvInfographic theme="light" />);
     const figure = screen.getByRole('figure');
     expect(figure).toHaveClass('bg-ls-white/95');
-    expect(figure).toHaveClass('border-ls-grey-dark');
-    expect(figure).toHaveClass('ring-1');
-    expect(figure).toHaveClass('ring-ls-cyan/25');
     expect(figure).toHaveClass('shadow-xl');
+    expect(figure).not.toHaveClass('bg-ls-navy/80');
   });
 
-  it('applies dark theme classes to figure', () => {
+  it('applies dark theme surface to figure', () => {
     render(<HaomtgvInfographic theme="dark" />);
     const figure = screen.getByRole('figure');
     expect(figure).toHaveClass('bg-ls-navy/80');
-    expect(figure).toHaveClass('border-ls-white/15');
-    expect(figure).toHaveClass('ring-1');
-    expect(figure).toHaveClass('ring-ls-cyan/25');
     expect(figure).toHaveClass('shadow-xl');
+    expect(figure).not.toHaveClass('bg-ls-white/95');
   });
 
   it('renders attribution in red tracking-widest style', () => {

@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "description": "Registry of every image the public site renders, with origin, licence and disclosure status.",
-  "lastUpdated": "2026-10-25",
+  "lastUpdated": "2026-11-13",
   "assets": [
     {
       "id": "glyph-agents",
@@ -103,15 +103,6 @@
       "note": "1200x630 PNG Open Graph card showing only the LightSpeed mark, wordmark and 'ASPIRE. ACT. ACHIEVE.' tagline; no embedded text metadata. It matches the dimensions and content of the canonical card public/brand/logo/logo-og.png but is not byte-identical, and no generation record exists in the repo, so origin is recorded as unknown rather than guessed. Licence position is based on depicted content (company marks only); confirm provenance with Marketing."
     },
     {
-      "id": "homepage-hero-high-fidelity",
-      "path": "/brand/digital/Homepage_Hero_High_fidelity.jpeg",
-      "kind": "photograph",
-      "origin": "unknown",
-      "licence": "Owned by LightSpeed Holdings Limited",
-      "disclosure": "Capture and vendor provenance for this 498 KB JPEG are not recorded anywhere in the repository; the file simply sits in the owned brand asset tree at public/brand/digital/. It is treated as company-owned marketing imagery on that basis alone. Confirm authorship and any third-party licence with Marketing before reusing it outside the site.",
-      "note": "Rendered by src/pages/HomePage.tsx as a full-bleed hero background beneath a 40-60% black overlay, so the image is never shown at full opacity. Replaced a reference to /brand/digital/light-trails-road.jpg, a path that never existed in the tree."
-    },
-    {
       "id": "hero-background",
       "path": "/hero-background.jpg",
       "kind": "missing",
@@ -119,6 +110,113 @@
       "licence": "unknown",
       "disclosure": "none",
       "note": "Absent from the tree: public/hero-background.jpg does not exist. Referenced only by src/components/home/ClosingCTASection.tsx (a CSS background url), and nothing imports that component. Do not delete the reference here: adding the file later must replace this entry with a real origin, licence and kind, which the media-registry test enforces."
+    },
+    {
+      "id": "aistudio-before-after-sector",
+      "path": "/assets/aistudio/BeforeAfterSectorBackground_d538f2ff.jpg",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event."
+    },
+    {
+      "id": "aistudio-futuristic-villa",
+      "path": "/assets/aistudio/Futuristic_Villa_Overlooking_Neon_Valley_84caad32.png",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event."
+    },
+    {
+      "id": "aistudio-modern-villa",
+      "path": "/assets/aistudio/Modern_Villa_Overlooking_a_Mountain_Valley_68700962.png",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event."
+    },
+    {
+      "id": "aistudio-pharos-lighthouse",
+      "path": "/assets/aistudio/Pharos2_85555724.jpg",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event."
+    },
+    {
+      "id": "aistudio-value-proposition",
+      "path": "/assets/aistudio/ValuePropositionBackground_beecaad0.jpg",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event."
+    },
+    {
+      "id": "aistudio-cta-blank-background",
+      "path": "/assets/aistudio/call_to_action_blank_background_ee1fa8f8.jpg",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event."
+    },
+    {
+      "id": "aistudio-malawi-map",
+      "path": "/assets/aistudio/lightspeed_malawi_map_rightside_292682fa.jpg",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event.",
+      "note": "Illustrative map treatment only. It is not a surveyed or authoritative geographic reference and must not be presented as one."
+    },
+    {
+      "id": "aistudio-who-we-are",
+      "path": "/assets/aistudio/who_we_are_background_df66900f.jpg",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event."
+    },
+    {
+      "id": "aistudio-venture-lifecycle-pipeline",
+      "path": "/assets/aistudio/AI_Venture_Studio_Lifecycle_Pipeline_30708830.png",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event.",
+      "note": "Reference was previously written as '/public/assets/aistudio/...' in src/components/AiCompanyBuilder/VentureMaturityInfographic.tsx, which Vite would resolve to a non-existent public/public/ path and 404. Corrected to the root-relative form registered here."
+    },
+    {
+      "id": "aistudio-haomtgv-pipeline",
+      "path": "/assets/aistudio/HAOMTGV_Closed-Loop_AI_Pipeline_c8fb13d6.png",
+      "kind": "ai-generated",
+      "origin": "Exported from Google AI Studio: it lives in public/assets/aistudio/ and its filename carries the 8-hex AI Studio export suffix. No prompt, model or export record is committed to the repo, so the exact model, prompt and generation date are unknown.",
+      "licence": "Generated in-house for LightSpeed Holdings Limited; upstream model-provider terms apply. No third-party stock licence is recorded in the repo.",
+      "disclosure": "AI-generated imagery produced with Google AI Studio. It does not depict a specific real client, site, person or event.",
+      "note": "Reference was previously written as '/public/assets/aistudio/...' in src/components/haomtgv/HaomtgvPipelineDiagram.tsx, which Vite would resolve to a non-existent public/public/ path and 404. Corrected to the root-relative form registered here."
+    },
+    {
+      "id": "logo-dark-bg",
+      "path": "/brand/logo/logo-dark-bg.svg",
+      "kind": "logo",
+      "origin": "Authored brand logo committed to the repo at public/brand/logo/logo-dark-bg.svg; the mark is governed by src/docs/design/LIGHTSPEED_ORGANIZATION_DESIGN_SYSTEM.md.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "logo-light-bg",
+      "path": "/brand/logo/logo-light-bg.svg",
+      "kind": "logo",
+      "origin": "Authored brand logo committed to the repo at public/brand/logo/logo-light-bg.svg; the mark is governed by src/docs/design/LIGHTSPEED_ORGANIZATION_DESIGN_SYSTEM.md.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
+    },
+    {
+      "id": "logo-favicon-transparent",
+      "path": "/brand/logo/logo-favicon-transparent.png",
+      "kind": "logo",
+      "origin": "Authored brand mark committed to the repo at public/brand/logo/logo-favicon-transparent.png; the mark is governed by src/docs/design/LIGHTSPEED_ORGANIZATION_DESIGN_SYSTEM.md.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none"
     }
   ]
 }

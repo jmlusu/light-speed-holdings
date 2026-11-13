@@ -24,7 +24,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ theme, onRequestBriefing }
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/use-cases', label: 'Use Cases' },
+          { to: '/what-we-do', label: 'What We Do' },
           { to: '/insights', label: 'Insights' },
           { to: '/contact', label: 'Contact' },
         ]}
