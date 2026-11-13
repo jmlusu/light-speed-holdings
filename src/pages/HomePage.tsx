@@ -8,6 +8,7 @@ import { PathwayCard } from '../site/PathwayCard';
 import { ArticleCard } from '../site/ArticleCard';
 import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
 import { VisitorPathsSection } from '../components/home/VisitorPathsSection';
+import { HumanApprovalMatrix } from '../components/HumanApprovalMatrix';
 import homeCopy, { VALUES } from '../data/homeCopy';
 
 interface HomePageProps {
@@ -123,46 +124,8 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         </div>
       </section>
 
-      {/* 1c. Five-tier Human Approval Matrix — preserved from AI Studio prototype */}
-      <section
-        className={`py-24 sm:py-32 md:py-36 bg-ls-mist-subtle dark:bg-ls-navy/50`}
-        aria-label="Five-tier human approval matrix"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight font-display text-ls-navy">
-              Five-Tier Human Approval Matrix
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
-              <span className="text-4xl font-black text-ls-cyan">1</span>
-              <h3 className="mt-2 text-sm font-bold text-ls-navy">Auto</h3>
-              <p className="text-xs text-ls-grey-dark/60">Routine monitoring and alerts</p>
-            </div>
-            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
-              <span className="text-4xl font-black text-ls-cyan">2</span>
-              <h3 className="mt-2 text-sm font-bold text-ls-navy">Department Lead</h3>
-              <p className="text-xs text-ls-grey-dark/60">Procurement triggers</p>
-            </div>
-            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
-              <span className="text-4xl font-black text-ls-cyan">3</span>
-              <h3 className="mt-2 text-sm font-bold text-ls-navy">Executive</h3>
-              <p className="text-xs text-ls-grey-dark/60">Final report sign-off</p>
-            </div>
-            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
-              <span className="text-4xl font-black text-ls-cyan">4</span>
-              <h3 className="mt-2 text-sm font-bold text-ls-navy">Board</h3>
-              <p className="text-xs text-ls-grey-dark/60">Governance oversight</p>
-            </div>
-            <div className="p-4 rounded-xl border text-center bg-ls-white dark:bg-ls-navy/80">
-              <span className="text-4xl font-black text-ls-cyan">5</span>
-              <h3 className="mt-2 text-sm font-bold text-ls-navy">Expiry sweep</h3>
-              <p className="text-xs text-ls-grey-dark/60">Pending approvals review</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 1c. Five-tier Human Approval Matrix — interactive component restored from AI Studio prototype */}
+      <HumanApprovalMatrix theme={theme} />
 
       {/* 2. "How would you like to engage" with 4 PathwayCards */}
       <section

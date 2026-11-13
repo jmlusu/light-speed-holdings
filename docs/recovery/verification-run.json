@@ -1,0 +1,338 @@
+{
+  "base": "http://localhost:1440",
+  "routeCount": 27,
+  "results": [
+    {
+      "route": "/",
+      "status": 200,
+      "finalUrl": "/",
+      "hasMain": true,
+      "heading": "Powering the nextgeneration ofAI-native enterprises",
+      "title": "LIGHTSPEED HOLDINGS | AI-Native Company Builder",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/what-we-do",
+      "status": 200,
+      "finalUrl": "/what-we-do",
+      "hasMain": true,
+      "heading": "Enterprise AI Systems Built for Real Constraints",
+      "title": "LIGHTSPEED HOLDINGS | What We Do",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/pharos",
+      "status": 200,
+      "finalUrl": "/pharos",
+      "hasMain": true,
+      "heading": "The Public Intellectual Programme",
+      "title": "LIGHTSPEED HOLDINGS | Pharos",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/venture-studio",
+      "status": 200,
+      "finalUrl": "/venture-studio",
+      "hasMain": true,
+      "heading": "A Repeatable Engine for AI-Native Companies",
+      "title": "LIGHTSPEED HOLDINGS | Venture Studio",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/ai-company-builder",
+      "status": 200,
+      "finalUrl": "/ai-company-builder",
+      "hasMain": true,
+      "heading": "Build Governed AI Companies",
+      "title": "LIGHTSPEED HOLDINGS | Ai Company Builder",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/haomtgv",
+      "status": 200,
+      "finalUrl": "/haomtgv",
+      "hasMain": true,
+      "heading": "H-A-O-M-T-G-V",
+      "title": "LIGHTSPEED HOLDINGS | Haomtgv",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/solutions",
+      "status": 200,
+      "finalUrl": "/solutions",
+      "hasMain": true,
+      "heading": "Solutions Built for the Work to Be Done",
+      "title": "LIGHTSPEED HOLDINGS | Solutions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/sectors",
+      "status": 200,
+      "finalUrl": "/sectors",
+      "hasMain": true,
+      "heading": "Sectors We Serve, With the Evidence to Back It",
+      "title": "LIGHTSPEED HOLDINGS | Sectors",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/use-cases",
+      "status": 200,
+      "finalUrl": "/use-cases",
+      "hasMain": true,
+      "heading": "What Can LightSpeed Actually Do?",
+      "title": "LIGHTSPEED HOLDINGS | Use Cases",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/ai-assessment",
+      "status": 200,
+      "finalUrl": "/ai-assessment",
+      "hasMain": true,
+      "heading": "AI Readiness Assessment Wizard",
+      "title": "LIGHTSPEED HOLDINGS | Ai Assessment",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/faq",
+      "status": 200,
+      "finalUrl": "/faq",
+      "hasMain": true,
+      "heading": "Frequently Asked Questions",
+      "title": "LIGHTSPEED HOLDINGS | Faq",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/insights",
+      "status": null,
+      "finalUrl": null,
+      "hasMain": false,
+      "heading": null,
+      "title": null,
+      "consoleErrors": [
+        "%c%d font-size:0;color:transparent NaN",
+        "%c%d font-size:0;color:transparent NaN",
+        "%c%o font-size:0;color:transparent {}",
+        "%c%o font-size:0;color:transparent {}",
+        "Connecting to 'data:,' violates the following Content Security Policy directive: \"connect-src 'self' https://hagen.challenges.cloudflare.com https://brunhild.challenges.cloudflare.com https://*.alg13.dnstest.challenges.cloudflare.com https://*.mldsa44.dnstest.challenges.cloudflare.com https://dnstest.dev https://ca2.cloudflarecaptcha.com https://ca1.cloudflarecaptcha.com\". The action has been blocked.",
+        "Connecting to 'data:,' violates the following Content Security Policy directive: \"connect-src 'self' https://hagen.challenges.cloudflare.com https://brunhild.challenges.cloudflare.com https://*.alg13.dnstest.challenges.cloudflare.com https://*.mldsa44.dnstest.challenges.cloudflare.com https://dnstest.dev https://ca2.cloudflarecaptcha.com https://ca1.cloudflarecaptcha.com\". The action has been blocked.",
+        "Connecting to 'data:,' violates the following Content Security Policy directive: \"connect-src 'self' https://hagen.challenges.cloudflare.com https://brunhild.challenges.cloudflare.com https://*.alg13.dnstest.challenges.cloudflare.com https://*.mldsa44.dnstest.challenges.cloudflare.com https://dnstest.dev https://ca2.cloudflarecaptcha.com https://ca1.cloudflarecaptcha.com\". The action has been blocked.",
+        "Fetch API cannot load data:,. Refused to connect because it violates the document's Content Security Policy.",
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pageErrors": [
+        "NAV_ERROR TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:1440/insights\", waiting until \"networkidle\"\u001b[22m\n"
+      ],
+      "failedRequests": [
+        "net::ERR_NAME_NOT_RESOLVED https://brunhild.challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/i/a59bd32b4ce5c3e3/ClF_0updSltbNg2Yy8ZCPSvZtoxnw-GeZ3-9Knq4sDASc5c8g-l_o577lhhbQdjQ1cWr-gU88HVpbHLocuZ4RasbfW40l-GwlpeFRdwRFcA6NN2e2gbUZUmol-kAeUMg2Q",
+        "net::ERR_ABORTED http://localhost:1440/api/journey-events"
+      ]
+    },
+    {
+      "route": "/about",
+      "status": 200,
+      "finalUrl": "/about",
+      "hasMain": true,
+      "heading": "About LightSpeed",
+      "title": "LIGHTSPEED HOLDINGS | About",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/contact",
+      "status": 200,
+      "finalUrl": "/contact",
+      "hasMain": true,
+      "heading": "Tell Us Where You Are",
+      "title": "LIGHTSPEED HOLDINGS | Contact",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/legal/privacy",
+      "status": 200,
+      "finalUrl": "/legal/privacy",
+      "hasMain": true,
+      "heading": "Privacy Policy",
+      "title": "LIGHTSPEED HOLDINGS | Legal/Privacy",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/legal/terms",
+      "status": 200,
+      "finalUrl": "/legal/terms",
+      "hasMain": true,
+      "heading": "Terms of Service",
+      "title": "LIGHTSPEED HOLDINGS | Legal/Terms",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/architecture",
+      "status": 200,
+      "finalUrl": "/ai-company-builder",
+      "hasMain": true,
+      "heading": "Build Governed AI Companies",
+      "title": "LIGHTSPEED HOLDINGS | Ai Company Builder",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/build",
+      "status": 200,
+      "finalUrl": "/what-we-do",
+      "hasMain": true,
+      "heading": "Enterprise AI Systems Built for Real Constraints",
+      "title": "LIGHTSPEED HOLDINGS | What We Do",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/offer-a",
+      "status": 200,
+      "finalUrl": "/solutions",
+      "hasMain": true,
+      "heading": "Solutions Built for the Work to Be Done",
+      "title": "LIGHTSPEED HOLDINGS | Solutions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/offer-b",
+      "status": 200,
+      "finalUrl": "/solutions",
+      "hasMain": true,
+      "heading": "Solutions Built for the Work to Be Done",
+      "title": "LIGHTSPEED HOLDINGS | Solutions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/offer-c",
+      "status": 200,
+      "finalUrl": "/solutions",
+      "hasMain": true,
+      "heading": "Solutions Built for the Work to Be Done",
+      "title": "LIGHTSPEED HOLDINGS | Solutions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/offer-d",
+      "status": 200,
+      "finalUrl": "/solutions",
+      "hasMain": true,
+      "heading": "Solutions Built for the Work to Be Done",
+      "title": "LIGHTSPEED HOLDINGS | Solutions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/offer-e",
+      "status": 200,
+      "finalUrl": "/solutions",
+      "hasMain": true,
+      "heading": "Solutions Built for the Work to Be Done",
+      "title": "LIGHTSPEED HOLDINGS | Solutions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/proof",
+      "status": 200,
+      "finalUrl": "/use-cases",
+      "hasMain": true,
+      "heading": "What Can LightSpeed Actually Do?",
+      "title": "LIGHTSPEED HOLDINGS | Use Cases",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/ask",
+      "status": 200,
+      "finalUrl": "/contact",
+      "hasMain": true,
+      "heading": "Tell Us Where You Are",
+      "title": "LIGHTSPEED HOLDINGS | Contact",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/faqs",
+      "status": 200,
+      "finalUrl": "/faq",
+      "hasMain": true,
+      "heading": "Frequently Asked Questions",
+      "title": "LIGHTSPEED HOLDINGS | Faq",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "route": "/definitely-not-a-route",
+      "status": 200,
+      "finalUrl": "/definitely-not-a-route",
+      "hasMain": true,
+      "heading": "Page not found",
+      "title": "LIGHTSPEED HOLDINGS | Definitely Not A Route",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": []
+    }
+  ],
+  "interactions": {
+    "matrixPresent": true,
+    "matrixButtonCount": 5,
+    "matrixInspectorAfterTier1": "Operational Auto-Execution",
+    "matrixInspectorAfterTier5": "Absolute Sovereign Control",
+    "backToTopCount": 1,
+    "backToTopVisibleAtTop": "1",
+    "backToTopVisibleAfterScroll": "1",
+    "scrollYAfterBackToTop": 0
+  },
+  "faqInteractions": {
+    "searchPresent": true,
+    "initialCards": 6,
+    "afterSearchData": 1,
+    "evidenceVisible": true
+  },
+  "themeCheck": {
+    "after": false,
+    "changed": true
+  }
+}

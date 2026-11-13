@@ -4,6 +4,12 @@ repos:
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
+        # Verbatim AI Studio restoration (2026-11-13): these three files are
+        # byte-identical copies of the prototype reference, kept exact so the
+        # SHA256 parity recorded in docs/recovery/06-complete-implementation-
+        # change-register.md stays valid. Normalising their trailing whitespace
+        # would silently diverge them from the reference.
+        exclude: ^src/components/(HumanApprovalMatrix|BackToTop|FaqCardList)\.tsx$
       - id: end-of-file-fixer
       - id: check-yaml
         args: ["--allow-multiple-documents"]

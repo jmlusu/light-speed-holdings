@@ -1,0 +1,25 @@
+{
+  "insights": {
+    "status": 200,
+    "hasMain": true,
+    "h1": "Evidence, Research & the Agentic AI Canon",
+    "articleCards": 9
+  },
+  "backToTop": {
+    "count": 1,
+    "classAtTop": "fixed bottom-6 right-6 z-50 p-1 rounded-full border transition-all duration-300 shadow-2xl backdrop-blur-xl group cursor-pointer flex items-center justify-center opacity-0 translate-y-6 pointer-events-none scale-90 bg-[#070A40]/90 border-ls-cyan/40 text-white hover:border-ls-cyan hover:bg-[#0c125e] shadow-[0_8px_30px_rgba(0,191,255,0.25)] ring-1 ring-ls-cyan/20",
+    "opacityAtTop": "0",
+    "pointerAtTop": "none",
+    "opacityAfterScroll": "1",
+    "ariaAfterScroll": "Back to top of page (27% scrolled)",
+    "scrollYBeforeClick": 1800,
+    "scrollYAfterClick": 0,
+    "focusedId": "main-content"
+  },
+  "matrix": {
+    "present": true,
+    "hasTierButtons": 5,
+    "codesRendered": 3
+  },
+  "pageErrors": []
+}

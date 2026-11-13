@@ -14,6 +14,7 @@ import { UseCasesPage } from './pages/UseCasesPage';
 import { UseCaseDetailPage } from './pages/UseCaseDetailPage';
 import { SectorDetailPage } from './pages/SectorDetailPage';
 import { AiAssessmentPage } from './pages/AiAssessmentPage';
+import { FaqPage } from './pages/FaqPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { InsightsPage } from './pages/InsightsPage';
 import { InsightArticlePage } from './pages/InsightArticlePage';
@@ -34,6 +35,7 @@ const SolutionDetailPageRoute = withSite(SolutionDetailPage);
 const SectorsPageRoute = withSite(SectorsPage);
 const SectorDetailPageRoute = withSite(SectorDetailPage);
 const AiAssessmentPageRoute = withSite(AiAssessmentPage);
+const FaqPageRoute = withSite(FaqPage);
 const InsightsPageRoute = withSite(InsightsPage);
 const InsightArticlePageRoute = withSite(InsightArticlePage);
 const AboutPageRoute = withSite(AboutPage);
@@ -100,6 +102,8 @@ export const App: React.FC = () => {
           { path: 'use-cases', element: <UseCasesPage /> },
           { path: 'use-cases/:slug', element: <UseCaseDetailPage /> },
           { path: 'ai-assessment', element: <AiAssessmentPageRoute /> },
+          { path: 'faq', element: <FaqPageRoute /> },
+          { path: 'faqs', element: <Navigate to="/faq" replace /> },
           { path: 'insights', element: <InsightsPageRoute /> },
           { path: 'insights/:slug', element: <InsightArticlePageRoute /> },
           { path: 'about', element: <AboutPageRoute /> },
