@@ -2,8 +2,8 @@
 import os
 import subprocess
 import time
-import urllib.request
 import urllib.error
+import urllib.request
 
 os.chdir(r"C:\Users\jmlus\light-speed-holdings")
 
