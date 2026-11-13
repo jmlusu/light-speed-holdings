@@ -1,4 +1,13 @@
 name: Verify Vite Dev Server
+
+# Smoke test: the dev server must actually boot and answer on its assigned port
+# (1441, per AGENTS.md section 5).
+#
+# History: this workflow ran `pnpm install` (pnpm is not the package manager
+# for this repo), started the server from a hard-coded developer-machine path
+# (C:\Users\jmlus\light-speed-holdings\scripts\dev\start-dev.ps1), and used a
+# Unix `/dev/null` redirect. It therefore failed on every push to main.
+# Repaired to use the same bun toolchain as `.github/workflows/site-principles-gate.yml`.
 on:
   push:
     branches: [main, develop]
@@ -7,15 +16,35 @@ on:
 
 jobs:
   vite-check:
-    runs-on: windows-latest
+    name: Verify Vite Dev Server
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+
       - name: Install dependencies
-        run: pnpm install
-      - name: Start Vite dev server
-        run: pm2 start "C:\\Users\\jmlus\\light-speed-holdings\\scripts\\dev\\start-dev.ps1" --name "vite-dev"
-        timeout-minutes: 2
-      - name: Verify server responding
-        run: curl --output /dev/null --silent --fail http://127.0.0.1:1441/
-      - name: Stop Vite dev server
-        run: pm2 delete vite-dev
+        run: bun install --frozen-lockfile
+
+      - name: Start dev server and verify it responds
+        run: |
+          bun run dev -- --port 1441 --host 127.0.0.1 > vite-dev.log 2>&1 &
+          DEV_PID=$!
+          status=1
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail --max-time 2 http://127.0.0.1:1441/ > /dev/null; then
+              echo "Vite dev server responded on http://127.0.0.1:1441/ (attempt ${attempt})."
+              status=0
+              break
+            fi
+            sleep 1
+          done
+          if [ "$status" -ne 0 ]; then
+            echo "::error::Vite dev server did not respond on http://127.0.0.1:1441/ within 30s."
+            echo "----- vite-dev.log -----"
+            cat vite-dev.log
+          fi
+          kill "$DEV_PID" 2>/dev/null || true
+          exit "$status"

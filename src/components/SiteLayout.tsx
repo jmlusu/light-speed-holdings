@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { FloatingNav } from './FloatingNav';
 import { SiteFooter } from './SiteFooter';
 import { ExecutiveBriefingModal } from './ExecutiveBriefingModal';
+import { BackToTop } from './BackToTop';
 import { useSite } from '../site-context';
 import { trackJourneyEvent, stageForRoute } from '../hooks/useJourneyEvents';
 import { scrollToHash } from '../hooks/useSmoothScroll';
@@ -82,6 +83,8 @@ export const SiteLayout: React.FC = () => {
         prefillSummary={briefingSummary}
         theme={theme}
       />
+
+      <BackToTop theme={theme} />
     </>
   );
 };
