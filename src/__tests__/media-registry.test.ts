@@ -132,7 +132,7 @@ describe('site media registry', () => {
       registry.assets.length,
       `media-registry.json should hold exactly 26 assets; found ${registry.assets.length}. ` +
         'Update the registry and this pinned count together.',
-    ).toBe(26);
+    ).toBe(28);
   });
 
   it('covers every image path referenced by site source and index.html', () => {
