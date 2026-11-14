@@ -31,7 +31,7 @@ interface FaqLike {
   evidence?: EvidenceEntry[];
 }
 
-const root = process.env.GITHUB_WORKSPACE || process.cwd(); // repo root, from CI env or local cwd
+const root = resolve(__dirname, '..', '..'); // repo root, resolved from test file directory
 
 const readJson = (relativePath: string): Record<string, unknown> =>
   JSON.parse(readFileSync(join(root, relativePath), 'utf8')) as Record<string, unknown>;
