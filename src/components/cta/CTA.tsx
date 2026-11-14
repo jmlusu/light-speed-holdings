@@ -40,7 +40,7 @@ export const CTAButton = React.forwardRef<HTMLButtonElement | HTMLAnchorElement,
       gap: tokens.spacing[2],
       fontFamily: tokens.typography.fontFamily.sans,
       fontWeight: tokens.typography.fontWeight.bold,
-      borderRadius: tokens.radius.small,
+      borderRadius: '9999px',
       border: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
       opacity: disabled ? 0.6 : 1,
@@ -68,12 +68,15 @@ export const CTAButton = React.forwardRef<HTMLButtonElement | HTMLAnchorElement,
       primary: {
         backgroundColor: colorTokens.cta.primary.background,
         color: colorTokens.cta.primary.text,
-        boxShadow: `0 4px 14px ${colorTokens.cta.primary.shadow}`,
+        boxShadow: `
+          inset 0 1px 1px rgba(255, 255, 255, 0.4),
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06)
+        `,
       },
       secondary: {
         backgroundColor: 'transparent',
         color: isDark ? colorTokens.white : colorTokens.navy,
-        border: `2px solid ${isDark ? colorTokens.white : colorTokens.navy}`,
       },
       contextual: {
         backgroundColor: 'transparent',

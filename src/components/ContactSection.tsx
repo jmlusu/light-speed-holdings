@@ -126,21 +126,21 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
 
   const activeStep = steps[currentStep - 1];
 
-  const fieldInputClass = `w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-ls-red transition-colors font-medium ${
+  const fieldInputClass = `w-full px-3.5 py-2.5 rounded-xl text-xs outline-none focus:ring-1 focus:ring-ls-red transition-all font-medium ${
     isLight
-      ? 'bg-ls-grey-light/90 border-ls-grey-dark text-ls-navy placeholder:text-ls-grey-light-text shadow-inner'
-      : 'bg-ls-navy border-ls-white/20 text-ls-white placeholder:text-ls-grey-light-text shadow-inner'
+      ? 'bg-ls-grey-light/90 text-ls-navy placeholder:text-ls-navy/50 shadow-inner'
+      : 'bg-ls-navy text-ls-white placeholder:text-ls-white/50 shadow-inner'
   }`;
   const labelClass = `block text-[11px] font-body tracking-wider mb-1 font-bold ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`;
 
   return (
-    <section id="contact" className={`py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full border-t ${
-      isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
+    <section id="contact" className={`py-24 px-6 lg:px-12 max-w-7xl mx-auto w-full ${
+      isLight ? 'text-ls-navy' : 'text-ls-white'
     }`}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 
         <div className="lg:col-span-5 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest font-bold">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest font-bold">
             <span>START A CONVERSATION</span>
           </div>
           <h1 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
@@ -148,13 +148,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
           }`}>
             Tell Us Where You Are
           </h1>
-          <p className={`text-justify text-sm sm:text-base leading-relaxed ${
+          <p className={`text-left text-sm sm:text-base leading-relaxed ${
             isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
             We will be honest about whether we can help, and exactly what it takes to start. A human reviews every submission and responds within two business days.
           </p>
 
-          <div className={`space-y-4 pt-4 border-t ${isLight ? 'border-ls-grey-dark' : 'border-ls-white/15'}`}>
+          <div className={`space-y-4 pt-4 ${isLight ? '' : ''}`}>
             <div className={`flex items-center gap-3 text-xs font-medium ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
               <ShieldCheck className="w-4 h-4 text-ls-cyan shrink-0" />
               <span>Strict non-disclosure agreement standard</span>
@@ -181,7 +181,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
             <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" />
 
             {/* Console Header Bar */}
-            <div className="flex items-center justify-between pb-3.5 mb-6 border-b border-ls-navy/10 dark:border-ls-white/10 px-1">
+            <div className="flex items-center justify-between pb-3.5 mb-6 px-1">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-ls-red shadow-[0_0_8px_rgba(230,57,70,0.9)]" />
                 <span className="font-body text-xs font-bold tracking-wider">
@@ -192,13 +192,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
 
             {contactSubmitted ? (
               <div className="py-12 text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-ls-cyan/20 text-ls-cyan border border-ls-cyan/40 flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(0,191,255,0.3)]">
+                <div className="w-16 h-16 rounded-full bg-ls-cyan/20 text-ls-cyan flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(0,191,255,0.3)]">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h3 className={`text-2xl font-black tracking-tight ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                   Message Received
                 </h3>
-                <p className={`text-justify text-sm max-w-md mx-auto leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                <p className={`text-left text-sm max-w-md mx-auto leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                   Thank you. A human will review your message and contact you directly within two business days.
                 </p>
                 {referenceId ? (
@@ -213,7 +213,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     setSubmitError(null);
                     setCurrentStep(1);
                   }}
-                  className="px-6 py-2.5 rounded-xl bg-ls-red text-ls-white font-bold text-xs tracking-wider cursor-pointer shadow-md hover:bg-ls-red transition-all"
+                  className="btn-milled btn-milled-primary px-6 py-2.5 rounded-xl bg-ls-red text-ls-white font-bold text-xs tracking-wider cursor-pointer shadow-md hover:bg-ls-red transition-all"
                 >
                   Submit Another Inquiry
                 </button>
@@ -231,14 +231,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                           type="button"
                           onClick={() => goToStep(step.id)}
                           aria-current={isActive ? 'step' : undefined}
-                          className={`px-2.5 py-1.5 rounded-lg text-[10px] font-body font-bold tracking-wider border transition-all cursor-pointer ${
+                          className={`btn-milled ${isActive ? 'btn-milled-primary' : 'btn-milled-secondary'} px-2.5 py-1.5 rounded-lg text-[10px] font-body font-bold tracking-wider transition-all cursor-pointer ${
                             isActive
-                              ? 'bg-ls-red/15 border-ls-red text-ls-red'
+                              ? 'bg-ls-red/15 text-ls-red'
                               : isDone
-                                ? 'bg-ls-cyan/10 border-ls-cyan/40 text-ls-cyan'
+                                ? 'bg-ls-cyan/10 text-ls-cyan'
                                 : isLight
-                                  ? 'bg-ls-grey-light/60 border-ls-grey-dark/50 text-ls-grey-dark'
-                                  : 'bg-ls-navy/60 border-ls-white/15 text-ls-grey-light-text'
+                                  ? 'bg-ls-grey-light/60 text-ls-grey-dark'
+                                  : 'bg-ls-navy/60 text-ls-grey-light-text'
                           }`}
                         >
                           {step.id}. {step.key}
@@ -379,8 +379,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
 
                   {/* Step 4: BUILD (review) */}
                   {currentStep === 4 && (
-                    <dl className={`space-y-3 text-xs rounded-xl border p-4 ${
-                      isLight ? 'border-ls-grey-dark/50 bg-ls-grey-light/50' : 'border-ls-white/10 bg-ls-navy/60'
+                    <dl className={`space-y-3 text-xs rounded-xl p-4 ${
+                      isLight ? 'bg-ls-grey-light/50' : 'bg-ls-navy/60'
                     }`}>
                       {[
                         ['Name', contactFormData.name],
@@ -422,10 +422,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                         <button
                           type="button"
                           onClick={prevStep}
-                          className={`inline-flex items-center gap-1.5 px-5 py-3 rounded-xl font-bold text-xs tracking-wider border transition-all cursor-pointer ${
+                          className={`btn-milled btn-milled-secondary inline-flex items-center gap-1.5 px-5 py-3 rounded-xl font-bold text-xs tracking-wider transition-all cursor-pointer ${
                             isLight
-                              ? 'border-ls-grey-dark text-ls-navy hover:bg-ls-grey-light'
-                              : 'border-ls-white/25 text-ls-white hover:bg-ls-white/5'
+                              ? 'text-ls-navy hover:bg-ls-grey-light'
+                              : 'text-ls-white hover:bg-ls-white/5'
                           }`}
                         >
                           <ChevronLeft className="w-3.5 h-3.5" />
@@ -435,7 +435,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                       <button
                         type="submit"
                         disabled={submitting || (currentStep < 5 && !canAdvance())}
-                        className="flex-1 py-3.5 rounded-xl bg-ls-red text-ls-white font-bold text-xs tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-ls-red/25 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="btn-milled btn-milled-primary flex-1 py-3.5 rounded-xl bg-ls-red text-ls-white font-bold text-xs tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-ls-red/25 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {currentStep < 5 ? (
                           <>

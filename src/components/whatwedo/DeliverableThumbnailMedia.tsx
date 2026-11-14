@@ -15,8 +15,8 @@ export const DeliverableThumbnailMedia: React.FC<{
   isLight: boolean;
 }> = ({ media, isLight }) => {
   if (!media || !isMediaEnabled()) return null;
-  const containerClass = `rounded-xl overflow-hidden border transition-all ${
-    isLight ? 'border-ls-grey-dark/30 bg-ls-white' : 'border-ls-white/15 bg-ls-navy/80'
+  const containerClass = `rounded-xl overflow-hidden transition-all ${
+    isLight ? 'bg-ls-white' : 'bg-ls-navy/80'
   }`;
 
   const renderThumbnail = () => {

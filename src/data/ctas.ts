@@ -1,7 +1,8 @@
-/* CTA registry — MASTER_SPEC §15.
+/* CTA registry — MASTER_SPEC §10 (CTA).
  * Canonical labels and destinations for every call to action on the site.
- * "Start a Conversation" is the single primary CTA (rebuild decision 2);
- * retired phrasing ("Book a Briefing", "Executive Briefing") must not return. */
+ * "ENGAGE LIGHTSPEED" is the single primary CTA (superseded "Start a Conversation"
+ * in the prototype rebuild); retired phrasing ("Book a Briefing", "Executive
+ * Briefing") must not return. */
 
 export interface Cta {
   label: string;
@@ -9,8 +10,8 @@ export interface Cta {
 }
 
 export const CTAS = {
-  /** Primary conversion CTA — every high-intent button funnels here. */
-  primary: { label: 'Start a Conversation', to: '/contact' },
+  /** Primary conversion CTA — persistent across all views. */
+  primary: { label: 'ENGAGE LIGHTSPEED', to: '/contact' },
   /** What We Do above-the-fold assessment request. */
   assessment: { label: 'Request an AI Readiness Assessment', to: '/contact' },
   /** Anchor jump to the service catalog on What We Do. */

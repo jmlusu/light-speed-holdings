@@ -6,21 +6,27 @@ import { SiteFooter } from '../components/SiteFooter';
 import { FaqSection } from '../components/site/FaqSection';
 
 /**
- * Footer → FAQ anchor contract: the footer's single FAQ link (/#faq) must
- * target an id="faq" section mounted on the home page with a scroll offset
- * for the sticky header. Guards the wiring shipped in PR #445.
+ * Footer → FAQ contract: the footer's single FAQ link must reach the FAQ surface.
+ * It targets the dedicated /faq page (the prototype IA promoted FAQ out of the
+ * home-page anchor into its own route); the home page still mounts FaqSection with
+ * id="faq" for direct anchor links.
  */
 
-describe('footer FAQ anchor contract', () => {
-  it('SiteFooter renders exactly one FAQ link, href "/#faq"', () => {
+describe('footer FAQ contract', () => {
+  it('SiteFooter renders exactly one FAQ link, href "/faq"', () => {
     render(
       <MemoryRouter>
         <SiteFooter theme="dark" />
       </MemoryRouter>,
     );
-    const faqLinks = screen.getAllByRole('link', { name: 'FAQ' });
+    const faqLinks = screen.getAllByRole('link', { name: /FAQ|Frequently Asked Questions/i });
     expect(faqLinks).toHaveLength(1);
-    expect(faqLinks[0].getAttribute('href')).toBe('/#faq');
+    expect(faqLinks[0].getAttribute('href')).toBe('/faq');
+  });
+
+  it('App declares the /faq route the footer links to', () => {
+    const app = readFileSync('src/App.tsx', 'utf8');
+    expect(app).toMatch(/path:\s*["']\/?faq["']/);
   });
 
   it('FaqSection exposes id="faq" with sticky-header scroll offset', () => {

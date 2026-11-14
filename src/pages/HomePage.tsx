@@ -1,15 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { CtaBand } from '../components/site/CtaBand';
-import { FaqSection } from '../components/site/FaqSection';
-import { StatusBadge } from '../site/StatusBadge';
-import { CategoryChip } from '../site/CategoryChip';
-import { PathwayCard } from '../site/PathwayCard';
-import { ArticleCard } from '../site/ArticleCard';
-import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
+import { HeroSection } from '../components/HeroSection';
+import { IntroductionSection } from '../components/home/IntroductionSection';
+import { LightSpeedProposition } from '../components/home/LightSpeedProposition';
 import { VisitorPathsSection } from '../components/home/VisitorPathsSection';
+import { WhatWeBuildGrid } from '../components/home/WhatWeBuildGrid';
+import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
+import { IntentToExecutionLifecycle } from '../components/home/IntentToExecutionLifecycle';
 import { HumanApprovalMatrix } from '../components/HumanApprovalMatrix';
-import homeCopy, { VALUES } from '../data/homeCopy';
+
+import { InsightsSection } from '../components/home/InsightsSection';
+import { AboutSection } from '../components/home/AboutSection';
+import { FaqSection } from '../components/site/FaqSection';
+import { DistinctCTA } from '../components/DistinctCTA';
+import { Footer } from '../components/footer/Footer';
 
 interface HomePageProps {
   theme: 'light' | 'dark';
@@ -20,241 +23,50 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
   const isLight = theme === 'light';
 
   return (
-    <div className="relative">
-      {/* Hero: dark mode hero with light-trails road image, crimson pill CTA + outline play CTA */}
-      <div
-        className={`relative overflow-hidden min-h-screen lg:min-h-[700px] ${isLight
-          ? 'bg-ls-white/95'
-          : 'bg-ls-navy/80'}
-        `}
-      >
-        {/* Brand hero image with dark overlay */}
-        <img
-          src="/brand/digital/Homepage_Hero_High_fidelity.jpeg"
-          alt="Lilongwe at dawn with network visualization overlay - cinematic view of Malawi's capital at sunrise with digital grid overlay representing connected AI agents"
-          className="absolute inset-0 object-cover w-full h-full transition-opacity duration-500 ease-out"
-        />
-        <div
-          className={`absolute inset-0 flex items-center justify-center pointer-events-none ${isLight
-            ? 'bg-black/40'
-            : 'bg-black/60'}
-          `}
-        />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-20 sm:py-32">
-          <div className="grid lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full border px-2 py-1 font-body text-xs font-bold tracking-widest uppercase bg-ls-red/10 text-ls-red border-ls-red/30">
-                AI-NATIVE OPERATING MODEL
-              </span>
-              <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight font-display text-ls-white break-all">
-                Powering the next<br />
-                generation of<br />
-                AI-native enterprises
-              </h1>
-              <p className="mt-6 text-lg sm:text-xl lg:text-2xl text-ls-white/90 max-w-xl leading-relaxed">
-                A unified operating model for building, deploying, and governing AI agents at enterprise scale. From human intent to governed delivery, every layer is instrumented, observable, and under human authority.
-              </p>
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                {/* Crimson pill CTA */}
-                <button
-                  onClick={() => onRequestBriefing?.('Start a Conversation')}
-                  className="rounded-full px-6 py-3 text-xs font-bold tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-colors hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ls-cyan focus-visible:ring-offset-2"
-                  aria-label="Start a Conversation"
-                >
-                  Start a Conversation
-                </button>
-                {/* Outline play CTA */}
-                <button
-                  onClick={() => onRequestBriefing?.('Request an AI Readiness Assessment')}
-                  className="rounded-full px-6 py-3 text-xs font-bold tracking-widest uppercase border border-ls-red text-ls-red shadow-lg shadow-ls-red/20 transition-colors hover:bg-ls-red/10 hover:scale-[1.01] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ls-cyan focus-visible:ring-offset-2"
-                  aria-label="Request an AI Readiness Assessment"
-                >
-                  Request an AI Readiness Assessment
-                </button>
-              </div>
-            </div>
-            {/* Logo lockup over the hero image */}
-            <div className="relative pt-20">
-              <img
-                src="/logo-full-v2.svg"
-                alt="LightSpeed logo"
-                className="max-w-xs"
-              />
-              <p className="mt-2 text-xs font-body font-bold tracking-widest text-ls-red uppercase">LightSpeed Holdings</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className={`relative min-h-screen ${isLight ? 'bg-[#F7F8F9] text-ls-navy' : 'bg-[#0A0D14] text-white'}`}>
+      <div className={`fixed inset-0 z-0 pointer-events-none ${isLight ? 'bg-[#F7F8F9]' : 'bg-[#0A0D14]'}`} aria-hidden="true" />
 
-      {/* CTABand at top of content area */}
-      <CtaBand
-        theme={theme}
-        title="Powering the next generation of AI-native enterprises"
-        text="A unified operating model for building, deploying, and governing AI agents at enterprise scale. From human intent to governed delivery, every layer is instrumented, observable, and under human authority."
-        ctaLabel="Start a Conversation"
-        ctaTo="/contact"
-        onRequestBriefing={onRequestBriefing}
-        ctaLevel="primary"
-      />
+      <main id="main-content" className="relative z-10 w-full">
+        {/* Sequence 1 - HERO */}
+        <HeroSection theme={theme} onRequestBriefing={onRequestBriefing} />
 
-      {/* 1b. Introductory value pillars — four pillars establishing the value framework */}
-      <section
-        className={`py-24 sm:py-32 md:py-36 bg-ls-white dark:bg-ls-navy`}
-        aria-label="Value pillars"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight font-display text-ls-navy">
-              Our Value Framework
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {VALUES.map((val, idx) => (
-              <div
-                key={val.title}
-                className="p-4 rounded-3xl border hover:shadow-xl transition-shadow text-center"
-              >
-                <span className="font-body text-[10px] font-bold tracking-widest text-ls-red uppercase mb-2">{val.title}</span>
-                <p className="text-sm sm:text-base leading-relaxed text-ls-grey-dark/60">
-                  {val.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        {/* Sequence 2 - INTRODUCTION */}
+        <IntroductionSection theme={theme} />
 
-      {/* 1c. Five-tier Human Approval Matrix — interactive component restored from AI Studio prototype */}
-      <HumanApprovalMatrix theme={theme} />
+        {/* Sequence 3 - LIGHTSPEED PROPOSITION */}
+        <LightSpeedProposition theme={theme} />
 
-      {/* 2. "How would you like to engage" with 4 PathwayCards */}
-      <section
-        className={`py-24 sm:py-32 md:py-36 bg-ls-white dark:bg-ls-navy`}
-        aria-label="Visitor pathways"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full border px-2.5 py-1 font-body text-[10px] font-bold tracking-widest text-ls-red/60">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 12.55a11 11 0 0 1 14.08 0" />
-              </svg>
-              Choose Your Path
-            </span>
-            <h2 className="mt-4 text-3xl sm:text-4xl font-black tracking-tight font-display text-ls-navy">
-              How would you like to engage?
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {homeCopy.pathwayCards.map((card, idx) => (
-              <PathwayCard
-                key={card.id}
-                index={idx + 1}
-                theme={theme}
-                {...card}
-                onRequestBriefing={onRequestBriefing}
-              />
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <Link
-              to="/ask"
-              className="inline-flex items-center gap-1.5 font-body text-xs font-bold tracking-widest uppercase text-ls-navy transition-colors hover:text-ls-navy/80"
-            >
-              Not sure which path fits? Ask LightSpeed
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 12.55a11 11 0 0 1 14.08 0" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
+        {/* Sequence 4 - VISITOR PATHS */}
+        <VisitorPathsSection theme={theme} />
 
-      {/* 3. H-A-O-M-T-G-V node diagram (responsive at 390px) */}
-      <HAOMTGVSection theme={theme} />
+        {/* Sequence 5 - COMMERCIAL SOLUTIONS OVERVIEW */}
+        <WhatWeBuildGrid theme={theme} />
 
-      {/* 4. Solutions grid with status chips */}
-      <section
-        className={`py-24 sm:py-32 md:py-36 bg-ls-mist-subtle dark:bg-ls-navy/50`}
-        aria-label="Solutions grid"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight font-display text-ls-navy">
-              Practical Business Outcomes
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-            {homeCopy.solutionsGrid.map((solution) => (
-              <div
-                key={solution.id}
-                className="rounded-3xl p-5 border flex flex-col gap-3 group hover:shadow-xl transition-shadow"
-              >
-                <StatusBadge status={solution.status} theme={theme} />
-                <h3 className="font-display font-bold text-base tracking-tight">
-                  {solution.title}
-                </h3>
-                <p className="text-sm sm:text-base leading-relaxed text-ls-grey-dark/60">
-                  {solution.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        {/* Sequence 6 - TECHNICAL GOVERNANCE (Technical sequence grouping starts) */}
+        <HAOMTGVSection theme={theme} />
+        <IntentToExecutionLifecycle theme={theme} />
 
-      {/* 5. Pharos teaser — 3 ArticleCards with CategoryChips */}
-      <section
-        className={`py-24 sm:py-32 md:py-36 bg-ls-white dark:bg-ls-navy`}
-        aria-label="Pharos teaser"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {homeCopy.pharosTeaser.map((article) => (
-              <ArticleCard
-                key={article.id}
-                theme={theme}
-                title={article.title}
-                excerpt={article.excerpt}
-                category={article.category}
-                slug={article.slug}
-                readTime={article.readTime}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+        {/* Sequence 7 - HUMAN APPROVAL MATRIX */}
+        <HumanApprovalMatrix theme={theme} />
 
-      {/* 6. CTABand at bottom */}
-      <CtaBand
-        theme={theme}
-        title="Start a Conversation"
-        text="Tell us where your organisation is today. We will be honest about whether we can help, and exactly what it takes to start."
-        ctaLabel="Start a Conversation"
-        ctaTo="/contact"
-        onRequestBriefing={onRequestBriefing}
-        ctaLevel="primary"
-      />
+        {/* Sequence 8 - WORKFORCE REGISTRY */}
+        {/* Sequence 8 - WORKFORCE REGISTRY REMOVED */}
 
-      {/* 7. FAQ — target of the footer /#faq link */}
-      <FaqSection id="faq" theme={theme} />
+        {/* Sequence 9 - PHAROS HIGHLIGHTS */}
+        <InsightsSection theme={theme} />
+
+        {/* Sequence 10 - WHO WE ARE */}
+        <AboutSection theme={theme} />
+
+        {/* Sequence 11 - FAQ */}
+        <FaqSection theme={theme} id="faq" />
+
+        {/* Final CTA */}
+        <DistinctCTA />
+
+        {/* Global Footer */}
+        <Footer theme={theme} />
+      </main>
     </div>
   );
 };

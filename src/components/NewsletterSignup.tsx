@@ -76,13 +76,13 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
       <section
         id={id}
         aria-labelledby={id ? `${id}-heading` : undefined}
-        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full py-10 ${
+        className={`px-6 lg:px-12 max-w-7xl mx-auto w-full py-10 ${
           isLight ? 'text-ls-navy' : 'text-ls-white'
         }`}
       >
         <div
-          className={`rounded-3xl border p-6 sm:p-8 flex items-start gap-4 ${
-            isLight ? 'bg-ls-cyan/10 border-ls-cyan/40' : 'bg-ls-cyan/10 border-ls-cyan/30'
+          className={`rounded-3xl p-6 sm:p-8 flex items-start gap-4 ${
+            isLight ? 'bg-ls-cyan/10' : 'bg-ls-cyan/10'
           }`}
         >
           <CheckCircle2 className="w-6 h-6 text-ls-cyan shrink-0" aria-hidden="true" />
@@ -111,13 +111,13 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
     <section
       id={id}
       aria-labelledby={id ? `${id}-heading` : undefined}
-      className={`px-4 sm:px-8 max-w-7xl mx-auto w-full py-10 border-t ${
-        isLight ? 'border-ls-grey-dark/40 text-ls-navy' : 'border-ls-white/10 text-ls-white'
+      className={`px-6 lg:px-12 max-w-7xl mx-auto w-full py-10 ${
+        isLight ? 'text-ls-navy' : 'text-ls-white'
       }`}
     >
-      <div className="rounded-3xl border p-6 sm:p-10 bg-ls-navy text-ls-white border-ls-white/15 shadow-xl">
+      <div className="rounded-3xl p-6 sm:p-10 bg-ls-navy text-ls-white shadow-xl">
         <div className="max-w-2xl mx-auto text-center space-y-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest font-bold">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest font-bold">
             <Mail className="w-3.5 h-3.5" aria-hidden="true" />
             <span>NEWSLETTER</span>
           </div>
@@ -140,7 +140,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
                   autoComplete="name"
                   value={formData.name}
                   onChange={(e) => setFormData((f) => ({ ...f, name: e.target.value }))}
-                  className="w-full rounded-xl border border-ls-white/20 bg-ls-white/5 px-4 py-3 text-sm text-ls-white placeholder:text-ls-grey-light-text/70 focus:outline-none focus:border-ls-cyan"
+                  className="w-full rounded-xl bg-ls-white/5 px-4 py-3 text-sm text-ls-white placeholder:text-ls-grey-light-text/70 focus:outline-none focus:ring-1 focus:ring-ls-cyan"
                   placeholder="Your name"
                 />
               </label>
@@ -154,7 +154,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
                   autoComplete="email"
                   value={formData.email}
                   onChange={(e) => setFormData((f) => ({ ...f, email: e.target.value }))}
-                  className="w-full rounded-xl border border-ls-white/20 bg-ls-white/5 px-4 py-3 text-sm text-ls-white placeholder:text-ls-grey-light-text/70 focus:outline-none focus:border-ls-cyan"
+                  className="w-full rounded-xl bg-ls-white/5 px-4 py-3 text-sm text-ls-white placeholder:text-ls-grey-light-text/70 focus:outline-none focus:ring-1 focus:ring-ls-cyan"
                   placeholder="you@company.com"
                 />
               </label>
@@ -183,7 +183,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
             <button
               type="submit"
               disabled={submitting || Boolean(siteKey && !turnstileToken)}
-              className="inline-flex w-full items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-milled btn-milled-primary inline-flex w-full items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? 'Subscribing…' : 'Subscribe'}
               <Send className="w-3.5 h-3.5" aria-hidden="true" />

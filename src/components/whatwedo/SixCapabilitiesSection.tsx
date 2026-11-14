@@ -12,6 +12,7 @@ interface CapabilityDetail {
   statusColor: string;
   icon: any;
   icon3d: Icon3DName;
+  image: string;
   whatItIs: string;
   problem: string;
   whatWeBuild: string[];
@@ -21,7 +22,7 @@ interface CapabilityDetail {
   relatedResearch?: { title: string; slug: string }[];
 }
 
-const SIX_CAPABILITIES: readonly [CapabilityDetail, ...CapabilityDetail[]] = [
+const SIX_CAPABILITIES: CapabilityDetail[] = [
   {
     id: 'cap-1',
     num: '01',
@@ -30,6 +31,7 @@ const SIX_CAPABILITIES: readonly [CapabilityDetail, ...CapabilityDetail[]] = [
     statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: Building2,
     icon3d: 'home',
+    image: '/src/assets/images/cap1_company_building_1793817051020.jpg',
     whatItIs: 'Strategy-to-build capability for designing, launching, and scaling new enterprise entities where AI agents perform core execution.',
     problem: 'Traditional startup launching incurs heavy early management overhead, manual hiring delays, and slow operational ramp-up.',
     whatWeBuild: [
@@ -50,6 +52,7 @@ const SIX_CAPABILITIES: readonly [CapabilityDetail, ...CapabilityDetail[]] = [
     statusColor: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/20',
     icon: Zap,
     icon3d: 'lightning',
+    image: '/src/assets/images/cap2_workflow_automation_1793817065625.jpg',
     whatItIs: 'Process compression technology transforming multi-step manual tasks into automated, deterministic execution paths.',
     problem: 'Enterprise workflows get blocked waiting on staff availability, manual copy-pasting across software, and email sign-off chains.',
     whatWeBuild: [
@@ -69,6 +72,7 @@ const SIX_CAPABILITIES: readonly [CapabilityDetail, ...CapabilityDetail[]] = [
     statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: GitFork,
     icon3d: 'orchestration',
+    image: '/src/assets/images/cap3_agentic_orchestration_1793817079580.jpg',
     whatItIs: 'Multi-agent orchestration graphs that break complex business problems into discrete, coordinated sub-tasks.',
     problem: 'Single general-purpose chatbots fail at complex, multi-step operations requiring domain specialization and strict state control.',
     whatWeBuild: [
@@ -89,6 +93,7 @@ const SIX_CAPABILITIES: readonly [CapabilityDetail, ...CapabilityDetail[]] = [
     statusColor: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
     icon: Network,
     icon3d: 'network',
+    image: '/src/assets/images/cap4_integration_pure_1793817124475.jpg',
     whatItIs: 'Deep integration architecture connecting AI models safely to core ERP, CRM, database, and internal software stacks.',
     problem: 'Siloed AI prototypes cannot securely interact with existing legacy databases or execute real-world transactional writes.',
     whatWeBuild: [
@@ -108,6 +113,7 @@ const SIX_CAPABILITIES: readonly [CapabilityDetail, ...CapabilityDetail[]] = [
     statusColor: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/20',
     icon: HardDrive,
     icon3d: 'memory',
+    image: '/src/assets/images/cap5_organizational_memory_1793817139478.jpg',
     whatItIs: 'Persistent contextual database architecture ensuring historical lessons, policies, and domain knowledge ground every agent action.',
     problem: 'Institutional knowledge is lost when employees depart or rotate, forcing teams to solve the same problems repeatedly.',
     whatWeBuild: [
@@ -127,6 +133,7 @@ const SIX_CAPABILITIES: readonly [CapabilityDetail, ...CapabilityDetail[]] = [
     statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: ShieldCheck,
     icon3d: 'governance',
+    image: '/src/assets/images/cap6_governance_infrastructure_1793817153646.jpg',
     whatItIs: 'Risk-classified governance framework enforcing human approval gates, compliance checks, and immutable cryptographic audit logging.',
     problem: 'Uncontrolled AI deployment creates reputational risk, regulatory non-compliance, and catastrophic hallucinated execution.',
     whatWeBuild: [
@@ -309,21 +316,15 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
               isLight ? 'bg-slate-50 border-slate-200' : 'bg-black/40 border-white/10'
             }`}>
               <div>
-                {/* Architectural visual placeholder - the source asset set is not
-                    part of this repository, so this panel is rendered in CSS
-                    rather than pointing at a path that does not resolve. */}
+                {/* Architectural Visualization Preview */}
                 <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-6 border border-white/10 shadow-lg group">
-                  <div
-                    aria-hidden="true"
-                    className={`absolute inset-0 ${
-                      isLight
-                        ? 'bg-gradient-to-br from-ls-navy via-ls-navy/80 to-ls-cyan/30'
-                        : 'bg-gradient-to-br from-ls-navy via-black/70 to-ls-cyan/20'
-                    }`}
+                  <img
+                    key={selectedCap.id}
+                    src={selectedCap.image}
+                    alt={`${selectedCap.title} architectural visualization`}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    loading="lazy"
                   />
-                  <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
-                    <Icon3D name={selectedCap.icon3d} size="lg" />
-                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-3">
                     <span className="text-[10px] font-mono font-bold text-white tracking-widest uppercase bg-black/60 px-2.5 py-1 rounded backdrop-blur-sm border border-white/20">
                       Capability {selectedCap.num} Architecture

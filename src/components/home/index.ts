@@ -1,10 +1,9 @@
 export { ScrimPanel } from './ScrimPanel';
 export { HomeSection } from './HomeSection';
 export { ChapterRail } from './ChapterRail';
+export { IntroductionSection } from './IntroductionSection';
 export { VisitorPathsSection } from './VisitorPathsSection';
 export { HAOMTGVSection } from './HAOMTGVSection';
-export { AICompanyBuilderSection } from './AICompanyBuilderSection';
-export { WorkforceSection } from './WorkforceSection';
 export { SolutionsSection } from './SolutionsSection';
 export { UseCasesSection } from './UseCasesSection';
 export { InsightsSection } from './InsightsSection';

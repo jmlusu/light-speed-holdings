@@ -18,59 +18,47 @@ const renderNav = (
 const primaryNav = () => screen.getByRole('navigation', { name: 'Primary' });
 const toggle = () => screen.getByRole('button', { name: /toggle navigation menu/i });
 
-describe('FloatingNav — SPEC 10-item primary navigation', () => {
-  it('renders the ten SPEC links in order', () => {
+describe('FloatingNav — primary navigation', () => {
+  it('renders the primary links in order', () => {
     renderNav();
     const links = within(primaryNav()).getAllByRole('link');
     expect(links.map((l) => l.textContent)).toEqual([
       'Home',
       'What We Do',
       'Pharos',
-      'Venture Studio',
-      'AI Company Builder',
-      'Solutions',
-      'Use Cases',
-      'Sectors',
-      'Insights',
-      'About',
+      'Who We Are',
     ]);
   });
 
-  it('exports the nav array in the same SPEC order', () => {
+  it('exports the nav array in the same order', () => {
     expect(NAV_LINKS.map((l) => l.name)).toEqual([
       'Home',
       'What We Do',
       'Pharos',
-      'Venture Studio',
-      'AI Company Builder',
-      'Solutions',
-      'Use Cases',
-      'Sectors',
-      'Insights',
-      'About',
+      'Who We Are',
     ]);
   });
 
   it('points the primary CTA at /contact and does not open the briefing modal (D2)', () => {
     const onRequestBriefing = vi.fn();
     renderNav('dark', '/', onRequestBriefing);
-    const cta = screen.getByRole('link', { name: 'Start a Conversation' });
+    const cta = screen.getByRole('link', { name: 'ENGAGE LIGHTSPEED' });
     expect(cta).toHaveAttribute('href', '/contact');
     fireEvent.click(cta);
     expect(onRequestBriefing).not.toHaveBeenCalled();
   });
 
   it('marks the active route with aria-current="page"', () => {
-    renderNav('light', '/sectors');
-    const sectors = within(primaryNav()).getByRole('link', { name: 'Sectors' });
-    expect(sectors).toHaveAttribute('aria-current', 'page');
+    renderNav('light', '/insights');
+    const pharos = within(primaryNav()).getByRole('link', { name: 'Pharos' });
+    expect(pharos).toHaveAttribute('aria-current', 'page');
     expect(within(primaryNav()).getByRole('link', { name: 'Home' })).not.toHaveAttribute('aria-current');
   });
 
   it('treats detail routes as their parent section', () => {
-    renderNav('dark', '/use-cases/uc-js-bar');
-    const useCases = within(primaryNav()).getByRole('link', { name: 'Use Cases' });
-    expect(useCases).toHaveAttribute('aria-current', 'page');
+    renderNav('dark', '/insights/open-source-cost-architecture');
+    const pharos = within(primaryNav()).getByRole('link', { name: 'Pharos' });
+    expect(pharos).toHaveAttribute('aria-current', 'page');
   });
 
   it('exposes aria-expanded on the mobile toggle', () => {

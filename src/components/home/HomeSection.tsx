@@ -3,36 +3,53 @@ import { ScrimPanel } from './ScrimPanel';
 
 interface HomeSectionProps {
   id: string;
-  /** Accessible name — SectionHeading renders no id, so aria-labelledby targets do not exist. */
   label: string;
   theme: 'light' | 'dark';
-  /** Wrap children in a translucent scrim. Off for sections with their own solid panel. */
   scrim?: boolean;
   className?: string;
+  bgImage?: string;
+  variant?: 'primary' | 'secondary';
   children: React.ReactNode;
 }
 
-/**
- * Chapter shell for the homepage: a `<section>` with a stable id for the
- * chapter rail, `scroll-mt` so native #hash jumps clear the fixed nav, and
- * `tabIndex={-1}` so the rail can move focus after a smooth scroll.
- */
 export const HomeSection: React.FC<HomeSectionProps> = ({
   id,
   label,
   theme,
   scrim = true,
   className = '',
+  bgImage,
+  variant = 'primary',
   children,
-}) => (
-  <section
-    id={id}
-    aria-label={label}
-    tabIndex={-1}
-    className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 scroll-mt-28 ${className}`}
-  >
-    {scrim ? <ScrimPanel theme={theme}>{children}</ScrimPanel> : children}
-  </section>
-);
+}) => {
+  const isLight = theme === 'light';
+  const bgClass = variant === 'secondary'
+    ? (isLight ? 'bg-[#F2F2F2] text-ls-navy' : 'bg-[#1A1D21] text-white')
+    : (isLight ? 'bg-[#F7F8F9] text-ls-navy' : 'bg-[#121518] text-white');
+
+  return (
+    <section
+      id={id}
+      aria-label={label}
+      tabIndex={-1}
+      className={`relative w-full py-[100px] px-6 lg:px-12 scroll-mt-28 overflow-hidden transition-colors ${bgClass} ${className}`}
+    >
+      {bgImage && (
+        <div
+          className="absolute inset-0 z-0 pointer-events-none"
+          style={{
+            backgroundImage: `url(${bgImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.12,
+          }}
+        />
+      )}
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
+        {scrim ? <ScrimPanel theme={theme}>{children}</ScrimPanel> : children}
+      </div>
+    </section>
+  );
+};
 
 export default HomeSection;

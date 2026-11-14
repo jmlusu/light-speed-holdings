@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Layers, MessageCircleQuestion, ShieldCheck, Target, type LucideIcon } from 'lucide-react';
+import { ArrowRight, MessageCircleQuestion } from 'lucide-react';
 import { SectionHeading } from '../site/SectionHeading';
 import { Reveal } from '../Reveal';
 import { HomeSection } from './HomeSection';
@@ -14,58 +14,68 @@ interface VisitorPathCard {
   stage: string;
   intent: string;
   body: string;
-  Icon: LucideIcon;
+  image: string;
   primary: { label: string; to: string };
   secondary: { label: string; to: string }[];
   accent: 'red' | 'cyan' | 'navy';
 }
 
-/** §8 Homepage Routing Principle - the three major visitor pathways. */
+/** §8 Homepage Routing Principle - the four major visitor pathways. */
 const VISITOR_PATHS: VisitorPathCard[] = [
   {
-    id: 'business-problem',
-    stage: 'EXPLORATION',
-    intent: 'I have a business problem',
-    body: 'Start from the outcome you need. The solution framework maps common problems to what we ship, and each solution links to the sectors where it applies.',
-    Icon: Target,
-    primary: { label: 'Explore Solutions', to: '/solutions' },
+    id: 'business-leaders',
+    stage: 'STRATEGY',
+    intent: 'Business Leaders',
+    body: 'Navigate the governed agentic operating model to design and launch AI systems that scale safely.',
+    image: '/src/assets/images/audience_business_leaders_1793515174408.jpg',
+    primary: { label: 'How We Work', to: '/what-we-do' },
     secondary: [
-      { label: 'How we work', to: '/what-we-do' },
+      { label: 'HAOMTGV Framework', to: '/haomtgv' },
     ],
     accent: 'red',
   },
   {
-    id: 'understand',
-    stage: 'AWARENESS',
-    intent: 'I want to understand AI-native business',
-    body: 'Walk the model itself: the operating model, the AI Company Builder lifecycle, and the 90-role workforce that runs it day to day.',
-    Icon: Layers,
-    primary: { label: 'Explore the AI Company Builder', to: '/ai-company-builder' },
+    id: 'partners',
+    stage: 'COLLABORATION',
+    intent: 'Partners',
+    body: 'Collaborate with LightSpeed to build integrated agentic ecosystems for the African market.',
+    image: '/src/assets/images/audience_partners_1793515174751.jpg',
+    primary: { label: 'Partner With Us', to: '/contact' },
     secondary: [
-      { label: 'Operating model', to: '#haomtgv' },
-      { label: '90-role workforce', to: '#workforce' },
+      { label: 'Platform details', to: '/what-we-do' },
     ],
     accent: 'cyan',
   },
   {
-    id: 'work-with-us',
-    stage: 'INTENT',
-    intent: 'I want to work with LightSpeed',
-    body: 'Review the use cases and evidence status first, then start a conversation: an executive briefing, an AI readiness assessment, or a direct enquiry.',
-    Icon: ShieldCheck,
-    primary: { label: 'View Solutions', to: '/solutions' },
+    id: 'researchers',
+    stage: 'ENQUIRY',
+    intent: 'Researchers',
+    body: 'Access Pharos insights, research briefs, and policy commentary on the evolution of AI in Africa.',
+    image: '/src/assets/images/audience_researchers_1793515174898.jpg',
+    primary: { label: 'Read Insights', to: '/insights' },
     secondary: [
-      { label: 'Start a conversation', to: '/contact' },
-      { label: 'Browse solutions', to: '/solutions' },
+      { label: 'Pharos practice', to: '/about' },
     ],
     accent: 'navy',
+  },
+  {
+    id: 'policy-makers',
+    stage: 'GOVERNANCE',
+    intent: 'Policy Makers',
+    body: 'Engage with our governance frameworks and institutional strategy for sovereign AI deployment.',
+    image: '/src/assets/images/audience_policy_makers_1793515176396.jpg',
+    primary: { label: 'View Frameworks', to: '/haomtgv' },
+    secondary: [
+      { label: 'Policy briefs', to: '/insights' },
+    ],
+    accent: 'red',
   },
 ];
 
 const ACCENT_CHIP: Record<VisitorPathCard['accent'], string> = {
-  red: 'bg-ls-red/10 text-ls-red border-ls-red/30',
-  cyan: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/30',
-  navy: 'bg-ls-navy/10 text-ls-navy border-ls-navy/30 dark:bg-ls-white/10 dark:text-ls-white dark:border-ls-white/25',
+  red: 'bg-ls-red/10 text-ls-red',
+  cyan: 'bg-ls-cyan/10 text-ls-cyan',
+  navy: 'bg-ls-navy/10 text-ls-navy dark:bg-ls-white/10 dark:text-ls-white',
 };
 
 const ACCENT_ICON: Record<VisitorPathCard['accent'], string> = {
@@ -82,61 +92,64 @@ const ACCENT_ICON: Record<VisitorPathCard['accent'], string> = {
 export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
   return (
-    <HomeSection id="paths" label="Choose your path" theme={theme}>
+    <HomeSection id="paths" label="Choose your path" theme={theme} variant="secondary">
       <SectionHeading
         theme={theme}
         eyebrow="START HERE"
         title="Where Do You Want to Begin?"
-        lead="Three ways in. Pick the one that matches why you are here. Each path branches into deeper content; none of them dead-end."
+        lead="Four ways in. Pick the one that matches why you are here. Each path branches into deeper content; none of them dead-end."
       />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {VISITOR_PATHS.map((path, idx) => (
           <Reveal key={path.id} delay={idx * 0.06}>
             <article
-              className={`ripple-on h-full rounded-3xl p-6 border flex flex-col gap-4 transition-all hover:-translate-y-0.5 ${
-                isLight
-                  ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl'
-                  : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl'
-              }`}
+              className="ripple-on h-full rounded-3xl overflow-hidden flex flex-col transition-all hover:-translate-y-0.5 shadow-none group bg-transparent border-none"
             >
-              <div className="flex items-center justify-between gap-3">
-                <span className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1 font-body text-[10px] font-bold tracking-widest ${ACCENT_CHIP[path.accent]}`}>
-                  <path.Icon className="w-3.5 h-3.5" aria-hidden="true" />
-                  {path.stage}
-                </span>
-                <span className={`font-body text-[10px] font-bold tracking-widest ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  PATH {idx + 1}
-                </span>
+              <div className="h-40 overflow-hidden relative">
+                <img
+                  src={path.image}
+                  alt={path.intent}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className={`absolute inset-0 bg-gradient-to-t ${isLight ? 'from-ls-white/90' : 'from-[#070A40]'} to-transparent opacity-60`} />
+                <div className="absolute top-4 left-4">
+                  <span className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 font-body text-[10px] font-bold tracking-widest ${ACCENT_CHIP[path.accent]}`}>
+                    {path.stage}
+                  </span>
+                </div>
               </div>
 
+              <div className="p-6 flex flex-col flex-1">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <span className={`font-body text-[10px] font-bold tracking-widest ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
+                    PATH {idx + 1}
+                  </span>
+                </div>
+
               <div>
-                <h3 className={`font-display font-bold text-base sm:text-lg tracking-tight ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
+                <h3 className={`font-display font-bold text-base sm:text-lg tracking-tight ${isLight ? 'text-ls-navy' : 'text-white'}`}>
                   {path.intent}
                 </h3>
-                <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
                   {path.body}
                 </p>
               </div>
 
-              <div className="mt-auto space-y-3">
+              <div className="mt-auto space-y-3 pt-6">
                 <Link
                   to={path.primary.to}
-                  className={`ripple-on group inline-flex w-full items-center justify-between gap-2 rounded-2xl px-4 py-3 font-body text-xs font-bold tracking-widest transition-all ${
-                    isLight
-                      ? 'bg-ls-navy text-ls-white hover:bg-ls-red'
-                      : 'bg-ls-red text-ls-white hover:bg-ls-red/90'
-                  }`}
+                  className="ripple-on group inline-flex w-full items-center justify-between gap-2 rounded-2xl px-4 py-3 font-body text-xs font-bold tracking-widest transition-all bg-[#DC3641] text-white hover:bg-[#DC3641]/90"
                 >
                   <span>{path.primary.label}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                 </Link>
-                <div className={`flex flex-wrap gap-x-4 gap-y-1 pt-1 border-t ${isLight ? 'border-ls-grey-dark/30' : 'border-ls-white/15'}`}>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1">
                   {path.secondary.map((link) =>
                     link.to.startsWith('#') ? (
                       <a
                         key={link.label}
                         href={link.to}
-                        className={`font-body text-[11px] font-bold tracking-wide hover:text-ls-red transition-colors ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}
+                        className={`font-body text-[11px] font-bold tracking-wide hover:text-[#DC3641] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
                       >
                         {link.label} ↓
                       </a>
@@ -144,12 +157,13 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
                       <Link
                         key={link.label}
                         to={link.to}
-                        className={`font-body text-[11px] font-bold tracking-wide hover:text-ls-red transition-colors ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}
+                        className={`font-body text-[11px] font-bold tracking-wide hover:text-[#DC3641] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
                       >
                         {link.label} →
                       </Link>
                     ),
                   )}
+                </div>
                 </div>
               </div>
             </article>
@@ -157,15 +171,13 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
         ))}
       </div>
 
-      <div className={`mt-6 flex flex-wrap items-center justify-center gap-2 rounded-2xl border px-4 py-3 font-body text-xs ${
-        isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy' : 'bg-ls-navy/80 border-ls-white/15 text-ls-grey-light-text'
-      }`}>
-        <MessageCircleQuestion className="w-4 h-4 text-ls-red" aria-hidden="true" />
-        <span>Not sure which path fits?</span>
-        <Link to="/ask" className="font-bold tracking-wide text-ls-red hover:underline">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-2 rounded-2xl px-4 py-3 font-body text-xs bg-transparent border-none shadow-none">
+        <MessageCircleQuestion className="w-4 h-4 text-[#DC3641]" aria-hidden="true" />
+        <span className={isLight ? 'text-ls-navy' : 'text-white'}>Not sure which path fits?</span>
+        <Link to="/ask" className="font-bold tracking-wide text-[#00BFFF] hover:underline">
           Ask LightSpeed →
         </Link>
-        <span className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>
+        <span className={isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}>
           (answers from our published knowledge only)
         </span>
       </div>

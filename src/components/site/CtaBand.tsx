@@ -34,11 +34,11 @@ export const CtaBand: React.FC<CtaBandProps> = ({
   const isLight = theme === 'light';
   const ctaClasses = {
     primary:
-      'ripple-on ripple-on-scale inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]',
+      'btn-milled btn-milled-primary inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase text-ls-white cursor-pointer',
     secondary:
-      'ripple-on ripple-on-scale inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase border border-ls-red text-ls-red shadow-lg shadow-ls-red/20 transition-all cursor-pointer hover:bg-ls-red/10 hover:scale-[1.01] active:scale-[0.99]',
+      'btn-milled btn-milled-secondary inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase cursor-pointer',
     lowFriction:
-      'ripple-on inline-flex items-center justify-center gap-2.5 px-5 py-2.5 rounded-full font-medium text-xs tracking-wider border border-ls-cyan/30 text-ls-cyan/40 bg-ls-cyan/5 transition-all cursor-pointer hover:bg-ls-cyan/10 hover:scale-[1.01] active:scale-[0.99]',
+      'btn-milled inline-flex items-center justify-center gap-2.5 px-6 py-2.5 rounded-full font-bold text-xs tracking-wider text-ls-cyan bg-ls-cyan/10 hover:bg-ls-cyan/20 cursor-pointer',
   }[ctaLevel];
 
   const trackCta = (): void => {
@@ -54,19 +54,32 @@ export const CtaBand: React.FC<CtaBandProps> = ({
     <section
       id={id}
       aria-label="Call to action"
-      className={`px-4 sm:px-8 pt-16 sm:pt-20 pb-24 sm:pb-28 max-w-7xl mx-auto w-full border-t ${
-        isLight ? 'border-ls-grey-dark/40' : 'border-ls-white/10'
-      }`}
+      className={`px-6 lg:px-12 pt-16 sm:pt-20 pb-24 sm:pb-28 max-w-7xl mx-auto w-full`}
     >
       <Reveal>
         <div
-          className={`relative overflow-hidden rounded-3xl p-8 sm:p-12 text-center border shadow-xl ${
+          className={`relative overflow-hidden rounded-3xl p-8 sm:p-14 text-center shadow-2xl ${
             isLight
-              ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy'
-              : 'bg-ls-navy border-ls-white/15 text-ls-white'
+              ? 'bg-ls-white text-ls-navy'
+              : 'bg-ls-navy text-ls-white'
           }`}
         >
-          <div className="max-w-2xl mx-auto space-y-5">
+          {/* Subtle Architectural Visual Overlay */}
+          <div className="absolute inset-0 pointer-events-none select-none opacity-20 dark:opacity-25 z-0">
+            <img
+              src="/src/assets/images/pharos_cta_pure_1793817814419.jpg"
+              alt="Architectural visualization of research-to-enterprise bridge"
+              className="w-full h-full object-cover object-center filter saturate-110"
+              loading="lazy"
+            />
+            <div className={`absolute inset-0 ${
+              isLight
+                ? 'bg-gradient-to-t from-white via-white/85 to-white/95'
+                : 'bg-gradient-to-t from-[#070A40] via-[#070A40]/80 to-[#070A40]/90'
+            }`} />
+          </div>
+
+          <div className="max-w-2xl mx-auto space-y-5 relative z-10">
             <span className="text-xs font-body font-bold tracking-widest text-ls-red uppercase">
               THE NEXT STEP
             </span>

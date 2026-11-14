@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { Icon3D } from './common';
 
 interface MissionVisionValuesGridProps {
   theme: 'light' | 'dark';
@@ -11,41 +11,53 @@ export const MissionVisionValuesGrid: React.FC<MissionVisionValuesGridProps> = (
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-      <div className={isLight ? 'p-6 sm:p-7 rounded-3xl border relative overflow-hidden space-y-3.5 transition-all text-ls-grey-dark' : 'p-6 sm:p-7 rounded-3xl border relative overflow-hidden space-y-3.5 transition-all text-ls-grey-light-text'}>
-        <div className="p-3 rounded-2xl bg-ls-red/10 text-ls-red border border-ls-red/30 w-fit">
-          <span className="w-5 h-5" />
+      <div className={`p-6 sm:p-7 border relative overflow-hidden space-y-3.5 transition-colors ${
+        isLight ? 'bg-white border-slate-300 shadow-[4px_4px_0px_#070A40]' : 'bg-[#070A40] border-white/20 shadow-[4px_4px_0px_#00BFFF]'
+      }`}>
+        <div className="flex items-center shrink-0">
+          <Icon3D name="target" size="md" isInteractive />
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-ls-emerald" />
-          <h3 className={isLight ? 'text-base font-bold font-display text-ls-navy' : 'text-base font-bold font-display text-ls-white'}>Institutional Mission</h3>
+          <span className="w-2 h-2 bg-ls-cyan shadow-[0_0_6px_#00BFFF]" />
+          <h3 className={`text-base font-bold font-sans uppercase tracking-wider ${isLight ? 'text-ls-navy' : 'text-white'}`}>
+            Institutional Mission
+          </h3>
         </div>
-        <p className={isLight ? 'text-xs leading-relaxed text-ls-grey-dark' : 'text-xs leading-relaxed text-ls-grey-light-text'}>
+        <p className={`text-xs leading-relaxed font-sans ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
           To enable enterprises, public institutions, and growth companies across Malawi and African markets to design, build, and govern sovereign AI operating models that eliminate workflow latency and multiply human capability.
         </p>
       </div>
 
-      <div className={isLight ? 'p-6 sm:p-7 rounded-3xl border relative overflow-hidden space-y-3.5 transition-all text-ls-grey-dark' : 'p-6 sm:p-7 rounded-3xl border relative overflow-hidden space-y-3.5 transition-all text-ls-grey-light-text'}>
-        <div className="p-3 rounded-2xl bg-ls-red/10 text-ls-red border border-ls-red/30 w-fit">
-          <span className="w-5 h-5" />
+      <div className={`p-6 sm:p-7 border relative overflow-hidden space-y-3.5 transition-colors ${
+        isLight ? 'bg-white border-slate-300 shadow-[4px_4px_0px_#070A40]' : 'bg-[#070A40] border-white/20 shadow-[4px_4px_0px_#00BFFF]'
+      }`}>
+        <div className="flex items-center shrink-0">
+          <Icon3D name="compass" size="md" isInteractive />
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-ls-emerald" />
-          <h3 className={isLight ? 'text-base font-bold font-display text-ls-navy' : 'text-base font-bold font-display text-ls-white'}>Strategic Vision</h3>
+          <span className="w-2 h-2 bg-ls-cyan shadow-[0_0_6px_#00BFFF]" />
+          <h3 className={`text-base font-bold font-sans uppercase tracking-wider ${isLight ? 'text-ls-navy' : 'text-white'}`}>
+            Strategic Vision
+          </h3>
         </div>
-        <p className={isLight ? 'text-xs leading-relaxed text-ls-grey-dark' : 'text-xs leading-relaxed text-ls-grey-light-text'}>
+        <p className={`text-xs leading-relaxed font-sans ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
           To establish LightSpeed Holdings Limited as the premier AI-Native Operator and Partner, recognized across the globe for sovereign agentic systems, regional model laws, operational execution, and category-defining AI enterprise building.
         </p>
       </div>
 
-      <div className={isLight ? 'p-6 sm:p-7 rounded-3xl border relative overflow-hidden space-y-3.5 transition-all text-ls-grey-dark' : 'p-6 sm:p-7 rounded-3xl border relative overflow-hidden space-y-3.5 transition-all text-ls-grey-light-text'}>
-        <div className="p-3 rounded-2xl bg-ls-red/10 text-ls-red border border-ls-red/30 w-fit">
-          <span className="w-5 h-5" />
+      <div className={`p-6 sm:p-7 border relative overflow-hidden space-y-3.5 transition-colors ${
+        isLight ? 'bg-white border-slate-300 shadow-[4px_4px_0px_#070A40]' : 'bg-[#070A40] border-white/20 shadow-[4px_4px_0px_#00BFFF]'
+      }`}>
+        <div className="flex items-center shrink-0">
+          <Icon3D name="safe" size="md" isInteractive />
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-ls-emerald" />
-          <h3 className={isLight ? 'text-base font-bold font-display text-ls-navy' : 'text-base font-bold font-display text-ls-white'}>Why LightSpeed</h3>
+          <span className="w-2 h-2 bg-ls-cyan shadow-[0_0_6px_#00BFFF]" />
+          <h3 className={`text-base font-bold font-sans uppercase tracking-wider ${isLight ? 'text-ls-navy' : 'text-white'}`}>
+            Why LightSpeed
+          </h3>
         </div>
-        <p className={isLight ? 'text-xs leading-relaxed text-ls-grey-dark' : 'text-xs leading-relaxed text-ls-grey-light-text'}>
+        <p className={`text-xs leading-relaxed font-sans ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
           We are not a generic software outsourcer. We provide concrete architectural proof, OpenCode agent standards, African regulatory alignment, and fiduciary execution.
         </p>
       </div>
@@ -53,3 +65,5 @@ export const MissionVisionValuesGrid: React.FC<MissionVisionValuesGridProps> = (
     </div>
   );
 };
+
+export default MissionVisionValuesGrid;

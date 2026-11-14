@@ -248,9 +248,8 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
       {/* Background Architectural Atmosphere & Sector Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <img
-          src="/brand/digital/Homepage_Hero_High_fidelity.jpeg"
-          alt=""
-          aria-hidden="true"
+          src={isLight ? '/src/assets/images/before_after_sector_bg_daytime_1793890712154.jpg' : '/assets/aistudio/BeforeAfterSectorBackground_d538f2ff.jpg'}
+          alt="Workflow Collapsing Sector Architecture"
           className="w-full h-full object-cover object-center opacity-40 dark:opacity-55 transition-opacity duration-500 filter brightness-95"
           loading="lazy"
           referrerPolicy="no-referrer"
@@ -596,7 +595,7 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
                   {/* LightSpeed 3D Emblem Mark */}
                   <div className="w-10 h-10 sm:w-12 sm:h-12 mb-1 relative flex items-center justify-center">
                     <img
-                      src="/logo-icon-v2.svg"
+                      src="/brand/logo/logo-favicon-transparent.png"
                       alt="LightSpeed"
                       className={`w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(0,191,255,0.8)] ${
                         isSimulating ? 'animate-bounce' : 'animate-pulse'

@@ -87,10 +87,10 @@ describe('content governance (MASTER_SPEC §17)', () => {
   });
 });
 
-describe('CTA registry (MASTER_SPEC §15)', () => {
+describe('CTA registry (MASTER_SPEC §10)', () => {
   it('primary CTA is the single canonical label', () => {
-    expect(CTAS.primary.label).toBe('Start a Conversation');
-    expect(PRIMARY_CTA_LABEL).toBe('Start a Conversation');
+    expect(CTAS.primary.label).toBe('ENGAGE LIGHTSPEED');
+    expect(PRIMARY_CTA_LABEL).toBe('ENGAGE LIGHTSPEED');
     expect(CTAS.primary.to).toBe('/contact');
   });
 

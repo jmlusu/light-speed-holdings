@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Brain, ShieldCheck, TrendingUp } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { Icon3D, Icon3DName } from '../common';
 import { HAOMTGV_LAYERS } from './layers';
 
 const CYAN = '#22D3EE';
@@ -9,10 +10,10 @@ const RED = '#FF2D55';
 const SLAB_STEP = 105;
 const PARALLELOGRAM = 'polygon(12% 0%, 100% 0%, 88% 100%, 0% 100%)';
 
-const FEATURES = [
-  { Icon: Brain, label: 'Human authority' },
-  { Icon: ShieldCheck, label: 'Governance woven in' },
-  { Icon: TrendingUp, label: 'Measured value' },
+const FEATURES: { icon3d: Icon3DName; label: string }[] = [
+  { icon3d: 'users', label: 'Human authority' },
+  { icon3d: 'safe', label: 'Governance woven in' },
+  { icon3d: 'chart', label: 'Measured value' },
 ];
 
 export interface HaomtgvBlueprintHeroProps {
@@ -113,23 +114,19 @@ function LeftColumn({ activeIndex }: { activeIndex: number | null }) {
           animationDelay: '240ms',
         }}
       >
-        {FEATURES.map(({ Icon, label }, i) => (
+        {FEATURES.map(({ icon3d, label }, i) => (
           <li
             key={label}
-            className={`flex items-center gap-3 ${i > 0 ? 'border-l border-white/20 pl-8' : ''}`}
+            className={`flex items-center gap-3 ${i > 0 ? 'pl-8' : ''}`}
           >
-            <Icon
-              aria-hidden="true"
-              className="h-5 w-5"
-              style={{ color: CYAN, filter: 'drop-shadow(0 0 6px rgba(34,211,238,0.8))' }}
-            />
+            <Icon3D name={icon3d} size="xs" />
             <span className="text-sm text-slate-200">{label}</span>
           </li>
         ))}
       </ul>
 
       <Link
-        to="/ai-company-builder/#governance"
+        to="/haomtgv#governance"
         className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#FF2D55] px-6 py-3 text-sm font-bold tracking-wide text-[#050B1A] transition-all hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
         style={{
           animation: 'ls-hero-slide 0.7s ease-out backwards',
@@ -249,8 +246,8 @@ function Slab({ layer, isGov, isActive, glowColor, dimmed, i }: SlabProps) {
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
           boxShadow: isGov
-            ? 'inset 0 0 0 1px rgba(255,150,170,0.7), inset 0 0 20px rgba(255,120,140,0.3)'
-            : 'inset 0 0 0 1px rgba(125,211,252,0.6), inset 0 0 20px rgba(125,211,252,0.3)',
+            ? 'inset 0 0 20px rgba(255,120,140,0.3)'
+            : 'inset 0 0 20px rgba(125,211,252,0.3)',
           filter: `drop-shadow(0 0 ${isActive ? 26 : 18}px ${glowColor})`,
           transition: 'filter 300ms ease-out',
         }}
@@ -398,7 +395,7 @@ function LayerRowMobile({ layer, isActive, i, setActiveIndex }: LayerRowProps) {
       onMouseEnter={() => setActiveIndex(i)}
       onFocus={() => setActiveIndex(i)}
       onBlur={() => setActiveIndex(null)}
-      className="grid grid-cols-[48px_40px_1fr] items-start gap-x-4 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 p-4 bg-[#050B1A]/50 border border-white/10"
+      className="grid grid-cols-[48px_40px_1fr] items-start gap-x-4 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 p-4 bg-[#050B1A]/50"
       style={{
         transform: isActive ? 'translateX(6px)' : 'translateX(0)',
         transition: 'transform 200ms ease-out, box-shadow 200ms ease-out',
@@ -408,11 +405,8 @@ function LayerRowMobile({ layer, isActive, i, setActiveIndex }: LayerRowProps) {
       }}
     >
       <span
-        className="flex h-10 w-12 items-center justify-center rounded-md border text-sm font-bold transition-colors"
+        className="flex h-10 w-12 items-center justify-center rounded-md text-sm font-bold transition-colors"
         style={{
-          borderColor: isActive
-            ? 'rgba(34,211,238,0.7)'
-            : 'rgba(125,211,252,0.35)',
           color: isActive ? '#E0FBFF' : '#A5F3FC',
           background: 'rgba(5,11,26,0.55)',
           boxShadow: isActive
@@ -468,11 +462,8 @@ function LayerRow({ layer, isActive, i, setActiveIndex }: LayerRowProps) {
       }}
     >
       <span
-        className="flex h-10 w-12 items-center justify-center rounded-md border text-sm font-bold transition-colors"
+        className="flex h-10 w-12 items-center justify-center rounded-md text-sm font-bold transition-colors"
         style={{
-          borderColor: isActive
-            ? 'rgba(34,211,238,0.7)'
-            : 'rgba(125,211,252,0.35)',
           color: isActive ? '#E0FBFF' : '#A5F3FC',
           background: 'rgba(5,11,26,0.55)',
           boxShadow: isActive
@@ -531,7 +522,7 @@ export const HaomtgvBlueprintHero: React.FC<HaomtgvBlueprintHeroProps> = ({
   const showImage = Boolean(backgroundImage) && !imageFailed;
 
   return (
-    <section className="ls-hero-motion relative overflow-hidden border-b border-white/10 bg-[#050B1A] text-slate-100 lg:flex lg:min-h-screen lg:items-center">
+    <section className="ls-hero-motion relative overflow-hidden bg-[#050B1A] text-slate-100 lg:flex lg:min-h-screen lg:items-center">
       <BackgroundLayer
         showImage={showImage}
         backgroundImage={backgroundImage}

@@ -1,136 +1,145 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
 import { HaomtgvPage } from '../../pages/HAOMTGVPage';
 
+/**
+ * HAOMTGV framework page contract.
+ *
+ * The prototype redesign replaced the old seven-pillar card grid with a hero +
+ * four narrative sections (paradigm, dimensions explorer, governance matrix,
+ * closed-loop execution) + a closing CTA. These assertions cover the page's
+ * semantic structure and its links, not its decorative Tailwind tokens.
+ */
+
 const mockOnRequestBriefing = vi.fn();
 
-const renderPage = (theme: 'light' | 'dark' = 'dark') => {
-  return render(
+const renderPage = (theme: 'light' | 'dark' = 'dark') =>
+  render(
     <MemoryRouter>
       <HaomtgvPage theme={theme} onRequestBriefing={mockOnRequestBriefing} />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
-};
 
 describe('HaomtgvPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('renders hero section with brand color bar', () => {
+  it('renders the hero eyebrow "OPERATING ARCHITECTURE" in red', () => {
     renderPage('dark');
-    // Hero section is the first section, find it by its content
-    const heroSection = screen.getByText('OPERATING FRAMEWORK').closest('section');
-    expect(heroSection).toBeInTheDocument();
-    // Brand color bar at top of hero
-    const colorBars = heroSection?.querySelectorAll('div[style*="background-color"]');
-    expect(colorBars?.length).toBe(3); // navy, red, cyan
+    const eyebrow = screen.getByText('OPERATING ARCHITECTURE');
+    expect(eyebrow.parentElement).toHaveClass('text-ls-red');
   });
 
-  it('renders H1 with id="haomtgv-title" and cyan text', () => {
+  it('renders the page H1 with id="haomtgv-title"', () => {
     renderPage('light');
     const h1 = screen.getByRole('heading', { level: 1 });
     expect(h1).toHaveAttribute('id', 'haomtgv-title');
     expect(h1).toHaveTextContent('H-A-O-M-T-G-V');
-    expect(h1).toHaveClass('text-ls-cyan');
   });
 
-  it('renders eyebrow "OPERATING FRAMEWORK" in red', () => {
+  it('renders the hero subtitle naming human authority and measured value', () => {
     renderPage('dark');
-    expect(screen.getByText('OPERATING FRAMEWORK')).toHaveClass('text-ls-red');
+    expect(
+      screen.getByText('Human Authority. Governed Agents. Measured Value.'),
+    ).toBeInTheDocument();
   });
 
-  it('renders lead paragraph with correct copy', () => {
+  it('renders the official tagline badge', () => {
+    renderPage('dark');
+    expect(screen.getByText('ASPIRE. ACT. ACHIEVE.')).toBeInTheDocument();
+  });
+
+  it('renders a three-segment brand bar at the top and bottom of the page', () => {
     renderPage('light');
-    expect(screen.getByText(/Human authority through Agents, Orchestration, Memory, and Tools/)).toBeInTheDocument();
-    expect(screen.getByText(/Governance as an integral control layer/)).toBeInTheDocument();
-    expect(screen.getByText(/Not a linear pipeline; a working model/)).toBeInTheDocument();
+    const bars = document.querySelectorAll('div[style*="background-color"]');
+    // 3 segments in the hero + 3 in the closing brand bar.
+    expect(bars.length).toBe(6);
   });
 
-  it('renders CTA link to /ai-company-builder/#governance', () => {
+  it('renders the hero action buttons and anchors', () => {
     renderPage('dark');
-    const link = screen.getByRole('link', { name: /explore the framework/i });
-    expect(link).toHaveAttribute('href', '/ai-company-builder/#governance');
-    expect(link).toHaveClass('bg-ls-red');
-    expect(link).toHaveClass('text-ls-white');
+    expect(
+      screen.getByRole('button', { name: /Request Architecture Briefing/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Explore 7 Dimensions/i })).toHaveAttribute(
+      'href',
+      '#dimensions-explorer',
+    );
+    expect(screen.getByRole('link', { name: /Approval Matrix/i })).toHaveAttribute(
+      'href',
+      '#governance-matrix',
+    );
   });
 
-  it('renders 7-layer grid section with SectionHeading', () => {
+  it('requests an architecture briefing from the hero CTA', () => {
     renderPage('dark');
-    expect(screen.getByText('THE SEVEN LAYERS')).toBeInTheDocument();
-    expect(screen.getByText('How the Model Works')).toBeInTheDocument();
-    expect(screen.getByText(/Each layer has a distinct role/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Request Architecture Briefing/i }));
+    expect(mockOnRequestBriefing).toHaveBeenCalledTimes(1);
+    expect(mockOnRequestBriefing).toHaveBeenCalledWith(
+      expect.stringContaining('HAOMTGV Operating Architecture Briefing'),
+    );
   });
 
-  it('renders all 7 pillar cards in grid', () => {
+  it('renders the architectural paradigm section', () => {
+    renderPage('dark');
+    expect(screen.getByText('THE ARCHITECTURAL PARADIGM')).toBeInTheDocument();
+    expect(
+      screen.getByText('Beyond Black-Box Prompts: Governed Enterprise Execution'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the seven-dimensions explorer anchor target', () => {
+    renderPage('dark');
+    expect(screen.getByText('THE SEVEN DIMENSIONS')).toBeInTheDocument();
+    expect(screen.getByText('Unified Operating Architecture')).toBeInTheDocument();
+    expect(document.getElementById('dimensions-explorer')).not.toBeNull();
+  });
+
+  it('renders the five-tier governance matrix anchor target', () => {
+    renderPage('dark');
+    expect(screen.getByText('CONTINUOUS GOVERNANCE FABRIC')).toBeInTheDocument();
+    expect(screen.getByText('The Five-Tier Human Approval Matrix')).toBeInTheDocument();
+    expect(document.getElementById('governance-matrix')).not.toBeNull();
+  });
+
+  it('renders the closed-loop execution section', () => {
     renderPage('light');
-    const pillars = ['Human', 'Agents', 'Orchestration', 'Memory', 'Tools', 'Governance', 'Value'];
-    pillars.forEach((pillar) => {
-      expect(screen.getByText(pillar)).toBeInTheDocument();
-    });
+    expect(screen.getByText('CLOSED-LOOP EXECUTION')).toBeInTheDocument();
+    expect(screen.getByText('How the Architecture Executes Work')).toBeInTheDocument();
   });
 
-  it('applies governance ring accent on Governance card', () => {
+  it('renders the closing CTA with the canonical primary label', () => {
     renderPage('dark');
-    const governanceCard = screen.getByText('Governance').closest('article');
-    expect(governanceCard).toHaveClass('ring-1');
-    expect(governanceCard).toHaveClass('ring-ls-red/30');
+    expect(screen.getByText('ENTERPRISE DEPLOYMENT')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', {
+        level: 2,
+        name: 'Ready to Deploy Governed AI in Your Organization?',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /ENGAGE LIGHTSPEED/i })).toBeInTheDocument();
   });
 
-  it('renders pillar icons with cyan color', () => {
+  it('renders the related architectural links', () => {
+    renderPage('dark');
+    expect(screen.getByRole('link', { name: /Sectors/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Solutions/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /What We Do/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Pharos Insights/i })).toBeInTheDocument();
+  });
+
+  it('applies the light theme hero gradient', () => {
     renderPage('light');
-    const svgs = document.querySelectorAll('svg');
-    expect(svgs.length).toBeGreaterThanOrEqual(7);
+    const hero = screen.getByRole('heading', { level: 1 }).closest('section');
+    expect(hero).toHaveClass('from-ls-navy');
   });
 
-  it('renders governance callout section', () => {
+  it('applies the dark theme hero gradient', () => {
     renderPage('dark');
-    expect(screen.getByText('Governance Runs Through Every Layer')).toBeInTheDocument();
-    expect(screen.getByText(/Human direction is not a checkpoint at the end/)).toBeInTheDocument();
-  });
-
-  it('renders bottom brand color bar', () => {
-    renderPage('light');
-    const colorBars = document.querySelectorAll('div[style*="background-color"]');
-    // 3 in hero + 3 at bottom = 6 total
-    expect(colorBars.length).toBe(6);
-  });
-
-  it('renders RelatedLinks with correct links', () => {
-    renderPage('dark');
-    expect(screen.getByRole('link', { name: /ai company builder/i })).toHaveAttribute('href', '/ai-company-builder');
-    expect(screen.getByRole('link', { name: /solutions/i })).toHaveAttribute('href', '/solutions');
-    expect(screen.getByRole('link', { name: /insights/i })).toHaveAttribute('href', '/insights');
-  });
-
-  it('applies light theme classes correctly', () => {
-    renderPage('light');
-    const gridSection = screen.getByText('THE SEVEN LAYERS').closest('section');
-    expect(gridSection).toHaveClass('bg-ls-white');
-  });
-
-  it('applies dark theme classes correctly', () => {
-    renderPage('dark');
-    const gridSection = screen.getByText('THE SEVEN LAYERS').closest('section');
-    expect(gridSection).toHaveClass('bg-ls-navy-dark');
-  });
-
-  it('renders pillar descriptions with correct content', () => {
-    renderPage('dark');
-    expect(screen.getByText(/People set intent, own outcomes, and hold final decision authority/)).toBeInTheDocument();
-    expect(screen.getByText(/Specialized AI roles with explicit scopes/)).toBeInTheDocument();
-    expect(screen.getByText(/Deterministic routing of tasks, data, and decisions/)).toBeInTheDocument();
-    expect(screen.getByText(/Persistent contextual state across long-running work/)).toBeInTheDocument();
-    expect(screen.getByText(/Isolated execution environments for APIs, data, and actions/)).toBeInTheDocument();
-    expect(screen.getByText(/A control layer woven through the model/)).toBeInTheDocument();
-    expect(screen.getByText(/Measured business outcomes \(cost, latency, quality, and adoption\)/)).toBeInTheDocument();
-  });
-
-  it('uses Reveal component for staggered card animation', () => {
-    renderPage('dark');
-    const articles = document.querySelectorAll('article');
-    expect(articles.length).toBe(7);
+    const hero = screen.getByRole('heading', { level: 1 }).closest('section');
+    expect(hero).toHaveClass('from-ls-navy-dark');
   });
 });

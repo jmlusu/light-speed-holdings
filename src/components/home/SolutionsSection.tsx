@@ -20,7 +20,12 @@ const homeSolutions = [
 export const SolutionsSection: React.FC<SolutionsSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
   return (
-    <HomeSection id="solutions" label="Solutions" theme={theme}>
+    <HomeSection
+      id="solutions"
+      label="Solutions"
+      theme={theme}
+      variant="primary"
+    >
       <SectionHeading
         theme={theme}
         eyebrow="SOLUTIONS"
@@ -30,24 +35,37 @@ export const SolutionsSection: React.FC<SolutionsSectionProps> = ({ theme }) => 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {homeSolutions.map((sol, idx) => (
           <Reveal key={sol.slug} delay={(idx % 3) * 0.06}>
-            <Link to={sol.to} className={`ripple-on rounded-3xl p-6 border transition-all h-full flex flex-col justify-between group ${
-              isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl hover:-translate-y-0.5' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl hover:-translate-y-0.5'
-            }`}>
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <span className="font-body text-[10px] font-bold tracking-widest text-ls-red">{sol.eyebrow}</span>
-                  <HonestyBadge label={sol.proof} />
+            <Link
+              to={sol.to}
+              className="ripple-on rounded-3xl overflow-hidden transition-all h-full flex flex-col group shadow-none hover:-translate-y-0.5 bg-transparent border-none"
+            >
+              {sol.image && (
+                <div className="h-40 overflow-hidden relative">
+                  <img
+                    src={sol.image}
+                    alt={sol.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${isLight ? 'from-ls-white' : 'from-[#070A40]/90'} to-transparent`} />
                 </div>
-                <h3 className={`font-display font-bold text-base tracking-tight ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                  {sol.title}
-                </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  {sol.oneLiner}
-                </p>
-              </div>
-              <div className={`pt-4 mt-4 border-t flex items-center justify-between ${isLight ? 'border-ls-grey-dark' : 'border-ls-white/10'}`}>
-                <span className={`text-[10px] font-body font-bold tracking-widest group-hover:text-ls-red transition-colors ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>EXPLORE</span>
-                <ArrowRight className="w-3.5 h-3.5 text-ls-red" aria-hidden="true" />
+              )}
+              <div className="p-6 flex flex-col flex-1 justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="font-body text-[10px] font-bold tracking-widest text-[#DC3641]">{sol.eyebrow}</span>
+                    <HonestyBadge label={sol.proof} />
+                  </div>
+                  <h3 className={`font-display font-bold text-base tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-white group-hover:text-[#00BFFF]'}`}>
+                    {sol.title}
+                  </h3>
+                  <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
+                    {sol.oneLiner}
+                  </p>
+                </div>
+                <div className="pt-4 mt-4 flex items-center justify-between">
+                  <span className={`text-[10px] font-body font-bold tracking-widest transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-[#00BFFF] group-hover:text-[#DC3641]'}`}>EXPLORE</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#DC3641] transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                </div>
               </div>
             </Link>
           </Reveal>
@@ -56,7 +74,7 @@ export const SolutionsSection: React.FC<SolutionsSectionProps> = ({ theme }) => 
       <div className="mt-8 text-center">
         <Link
           to="/what-we-do"
-          className={`font-body text-xs font-bold tracking-widest hover:underline ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}
+          className={`font-body text-xs font-bold tracking-widest hover:underline ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
         >
           VIEW ALL CAPABILITIES & CATALOG →
         </Link>

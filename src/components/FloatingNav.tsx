@@ -2,30 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { PRIMARY_CTA_LABEL, PRIMARY_CTA_TO } from '../data/ctas';
-import Logo from '@/components/site/Logo.tsx';
 
 interface FloatingNavProps {
-  /** Retained for hero and in-page briefing CTAs; the nav CTA is now a real /contact link (D2). */
   onRequestBriefing?: (summary?: string) => void;
   theme?: 'light' | 'dark';
   onToggleTheme?: () => void;
 }
 
-/**
- * SPEC §8 primary navigation: ten items (Pharos and Venture Studio added after
- * What We Do), Contact lives in the CTA button.
- */
 export const NAV_LINKS = [
   { name: 'Home', href: '/' },
   { name: 'What We Do', href: '/what-we-do' },
-  { name: 'Pharos', href: '/pharos' },
-  { name: 'Venture Studio', href: '/venture-studio' },
-  { name: 'AI Company Builder', href: '/ai-company-builder' },
-  { name: 'Solutions', href: '/solutions' },
-  { name: 'Use Cases', href: '/use-cases' },
-  { name: 'Sectors', href: '/sectors' },
-  { name: 'Insights', href: '/insights' },
-  { name: 'About', href: '/about' },
+  { name: 'Pharos', href: '/insights' },
+  { name: 'Who We Are', href: '/about' },
 ] as const;
 
 const isActivePath = (pathname: string, href: string): boolean =>
@@ -35,9 +23,9 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
   theme = 'dark',
   onToggleTheme,
 }) => {
+  const isLight = theme === 'light';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { pathname } = useLocation();
-  const isLight = theme === 'light';
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -81,64 +69,98 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
 
   return (
     <>
-      <header className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-3 sm:px-4 pointer-events-none">
-        <div className="w-full max-w-6xl pointer-events-auto">
-          <div
-            className={`flex items-center justify-between px-4 sm:px-6 py-2.5 rounded-full transition-all duration-300 shadow-xl backdrop-blur-xl border ${
-              isLight
-                ? 'bg-ls-white/95 border-ls-grey-dark/30 text-ls-navy shadow-lg'
-                : 'bg-ls-navy/95 border-ls-white/15 text-ls-white shadow-2xl'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2.5 group cursor-pointer">
-                <Logo size={32} showText theme={theme} instance="first" />
+      <header className="fixed top-0 left-0 right-0 z-50 w-full pointer-events-none">
+        {/* Transparent Glassmorphism Navigation Bar */}
+        <div className={`w-full backdrop-blur-xl border-b transition-all duration-300 pointer-events-auto ${
+          isLight
+            ? 'bg-white/50 border-slate-200/60 text-ls-navy shadow-[0_4px_30px_rgba(7,10,64,0.06)]'
+            : 'bg-[#070A40]/45 border-white/10 text-white shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
+        }`}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 group cursor-pointer border-b border-transparent"
+                aria-label="LightSpeed Holdings Limited™ Home"
+              >
+                <img
+                  src="/brand/logo/logo-favicon-transparent.png"
+                  alt="LightSpeed Holdings Limited™"
+                  className="w-7 h-7 object-contain shrink-0 filter drop-shadow-[0_0_8px_rgba(0,191,255,0.4)]"
+                  data-ls-image-type="brand-mark"
+                />
+                <span className={`font-extrabold tracking-widest text-xs sm:text-sm uppercase font-sans ${
+                  isLight ? 'text-ls-navy' : 'text-white'
+                }`}>
+                  LIGHTSPEED <span className="text-ls-cyan">HOLDINGS</span>
+                </span>
               </Link>
             </div>
 
-            <nav aria-label="Primary" className="hidden lg:flex items-center gap-2 xl:gap-4 text-[11px] xl:text-xs font-body font-bold tracking-wider">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  aria-current={isActivePath(pathname, link.href) ? 'page' : undefined}
-                  className={`ripple-on transition-colors cursor-pointer py-1 px-1.5 xl:px-2 rounded-md ${
-                    isLight ? 'text-ls-navy/80 hover:bg-ls-navy/5 hover:text-ls-red' : 'text-ls-white/80 hover:bg-ls-white/5 hover:text-ls-red'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+            {/* Desktop Navigation Links */}
+            <nav aria-label="Primary" className="hidden lg:flex items-center gap-8 text-xs font-bold tracking-widest uppercase font-sans">
+              {NAV_LINKS.map((link) => {
+                const active = isActivePath(pathname, link.href);
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    aria-current={active ? 'page' : undefined}
+                    className={`relative py-1 transition-all cursor-pointer border-b-2 ${
+                      active
+                        ? 'border-ls-cyan text-ls-cyan font-extrabold'
+                        : isLight
+                        ? 'border-transparent text-slate-700 hover:text-ls-red hover:border-ls-red/50'
+                        : 'border-transparent text-white/85 hover:text-ls-cyan hover:border-ls-cyan/50'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
             </nav>
 
-            <div className="flex items-center gap-2.5">
+            {/* Actions: Theme Toggle + Pill Capsule Action Button */}
+            <div className="flex items-center gap-3">
               {onToggleTheme && (
                 <button
                   type="button"
                   onClick={onToggleTheme}
-                  className={`p-2 rounded-full transition-all cursor-pointer flex items-center justify-center ${
-                    isLight ? 'hover:bg-ls-navy/10 text-ls-navy' : 'hover:bg-ls-white/10 text-ls-white'
+                  className={`w-8 h-8 rounded-full border transition-all cursor-pointer flex items-center justify-center backdrop-blur-md ${
+                    isLight
+                      ? 'border-slate-300/80 bg-slate-200/50 text-ls-navy hover:bg-ls-navy hover:text-white'
+                      : 'border-white/25 bg-white/10 text-white hover:bg-ls-cyan hover:text-ls-navy'
                   }`}
-                  title={isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-                  aria-label={isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                  title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                  aria-label={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
                 >
-                  {isLight ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                  {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                 </button>
               )}
+
               <Link
                 to={PRIMARY_CTA_TO}
                 onClick={() => setMobileMenuOpen(false)}
-                className="ripple-on flex items-center gap-2 px-3 xl:px-4 py-2 rounded-full font-bold text-[11px] xl:text-xs tracking-wider transition-all cursor-pointer shadow-md bg-ls-red hover:bg-ls-red/90 text-ls-white shadow-ls-red/25 border-t border-ls-white/20 active:scale-95"
+                className={`px-5 py-2.5 font-black text-xs tracking-widest transition-all duration-300 cursor-pointer flex items-center justify-center gap-1.5 rounded-full uppercase active:scale-95 text-[#9CA3AF] ${
+                  isLight
+                    ? 'bg-ls-navy hover:bg-ls-red hover:text-white shadow-md shadow-ls-navy/20 border border-ls-navy/20'
+                    : 'bg-[#070A40] border border-white/20 hover:border-ls-cyan hover:text-ls-cyan shadow-[0_0_22px_rgba(0,191,255,0.25)]'
+                }`}
               >
-                <span>{PRIMARY_CTA_LABEL}</span>
+                <span className="font-black tracking-widest text-[#9CA3AF]">{PRIMARY_CTA_LABEL}</span>
               </Link>
+
               <button
                 ref={toggleRef}
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className={`lg:hidden p-2 rounded-full ${
-                  isLight ? 'hover:bg-ls-navy/10 text-ls-navy' : 'hover:bg-ls-white/10 text-ls-white'
+                className={`lg:hidden w-8 h-8 rounded-lg flex items-center justify-center border transition-all cursor-pointer ${
+                  isLight
+                    ? 'border-slate-300 bg-slate-200/60 text-ls-navy hover:bg-ls-navy hover:text-white'
+                    : 'border-white/20 bg-white/10 text-white hover:bg-ls-cyan hover:text-ls-navy'
                 }`}
                 aria-label="Toggle navigation menu"
                 aria-expanded={mobileMenuOpen}
@@ -150,33 +172,47 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
           </div>
         </div>
       </header>
+
+      {/* Mobile Navigation Dropdown */}
       {mobileMenuOpen && (
-        <div className="fixed inset-x-0 top-[4.5rem] z-40 px-3 sm:px-4 lg:hidden pointer-events-none">
-          <div
-            id="mobile-nav"
-            ref={panelRef}
-            className={`w-full max-w-6xl mx-auto rounded-2xl border shadow-2xl backdrop-blur-xl pointer-events-auto overflow-hidden ${
-              isLight
-                ? 'bg-ls-white/95 border-ls-grey-dark/30 text-ls-navy'
-                : 'bg-ls-navy/95 border-ls-white/15 text-ls-white'
-            }`}
-          >
-            <nav aria-label="Primary mobile" className="flex flex-col py-2">
-              {NAV_LINKS.map((link) => (
+        <div className={`fixed inset-x-0 top-[76px] z-40 lg:hidden pointer-events-auto border-b-2 p-5 shadow-2xl backdrop-blur-xl transition-all ${
+          isLight
+            ? 'bg-white/95 text-ls-navy border-slate-300 shadow-[0_12px_30px_rgba(7,10,64,0.15)]'
+            : 'bg-[#070A40] text-white border-ls-cyan shadow-[0_12px_30px_rgba(0,0,0,0.8)]'
+        }`}>
+          <div id="mobile-nav" ref={panelRef} className="max-w-7xl mx-auto flex flex-col space-y-2">
+            <nav aria-label="Primary mobile" className="flex flex-col space-y-1">
+              {NAV_LINKS.map((link) => {
+                const active = isActivePath(pathname, link.href);
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    aria-current={active ? 'page' : undefined}
+                    className={`px-4 py-3 text-sm font-bold tracking-wider uppercase transition-colors border-l-2 rounded-r-lg ${
+                      active
+                        ? isLight
+                          ? 'border-ls-red bg-red-50 text-ls-red font-extrabold'
+                          : 'border-ls-red bg-white/10 text-ls-cyan'
+                        : isLight
+                          ? 'border-transparent text-ls-navy hover:bg-slate-100 hover:text-ls-red'
+                          : 'border-transparent text-white hover:border-ls-cyan hover:bg-white/5 hover:text-ls-cyan'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+              <div className={`pt-3 mt-2 border-t ${isLight ? 'border-slate-200' : 'border-white/15'}`}>
                 <Link
-                  key={link.name}
-                  to={link.href}
+                  to={PRIMARY_CTA_TO}
                   onClick={() => setMobileMenuOpen(false)}
-                  aria-current={isActivePath(pathname, link.href) ? 'page' : undefined}
-                  className={`px-5 py-3 text-sm font-body font-bold tracking-wider transition-colors ${
-                    isLight
-                      ? 'text-ls-navy/90 hover:bg-ls-navy/5 hover:text-ls-red'
-                      : 'text-ls-white/90 hover:bg-ls-white/5 hover:text-ls-red'
-                  }`}
+                  className="w-full justify-center px-4 py-3 font-bold text-xs tracking-widest transition-colors cursor-pointer flex items-center gap-1.5 bg-ls-red text-white hover:bg-ls-red/90 border border-ls-red uppercase text-center rounded-xl shadow-md"
                 >
-                  {link.name}
+                  <span>{PRIMARY_CTA_LABEL}</span>
                 </Link>
-              ))}
+              </div>
             </nav>
           </div>
         </div>

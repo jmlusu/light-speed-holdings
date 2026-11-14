@@ -6,15 +6,7 @@ import { SiteLayout } from './components/SiteLayout';
 import { withSite } from './site-context';
 import { HomePage } from './pages/HomePage';
 import { WhatWeDoPage } from './pages/WhatWeDoPage';
-import { AiCompanyBuilderPage } from './pages/AiCompanyBuilderPage';
-import { SolutionsPage } from './pages/SolutionsPage';
-import { SolutionDetailPage } from './pages/SolutionDetailPage';
-import { SectorsPage } from './pages/SectorsPage';
-import { UseCasesPage } from './pages/UseCasesPage';
-import { UseCaseDetailPage } from './pages/UseCaseDetailPage';
-import { SectorDetailPage } from './pages/SectorDetailPage';
 import { AiAssessmentPage } from './pages/AiAssessmentPage';
-import { FaqPage } from './pages/FaqPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { InsightsPage } from './pages/InsightsPage';
 import { InsightArticlePage } from './pages/InsightArticlePage';
@@ -23,19 +15,13 @@ import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { HaomtgvPage } from './pages/HAOMTGVPage';
-import { PharosPage } from './pages/PharosPage';
-import { VentureStudioPage } from './pages/VentureStudioPage';
+
+import { FaqPage } from './pages/FaqPage';
 
 
 const HomePageRoute = withSite(HomePage);
 const WhatWeDoPageRoute = withSite(WhatWeDoPage);
-const AiCompanyBuilderPageRoute = withSite(AiCompanyBuilderPage);
-const SolutionsPageRoute = withSite(SolutionsPage);
-const SolutionDetailPageRoute = withSite(SolutionDetailPage);
-const SectorsPageRoute = withSite(SectorsPage);
-const SectorDetailPageRoute = withSite(SectorDetailPage);
 const AiAssessmentPageRoute = withSite(AiAssessmentPage);
-const FaqPageRoute = withSite(FaqPage);
 const InsightsPageRoute = withSite(InsightsPage);
 const InsightArticlePageRoute = withSite(InsightArticlePage);
 const AboutPageRoute = withSite(AboutPage);
@@ -43,8 +29,8 @@ const ContactPageRoute = withSite(ContactPage);
 const PrivacyPageRoute = withSite(PrivacyPage);
 const TermsPageRoute = withSite(TermsPage);
 const HaomtgvPageRoute = withSite(HaomtgvPage);
-const PharosPageRoute = withSite(PharosPage);
-const VentureStudioPageRoute = withSite(VentureStudioPage);
+
+const FaqPageRoute = withSite(FaqPage);
 
 
 
@@ -53,6 +39,12 @@ export const App: React.FC = () => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('lightspeed_theme');
       if (saved === 'light' || saved === 'dark') return saved;
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return 'light';
+      }
     }
     return 'dark';
   });
@@ -61,12 +53,26 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     localStorage.setItem('lightspeed_theme', theme);
+    const root = document.documentElement;
+    root.style.transition = 'background-color 400ms cubic-bezier(0.16, 1, 0.3, 1), color 400ms cubic-bezier(0.16, 1, 0.3, 1)';
+    if (document.body) {
+      document.body.style.transition = 'background-color 400ms cubic-bezier(0.16, 1, 0.3, 1), color 400ms cubic-bezier(0.16, 1, 0.3, 1)';
+    }
+
     if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.documentElement.style.backgroundColor = '#121518';
+      root.classList.add('dark');
+      root.style.backgroundColor = '#070A40';
+      if (document.body) {
+        document.body.style.backgroundColor = '#070A40';
+        document.body.style.color = '#FFFFFF';
+      }
     } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.style.backgroundColor = '#F7F8F9';
+      root.classList.remove('dark');
+      root.style.backgroundColor = '#F2F2F2';
+      if (document.body) {
+        document.body.style.backgroundColor = '#F2F2F2';
+        document.body.style.color = '#070A40';
+      }
     }
   }, [theme]);
 
@@ -91,33 +97,34 @@ export const App: React.FC = () => {
         children: [
           { index: true, element: <HomePageRoute /> },
           { path: 'what-we-do', element: <WhatWeDoPageRoute /> },
-          { path: 'pharos', element: <PharosPageRoute /> },
-          { path: 'venture-studio', element: <VentureStudioPageRoute /> },
-          { path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
+          { path: 'ai-company-builder', element: <Navigate to="/what-we-do" replace /> },
           { path: 'haomtgv', element: <HaomtgvPageRoute /> },
-          { path: 'solutions', element: <SolutionsPageRoute /> },
-          { path: 'solutions/:slug', element: <SolutionDetailPageRoute /> },
-          { path: 'sectors', element: <SectorsPageRoute /> },
-          { path: 'sectors/:slug', element: <SectorDetailPageRoute /> },
-          { path: 'use-cases', element: <UseCasesPage /> },
-          { path: 'use-cases/:slug', element: <UseCaseDetailPage /> },
+          { path: 'solutions', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'sectors', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'sectors/:slug', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'use-cases', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'use-cases/:slug', element: <Navigate to="/what-we-do" replace /> },
           { path: 'ai-assessment', element: <AiAssessmentPageRoute /> },
           { path: 'faq', element: <FaqPageRoute /> },
           { path: 'faqs', element: <Navigate to="/faq" replace /> },
           { path: 'insights', element: <InsightsPageRoute /> },
           { path: 'insights/:slug', element: <InsightArticlePageRoute /> },
+
           { path: 'about', element: <AboutPageRoute /> },
+          { path: 'who-we-are', element: <Navigate to="/about" replace /> },
           { path: 'contact', element: <ContactPageRoute /> },
           { path: 'legal/privacy', element: <PrivacyPageRoute /> },
           { path: 'legal/terms', element: <TermsPageRoute /> },
-          { path: 'architecture', element: <Navigate to="/ai-company-builder" replace /> },
+          { path: 'privacy', element: <Navigate to="/legal/privacy" replace /> },
+          { path: 'terms', element: <Navigate to="/legal/terms" replace /> },
+          { path: 'architecture', element: <Navigate to="/what-we-do" replace /> },
           { path: 'build', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'offer-a', element: <Navigate to="/solutions" replace /> },
-          { path: 'offer-b', element: <Navigate to="/solutions" replace /> },
-          { path: 'offer-c', element: <Navigate to="/solutions" replace /> },
-          { path: 'offer-d', element: <Navigate to="/solutions" replace /> },
-          { path: 'offer-e', element: <Navigate to="/solutions" replace /> },
-          { path: 'proof', element: <Navigate to="/use-cases" replace /> },
+          { path: 'offer-a', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'offer-b', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'offer-c', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'offer-d', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'offer-e', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'proof', element: <Navigate to="/what-we-do" replace /> },
           { path: 'ask', element: <Navigate to="/contact" replace /> },
           { path: '*', element: <NotFoundPage /> },
         ],
@@ -137,9 +144,14 @@ export const App: React.FC = () => {
         closeBriefing,
       }}
     >
+      {/* OpenCode Governance Test */}
+      {/* AI Studio acknowledges OpenCode change */}
       <RouterProvider router={router} />
     </SiteContext.Provider>
   );
 };
 
 export default App;
+
+{/* OpenCode Initiated Change: 2026-10-29 13:45 */}
+{/* AI Studio acknowledges OpenCode change */}

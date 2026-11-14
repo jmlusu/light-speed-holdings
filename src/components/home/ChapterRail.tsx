@@ -66,10 +66,10 @@ export const ChapterRail: React.FC<ChapterRailProps> = ({ theme }) => {
   return (
     <nav
       aria-label="Page chapters"
-      className={`hidden lg:flex fixed left-3 xl:left-5 top-1/2 -translate-y-1/2 z-40 flex-col gap-1 rounded-full border p-2 backdrop-blur-md shadow-lg ${
+      className={`hidden lg:flex fixed left-3 xl:left-5 top-1/2 -translate-y-1/2 z-40 flex-col gap-1 rounded-full p-2 backdrop-blur-md shadow-lg ${
         isLight
-          ? 'bg-ls-white/85 border-ls-grey-dark/25'
-          : 'bg-ls-slate/85 border-ls-white/10'
+          ? 'bg-ls-white/85'
+          : 'bg-ls-slate/85'
       }`}
     >
       {chapters.map((chapter) => {
@@ -93,10 +93,10 @@ export const ChapterRail: React.FC<ChapterRailProps> = ({ theme }) => {
             {/* Hover/focus label pill — shown only below 2xl where the inline label is hidden. */}
             <span
               aria-hidden="true"
-              className={`2xl:hidden pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-2 whitespace-nowrap rounded-full border px-2.5 py-1 font-body text-[10px] font-bold tracking-widest opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 ${
+              className={`2xl:hidden pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-2 whitespace-nowrap rounded-full px-2.5 py-1 font-body text-[10px] font-bold tracking-widest opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 ${
                 isLight
-                  ? 'bg-ls-white/95 border-ls-grey-dark/25 text-ls-navy'
-                  : 'bg-ls-slate/95 border-ls-white/10 text-ls-white'
+                  ? 'bg-ls-white/95 text-ls-navy'
+                  : 'bg-ls-slate/95 text-ls-white'
               }`}
             >
               {chapter.label}

@@ -9,7 +9,7 @@ interface MappingRow {
   connectionDescription: string;
 }
 
-const MAPPING_ROWS: readonly [MappingRow, ...MappingRow[]] = [
+const MAPPING_ROWS: MappingRow[] = [
   { id: 'map-1', capability: 'AI-Native Company Building', primaryPillars: ['H', 'O', 'V'], connectionDescription: 'Human direction initiates company creation; Orchestration coordinates workforce; Value cycle measures ROI.' },
   { id: 'map-2', capability: 'Intelligent Workflow Automation', primaryPillars: ['A', 'T', 'G'], connectionDescription: 'Specialized Agents invoke System Tools guarded by automated 5-tier Governance gates.' },
   { id: 'map-3', capability: 'Agentic Systems & Orchestration', primaryPillars: ['A', 'O', 'M'], connectionDescription: 'Multi-agent networks coordinated by Orchestration engine grounded in Organizational Memory.' },

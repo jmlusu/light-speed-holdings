@@ -13,7 +13,7 @@ interface Stage {
   deliverables: string;
 }
 
-const DELIVERY_STAGES: readonly [Stage, ...Stage[]] = [
+const DELIVERY_STAGES: Stage[] = [
   { stage: 1, title: 'Understand Intent & Objectives', focus: 'Strategic Alignment', description: 'Clarify leadership intent, expected business outcomes, and key performance targets.', icon: Compass, icon3d: 'compass', deliverables: 'Executive Intent Charter & Scope Boundary' },
   { stage: 2, title: 'Assess Workflows & Constraints', focus: 'Baseline Discovery', description: 'Map existing manual processes, data silos, network limits, and regional compliance needs.', icon: Search, icon3d: 'intelligence', deliverables: 'Friction Topology & Latency Baseline' },
   { stage: 3, title: 'Design Target Operating Model', focus: 'HAOMTGV Blueprinting', description: 'Define the target AI-native structure combining human leadership and agentic automation.', icon: Layout, icon3d: 'home', deliverables: 'Target Architecture & Role Taxonomy' },

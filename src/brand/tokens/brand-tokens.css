@@ -1,0 +1,132 @@
+/* LightSpeed Holdings Limited — Brand Design Tokens (v1.1)
+   Canonical Color System:
+     navy            #070A40 — Headlines, logo text, primary brand surfaces, slide rails
+     red             #E63946 — Signal waves, accent elements, CTAs, key highlights
+     cyan            #00BFFF — Shield base, accent elements, links on dark, taglines on navy
+     grey-light      #F2F2F2 — Backgrounds, cards, callout boxes
+     white           #FFFFFF — Clean backgrounds, text on navy
+     grey-dark       #6B7280 — Secondary text, captions
+     grey-light-text #9CA3AF — Tertiary text on dark surfaces
+
+   Color Rules:
+     - Navy is dominant (60% navy / 20% red / 20% cyan composition guide)
+     - Red and cyan are accents
+     - Text on navy → #FFFFFF (White)
+     - Text on cyan → #070A40 (Navy)
+     - Text on red  → #FFFFFF (White)
+     - Tagline: ASPIRE. ACT. ACHIEVE.
+*/
+
+:root {
+  /* Core Authoritative Color Tokens */
+  --navy: #070A40;
+  --red: #E63946;
+  --cyan: #00BFFF;
+  --grey-light: #F2F2F2;
+  --white: #FFFFFF;
+  --grey-dark: #6B7280;
+  --grey-light-text: #9CA3AF;
+
+  --ls-navy: #070A40;
+  --ls-navy-secondary: #0A0E52;
+  --ls-red: #E63946;
+  --ls-cyan: #00BFFF;
+  --ls-grey-light: #F2F2F2;
+  --ls-white: #FFFFFF;
+  --ls-grey-dark: #6B7280;
+  --ls-grey-light-text: #9CA3AF;
+
+  /* On-surface text pairing rules */
+  --ls-on-navy: #FFFFFF;
+  --ls-on-red: #FFFFFF;
+  --ls-on-cyan: #070A40;
+
+  /* RGB channels for opacity utility calculations */
+  --ls-navy-rgb: 7, 10, 64;
+  --ls-red-rgb: 230, 57, 70;
+  --ls-cyan-rgb: 0, 191, 255;
+  --ls-grey-light-rgb: 242, 242, 242;
+  --ls-white-rgb: 255, 255, 255;
+  --ls-grey-dark-rgb: 107, 114, 128;
+  --ls-grey-light-text-rgb: 156, 163, 175;
+
+  /* Typography — Editorial Hierarchy */
+  --ls-font-sans: Arial, Helvetica, sans-serif;
+  --ls-font-display: Arial, Helvetica, sans-serif;
+  --ls-font-heading: Arial, Helvetica, sans-serif;
+  --ls-font-body: Arial, Helvetica, sans-serif;
+  --ls-font-caption: Arial, Helvetica, sans-serif;
+  --ls-weight-display: 700;
+  --ls-weight-heading: 700;
+  --ls-weight-body: 400;
+
+  /* Type scale */
+  --ls-size-display-xl: 36pt;
+  --ls-size-title-xl: 32pt;
+  --ls-size-title-lg: 28pt;
+  --ls-size-title-md: 24pt;
+  --ls-size-title-sm: 18pt;
+  --ls-size-subtitle: 16pt;
+  --ls-size-body-lg: 16pt;
+  --ls-size-body: 14pt;
+  --ls-size-body-sm: 13pt;
+  --ls-size-caption: 12pt;
+
+  /* Spacing Scale */
+  --ls-space-1: 4px;
+  --ls-space-2: 8px;
+  --ls-space-3: 12px;
+  --ls-space-4: 16px;
+  --ls-space-5: 24px;
+  --ls-space-6: 32px;
+  --ls-space-7: 48px;
+  --ls-space-8: 64px;
+  --ls-space-9: 96px;
+
+  /* Grid & Layout */
+  --ls-grid-columns: 12;
+  --ls-gutter: 24px;
+  --ls-margin: 48px;
+  --ls-page-max-width: 1200px;
+
+  /* Shape & Radius */
+  --ls-radius-sm: 4px;
+  --ls-radius-md: 8px;
+  --ls-radius-lg: 12px;
+  --ls-radius-xl: 20px;
+  --ls-radius-pill: 9999px;
+
+  /* Motion */
+  --ls-motion-fast: 140ms;
+  --ls-motion-standard: 220ms;
+  --ls-motion-emphasis: 380ms;
+}
+
+@theme {
+  /* Tailwind CSS Custom Color Mapping */
+  --color-navy: #070A40;
+  --color-red: #E63946;
+  --color-cyan: #00BFFF;
+  --color-grey-light: #F2F2F2;
+  --color-white: #FFFFFF;
+  --color-grey-dark: #6B7280;
+  --color-grey-light-text: #9CA3AF;
+
+  --color-ls-navy: #070A40;
+  --color-ls-navy-secondary: #0A0E52;
+  --color-ls-red: #E63946;
+  --color-ls-cyan: #00BFFF;
+  --color-ls-grey-light: #F2F2F2;
+  --color-ls-white: #FFFFFF;
+  --color-ls-grey-dark: #6B7280;
+  --color-ls-grey-light-text: #9CA3AF;
+
+  /* Theme Canvas Tokens */
+  --color-ls-canvas-light: #F2F2F2;
+  --color-ls-surface-light: #FFFFFF;
+  --color-ls-canvas-dark: #070A40;
+  --color-ls-surface-dark: #0A0E52;
+
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-display: Arial, Helvetica, sans-serif;
+}
