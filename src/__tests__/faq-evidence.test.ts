@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { faqs } from '../data/faqs';
 
 /**
@@ -31,7 +31,7 @@ interface FaqLike {
   evidence?: EvidenceEntry[];
 }
 
-const root = join(__dirname, '..', '..'); // CI: resolved relative to test file, not process.cwd()
+const root = resolve(__filename, '..', '..', '..'); // repo root, resolved from test file location
 
 const readJson = (relativePath: string): Record<string, unknown> =>
   JSON.parse(readFileSync(join(root, relativePath), 'utf8')) as Record<string, unknown>;
