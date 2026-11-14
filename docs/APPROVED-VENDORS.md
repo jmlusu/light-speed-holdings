@@ -23,6 +23,8 @@
 | **Xiaomi MiMo** | api.xiaomimimo.com | Source files, prompts and task context sent to the MiMo API (LLM provider) and to the MiMo Code CLI | `MIMO_API_KEY` (Bearer) | 2026-09-25 | 2026-12-24 | **Active allow-list** — CEO/CISO approval for model provider + MiMo Code CLI; re-sign before 2026-12-24 |
 | **Google AI / Gemini Image API** | generativelanguage.googleapis.com | Prompts, brand tokens, reference images for image generation | `GEMINI_API_KEY` (Bearer) | 2026-10-01 | 2026-12-30 | **Active allow-list** — CEO/CISO approval for AI-generated imagery (ADR-018); re-sign before 2026-12-30 |
 | **Comfy Cloud** | cloud.comfy.org | Workflow JSON, prompts, model params for ComfyUI partner API nodes (Nano Banana, Seedance) | `COMFY_API_KEY` (Bearer) | 2026-10-01 | 2026-12-30 | **Active allow-list** — CEO/CISO approval for AI-generated imagery (ADR-018); re-sign before 2026-12-30 |
+| **Resend** | resend.com · mcp.resend.com | Email sends (send-email, create-broadcast) + API-key listing via resend_* tools; ~35 historical calls | `RESEND_API_KEY` (Bearer) / mcp-auth.json | 2026-11-08 | 2027-02-06 | **Active allow-list** — CEO/CISO 90-day sign-off (opencode.db security window); `opencode.json` mcp.resend must stay `enabled:false` until separately re-enabled; re-sign before 2027-02-06 |
+| **Composio** | composio tools (tool-level; no webfetch host in workspace) | `composio_*` tool calls incl. MULTI_EXECUTE_TOOL (~27 historical calls) | `COMPOSIO_API_KEY` | 2026-11-08 | 2027-02-06 | **Active allow-list** — CEO/CISO 90-day sign-off (opencode.db security window); enforcement at tool-routing level; re-sign before 2027-02-06 |
 
 **Tier B (public research — generally OK, disclose in skill description):** webfetch to public docs, arXiv/OpenAlex/CrossRef/PubMed, Kroki diagram fallback, skills.sh / marketplace discovery (`find-skills`, `global-chat-agent-discovery`, `using-agent-skills`). Still subject to stop-and-report if they unexpectedly POST local project files.
 
@@ -55,6 +57,7 @@ Git snapshot before purge: `a179b62e`.
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2026-11-08 | Allow-list Resend and Composio for 90 days (CEO/CISO §9.2 sign-off, opencode.db security window) | CEO / CISO |
 | 2026-10-01 | Allow-list Google AI / Gemini Image API and Comfy Cloud for AI-generated imagery (ADR-018) | CEO / Chief of Staff |
 | 2026-09-25 | Allow-list Xiaomi MiMo (`api.xiaomimimo.com`) for LLM provider + MiMo Code CLI | CEO / Chief of Staff |
 | 2026-09-23 | Initial allow-list; retire claude-mem / scroll-craft / greploop | CEO / Chief of Staff |

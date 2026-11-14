@@ -1,0 +1,19 @@
+# Outside-workspace path allowlist (GO-5) — versioned with the agent registry.
+# Enforcement point: read/edit/write/bash tool boundary (PathAllowlist).
+# Every outside op is attribution-logged (path + tool + session, never content).
+allow:
+  primary_repo: "light-speed-holdings"
+  sibling_repos:
+    - "athena"
+    - "social-media-automation-os"
+  allowed_siblings_per_session: true
+  sandbox_suffix: "temp/opencode"
+  sandbox_write_only: true
+deny:
+  - ".openmausbot"
+  - "C:/ root and user-home listing"
+  - "opencode.db* / opencode-.db*"
+  - "auth.json / mcp-auth.json"
+  - ".local/share/opencode/** (incl. tool-output)"
+  - ".env variants (except .env.example)"
+review_cadence: "monthly (vp-engineering reviews outside_write_attempts by prefix)"

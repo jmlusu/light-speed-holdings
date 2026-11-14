@@ -1,0 +1,33 @@
+# Suspended vendors — F-08 third-party suspension (opencode.db fix 2026-11-08)
+# Verified 2026-11-08 against docs/APPROVED-VENDORS.md: Resend, Composio and
+# the google_search/websearch providers do NOT appear in the allow-list
+# (active rows cover cmem.ai/[retired], 0x0.st, Telegram/[retired],
+# NotebookLM/[retired], Workers/[retired], kie.ai/[retired],
+# Greptile/[retired], Xiaomi MiMo, Google AI/Gemini image, Comfy Cloud).
+# Under AGENTS.md §9.2 this traffic is unauthorized until signed off.
+# Flagged here + in code (ai_company.security.egress_policy) — never deleted
+# silently. Lifting a suspension requires a signed APPROVED-VENDORS.md row
+# with approved_at + window_end <= 90 days (forward fix, not a rollback).
+
+suspended:
+  - vendor: Resend
+    hosts: ["resend.com", "mcp.resend.com"]
+    tool_prefixes: ["resend_"]
+    observed: "resend_* ~35 calls incl. list-api-keys, send-email, create-broadcast (fix plan §3)"
+    opencode_config: "opencode.json mcp.resend already enabled:false (kept); no delete"
+    action: "suspended — ToolRunner egress denies resend.com/mcp.resend.com; resend_* prefixes flagged by is_suspended_tool()"
+  - vendor: Composio
+    hosts: []  # no webfetch host for Composio in this workspace; do not invent one
+    tool_prefixes: ["composio_"]
+    observed: "composio_* ~27 calls incl. MULTI_EXECUTE_TOOL 13 (fix plan §3)"
+    opencode_config: "no composio entry in opencode.json — nothing to disable; enforcement is at tool-routing level"
+    action: "suspended — composio_* prefixes flagged by is_suspended_tool() pending sign-off"
+
+# google_search / websearch providers: flagged for CEO/CISO decision, NOT
+# hard-blocked here — webfetch to public docs is Tier B (public research)
+# per docs/APPROVED-VENDORS.md. Posting task context/payloads to search
+# providers needs the same sign-off path before further use. Record the
+# decision in docs/APPROVED-VENDORS.md; do not extend this list silently.
+pending_decision:
+  - vendor: google_search / websearch providers
+    action: "flagged — Tier B public research may continue for docs; payload transmission needs APPROVED-VENDORS.md sign-off"

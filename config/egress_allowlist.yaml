@@ -1,0 +1,37 @@
+# Egress allowlist — F-07 webfetch/shell policy (opencode.db fix 2026-11-08)
+# Enforced in code by src/ai_company/security/egress_policy.py, wired into
+# ToolRunner._webfetch / ._execute. Baseline (fix plan §3): webfetch
+# 745 calls / 141 hosts / 8 userinfo URLs / 93 query-string URLs; shell
+# IWR 1,121 / curl 718 / IRM 529.
+
+require_https: true          # http allowed only for dev-loopback hosts below
+reject_userinfo: true        # user:pass@host URLs are rejected
+query_token_policy: reject   # reject params whose NAMES look like tokens
+
+# http is allowed to these hosts only (observed dev targets: vite
+# localhost:1440/1441, + legacy :3000, dashboard 127.0.0.1:8420/8421,
+# 172.30.96.1:1440/1441). All other http is rejected.
+dev_http_hosts:
+  - "localhost"
+  - "127.0.0.1"
+  - "::1"
+  - "172.30.96.1"
+
+# Suspended under AGENTS.md §9.2 (absent from docs/APPROVED-VENDORS.md,
+# verified 2026-11-08). See config/suspended_vendors.yaml. Do NOT remove
+# without a signed APPROVED-VENDORS.md row (forward fix, not a rollback).
+blocked_hosts:
+  - "resend.com"
+  - "mcp.resend.com"
+
+# Shell egress allowlist: Invoke-WebRequest / Invoke-RestMethod / curl /
+# wget may only target URLs that pass validate_url above. Command verbs
+# with no verifiable URL are denied as unverifiable egress.
+shell_egress_allows:
+  - "invoke-webrequest"
+  - "invoke-restmethod"
+  - "invoke-expression"
+  - "curl"
+  - "wget"
+  - "iwr"
+  - "irm"

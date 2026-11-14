@@ -129,8 +129,12 @@ tmp/
 # Documentation redesign ignore
 docs/redesign/
 
-# Documentation redesign ignore
-docs/redesign/
+# Prevent worktree scanning
+.local/share/opencode/worktree/
+**/worktree/**
 
-# Documentation redesign ignore
-docs/redesign/
+# Ignore lockfiles and large registries that cause token blowout
+uv.lock
+bun.lock
+package-lock.json
+**/node_modules/**

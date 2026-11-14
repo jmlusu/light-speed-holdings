@@ -7,6 +7,7 @@ import logging
 import re
 from typing import Any, Callable
 
+from ai_company.executor.tool_validation import GREP_MATCH_CAP, cap_grep_line, truncate_to_cap
 from ai_company.llm.client import LLMClient
 from ai_company.llm.token_counter import count_tokens
 
@@ -142,7 +143,11 @@ def summarize_tool_result(
         Summarized result string.
     """
     summarizer = TOOL_SUMMARIZERS.get(tool, _summarize_generic)
-    return summarizer(result, max_tokens, llm)
+    text = summarizer(result, max_tokens, llm)
+    # T-11 end-to-end cap at the summarizer boundary (delegates to the
+    # canonical truncate_to_cap — D-1 single byte-cap implementation).
+    capped = truncate_to_cap(text)
+    return capped.text
 
 
 def _summarize_read(result: dict[str, Any], max_tokens: int, llm: LLMClient | None) -> str:
@@ -266,10 +271,18 @@ def _summarize_grep(result: dict[str, Any], max_tokens: int, llm: LLMClient | No
     if not matches:
         return f"grep({pattern}) → No matches found"
 
-    # Show first few matches
-    match_preview = "\n".join(matches[:5])
-    if len(matches) > 5:
-        match_preview += f"\n... and {len(matches) - 5} more matches"
+    # T-04 caps: per-line 500 chars + 100-match cap with a footer so the
+    # model can narrow its pattern instead of re-running the same scan.
+    capped = [cap_grep_line(m) for m in matches]
+    shown = capped[:GREP_MATCH_CAP]
+    match_preview = "\n".join(shown)
+    if len(capped) > len(shown):
+        match_preview += (
+            f"\n... and {len(capped) - len(shown)} more matches "
+            f"(total {total}; narrow your pattern)"
+        )
+    elif total > len(shown):
+        match_preview += f" (total {total}; narrow your pattern)"
 
     return f"grep({pattern}) → {total} matches:\n{match_preview}"
 
