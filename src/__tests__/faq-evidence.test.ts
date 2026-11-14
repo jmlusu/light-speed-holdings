@@ -31,7 +31,7 @@ interface FaqLike {
   evidence?: EvidenceEntry[];
 }
 
-const root = process.cwd(); // repo root, from CI working directory
+const root = resolve(__filename, '..', '..', '..'); // repo root, resolved from test file location
 
 const readJson = (relativePath: string): Record<string, unknown> =>
   JSON.parse(readFileSync(join(root, relativePath), 'utf8')) as Record<string, unknown>;
