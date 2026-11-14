@@ -6,6 +6,14 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`. 
 
 **Git: `main` is protected** (GitHub ruleset, 6 required checks) — work on a branch, open a PR, merge only when checks are green.
 
+## Hard Rules (always apply)
+- Never delete, overwrite, or restore files you did not create this session, including untracked ones. Stage by explicit path; never `git add .`.
+- Never use `--no-verify`, empty "trigger CI" commits, or `git config` changes without asking.
+- "Done" means verified in the target environment (CI included). Otherwise say "local only" or "unverified". A PR exists only if `gh pr create` output shows it.
+- If CI status can't be read with `gh`, say so and ask. Never search config or env for tokens.
+- Shell is PowerShell: no `head`, `tail`, `sed`, `$?`, `2>/dev/null`. Chain with `;`, use `$LASTEXITCODE`, `Select-Object -First N`. On 5.1 also no `&&` or `||`.
+- Before any git, PR, or CI work, read `.ai-company\constitution\16-AGENT-GUARDRAILS.md`.
+
 ## 1 Project Snapshot
 - **What it is**: Python CLI tool for creating and orchestrating AI agent hierarchies. Agents are defined in `company-registry.yaml` and generated into OpenCode-compatible markdown files.
 - **Core workflow**: Registry YAML → Jinja2 template → `.opencode/agents/*.md` + `company/*.yaml`
@@ -66,7 +74,7 @@ The CEO Dashboard (internal) and the Vite/React app (external) are **two indepen
 |---|---|---|
 | Runtime | FastAPI/uvicorn via `ai-company dashboard` (`src/ai_company/dashboard/`) | Vite dev/preview (repo-root `src/`); static `dist/` on Vercel |
 | Production port | **8420** — `Dockerfile` (`EXPOSE 8420`, CMD `--port 8420`, healthcheck `:8420`), `docker-compose.yml` `8420:8420` | **443** at `lightspeedholdings.vercel.app` (Vercel) |
-| Development port | **8421** — `docker-compose.staging.yml` host `${STAGING_DASHBOARD_PORT:-8421}` → container 8420; local: `uv run ai-company dashboard --port 8421`; tests default `http://localhost:8421` | **1441** (dev) / **1440** (preview),|
+| Development port | **8421** — `docker-compose.staging.yml` host `${STAGING_DASHBOARD_PORT:-8421}` → container 8420; local: `uv run ai-company dashboard --port 8421`; tests default `http://localhost:8421` | **1441** (dev) / **1440** (preview) |
 | Health check | `GET /health` (JSON) | `GET /` (SPA) |
 
 ## 7 Evidence, Honesty and Execution Integrity Policy
@@ -76,8 +84,8 @@ Never invent, infer as fact, or fabricate an explanation for an action, file mod
 
 | Issue | Fix | Date Identified | Date Fixed | Status |
 |-------|-----|-----------------|------------|--------|
-| **Bash/PowerShell command execution issues** — Multiple bash tool calls had syntax issues with PowerShell heredocs, line continuations, and string quoting due to different quoting rules between Windows PowerShell 5.1 and bash/cmd. | Use `pwsh -Command` with proper escaping, or break complex commands into simpler steps with careful quoting. | 2026-10-11 | ⚠️ Workaround |
-| **PowerShell `$(...)` expands inside double-quoted `--jq` arguments** — `gh pr view --jq "state=$(.state)"` fails with `(.state) was not recognized` because PowerShell evaluates `$(...)` before `gh` receives the string. Recurred in-session 2026-10-12, so the fix is now a standing directive, not a one-off note. Single-quoting is not sufficient by itself: PS 5.1 does not escape embedded double quotes when building native command lines, so a `--jq` expression containing string literals gets split into multiple arguments (`accepts at most 1 arg(s), received 2`).
+| **Bash/PowerShell command execution issues** — Multiple bash tool calls had syntax issues with PowerShell heredocs, line continuations, and string quoting due to different quoting rules between Windows PowerShell 5.1 and bash/cmd. | Follow the shell rules in Hard Rules; break complex commands into simpler steps with careful quoting. | 2026-10-11 | | ⚠️ Workaround |
+| **PowerShell `$(...)` expands inside double-quoted `--jq` arguments** — `gh pr view --jq "state=$(.state)"` fails with `(.state) was not recognized` because PowerShell evaluates `$(...)` before `gh` receives the string. Recurred in-session 2026-10-12, so the fix is now a standing directive, not a one-off note. Single-quoting is not sufficient by itself: PS 5.1 does not escape embedded double quotes when building native command lines, so a `--jq` expression containing string literals gets split into multiple arguments (`accepts at most 1 arg(s), received 2`). | | | | |
 
 ## 9 LLM Provider Keys
 
