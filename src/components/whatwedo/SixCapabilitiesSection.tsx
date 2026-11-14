@@ -31,7 +31,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: Building2,
     icon3d: 'home',
-    image: '/src/assets/images/cap1_company_building_1793817051020.jpg',
+    image: '/assets/images/cap1_company_building_1793817051020.avif',
     whatItIs: 'Strategy-to-build capability for designing, launching, and scaling new enterprise entities where AI agents perform core execution.',
     problem: 'Traditional startup launching incurs heavy early management overhead, manual hiring delays, and slow operational ramp-up.',
     whatWeBuild: [
@@ -52,7 +52,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/20',
     icon: Zap,
     icon3d: 'lightning',
-    image: '/src/assets/images/cap2_workflow_automation_1793817065625.jpg',
+    image: '/assets/images/cap2_workflow_automation_1793817065625.avif',
     whatItIs: 'Process compression technology transforming multi-step manual tasks into automated, deterministic execution paths.',
     problem: 'Enterprise workflows get blocked waiting on staff availability, manual copy-pasting across software, and email sign-off chains.',
     whatWeBuild: [
@@ -72,7 +72,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: GitFork,
     icon3d: 'orchestration',
-    image: '/src/assets/images/cap3_agentic_orchestration_1793817079580.jpg',
+    image: '/assets/images/cap3_agentic_orchestration_1793817079580.avif',
     whatItIs: 'Multi-agent orchestration graphs that break complex business problems into discrete, coordinated sub-tasks.',
     problem: 'Single general-purpose chatbots fail at complex, multi-step operations requiring domain specialization and strict state control.',
     whatWeBuild: [
@@ -93,7 +93,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
     icon: Network,
     icon3d: 'network',
-    image: '/src/assets/images/cap4_integration_pure_1793817124475.jpg',
+    image: '/assets/images/cap4_integration_pure_1793817124475.avif',
     whatItIs: 'Deep integration architecture connecting AI models safely to core ERP, CRM, database, and internal software stacks.',
     problem: 'Siloed AI prototypes cannot securely interact with existing legacy databases or execute real-world transactional writes.',
     whatWeBuild: [
@@ -113,7 +113,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/20',
     icon: HardDrive,
     icon3d: 'memory',
-    image: '/src/assets/images/cap5_organizational_memory_1793817139478.jpg',
+    image: '/assets/images/cap5_organizational_memory_1793817139478.avif',
     whatItIs: 'Persistent contextual database architecture ensuring historical lessons, policies, and domain knowledge ground every agent action.',
     problem: 'Institutional knowledge is lost when employees depart or rotate, forcing teams to solve the same problems repeatedly.',
     whatWeBuild: [
@@ -133,7 +133,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: ShieldCheck,
     icon3d: 'governance',
-    image: '/src/assets/images/cap6_governance_infrastructure_1793817153646.jpg',
+    image: '/assets/images/cap6_governance_infrastructure_1793817153646.avif',
     whatItIs: 'Risk-classified governance framework enforcing human approval gates, compliance checks, and immutable cryptographic audit logging.',
     problem: 'Uncontrolled AI deployment creates reputational risk, regulatory non-compliance, and catastrophic hallucinated execution.',
     whatWeBuild: [

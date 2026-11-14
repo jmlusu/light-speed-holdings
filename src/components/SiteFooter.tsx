@@ -64,7 +64,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
       {/* Background Architectural Sector Image (Uniform with Home Page Sections) */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
         <img
-          src="/src/assets/images/before_after_sector_bg_light_1793889809250.jpg"
+          src="/assets/images/before_after_sector_bg_light_1793889809250.avif"
           alt="LightSpeed Footer Architectural Sector Background"
           className="w-full h-full object-cover object-center transition-all duration-700 opacity-65 dark:opacity-75 filter saturate-110 brightness-100"
           loading="lazy"
