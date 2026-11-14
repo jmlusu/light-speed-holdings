@@ -115,65 +115,25 @@ const MEDIA_TS_REGISTRY = 'src/data/media/registry.ts';
 /**
  * `src/data/media/registry.ts` declarations with no file under `public/` (P1 debt, exact set).
  *
- * The registry is the canonical asset catalog, so a declaration without a file is a
- * broken promise even when nothing renders it yet: today only `haomtgv-full-vertical`
- * and the micro-illustration glyphs have consumers, which is why these never
- * produced a network request. Add the file and this suite asks you to drop the entry;
- * declare a new absent path and it fails immediately.
+ * 42 of the original 52 pinned-missing paths were removed by pruning 21 unconsumed
+ * assets and dropping missing format keys from 3 consumed haomtgv variants whose
+ * SVG (and, for the full-vertical, PNG) already exists. The 10 that remain belong
+ * to assets that are consumed by id but whose every declared file is still absent
+ * (africa-ai-economics, model-routing-full, org-chart-thumb, pharos chart/evidence/
+ * model-comparison). Add the file and this suite asks you to drop the entry; declare
+ * a new absent path and it fails immediately.
  */
 const KNOWN_MISSING_MEDIA_DECLARATIONS: string[] = [
   '/assets/diagrams/africa-economics/africa-ai-economics.svg',
   '/assets/diagrams/africa-economics/africa-ai-economics.webp',
-  '/assets/diagrams/architecture/aicb-system.svg',
-  '/assets/diagrams/architecture/aicb-system.webp',
-  '/assets/diagrams/architecture/data-sovereignty.svg',
-  '/assets/diagrams/architecture/data-sovereignty.webp',
-  '/assets/diagrams/architecture/governance.svg',
-  '/assets/diagrams/architecture/governance.webp',
-  '/assets/diagrams/architecture/memory.svg',
-  '/assets/diagrams/architecture/memory.webp',
-  '/assets/diagrams/architecture/orchestration.svg',
-  '/assets/diagrams/architecture/orchestration.webp',
-  '/assets/diagrams/haomtgv/haomtgv-full-vertical.webp',
-  '/assets/diagrams/haomtgv/haomtgv-horizontal-compact.webp',
-  '/assets/diagrams/haomtgv/haomtgv-progressive.webp',
   '/assets/diagrams/model-routing/model-routing-full.avif',
   '/assets/diagrams/model-routing/model-routing-full.svg',
   '/assets/diagrams/model-routing/model-routing-full.webp',
-  '/assets/diagrams/org-chart/org-chart-full.svg',
-  '/assets/diagrams/org-chart/org-chart-full.webp',
   '/assets/diagrams/org-chart/org-chart-thumb.svg',
   '/assets/diagrams/org-chart/org-chart-thumb.webp',
-  '/assets/hero/about-hero.avif',
-  '/assets/hero/about-hero.webp',
-  '/assets/hero/aicb-hero.avif',
-  '/assets/hero/aicb-hero.webp',
-  '/assets/hero/home-hero.avif',
-  '/assets/hero/home-hero.webp',
-  '/assets/hero/whatwedo-hero.avif',
-  '/assets/hero/whatwedo-hero.webp',
   '/assets/insights/pharos-chart-template.svg',
   '/assets/insights/pharos-evidence-matrix.svg',
   '/assets/insights/pharos-model-comparison.svg',
-  '/assets/leadership/jack-mlusu.avif',
-  '/assets/leadership/jack-mlusu.jpg',
-  '/assets/leadership/jack-mlusu.webp',
-  '/assets/maps/malawi-sadc-africa.svg',
-  '/assets/maps/malawi-sadc-africa.webp',
-  '/assets/maps/sector-presence.svg',
-  '/assets/maps/sector-presence.webp',
-  '/assets/use-cases/agricultural-coordination.avif',
-  '/assets/use-cases/agricultural-coordination.webp',
-  '/assets/use-cases/audit-trail.webp',
-  '/assets/use-cases/compliance-automation.avif',
-  '/assets/use-cases/compliance-automation.webp',
-  '/assets/use-cases/customer-service.webp',
-  '/assets/use-cases/donor-reporting.avif',
-  '/assets/use-cases/donor-reporting.webp',
-  '/assets/use-cases/executive-readiness.webp',
-  '/assets/use-cases/market-intelligence.webp',
-  '/assets/use-cases/sme-operations.avif',
-  '/assets/use-cases/sme-operations.webp',
 ];
 
 /** Every image path declared by `src/data/media/registry.ts`, sorted and deduped. */
