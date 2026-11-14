@@ -41,6 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+  with:
+    filter: none
 
       - name: Verify .vercelignore keeps site build inputs — deploy guard
         run: python3 scripts/test/check-vercelignore.py
