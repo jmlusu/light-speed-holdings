@@ -217,6 +217,24 @@
       "origin": "Authored brand mark committed to the repo at public/brand/logo/logo-favicon-transparent.png; the mark is governed by src/docs/design/LIGHTSPEED_ORGANIZATION_DESIGN_SYSTEM.md.",
       "licence": "Owned by LightSpeed Holdings Limited",
       "disclosure": "none"
+    },
+    {
+      "id": "hero-landscape-day",
+      "path": "/assets/images/hero_cinematic_landscape_day.jpg",
+      "kind": "illustration",
+      "origin": "Authored raster image committed to repo at src/assets/images/hero_cinematic_landscape_day.jpg; referenced by HeroSection.tsx for light-theme hero background.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none",
+      "note": "Light-theme cinematic landscape background for the hero section. Used in src/components/HomeSection.tsx with backgroundSize: 'cover' and opacity 12%."
+    },
+    {
+      "id": "hero-landscape-night",
+      "path": "/assets/images/hero_cinematic_landscape_night_1793514971805.jpg",
+      "kind": "illustration",
+      "origin": "Authored raster image committed to repo at src/assets/images/hero_cinematic_landscape_night_1793514971805.jpg; referenced by HeroSection.tsx for dark-theme hero background.",
+      "licence": "Owned by LightSpeed Holdings Limited",
+      "disclosure": "none",
+      "note": "Dark-theme cinematic landscape background for the hero section. Used in src/components/HomeSection.tsx with backgroundSize: 'cover' and opacity 75%."
     }
   ]
 }
