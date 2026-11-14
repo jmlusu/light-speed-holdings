@@ -17,6 +17,10 @@ Patterns are loaded from ``config/path_deny.yaml`` with code defaults as
 fallback (same convention as ``config/tool_allowlist.yaml``). Matching is
 case-insensitive on the basename and on every path segment, so
 ``some/dir/auth.json`` is denied as well as ``auth.json``.
+
+Layering (D-1): this module is the canonical credential/DB deny;
+``security/path_allowlist`` delegates its credential/DB deny here and keeps
+only allowlist + attribution semantics.
 """
 
 from __future__ import annotations

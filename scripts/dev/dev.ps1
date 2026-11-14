@@ -75,6 +75,26 @@ function Ensure-Uv {
     Write-Ok "uv installed: $(uv --version)"
 }
 
+function Ensure-Ripgrep {
+    # ToolRunner grep backend prefers `rg` (T-03); fall back to git-grep/python.
+    if (Test-CommandExists "rg") {
+        Write-Ok "ripgrep: $(rg --version | Select-Object -First 1)"
+        return
+    }
+
+    Write-Step "Installing ripgrep (BurntSushi.ripgrep.MSVC)"
+    if (Test-CommandExists "winget") {
+        winget install --id BurntSushi.ripgrep.MSVC --accept-source-agreements --accept-package-agreements 2>&1 | Out-Null
+    } else {
+        Write-Warn "winget not found — install ripgrep manually from https://github.com/BurntSushi/ripgrep/releases"
+    }
+    if (Test-CommandExists "rg") {
+        Write-Ok "ripgrep installed"
+    } else {
+        Write-Warn "ripgrep not installed (Get-Command rg failed) — grep falls back to git-grep/python"
+    }
+}
+
 # ── Actions ──────────────────────────────────────────────────────────
 
 function Invoke-Setup {
@@ -97,6 +117,9 @@ function Invoke-Setup {
     } else {
         Write-Warn "Git not found — version control features unavailable"
     }
+
+    # Ripgrep (ToolRunner grep backend, T-03)
+    Ensure-Ripgrep
 
     Write-Step "Creating virtual environment (uv)"
     $venvPath = Join-Path $ProjectRoot ".venv"

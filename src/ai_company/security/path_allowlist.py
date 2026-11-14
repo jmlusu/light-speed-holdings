@@ -12,6 +12,10 @@ Deny by default:
 Every check emits an attribution record (path + tool + session +
 project/directory, never file content) so outside ops are re-measurable
 per-repo instead of one "outside" bucket.
+
+D-1 layering: credential/DB deny is canonical in
+``security/path_policy`` (delegated here); this module only adds
+allowlist + attribution semantics.
 """
 
 from __future__ import annotations
@@ -22,20 +26,21 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from ai_company.security.path_policy import is_path_denied
+
 logger = logging.getLogger(__name__)
 
 PRIMARY_REPO = "light-speed-holdings"
 SIBLING_REPOS = ("athena", "social-media-automation-os")
 SANDBOX_DIR = "temp/opencode"  # normalized suffix under AppData/Local
 
+# Allowlist-specific deny substrings (credential/DB denies are delegated to
+# path_policy.is_path_denied — single source of truth for .env/auth/db).
 _DENIED_SUBSTRINGS = (
     ".openmausbot",
-    "opencode.db",
-    "opencode-.db",
     ".local/share/opencode",
     "tool-output",
 )
-_DENIED_BASENAMES = frozenset({"auth.json", "mcp-auth.json"})
 
 
 def _norm(path: str) -> str:
@@ -117,14 +122,16 @@ class PathAllowlist:
     def _decide(self, normalized: str, tool: str) -> PathDecision:
         if ".openmausbot" in normalized:
             return PathDecision(False, "denied_openmausbot", "denied")
-        # Deny DB/auth/credential paths first (never allowlisted).
-        basename = Path(normalized).name
-        if basename in _DENIED_BASENAMES or any(s in normalized for s in _DENIED_SUBSTRINGS):
+        # Credential/DB deny delegated to path_policy (single source of
+        # truth); reason strings kept generic for audit stability, the
+        # specific pattern is recorded in attribution via decision reason.
+        if is_path_denied(normalized):
             return PathDecision(False, "denied_db_or_auth_path", "denied")
-        if basename != ".env.example" and (
-            basename == ".env" or basename.startswith(".env.") or basename.endswith(".env")
-        ):
-            return PathDecision(False, "denied_env_file", "denied")
+        # Allowlist-specific substrings (DB-dir probes that are not
+        # credential basenames). Credential/.env denies above already
+        # cover the .env/auth/opencode.db* basenames.
+        if any(s in normalized for s in _DENIED_SUBSTRINGS):
+            return PathDecision(False, "denied_db_or_auth_path", "denied")
         # C:/ root probes: drive root or user-home listing with no repo.
         if normalized in ("c:/", "c:", "/") or normalized == "c:/users/jmlus":
             return PathDecision(False, "denied_drive_or_home_root", "denied")

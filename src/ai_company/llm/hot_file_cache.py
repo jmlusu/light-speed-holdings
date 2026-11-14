@@ -1,9 +1,18 @@
-"""Per-session hot-file LRU cache + output caps (GO-4).
+"""Per-session hot-file cache + output caps (GO-4).
 
 Session-start context (AGENTS.md, STATUS.md, ECL summary/tasks,
 company-registry.yaml) is injected once; repeat reads within a session
 serve the in-session copy keyed by mtime, not disk I/O. Tool outputs are
 capped at 50 KB and grep results at 50 matches, with truncation surfaced.
+
+D-1 dedup — where things live
+-------------------------------
+- Content LRU for injection: this module (``SessionHotFileCache``).
+- Pointer pre-check for ToolRunner: ``executor/read_cache.SessionReadCache``
+  (returns a step pointer, never content; single executor read-cache).
+- Byte-cap implementation: ``executor/tool_validation.truncate_to_cap``
+  (this module's :func:`cap_tool_output` delegates to it).
+- Token cache metrics: ``llm/cache_metrics`` (canonical).
 """
 
 from __future__ import annotations
@@ -14,9 +23,15 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from ai_company.executor.tool_validation import OUTPUT_CAP_BYTES
+
 logger = logging.getLogger(__name__)
 
-TOOL_OUTPUT_CAP_BYTES = 50 * 1024
+# Canonical truncation lives in executor/tool_validation.truncate_to_cap
+# (D-1 dedup: one byte-cap implementation). TOOL_OUTPUT_CAP_BYTES mirrors
+# tool_validation.OUTPUT_CAP_BYTES (both 50 KiB) for callers that import
+# the cap from the llm cache module.
+TOOL_OUTPUT_CAP_BYTES = OUTPUT_CAP_BYTES
 GREP_RESULT_CAP = 50
 
 # Session-start injection set (relative to project root, when present).
@@ -57,18 +72,18 @@ class CacheEntry:
 
 
 def cap_tool_output(text: str, cap_bytes: int = TOOL_OUTPUT_CAP_BYTES) -> tuple[str, bool]:
-    """Truncate *text* to *cap_bytes*; returns ``(text, was_truncated)``."""
+    """Truncate *text* to *cap_bytes*; returns ``(text, was_truncated)``.
+
+    Delegates to :func:`tool_validation.truncate_to_cap` so there is a
+    single byte-cap implementation (D-1). The returned text keeps the
+    ``(str, bool)`` shape this module has always exposed.
+    """
+    from ai_company.executor.tool_validation import truncate_to_cap
+
     if text is None:
         return "", False
-    encoded_len = len(text.encode("utf-8", errors="ignore"))
-    if encoded_len <= cap_bytes:
-        return text, False
-    # Truncate on a character boundary at or under the byte cap.
-    truncated = text.encode("utf-8", errors="ignore")[:cap_bytes].decode("utf-8", errors="ignore")
-    return (
-        truncated + f"\n[... truncated at {cap_bytes} bytes; full output spilled, not re-emitted]",
-        True,
-    )
+    result = truncate_to_cap(text, cap_bytes)
+    return result.text, result.truncated
 
 
 def cap_grep_results(results: list[Any], cap: int = GREP_RESULT_CAP) -> tuple[list[Any], bool]:

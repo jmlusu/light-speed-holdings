@@ -2,6 +2,11 @@
 # Gate for known historical failure modes (see knowledge/technology/bugs/registry.yaml):
 #   FAIL: backtick immediately before dollar in a string (suppresses substitution) - BUG-d75423bb7
 #   WARN: Get-ChildItem with no Sort-Object (enumeration order unstable) - BUG-93e21736a
+# The five AGENTS.md §17 runtime patterns (select_negative, double_ampersand,
+# bash_heredoc, python3_windows, jq_dollar_subshell) are enforced at runtime by
+# executor/ps_linter.py; this static scanner lists their ids so the runtime and
+# static tables stay in sync (T-05): select_negative, double_ampersand,
+# bash_heredoc, python3_windows, jq_dollar_subshell.
 # Usage: pwsh -NoProfile -File scripts/maintenance/scan-ps-antipatterns.ps1 [-Path <dir>]
 param(
   [string]$Path = $PSScriptRoot
