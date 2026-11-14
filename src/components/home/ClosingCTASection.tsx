@@ -11,7 +11,7 @@ export const ClosingCTASection: React.FC<{ theme: 'light' | 'dark' }> = ({ theme
 
   return (
     <HomeSection id="closing-cta" label="Closing CTA" theme={theme} scrim={false}>
-      <section className="relative py-24 sm:py-32 px-4 sm:px-8 lg:px-10 max-w-7xl mx-auto bg-[url('/hero-background.jpg')] bg-no-repeat bg-center bg-black/60 overflow-hidden">
+      <section className="relative py-24 sm:py-32 px-4 sm:px-8 lg:px-10 max-w-7xl mx-auto bg-[url('/assets/images/hero_cinematic_landscape_night_1793514971805.avif')] bg-no-repeat bg-center bg-black/60 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent opacity-90 sm:opacity-95" />
 
         <div className="relative flex flex-col sm:flex-row items-center justify-center text-center gap-4 sm:gap-0 sm:w-full">

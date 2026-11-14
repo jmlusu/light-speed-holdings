@@ -248,7 +248,7 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
       {/* Background Architectural Atmosphere & Sector Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <img
-          src={isLight ? '/src/assets/images/before_after_sector_bg_daytime_1793890712154.jpg' : '/assets/aistudio/BeforeAfterSectorBackground_d538f2ff.jpg'}
+          src={isLight ? '/assets/images/before_after_sector_bg_daytime_1793890712154.avif' : '/assets/aistudio/BeforeAfterSectorBackground_d538f2ff.jpg'}
           alt="Workflow Collapsing Sector Architecture"
           className="w-full h-full object-cover object-center opacity-40 dark:opacity-55 transition-opacity duration-500 filter brightness-95"
           loading="lazy"

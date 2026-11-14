@@ -27,7 +27,7 @@ const VISITOR_PATHS: VisitorPathCard[] = [
     stage: 'STRATEGY',
     intent: 'Business Leaders',
     body: 'Navigate the governed agentic operating model to design and launch AI systems that scale safely.',
-    image: '/src/assets/images/audience_business_leaders_1793515174408.jpg',
+    image: '/assets/images/audience_business_leaders_1793515174408.avif',
     primary: { label: 'How We Work', to: '/what-we-do' },
     secondary: [
       { label: 'HAOMTGV Framework', to: '/haomtgv' },
@@ -39,7 +39,7 @@ const VISITOR_PATHS: VisitorPathCard[] = [
     stage: 'COLLABORATION',
     intent: 'Partners',
     body: 'Collaborate with LightSpeed to build integrated agentic ecosystems for the African market.',
-    image: '/src/assets/images/audience_partners_1793515174751.jpg',
+    image: '/assets/images/audience_partners_1793515174751.avif',
     primary: { label: 'Partner With Us', to: '/contact' },
     secondary: [
       { label: 'Platform details', to: '/what-we-do' },
@@ -51,7 +51,7 @@ const VISITOR_PATHS: VisitorPathCard[] = [
     stage: 'ENQUIRY',
     intent: 'Researchers',
     body: 'Access Pharos insights, research briefs, and policy commentary on the evolution of AI in Africa.',
-    image: '/src/assets/images/audience_researchers_1793515174898.jpg',
+    image: '/assets/images/audience_researchers_1793515174898.avif',
     primary: { label: 'Read Insights', to: '/insights' },
     secondary: [
       { label: 'Pharos practice', to: '/about' },
@@ -63,7 +63,7 @@ const VISITOR_PATHS: VisitorPathCard[] = [
     stage: 'GOVERNANCE',
     intent: 'Policy Makers',
     body: 'Engage with our governance frameworks and institutional strategy for sovereign AI deployment.',
-    image: '/src/assets/images/audience_policy_makers_1793515176396.jpg',
+    image: '/assets/images/audience_policy_makers_1793515176396.avif',
     primary: { label: 'View Frameworks', to: '/haomtgv' },
     secondary: [
       { label: 'Policy briefs', to: '/insights' },

@@ -38,7 +38,7 @@ export const IntentToExecutionLifecycle: React.FC<IntentToExecutionLifecycleProp
       {/* Background Architectural Pathway Destination Visual */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
         <img
-          src="/src/assets/images/cta_pathway_destination_1793817195986.jpg"
+          src="/assets/images/cta_pathway_destination_1793817195986.avif"
           alt="Intent to Execution Pathway Architecture Visual"
           className="w-full h-full object-cover object-center transition-all duration-700 opacity-65 dark:opacity-75 filter saturate-110 brightness-100"
           loading="lazy"
