@@ -17,8 +17,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
   const copy = homeImmersiveCopy;
 
   const bgImage = isLight
-    ? '/src/assets/images/hero_cinematic_landscape_day.jpg'
-    : '/src/assets/images/hero_cinematic_landscape_night_1793514971805.jpg';
+    ? '/assets/images/hero_cinematic_landscape_day.jpg'
+    : '/assets/images/hero_cinematic_landscape_night_1793514971805.jpg';
 
   const logoSrc = isLight
     ? '/brand/logo/logo-light-bg.svg'
