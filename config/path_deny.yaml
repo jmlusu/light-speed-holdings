@@ -1,0 +1,29 @@
+# Path deny policy — F-06 read-deny (opencode.db security fix 2026-11-08)
+# Enforced in code by src/ai_company/security/path_policy.py, wired into
+# ToolRunner (_read/_grep/_execute/_list_dir). The system prompt is NOT the
+# enforcement boundary (LLM01). Matching is case-insensitive on the basename
+# and on every path segment.
+#
+# Evidence (fix plan §7.2): .env read 309x, 4,394 bash env touches,
+# credential table + auth JSONs on ACL-only protection.
+
+denied_patterns:
+  # *.env variants (any directory)
+  - ".env*"
+  - "*.env"
+  # Credential-bearing database + backups/shims (R1)
+  - "opencode.db*"
+  - "opencode-.db*"
+  # Preventive — aligns with the security-and-hardening .gitignore baseline
+  - "*.pem"
+  - "*.key"
+
+denied_basenames:
+  - "auth.json"
+  - "mcp-auth.json"
+
+# Templates only — exempt AFTER a human confirms they hold placeholders
+# exclusively (re-verify on every edit). See docs/security/READ-DENY-POLICY.md.
+exempt_basenames:
+  - ".env.example"
+  - ".env.staging.example"
