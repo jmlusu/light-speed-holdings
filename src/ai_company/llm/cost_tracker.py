@@ -249,6 +249,11 @@ class UsageRecord:
         """Prompt + completion tokens for this record."""
         return self.prompt_tokens + self.completion_tokens
 
+    @property
+    def session_burn(self) -> int:
+        """Burn counted against token budgets: prompt + completion + cache_read."""
+        return self.prompt_tokens + self.completion_tokens + self.cache_read
+
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
@@ -279,10 +284,14 @@ class CostTracker:
         export_path: str | Path | None = None,
         read_only: bool = False,
         no_write: bool = False,
+        session_token_budget: int | None = 5_000_000,
+        daily_agent_token_budget: int | None = 50_000_000,
     ) -> None:
         self.results_dir = Path(results_dir)
         self.daily_budget = daily_budget_usd
         self.task_budget = task_budget_usd
+        self.session_token_budget = session_token_budget
+        self.daily_agent_token_budget = daily_agent_token_budget
         self.read_only: bool = bool(read_only or no_write)
         # Alias so callers checking either name see the same state.
         self.no_write: bool = self.read_only
@@ -294,6 +303,7 @@ class CostTracker:
         # In-memory accumulators
         self._daily_cost: dict[str, float] = {}  # "YYYY-MM-DD" -> total
         self._task_costs: dict[str, float] = {}  # task_id -> total
+        self._session_tokens: dict[str, int] = {}  # session_id -> burn
         self._records: list[UsageRecord] = []
         # D12: unbounded dedup set, separate from the bounded ``_records``
         # working set so trimming records never forgets an event_id.
@@ -433,6 +443,10 @@ class CostTracker:
         day_key = datetime.now(timezone.utc).date().isoformat()
         self._daily_cost[day_key] = self._daily_cost.get(day_key, 0.0) + cost
         self._task_costs[task_id] = self._task_costs.get(task_id, 0.0) + cost
+        if record.session_id:
+            self._session_tokens[record.session_id] = (
+                self._session_tokens.get(record.session_id, 0) + record.session_burn
+            )
         self._records.append(record)
         if event_id:
             # D12: dedup keys live outside the bounded working set.
@@ -476,10 +490,37 @@ class CostTracker:
 
         return record
 
+    @staticmethod
+    def _token_level(*, used: int, budget: int | None) -> str:
+        if budget is None or budget <= 0:
+            return "ok"
+        ratio = max(0, used) / budget
+        if ratio >= 1.0:
+            return "block"
+        if ratio >= 0.85:
+            return "compact"
+        if ratio >= 0.70:
+            return "warn"
+        return "ok"
+
+    def session_budget_status(self, session_id: str) -> dict[str, Any]:
+        """Level + totals for the session token budget."""
+        used = self._session_tokens.get(session_id, 0)
+        level = self._token_level(used=used, budget=self.session_token_budget)
+        return {
+            "session_id": session_id,
+            "session_tokens": used,
+            "session_budget": self.session_token_budget,
+            "level": level,
+        }
+
     def check_budget(
         self,
         task_id: str,
         proposed_cost: float = 0.0,
+        *,
+        proposed_tokens: int = 0,
+        session_id: str | None = None,
     ) -> tuple[bool, str]:
         """Check if a new LLM call would exceed budget limits.
 
@@ -492,6 +533,23 @@ class CostTracker:
             can proceed.
         """
         day_key = datetime.now(timezone.utc).date().isoformat()
+
+        # Token budget (session-scoped; free $0 models still gated).
+        sid = session_id or task_id
+        if self.session_token_budget is not None:
+            used = self._session_tokens.get(sid, 0)
+            level = self._token_level(used=used + proposed_tokens, budget=self.session_token_budget)
+            if level == "block":
+                return (
+                    False,
+                    f"Session token budget exceeded: {used + proposed_tokens} > "
+                    f"{self.session_token_budget}",
+                )
+            if level != "ok":
+                return (
+                    True,
+                    f"warning: Session token budget {level}: {used + proposed_tokens} / {self.session_token_budget}",
+                )
 
         # Check daily budget
         if self.daily_budget is not None:
@@ -841,6 +899,10 @@ class CostTracker:
                         self._records.append(record)
                         if record.event_id:
                             self._seen_event_ids.add(record.event_id)
+                        if record.session_id:
+                            self._session_tokens[record.session_id] = (
+                                self._session_tokens.get(record.session_id, 0) + record.session_burn
+                            )
                     except (json.JSONDecodeError, KeyError, TypeError, ValueError):
                         continue
             # Keep the in-memory working set bounded even on huge logs.

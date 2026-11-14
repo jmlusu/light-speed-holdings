@@ -61,15 +61,39 @@ class CostAnalytics:
         task_budget_usd: Optional per-task spend cap. ``None`` = unlimited.
     """
 
+    SESSION_TOKEN_BUDGET: int = 5_000_000
+    DAILY_AGENT_TOKEN_BUDGET: int = 50_000_000
+    _TOKEN_LEVELS: tuple[tuple[float, str], ...] = (
+        (1.0, "block"),
+        (0.85, "compact"),
+        (0.70, "warn"),
+        (0.0, "ok"),
+    )
+
     def __init__(
         self,
         database: Database,
         daily_budget_usd: float | None = None,
         task_budget_usd: float | None = None,
+        session_token_budget: int | None = SESSION_TOKEN_BUDGET,
+        daily_agent_token_budget: int | None = DAILY_AGENT_TOKEN_BUDGET,
     ) -> None:
         self._db = database
         self.daily_budget = daily_budget_usd
         self.task_budget = task_budget_usd
+        self.session_token_budget = session_token_budget
+        self.daily_agent_token_budget = daily_agent_token_budget
+
+    @classmethod
+    def _token_level(cls, *, used: int, budget: int | None) -> str:
+        """Map used/budget to ok|warn|compact|block (70/85/100% thresholds)."""
+        if budget is None or budget <= 0:
+            return "ok"
+        ratio = max(0, used) / budget
+        for threshold, level in cls._TOKEN_LEVELS:
+            if ratio >= threshold:
+                return level
+        return "ok"
 
     # ── Recording ─────────────────────────────────────────────────────
 
@@ -153,12 +177,60 @@ class CostAnalytics:
             raise
         return cursor.lastrowid or 0
 
-    def check_budget(self, task_id: str, proposed_cost: float = 0.0) -> tuple[bool, str]:
+    def check_budget(
+        self,
+        task_id: str,
+        proposed_cost: float = 0.0,
+        *,
+        proposed_tokens: int = 0,
+        session_id: str | None = None,
+        agent_name: str | None = None,
+    ) -> tuple[bool, str]:
         """Check if a new LLM call would exceed budget limits.
 
-        Returns ``(allowed, reason)``.
+        Returns ``(allowed, reason)``. Token budgets (session 5M /
+        daily-agent 50M, ``None`` disables) are checked first: free $0
+        models cannot bypass the token gate (``test_tighter_gate_wins``).
+        Warn/compact levels allow the call with a warning reason; block
+        denies with ``Session token budget exceeded``.
         """
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+        # Token budgets (session + daily-agent). task_id doubles as
+        # session_id when callers do not pass session_id explicitly
+        # (Desktop rows set task_id == session_id).
+        token_reasons: list[str] = []
+        if self.session_token_budget is not None:
+            sid = session_id or task_id
+            used = self.session_token_total(sid)
+            level = self._token_level(used=used + proposed_tokens, budget=self.session_token_budget)
+            if level == "block":
+                return (
+                    False,
+                    f"Session token budget exceeded: {used + proposed_tokens} > "
+                    f"{self.session_token_budget}",
+                )
+            if level != "ok":
+                token_reasons.append(
+                    f"Session token budget {level}: {used + proposed_tokens} / "
+                    f"{self.session_token_budget}"
+                )
+        if agent_name and self.daily_agent_token_budget is not None:
+            used_agent = self.agent_daily_token_total(agent_name)
+            level_agent = self._token_level(
+                used=used_agent + proposed_tokens, budget=self.daily_agent_token_budget
+            )
+            if level_agent == "block":
+                return (
+                    False,
+                    f"Daily agent token budget exceeded: {used_agent + proposed_tokens} > "
+                    f"{self.daily_agent_token_budget}",
+                )
+            if level_agent != "ok":
+                token_reasons.append(
+                    f"Daily agent token budget {level_agent}: "
+                    f"{used_agent + proposed_tokens} / {self.daily_agent_token_budget}"
+                )
 
         # Daily budget check
         if self.daily_budget is not None:
@@ -180,6 +252,8 @@ class CostAnalytics:
                     f"${proposed_cost:.4f} > ${self.task_budget:.2f}",
                 )
 
+        if token_reasons:
+            return True, "warning: " + "; ".join(token_reasons)
         return True, "within budget"
 
     # ── Cache-read budget (OpenCode usage DB) ─────────────────────────
@@ -562,7 +636,111 @@ class CostAnalytics:
             result["task_cost_usd"] = round(task_cost, 6)
             result["task_remaining"] = round(self.task_budget - task_cost, 6)
 
+        # Token-budget utilization (session-gated; None disables).
+        token_used = self.session_token_total(task_id) if task_id else 0
+        token_budget = self.session_token_budget
+        if token_budget:
+            result["token_budget_utilization"] = round((token_used / token_budget) * 100, 2)
+            result["token_budget_level"] = self._token_level(used=token_used, budget=token_budget)
+        else:
+            result["token_budget_utilization"] = 0.0
+            result["token_budget_level"] = "ok"
+
         return result
+
+    # ── Token budgets + cache metrics (GO-1/GO-2; D-1 via cache_metrics) ──
+
+    def session_token_total(self, session_id: str) -> int:
+        """Burn for one session: prompt + completion + cache_read.
+
+        Cache reads count at full weight (they still consume context);
+        ``prompt`` already includes input + cache_write per the
+        opencode-desktop split, so cache_write is not double-counted.
+        """
+        row = self._db.fetchone(
+            """SELECT COALESCE(SUM(prompt_tokens + completion_tokens + cache_read), 0) as total
+               FROM cost_records WHERE session_id = ?""",
+            (session_id,),
+        )
+        return int(row["total"]) if row else 0
+
+    def agent_daily_token_total(self, agent_name: str) -> int:
+        """Burn for one agent today (same burn formula as sessions)."""
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        row = self._db.fetchone(
+            """SELECT COALESCE(SUM(prompt_tokens + completion_tokens + cache_read), 0) as total
+               FROM cost_records WHERE agent_name = ? AND date(timestamp) = ?""",
+            (agent_name, today),
+        )
+        return int(row["total"]) if row else 0
+
+    def session_budget_status(
+        self, session_id: str, *, agent_name: str | None = None
+    ) -> dict[str, Any]:
+        """Level + totals for session (and optionally daily-agent) budgets."""
+        session_used = self.session_token_total(session_id)
+        session_level = self._token_level(used=session_used, budget=self.session_token_budget)
+        level = session_level
+        agent_used = self.agent_daily_token_total(agent_name) if agent_name else 0
+        agent_level = (
+            self._token_level(used=agent_used, budget=self.daily_agent_token_budget)
+            if agent_name
+            else "ok"
+        )
+        rank = {"ok": 0, "warn": 1, "compact": 2, "block": 3}
+        if rank[agent_level] > rank[level]:
+            level = agent_level
+        return {
+            "session_id": session_id,
+            "session_tokens": session_used,
+            "session_budget": self.session_token_budget,
+            "session_level": session_level,
+            "agent_name": agent_name,
+            "agent_tokens": agent_used,
+            "agent_budget": self.daily_agent_token_budget,
+            "agent_level": agent_level,
+            "level": level,
+        }
+
+    def cache_metrics(self) -> dict[str, Any]:
+        """Renormalized cache metrics over all cost records.
+
+        Delegates to :func:`llm.cache_metrics.compute_cache_metrics`
+        (single source of truth for the formula) with
+        ``input = prompt - cache_write`` per the opencode-desktop
+        split.
+        """
+        from ai_company.llm.cache_metrics import compute_cache_metrics
+
+        row = self._db.fetchone(
+            """SELECT COALESCE(SUM(prompt_tokens), 0) as prompt_tokens,
+                      COALESCE(SUM(completion_tokens), 0) as completion_tokens,
+                      COALESCE(SUM(cache_read), 0) as cache_read,
+                      COALESCE(SUM(cache_write), 0) as cache_write
+               FROM cost_records"""
+        )
+        prompt = int(row["prompt_tokens"]) if row else 0
+        completion = int(row["completion_tokens"]) if row else 0
+        cache_read = int(row["cache_read"]) if row else 0
+        cache_write = int(row["cache_write"]) if row else 0
+        return compute_cache_metrics(
+            input_tokens=max(0, prompt - cache_write),
+            cache_read=cache_read,
+            cache_write=cache_write,
+            output_tokens=completion,
+        )
+
+    def top_sessions_by_burn(self, *, limit: int = 10) -> list[dict[str, Any]]:
+        """Top sessions by burn (prompt + completion + cache_read), desc."""
+        rows = self._db.fetchall(
+            """SELECT session_id,
+                      COALESCE(SUM(prompt_tokens + completion_tokens + cache_read), 0) as burn
+               FROM cost_records
+               WHERE session_id != ''
+               GROUP BY session_id ORDER BY burn DESC LIMIT ?""",
+            (int(limit),),
+        )
+        return [{"session_id": r["session_id"], "burn": int(r["burn"])} for r in rows]
 
     # ── Migration ─────────────────────────────────────────────────────
 

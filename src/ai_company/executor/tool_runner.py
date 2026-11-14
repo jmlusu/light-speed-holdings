@@ -38,6 +38,22 @@ import yaml
 
 from ai_company.audit.integration import log_hitl_decision, log_tool_call
 from ai_company.executor.hitl_gate import HITLGate
+from ai_company.executor.ps_linter import check_powershell_command
+from ai_company.executor.read_cache import SessionReadCache
+from ai_company.executor.tool_validation import (
+    GREP_MATCH_CAP as _GREP_MATCH_CAP,
+)
+from ai_company.executor.tool_validation import (
+    call_with_retry,
+    cap_grep_line,
+    check_edit_preflight,
+    classify_tool_error,
+    depth_limit_fallback,
+    grep_backend,
+    resolve_file_path_arg,
+    truncate_to_cap,
+    validate_tool_args,
+)
 from ai_company.orchestrator.tier_rules import (
     SENIORITY_AUTO_APPROVE_TIER,
     ApprovalTier,
@@ -46,8 +62,41 @@ from ai_company.orchestrator.tier_rules import (
 )
 from ai_company.security.command_safety import find_shell_metacharacters
 from ai_company.security.content_filter import ContentFilter, get_content_filter
+from ai_company.security.egress import check_shell_egress, validate_egress_url
+from ai_company.security.path_policy import deny_reason, find_denied_paths_in_command
 from ai_company.security.pii_detector import PIIDetector, get_pii_detector
+from ai_company.security.redact import redact_secrets
 from ai_company.store import repo_write
+
+
+def log_permission_deny(
+    task_id: str,
+    agent_id: str,
+    tool: str,
+    args: Any,
+    *,
+    reason: str = "permission_denied",
+) -> None:
+    """Best-effort PERMISSION_DENIED audit + security log for deny paths.
+
+    Tests patch ``tool_runner.log_permission_deny`` to assert the audit
+    hook fires on path-escape and allowlist/content deny. Kept module-
+    level (single import point) so the mock target is stable.
+    """
+    _security_logger.warning(
+        "PERMISSION_DENIED %s %s: %s (reason=%s)", task_id, agent_id, tool, reason
+    )
+    try:
+        log_tool_call(
+            task_id,
+            agent_id,
+            tool,
+            args if isinstance(args, dict) else {"raw": str(args)},
+            {"status": "error", "error": f"permission denied: {reason}"},
+        )
+    except Exception:  # noqa: BLE001 - audit must never crash dispatch
+        return
+
 
 try:
     from ai_company.telemetry import start_span as _start_span
@@ -137,6 +186,7 @@ _DEFAULT_ALLOWED_COMMANDS: frozenset[str] = frozenset(
         "tail",
         "wc",
         "grep",
+        "rg",
         "find",
         "tree",
         # Text processing (standalone — pipes blocked)
@@ -212,10 +262,18 @@ class ToolRunner:
         content_filter: ContentFilter | None = None,
         pii_detector: PIIDetector | None = None,
     ) -> None:
+        import time as _time
+
         self.project_root = Path(project_root).resolve()
         self.allowed_commands = _load_allowlist(allowlist_path)
         self._content_filter = content_filter or get_content_filter()
         self._pii_detector = pii_detector or get_pii_detector()
+        # Injectable sleep for webfetch retry backoff (tests patch it).
+        self._sleep = _time.sleep
+        # Per-session read-dedup pointer cache (executor canonical;
+        # llm/hot_file_cache is the content LRU for injection, not this).
+        self._read_cache = SessionReadCache()
+        self._read_step = 0
 
     def run_plan(
         self,
@@ -329,6 +387,27 @@ class ToolRunner:
                     log_tool_call(task_id, agent_id, tool, args, error_result)
                     continue
 
+                # ── P1-T4 schema fail-fast (before tier/dispatch) ───────
+                # Canonical entry is validate_tool_args; normalize the
+                # harness filePath alias to path so handlers (which index
+                # args["path"]) dispatch on the unified shape.
+                _resolved_path = resolve_file_path_arg(args)
+                if _resolved_path is not None and "path" not in args:
+                    args = {**args, "path": _resolved_path}
+                _valid, _validation_msg = validate_tool_args(tool, args)
+                if not _valid:
+                    validation_result = {
+                        "step": i,
+                        "tool": tool,
+                        "status": "error",
+                        "error": _validation_msg,
+                        "validation_rejected": True,
+                        "error_code": "VALIDATION_REJECTED",
+                    }
+                    results.append(validation_result)
+                    log_tool_call(task_id, agent_id, tool, args, validation_result)
+                    continue
+
                 # ── GAP-003: Tier classification & authorization ─────────
                 tier_info = self.check_tool_authorization(
                     tool_name=tool,
@@ -413,6 +492,19 @@ class ToolRunner:
                         agent_id=agent_id,
                         session_id=session_id,
                     )
+                    # T-06 depth fallback: a deterministic depth-limit error
+                    # becomes explicit direct execution (never retried).
+                    if (
+                        tool in ("task", "delegate")
+                        and "error" in result
+                        and classify_tool_error(str(result.get("error", ""))) == "DEPTH_LIMIT"
+                    ):
+                        fallback = depth_limit_fallback(
+                            receiver=str(args.get("receiver", "")),
+                            instruction=str(args.get("instruction", "")),
+                            agent_id=agent_id,
+                        )
+                        result = {**fallback}
                     status = "error" if "error" in result else "ok"
                     exec_result = {
                         "step": i,
@@ -425,6 +517,27 @@ class ToolRunner:
                     results.append(exec_result)
                     log_tool_call(task_id, agent_id, tool, args, exec_result)
                 except Exception as exc:  # noqa: BLE001 - tool failure captured in result
+                    # T-06 depth fallback (exception form of the limit).
+                    if (
+                        tool in ("task", "delegate")
+                        and classify_tool_error(str(exc)) == "DEPTH_LIMIT"
+                    ):
+                        fallback_exc = depth_limit_fallback(
+                            receiver=str(args.get("receiver", "")),
+                            instruction=str(args.get("instruction", "")),
+                            agent_id=agent_id,
+                        )
+                        exc_result = {
+                            "step": i,
+                            "tool": tool,
+                            "status": "ok",
+                            "tier": tier,
+                            "tier_label": tier_label,
+                            **fallback_exc,
+                        }
+                        results.append(exc_result)
+                        log_tool_call(task_id, agent_id, tool, args, exc_result)
+                        continue
                     exc_result = {
                         "step": i,
                         "tool": tool,
@@ -599,12 +712,43 @@ class ToolRunner:
         agent_id: str = "",
         session_id: str = "",
     ) -> dict[str, Any]:
-        path = self._safe_path(args["path"])
+        raw_path = args.get("path") or resolve_file_path_arg(args) or ""
+        # Credential deny (F-06) — canonical path_policy, fail-closed.
+        denied = deny_reason(str(raw_path))
+        if denied:
+            log_permission_deny(task_id, agent_id, "read", args, reason="read_deny_path")
+            return {"error": denied}
+        try:
+            path = self._safe_path(str(raw_path))
+        except SecurityError as exc:
+            log_permission_deny(task_id, agent_id, "read", args, reason="path_escape")
+            return {"error": str(exc)}
         if not path.exists():
             return {"error": f"File not found: {args['path']}"}
-        content = path.read_text(encoding="utf-8", errors="replace")
+        if path.is_dir():
+            return {"error": f"Not a file: {raw_path}"}
+        self._read_step += 1
+        hit = self._read_cache.get(str(path), self._read_step)
+        if hit is not None:
+            return {
+                "path": str(path.relative_to(self.project_root)),
+                "content": hit.pointer().get("note", ""),
+                "cached": True,
+                "ref": f"step-{hit.ref_step}",
+                "sha256": hit.sha256,
+            }
+        raw_bytes = path.read_bytes()
+        if b"\x00" in raw_bytes[:8192]:
+            return {
+                "error": f"Binary file not readable as text: {raw_path}",
+                "error_code": "BINARY",
+            }
+        content = raw_bytes.decode("utf-8", errors="replace")
         # Scan file content for PII and safety threats
         content = self._sanitize_output(content, source=str(path.relative_to(self.project_root)))
+        capped = truncate_to_cap(content)
+        content = capped.text
+        self._read_cache.put(str(path), content, self._read_step)
         return {
             "path": str(path.relative_to(self.project_root)),
             "content": content,
@@ -619,9 +763,39 @@ class ToolRunner:
         agent_id: str = "",
         session_id: str = "",
     ) -> dict[str, Any]:
-        path = self._safe_path(args["path"])
+        raw_path = args.get("path") or resolve_file_path_arg(args) or ""
+        denied = deny_reason(str(raw_path))
+        if denied:
+            log_permission_deny(task_id, agent_id, "write", args, reason="read_deny_path")
+            return {"error": denied}
+        try:
+            path = self._safe_path(str(raw_path))
+        except SecurityError as exc:
+            log_permission_deny(task_id, agent_id, "write", args, reason="path_escape")
+            return {"error": str(exc)}
+
+        # Harness-style edit (oldString/newString): pre-flight against
+        # fresh bytes (T-01). Content-overwrite edits skip this.
+        if "oldString" in args or "newString" in args:
+            old_string = str(args.get("oldString", ""))
+            new_string = str(args.get("newString", ""))
+            if not path.exists():
+                return {"error": f"File not found: {raw_path}", "error_code": "EDIT_NOT_FOUND"}
+            current = path.read_text(encoding="utf-8", errors="replace")
+            preflight = check_edit_preflight(
+                current_content=current,
+                old_string=old_string,
+                new_string=new_string,
+            )
+            if not preflight.ok:
+                return {
+                    "error": preflight.message,
+                    "error_code": preflight.error_code or "VALIDATION_REJECTED",
+                }
+            content = preflight.replaced_content or ""
+        else:
+            content = args.get("content", "")
         path.parent.mkdir(parents=True, exist_ok=True)
-        content = args.get("content", "")
         # P0: optimistic concurrency — if the caller provides the digest it
         # read (via the ''sha256'' field on a prior ''read''), refuse the write
         # when the on-disk content changed underneath it (409 Conflict).
@@ -656,6 +830,7 @@ class ToolRunner:
                 "before_hash": result["before_hash"],
                 "after_hash": result["after_hash"],
             }
+        self._read_cache.invalidate(str(path))
         return {
             "path": str(path.relative_to(self.project_root)),
             "bytes": len(content.encode()),
@@ -691,6 +866,20 @@ class ToolRunner:
         import platform
 
         command = args["command"]
+
+        # ── PowerShell antipattern pre-flight (T-05) ───────────────────
+        ps_ok, ps_msg = check_powershell_command(command)
+        if not ps_ok:
+            return {"command": command, "error": ps_msg}
+
+        # ── Credential deny in shell args (F-06) ────────────────────────
+        denied_paths = find_denied_paths_in_command(command)
+        if denied_paths:
+            log_permission_deny(task_id, agent_id, "bash", args, reason="command_path_deny")
+            return {
+                "command": command,
+                "error": f"permission denied: denied path {denied_paths[0]}",
+            }
 
         # ── Reject shell metacharacters ──────────────────────────────────
         # Shared with the HITL gate (security.command_safety) so an approval
@@ -729,6 +918,7 @@ class ToolRunner:
                 base,
                 command[:200],
             )
+            log_permission_deny(task_id, agent_id, "bash", args, reason="allowlist_deny")
             return {
                 "command": command,
                 "error": (
@@ -736,6 +926,14 @@ class ToolRunner:
                     f"Allowed: {', '.join(sorted(self.allowed_commands))}"
                 ),
             }
+
+        # ── Shell egress (P2-T6) ────────────────────────────────────────
+        # Runs AFTER the allowlist check so that a disallowed binary
+        # (e.g. curl) is attributed to the allowlist (tests pin this
+        # message); egress still guards every allowlisted command.
+        egress_ok, egress_reason = check_shell_egress(command)
+        if not egress_ok:
+            return {"command": command, "error": f"egress denied: {egress_reason}"}
 
         # ── Resolve symlinks in arguments to prevent traversal ──────────
         resolved_tokens = [tokens[0]]  # Keep command name as-is
@@ -804,7 +1002,10 @@ class ToolRunner:
 
     def _grep(self, args: dict[str, Any]) -> dict[str, Any]:
         pattern = args["pattern"]
-        search_path = self._safe_path(args.get("path", "."))
+        try:
+            search_path = self._safe_path(args.get("path", "."))
+        except SecurityError as exc:
+            return {"pattern": pattern, "error": str(exc)}
         matches: list[str] = []
 
         if search_path.is_file():
@@ -815,15 +1016,25 @@ class ToolRunner:
                     p.startswith(".") for p in f.relative_to(self.project_root).parts
                 ):
                     matches.extend(self._grep_file(f, pattern))
-                    if len(matches) >= 50:
+                    if len(matches) >= _GREP_MATCH_CAP:
                         break
 
-        # Sanitize individual match lines for PII
+        # T-04 caps: per-line 500 chars; 100-match cap; scan carries the
+        # truncated count so truncation is never silent. Sanitize via
+        # _sanitize_output (PII/content filter + secret redact).
+        capped = [cap_grep_line(m) for m in matches]
+        shown = capped[:_GREP_MATCH_CAP]
         sanitized: list[str] = []
-        for m in matches[:50]:
+        for m in shown:
             sanitized.append(self._sanitize_output(m, source="grep"))
 
-        return {"pattern": pattern, "matches": sanitized, "total": len(matches)}
+        return {
+            "pattern": pattern,
+            "matches": sanitized,
+            "total": len(matches),
+            "backend": grep_backend(),
+            "truncated_lines": len(capped) - len(shown),
+        }
 
     def _grep_file(self, path: Path, pattern: str) -> list[str]:
         matches: list[str] = []
@@ -833,8 +1044,8 @@ class ToolRunner:
                 if pattern.lower() in line.lower():
                     rel = path.relative_to(self.project_root)
                     matches.append(f"{rel}:{i}: {line.strip()}")
-        except (OSError, UnicodeDecodeError):
-            pass
+        except (OSError, UnicodeDecodeError) as exc:
+            logger.debug("Grep file skipped (unreadable): %s: %s", path, exc)
         return matches
 
     def _list_dir(self, args: dict[str, Any]) -> dict[str, Any]:
@@ -855,21 +1066,46 @@ class ToolRunner:
 
         Restricted to ``http``/``https`` with a hard size cap; content is
         scanned for PII and safety threats before being returned.
+        Egress allowlist (F-07) runs before fetch; fetch itself retries
+        transient 429/5xx with backoff via :func:`call_with_retry`.
         """
+        url = args.get("url", "")
+        if not isinstance(url, str) or not url:
+            return {"url": str(url), "error": "Only http:// and https:// URLs are allowed"}
+        allowed, reason = validate_egress_url(url)
+        if not allowed:
+            return {"url": url, "error": f"egress denied: {reason}", "error_code": "EGRESS_DENIED"}
+        result, attempts_used, _delays = call_with_retry(
+            lambda: self._fetch_once(url),
+            max_attempts=3,
+            sleep=self._sleep,
+        )
+        if "error" in result:
+            code = classify_tool_error(
+                str(result.get("error", "")),
+                result.get("http_status") if isinstance(result.get("http_status"), int) else None,
+            )
+            return {"url": url, **result, "attempts": attempts_used, "error_code": code}
+        return {
+            "url": result.get("url", url),
+            "content": self._sanitize_output(result.get("content", ""), source="webfetch"),
+            "attempts": attempts_used,
+        }
+
+    def _fetch_once(self, url: str) -> dict[str, Any]:
+        """Single webfetch attempt; injectable via mock in tests."""
         import urllib.request
 
-        url = args.get("url", "")
-        if not isinstance(url, str) or not url.lower().startswith(("http://", "https://")):
-            return {"url": str(url), "error": "Only http:// and https:// URLs are allowed"}
         try:
             with urllib.request.urlopen(url, timeout=30) as resp:
                 raw = resp.read(64 * 1024).decode("utf-8", errors="replace")
         except Exception as exc:  # noqa: BLE001 - fetch failure surfaced as error
-            return {"url": url, "error": f"Fetch failed: {exc}"}
-        return {
-            "url": url,
-            "content": self._sanitize_output(raw, source="webfetch"),
-        }
+            status = getattr(exc, "code", None)
+            return {
+                "error": f"Fetch failed: {exc}",
+                **({"http_status": status} if isinstance(status, int) else {}),
+            }
+        return {"url": url, "content": raw}
 
     def _delegate(self, args: dict[str, Any]) -> dict[str, Any]:
         """Return a delegate action dict for the loop to create a subtask in the inbox."""
@@ -922,6 +1158,14 @@ class ToolRunner:
                 len(pii_result.matches),
             )
             text = pii_result.masked
+
+        # Secret redaction (F-05, canonical redact.py) — full [REDACTED]
+        # for credential-shaped values before persistence/return. PII
+        # detector handles PII shapes; redact handles secret shapes.
+        redacted_text, hits = redact_secrets(text)
+        if hits:
+            _security_logger.info("Secret redacted in %s output: %s", source, ",".join(hits))
+            text = redacted_text
 
         return text
 

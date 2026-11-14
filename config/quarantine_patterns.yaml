@@ -1,0 +1,33 @@
+# Injection quarantine patterns — F-12 (opencode.db fix 2026-11-08)
+# Additive flag only: rows are tagged in a `quarantine` sidecar keyed by
+# (session_id, part_id) and excluded from ## Relevant Past Work recall via
+# a NOT EXISTS anti-join. Never delete quarantined content — it is evidence.
+# Re-admission requires a named reviewer + date. Baseline hits (fix plan):
+# ignore prior 3,412 · override instruction 2,162 · system prompt 2,077 ·
+# jailbreak 317. v2 (7 days) already shows 158 ignore-prior hits.
+
+patterns:
+  - id: "ignore_prior"
+    regex: "ignore.{0,30}(prior|previous)"
+    description: "Ignore-prior override"
+  - id: "override_instruction"
+    regex: "override.{0,30}instruction"
+    description: "Override-instruction"
+  - id: "system_prompt"
+    regex: "system\\s+prompt"
+    description: "System-prompt reference"
+  - id: "jailbreak"
+    regex: "jailbreak"
+    description: "Jailbreak terminology"
+  - id: "disregard"
+    regex: "disregard.{0,30}(instruction|prompt|rule|prior|previous)"
+    description: "Disregard-instructions"
+  - id: "ignore_all"
+    regex: "ignore\\s+all\\b"
+    description: "Ignore-all directive"
+  - id: "new_instructions"
+    regex: "new\\s+instructions?\\b"
+    description: "New-instructions injection"
+  - id: "you_are_now"
+    regex: "you\\s+are\\s+now\\s+(a|an|the)\\b"
+    description: "Role-swap injection"

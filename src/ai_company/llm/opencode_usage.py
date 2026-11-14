@@ -19,6 +19,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
+from ai_company.llm.cache_metrics import extract_cache_read, extract_cache_write
+
 logger = logging.getLogger(__name__)
 
 
@@ -133,9 +135,16 @@ def normalize_message_row(
     parsed = _parse_json(data)
     tokens_raw = parsed.get("tokens")
     tokens: dict[str, Any] = tokens_raw if isinstance(tokens_raw, dict) else {}
-    cache_raw = tokens.get("cache")
-    cache: dict[str, Any] = cache_raw if isinstance(cache_raw, dict) else {}
-    prompt = _num(tokens.get("input")) + _num(cache.get("write"))
+    # D-1: canonical cache extraction (covers nested tokens.cache.* AND
+    # top-level cache_creation aliases the recorder historically wrote).
+    cache_read = extract_cache_read(parsed) or _num(tokens.get("cache"))
+    cache_write = extract_cache_write(parsed)
+    # Legacy fallback: nested cache dict without extractor match.
+    if not cache_write:
+        cache_raw = tokens.get("cache")
+        cache_dict: dict[str, Any] = cache_raw if isinstance(cache_raw, dict) else {}
+        cache_write = _num(cache_dict.get("write"))
+    prompt = _num(tokens.get("input")) + cache_write
     completion = _num(tokens.get("output")) + _num(tokens.get("reasoning"))
     if prompt == 0 and completion == 0:
         return None
@@ -167,8 +176,8 @@ def normalize_message_row(
         "source": "opencode-desktop",
         "session_id": session_id,
         "event_id": f"msg_{message_id}",
-        "cache_read": _num(cache.get("read")),
-        "cache_write": _num(cache.get("write")),
+        "cache_read": cache_read,
+        "cache_write": cache_write,
         "cost_source": cost_source,
         "metadata": message_metadata,
         "timestamp": _iso_from_ms(time_created),
@@ -275,6 +284,7 @@ def normalize_session_row(
     tokens_cache_write: int,
     raw_cost: float,
     time_created: Any,
+    raw_usage: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     """Normalize one Desktop session aggregate to a canonical record.
 
@@ -282,8 +292,20 @@ def normalize_session_row(
     separate), ``completion = output + reasoning``. Returns ``None``
     for zero-token / free sessions with no usage (APIError rows are
     never zero-filled).
+
+    ``raw_usage`` (when supplied) is the legacy session ``raw_usage``
+    payload that may carry ``cache_creation`` aliases the session
+    columns historically stored as ``cache_write=0``; the extractor
+    from :mod:`ai_company.llm.cache_metrics` is the single source of
+    truth for that mapping (D-1).
     """
-    prompt = _num(tokens_input) + _num(tokens_cache_write)
+    effective_write = _num(tokens_cache_write)
+    if not effective_write and raw_usage:
+        effective_write = extract_cache_write(raw_usage)
+    effective_read = _num(tokens_cache_read)
+    if raw_usage and not effective_read:
+        effective_read = extract_cache_read(raw_usage)
+    prompt = _num(tokens_input) + effective_write
     completion = _num(tokens_output) + _num(tokens_reasoning)
     if prompt == 0 and completion == 0:
         return None
@@ -314,8 +336,8 @@ def normalize_session_row(
         "source": "opencode-desktop",
         "session_id": session_id,
         "event_id": f"ses_{session_id}",
-        "cache_read": _num(tokens_cache_read),
-        "cache_write": _num(tokens_cache_write),
+        "cache_read": effective_read,
+        "cache_write": effective_write,
         "cost_source": cost_source,
         "metadata": session_metadata,
         "timestamp": _iso_from_ms(time_created),
