@@ -1,8 +1,288 @@
 {
   "version": "1.0",
   "description": "Registry of every image the public site renders, with origin, licence and disclosure status.",
-  "lastUpdated": "2026-11-13",
+  "lastUpdated": "2026-11-14",
   "assets": [
+    {
+      "id": "content-agent-network-topology",
+      "path": "/assets/images/agent_network_topology_1793816821318.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/agent_network_topology_1793816821318.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-audience-business-leaders",
+      "path": "/assets/images/audience_business_leaders_1793515174408.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/audience_business_leaders_1793515174408.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-audience-partners",
+      "path": "/assets/images/audience_partners_1793515174751.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/audience_partners_1793515174751.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-audience-policy-makers",
+      "path": "/assets/images/audience_policy_makers_1793515176396.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/audience_policy_makers_1793515176396.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-audience-researchers",
+      "path": "/assets/images/audience_researchers_1793515174898.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/audience_researchers_1793515174898.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-before-after-sector-bg-daytime",
+      "path": "/assets/images/before_after_sector_bg_daytime_1793890712154.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/before_after_sector_bg_daytime_1793890712154.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-before-after-sector-bg-light",
+      "path": "/assets/images/before_after_sector_bg_light_1793889809250.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/before_after_sector_bg_light_1793889809250.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-cap1-company-building",
+      "path": "/assets/images/cap1_company_building_1793817051020.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/cap1_company_building_1793817051020.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-cap2-workflow-automation",
+      "path": "/assets/images/cap2_workflow_automation_1793817065625.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/cap2_workflow_automation_1793817065625.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-cap3-agentic-orchestration",
+      "path": "/assets/images/cap3_agentic_orchestration_1793817079580.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/cap3_agentic_orchestration_1793817079580.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-cap4-integration-pure",
+      "path": "/assets/images/cap4_integration_pure_1793817124475.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/cap4_integration_pure_1793817124475.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-cap5-organizational-memory",
+      "path": "/assets/images/cap5_organizational_memory_1793817139478.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/cap5_organizational_memory_1793817139478.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-cap6-governance-infrastructure",
+      "path": "/assets/images/cap6_governance_infrastructure_1793817153646.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/cap6_governance_infrastructure_1793817153646.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-cta-pathway-destination",
+      "path": "/assets/images/cta_pathway_destination_1793817195986.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/cta_pathway_destination_1793817195986.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-hero-cinematic-landscape-day",
+      "path": "/assets/images/hero_cinematic_landscape_day.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/hero_cinematic_landscape_day.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-hero-cinematic-landscape-night",
+      "path": "/assets/images/hero_cinematic_landscape_night_1793514971805.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/hero_cinematic_landscape_night_1793514971805.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-identity-triptych-foundations",
+      "path": "/assets/images/identity_triptych_foundations_1793818127924.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/identity_triptych_foundations_1793818127924.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-modular-agent-architecture",
+      "path": "/assets/images/modular_agent_architecture_1793818142394.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/modular_agent_architecture_1793818142394.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-pharos-africa-infrastructure",
+      "path": "/assets/images/pharos_africa_infrastructure_1793514971621.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/pharos_africa_infrastructure_1793514971621.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-pharos-ai-governance",
+      "path": "/assets/images/pharos_ai_governance_1793514972204.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/pharos_ai_governance_1793514972204.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-pharos-ai-orchestration",
+      "path": "/assets/images/pharos_ai_orchestration_1793514971486.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/pharos_ai_orchestration_1793514971486.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-pharos-article-thumb-cost",
+      "path": "/assets/images/pharos_article_thumb_cost_1793817753722.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/pharos_article_thumb_cost_1793817753722.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-pharos-article-thumb-gov",
+      "path": "/assets/images/pharos_article_thumb_gov_1793817768084.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/pharos_article_thumb_gov_1793817768084.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-pharos-article-thumb-sadc",
+      "path": "/assets/images/pharos_article_thumb_sadc_1793817783127.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/pharos_article_thumb_sadc_1793817783127.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-pharos-canonical-architecture",
+      "path": "/assets/images/pharos_canonical_architecture_1793817675241.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/pharos_canonical_architecture_1793817675241.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-pharos-cta-pure",
+      "path": "/assets/images/pharos_cta_pure_1793817814419.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/pharos_cta_pure_1793817814419.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-pharos-editorial-hero",
+      "path": "/assets/images/pharos_editorial_hero_1793817662034.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/pharos_editorial_hero_1793817662034.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-philosophy-triptych-clean",
+      "path": "/assets/images/philosophy_triptych_clean_1793818099752.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/philosophy_triptych_clean_1793818099752.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-solution-agentic-automation",
+      "path": "/assets/images/solution_agentic_automation_1793514973368.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/solution_agentic_automation_1793514973368.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-solution-company-builder",
+      "path": "/assets/images/solution_company_builder_1793514972767.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/solution_company_builder_1793514972767.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-solution-market-intelligence",
+      "path": "/assets/images/solution_market_intelligence_1793514973546.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/solution_market_intelligence_1793514973546.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-solution-workflow-collapsing",
+      "path": "/assets/images/solution_workflow_collapsing_1793514973725.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/solution_workflow_collapsing_1793514973725.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-val-prop-bg-night",
+      "path": "/assets/images/val_prop_bg_night_1793997847272.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/val_prop_bg_night_1793997847272.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-whitepaper-a-cover-clean",
+      "path": "/assets/images/whitepaper_a_cover_clean_1793817703115.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/whitepaper_a_cover_clean_1793817703115.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
+    {
+      "id": "content-whitepaper-b-cover-clean",
+      "path": "/assets/images/whitepaper_b_cover_clean_1793817739118.avif",
+      "kind": "ai-generated",
+      "origin": "AVIF variant generated from the committed source raster src/assets/images/whitepaper_b_cover_clean_1793817739118.jpg by scripts/maintenance/generate-media-variants.mjs. The source filename carries a 13-digit epoch-millisecond suffix consistent with an image-generation export; no generating model, prompt or export record is committed, so provenance beyond the committed source file is unverified.",
+      "licence": "Owned by LightSpeed Holdings Limited; upstream model-provider terms apply where the source was machine-generated. No third-party stock licence is recorded in the repo.",
+      "disclosure": "Generated raster imagery. The repo records no generating model, prompt or date, so the generation provenance is unverified."
+    },
     {
       "id": "glyph-agents",
       "path": "/assets/diagrams/micro-illustrations/glyph-agents.svg",
@@ -101,15 +381,6 @@
       "licence": "Owned by LightSpeed Holdings Limited",
       "disclosure": "none",
       "note": "1200x630 PNG Open Graph card showing only the LightSpeed mark, wordmark and 'ASPIRE. ACT. ACHIEVE.' tagline; no embedded text metadata. It matches the dimensions and content of the canonical card public/brand/logo/logo-og.png but is not byte-identical, and no generation record exists in the repo, so origin is recorded as unknown rather than guessed. Licence position is based on depicted content (company marks only); confirm provenance with Marketing."
-    },
-    {
-      "id": "hero-background",
-      "path": "/hero-background.jpg",
-      "kind": "missing",
-      "origin": "unknown",
-      "licence": "unknown",
-      "disclosure": "none",
-      "note": "Absent from the tree: public/hero-background.jpg does not exist. Referenced only by src/components/home/ClosingCTASection.tsx (a CSS background url), and nothing imports that component. Do not delete the reference here: adding the file later must replace this entry with a real origin, licence and kind, which the media-registry test enforces."
     },
     {
       "id": "aistudio-before-after-sector",
@@ -217,24 +488,6 @@
       "origin": "Authored brand mark committed to the repo at public/brand/logo/logo-favicon-transparent.png; the mark is governed by src/docs/design/LIGHTSPEED_ORGANIZATION_DESIGN_SYSTEM.md.",
       "licence": "Owned by LightSpeed Holdings Limited",
       "disclosure": "none"
-    },
-    {
-      "id": "hero-landscape-day",
-      "path": "/assets/images/hero_cinematic_landscape_day.jpg",
-      "kind": "illustration",
-      "origin": "Authored raster image committed to repo at src/assets/images/hero_cinematic_landscape_day.jpg; referenced by HeroSection.tsx for light-theme hero background.",
-      "licence": "Owned by LightSpeed Holdings Limited",
-      "disclosure": "none",
-      "note": "Light-theme cinematic landscape background for the hero section. Used in src/components/HomeSection.tsx with backgroundSize: 'cover' and opacity 12%."
-    },
-    {
-      "id": "hero-landscape-night",
-      "path": "/assets/images/hero_cinematic_landscape_night_1793514971805.jpg",
-      "kind": "illustration",
-      "origin": "Authored raster image committed to repo at src/assets/images/hero_cinematic_landscape_night_1793514971805.jpg; referenced by HeroSection.tsx for dark-theme hero background.",
-      "licence": "Owned by LightSpeed Holdings Limited",
-      "disclosure": "none",
-      "note": "Dark-theme cinematic landscape background for the hero section. Used in src/components/HomeSection.tsx with backgroundSize: 'cover' and opacity 75%."
     }
   ]
 }

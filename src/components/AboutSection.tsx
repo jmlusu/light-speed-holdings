@@ -92,7 +92,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           {/* Three Foundations Architectural Triptych Visual */}
           <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] rounded-2xl overflow-hidden mb-8 border border-white/10 shadow-lg group">
             <img
-              src="/src/assets/images/identity_triptych_foundations_1793818127924.jpg"
+              src="/assets/images/identity_triptych_foundations_1793818127924.avif"
               alt="Three Foundations of LightSpeed Holdings Architectural Triptych"
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               loading="lazy"
@@ -162,7 +162,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           {/* Philosophy Progression Architectural Visual */}
           <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] rounded-2xl overflow-hidden mb-8 border border-white/10 shadow-lg group">
             <img
-              src="/src/assets/images/philosophy_triptych_clean_1793818099752.jpg"
+              src="/assets/images/philosophy_triptych_clean_1793818099752.avif"
               alt="ASPIRE. ACT. ACHIEVE. Architectural Progression Triptych"
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               loading="lazy"
@@ -462,7 +462,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           {/* Modular Agent Architecture Visual */}
           <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] rounded-2xl overflow-hidden border border-white/10 shadow-xl group">
             <img
-              src="/src/assets/images/modular_agent_architecture_1793818142394.jpg"
+              src="/assets/images/modular_agent_architecture_1793818142394.avif"
               alt="Modular and configurable agentic enterprise architecture visual"
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               loading="lazy"

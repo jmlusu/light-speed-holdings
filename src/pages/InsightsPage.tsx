@@ -20,7 +20,7 @@ const FEATURED_WHITEPAPERS = [
     category: 'Research Whitepaper',
     readTime: '12 min read',
     date: 'October 2026',
-    image: '/src/assets/images/whitepaper_a_cover_clean_1793817703115.jpg',
+    image: '/assets/images/whitepaper_a_cover_clean_1793817703115.avif',
     abstract: 'This foundational whitepaper establishes the canonical framework for deploying deterministic agentic workflows across complex enterprise environments while maintaining rigorous human sovereign control.',
     content: [
       'As organizations transition from passive software tools to autonomous agentic systems, the primary challenge shifts from capability to governance. LightSpeed Holdings has pioneered the H-A-O-M-T-G-V architecture to ensure every agent action is bounded, auditable, and aligned with human intent.',
@@ -35,7 +35,7 @@ const FEATURED_WHITEPAPERS = [
     category: 'Geostrategic Analysis',
     readTime: '9 min read',
     date: 'September 2026',
-    image: '/src/assets/images/whitepaper_b_cover_clean_1793817739118.jpg',
+    image: '/assets/images/whitepaper_b_cover_clean_1793817739118.avif',
     abstract: 'An in-depth analysis of cross-border data residency requirements, economic integration, and the deployment of self-service intelligence platforms across developing markets.',
     content: [
       'Regional development requires localized intelligence infrastructure that respects sovereign data governance while leveraging cutting-edge machine learning models.',
@@ -110,7 +110,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
           {/* Subtle Architecture Visual Backdrop */}
           <div className="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none select-none opacity-10 dark:opacity-20 z-0 hidden lg:block">
             <img
-              src="/src/assets/images/pharos_canonical_architecture_1793817675241.jpg"
+              src="/assets/images/pharos_canonical_architecture_1793817675241.avif"
               alt="Canonical Agentic Architecture Hierarchy"
               className="w-full h-full object-cover object-left filter saturate-120"
               loading="lazy"
@@ -347,13 +347,13 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
               // Contextual editorial thumbnail mapping based on topic/slug
               let thumbImage: string | null = null;
               if (article.slug === 'open-source-cost-architecture' || article.slug === 'dual-economy-ai-pricing') {
-                thumbImage = '/src/assets/images/pharos_article_thumb_cost_1793817753722.jpg';
+                thumbImage = '/assets/images/pharos_article_thumb_cost_1793817753722.avif';
               } else if (article.slug === 'five-tier-approval-matrix' || article.slug === 'evidence-ladder-honest-claims') {
-                thumbImage = '/src/assets/images/pharos_article_thumb_gov_1793817768084.jpg';
+                thumbImage = '/assets/images/pharos_article_thumb_gov_1793817768084.avif';
               } else if (article.slug === 'sadc-ai-opportunity' || article.slug === 'agentic-ai-african-governments' || article.slug === 'offline-first-ai-for-africa') {
-                thumbImage = '/src/assets/images/pharos_article_thumb_sadc_1793817783127.jpg';
+                thumbImage = '/assets/images/pharos_article_thumb_sadc_1793817783127.avif';
               } else if (article.slug === 'inside-a-90-agent-company' || article.slug === 'digital-to-ai-native-transformation') {
-                thumbImage = '/src/assets/images/agent_network_topology_1793816821318.jpg';
+                thumbImage = '/assets/images/agent_network_topology_1793816821318.avif';
               }
 
               return (
