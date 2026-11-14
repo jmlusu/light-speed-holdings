@@ -6,6 +6,12 @@
     "@omniroute/opencode-plugin",
     "opencode-models-discovery@2.1.1"
   ],
+  "plugins": [
+    {
+      "package": "@vymalo/opencode-browser",
+      "options": { "port": 4517 }
+    }
+  ],
   "permission": {
     "edit": "allow",
     "bash": "allow"
@@ -22,6 +28,11 @@
     ]
   },
   "agent": {
+    "build": {
+      "tools": {
+        "skill": false
+      }
+    },
     "default": {
       "maxContextTokens": 64000,
       "autoReadFiles": false
