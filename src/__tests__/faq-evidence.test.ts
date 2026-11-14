@@ -31,7 +31,7 @@ interface FaqLike {
   evidence?: EvidenceEntry[];
 }
 
-const root = join(__dirname, '..', '..');
+const root = join(__dirname, '..', '..'); // CI: resolved relative to test file, not process.cwd()
 
 const readJson = (relativePath: string): Record<string, unknown> =>
   JSON.parse(readFileSync(join(root, relativePath), 'utf8')) as Record<string, unknown>;
