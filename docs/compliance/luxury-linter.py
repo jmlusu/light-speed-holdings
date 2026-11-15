@@ -30,7 +30,15 @@ from pathlib import Path
 THEME_CSS = Path("docs/theme/luxury-editorial.css")
 BRAND_TOKENS_CSS = Path("brand/tokens/brand-tokens.css")
 BRAND_TOKENS_JSON = Path("brand/tokens/brand-tokens.json")
-IGNORE_DIRS = {".git", ".opencode", "archive", "recovery"}
+IGNORE_DIRS = {
+    ".git",
+    ".opencode",
+    "archive",
+    "recovery",
+    "node_modules",
+    ".ai-company",
+    "open-design",
+}
 MAX_LINE_LENGTH = 75
 MAX_ACCENT_PLACES = 3  # --ls-red appear in no more than 3 places
 
@@ -59,6 +67,13 @@ def hex_in_document(doc: str, hex_val: str) -> bool:
 # ---------------------------------------------------------------------------
 # HTMLParser to count occurrences of a CSS custom property usage
 # ---------------------------------------------------------------------------
+def count_accent_places(doc: str) -> int:
+    """Return how many distinct places --ls-red appears in the HTML."""
+    counter = AccentCounter()
+    counter.feed(doc)
+    return counter.count
+
+
 class AccentCounter(HTMLParser):
     """Count occurrences of var(--ls-red) in an HTML document."""
 
@@ -69,7 +84,7 @@ class AccentCounter(HTMLParser):
     def handle_starttag(self, tag, attrs):
         # Count var(--ls-red) appearances in attributes like style="color: var(--ls-red);"
         for name, value in attrs:
-            if name == "style" and re.search(r"var\(--ls-red\)", value):
+            if name == "style" and isinstance(value, str) and re.search(r"var\(--ls-red\)", value):
                 self.count += 1
 
 
@@ -83,10 +98,26 @@ def count_accent_places(doc: str) -> int:
 # ---------------------------------------------------------------------------
 # Core checks
 # ---------------------------------------------------------------------------
+def _strip_code_blocks(text: str) -> str:
+    """Remove content within markdown code blocks (``` ... ```) to avoid false positives."""
+    result = []
+    in_code = False
+    for line in text.split("\n"):
+        if "```" in line:
+            in_code = not in_code
+            continue
+        if not in_code:
+            result.append(line)
+    return "\n".join(result)
+
+
 def check_token_compliance(doc_path: Path) -> list[str]:
     """Return a list of compliance issues concerning brand tokens."""
     issues = []
     text = read_text_safe(doc_path)
+
+    # Remove code block content to avoid flagging var() in code examples
+    clean_text = _strip_code_blocks(text)
 
     # 1) No raw hex colours outside of the token-defined palette
     # Allowlisted hex values from the canonical palette
@@ -101,8 +132,8 @@ def check_token_compliance(doc_path: Path) -> list[str]:
         "#9CA3AF",  # --ls-grey-light-text
     }
 
-    # Find all raw hex codes in the document
-    raw_hexes = set(re.findall(r"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b", text))
+    # Find all raw hex codes in the document (outside code blocks)
+    raw_hexes = set(re.findall(r"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b", clean_text))
 
     for hex_code in raw_hexes:
         if hex_code not in allowed_hex:
@@ -111,7 +142,7 @@ def check_token_compliance(doc_path: Path) -> list[str]:
             )
 
     # 2) No undefined var() — every var() must be defined in the imported CSS
-    var_pattern = re.findall(r"var\(([^)]+)\)", text)
+    var_pattern = re.findall(r"var\(([^)]+)\)", clean_text)
     defined_tokens = set()
     if BRAND_TOKENS_CSS.exists():
         defined_tokens = {
@@ -256,9 +287,11 @@ def main(root: Path = Path(".")) -> int:
             overall_status = 1
             print(f"   ISSUES ({len(issues)}):")
             for iv in issues:
-                print(f"   - {iv}")
+                # Encode safely to avoid cp1252 crash on Windows with non-ASCII chars
+                line = iv.encode("ascii", "replace").decode("ascii")
+                print(f"   - {line}")
         else:
-            print("   ✅ compliant")
+            print("   compliant (all checks pass)")
 
     print("\n--- Linter finished ---")
     return overall_status

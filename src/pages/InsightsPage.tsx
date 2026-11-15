@@ -39,7 +39,7 @@ const FEATURED_WHITEPAPERS = [
     abstract: 'An in-depth analysis of cross-border data residency requirements, economic integration, and the deployment of self-service intelligence platforms across developing markets.',
     content: [
       'Regional development requires localized intelligence infrastructure that respects sovereign data governance while leveraging cutting-edge machine learning models.',
-      'Pharos Insights evaluates the architectural trade-offs between centralized hyperscale models and distributed edge deployment in resource-constrained environments.',
+      'Pharos evaluates the architectural trade-offs between centralized hyperscale models and distributed edge deployment in resource-constrained environments.',
       'Our findings indicate that hybrid architectures paired with open-weight models deliver superior cost efficiency and regulatory compliance for institutional stakeholders.'
     ]
   }
@@ -89,13 +89,13 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
         <div className="max-w-7xl mx-auto w-full space-y-4 relative z-10">
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-cyan-950/40 text-cyan-400 font-mono text-xs tracking-widest border border-cyan-800/30">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span>PHAROS INSIGHTS // RESEARCH HUB</span>
+            <span>PHAROS // RESEARCH HUB</span>
           </div>
           <h1 className={`text-3xl lg:text-5xl font-bold tracking-tight font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>
             Evidence, Research &amp; the Agentic AI Canon
           </h1>
           <p className={`max-w-2xl text-base leading-relaxed ${secondaryText}`}>
-            Original research, peer-reviewed methodology, and executive briefings on AI strategy, data residency, and governance, written for boards and grounded in production systems.
+            Original research, cited sources, and executive briefings on AI strategy, data residency, and governance, written for boards and grounded in production systems.
           </p>
         </div>
       </section>
@@ -282,7 +282,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
                 >
                   <Icon3D name="notepad" size="xs" /> Read Whitepaper
                 </button>
-                <span className={`text-xs font-mono ${mutedText}`}>Peer-Reviewed Canon</span>
+                <span className={`text-xs font-mono ${mutedText}`}>Cited Sources</span>
               </div>
             </div>
           ))}
@@ -290,7 +290,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
       </section>
 
       {/* Topics / Interactive Pillar Filter */}
-      <section className="px-6 lg:px-12 max-w-7xl mx-auto w-full py-8" aria-label="Insight categories">
+      <section className="px-6 lg:px-12 max-w-7xl mx-auto w-full py-8" aria-label="Pharos categories">
         <div className="mb-6">
           <span className="text-xs font-semibold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">RESEARCH PILLARS</span>
           <h2 className={`text-2xl font-bold mt-1 ${isLight ? 'text-ls-navy' : 'text-white'}`}>What We Write About</h2>

@@ -178,7 +178,7 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
         />
       </div>
 
-      <PageIntro theme={theme} eyebrow={`INSIGHTS // ${article.topic}`} title={article.title} lead={article.dek}>
+      <PageIntro theme={theme} eyebrow={`PHAROS // ${article.topic}`} title={article.title} lead={article.dek}>
         <div className="flex flex-wrap gap-2 mt-4">
           <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider ${
             isLight ? 'bg-cyan-500/10 text-cyan-600 border border-cyan-500/20' : 'bg-cyan-950/50 text-cyan-400 border border-cyan-800'
@@ -381,7 +381,7 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/insights', label: 'All Insights' },
+          { to: '/insights', label: 'Back to Pharos' },
           { to: '/solutions', label: 'Solutions' },
           { to: '/contact', label: 'Contact Us' },
         ]}

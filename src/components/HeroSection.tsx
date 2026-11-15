@@ -110,7 +110,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
           >
             Strategy. AI. Execution. Built for Africa and beyond.
             <br />
-            LightSpeed Holdings builds and scales AI-native companies that turn bold ideas into real-world impact — starting in Malawi and expanding across the SADC region and Africa.
+            LightSpeed Holdings builds and scales AI-native companies that turn bold ideas into real-world impact, starting in Malawi and expanding across the SADC region and Africa.
           </p>
 
           <div className="flex flex-wrap items-center gap-3.5 pt-2 animate-fade-in-up delay-500">
@@ -149,7 +149,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
             />
             <img
               src={logoSrc}
-              alt="LightSpeed Holdings Limited™ — ASPIRE. ACT. ACHIEVE."
+              alt="LightSpeed Holdings Limited™. ASPIRE. ACT. ACHIEVE."
               className={`w-64 sm:w-72 md:w-80 lg:w-[360px] xl:w-[410px] max-w-full h-auto object-contain transition-all duration-700 hover:scale-105 ${
                 isLight
                   ? 'drop-shadow-[0_15px_30px_rgba(7,10,64,0.15)]'

@@ -433,7 +433,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
               theme={theme}
               eyebrow="CONTINUOUS GOVERNANCE FABRIC"
               title="The Five-Tier Human Approval Matrix"
-              lead="Governance in HAOMTGV is not an afterthought or a final checkpoint. It is a continuous, transverse control fabric spanning every dimension. High-risk decisions are cryptographically gated by human authorities."
+              lead="Governance in HAOMTGV is a continuous, transverse control fabric spanning every dimension. High-risk decisions are cryptographically gated by human authorities."
             />
           </div>
 
@@ -763,7 +763,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
             { to: '/sectors', label: 'Sectors' },
             { to: '/solutions', label: 'Solutions' },
             { to: '/what-we-do', label: 'What We Do' },
-            { to: '/insights', label: 'Pharos Insights' },
+            { to: '/insights', label: 'Pharos' },
           ]}
         />
       </section>

@@ -82,11 +82,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           </div>
 
           <h2 className={`text-2xl sm:text-3xl font-bold font-display tracking-tight mb-4 ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-            Not a Copilot Reseller. Not an Outsourcing Shop. An AI-Native Company Builder.
+            An AI-Native Company Builder
           </h2>
 
           <p className={`text-sm sm:text-base leading-relaxed max-w-4xl mb-8 ${secondaryText}`}>
-            LightSpeed Holdings Limited™ operates at the intersection of deep AI system architecture, sovereign regulatory policy, and fiduciary advisory. We do not re-sell generic SaaS chat tools or provide temporary IT staffing. We design, deploy, and govern complete, autonomous agentic operating systems—scalable from one agent to the 90-role internal benchmark—that collapse workflow latency, compress operating expenses, and ensure total human sovereign control.
+            LightSpeed Holdings Limited™ operates at the intersection of deep AI system architecture, sovereign regulatory policy, and fiduciary advisory. We do not re-sell generic SaaS chat tools or provide temporary IT staffing. We design, deploy, and govern complete, autonomous agentic operating systems, scalable from one agent to the 90-role internal benchmark, that collapse workflow latency, compress operating expenses, and keep a human decision-maker in control of every action.
           </p>
 
           {/* Three Foundations Architectural Triptych Visual */}
@@ -195,7 +195,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
               <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">[ 03 ] ACHIEVE</span>
               <h3 className="text-lg font-bold font-display text-white">Measurable Value</h3>
               <p className="text-xs leading-relaxed text-slate-300">
-                Measuring hard operational outcomes—cycle time compression, operating expense reduction, defect elimination, and sovereign data independence.
+                Measuring hard operational outcomes: cycle time compression, operating expense reduction, defect elimination, and sovereign data independence.
               </p>
             </div>
           </div>

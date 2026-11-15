@@ -12,7 +12,7 @@ const SOLUTIONS_DROPDOWN = [
 ];
 
 const RESEARCH_DROPDOWN = [
-  { title: 'Pharos Insights', desc: 'Executive whitepapers & geostrategic analysis', path: '/insights' },
+  { title: 'Pharos', desc: 'Executive whitepapers & geostrategic analysis', path: '/insights' },
 ];
 
 export const Header: React.FC = () => {
@@ -101,7 +101,7 @@ export const Header: React.FC = () => {
               onClick={() => setResearchOpen(!researchOpen)}
               className="flex items-center gap-1.5 text-ls-navy/70 dark:text-white/70 hover:text-[#00BFFF] py-1 transition-colors uppercase tracking-widest"
             >
-              <span>Pharos Insights</span>
+              <span>Pharos</span>
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
 
@@ -193,7 +193,7 @@ export const Header: React.FC = () => {
             onClick={() => setMobileMenuOpen(false)}
             className="block text-base font-medium text-ls-navy/80 dark:text-slate-200 hover:text-ls-cyan"
           >
-            Pharos Insights
+            Pharos
           </Link>
           <Link
             to="/about"

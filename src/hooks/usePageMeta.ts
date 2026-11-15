@@ -54,10 +54,10 @@ export function usePageMeta(route: string): PageMeta {
       '/ai-assessment': {
         title: 'AI Readiness Assessment | LightSpeed Holdings',
         description:
-          'Request a structured AI readiness assessment. We evaluate data, infrastructure, talent, and governance — and deliver a prioritised roadmap to an AI-native operating model.',
+          'Request a structured AI readiness assessment. We evaluate data, infrastructure, talent, and governance, then deliver a prioritised roadmap to an AI-native operating model.',
       },
       '/insights': {
-        title: 'Insights | LightSpeed Holdings',
+        title: 'Pharos | LightSpeed Holdings',
         description:
           'Thought leadership, research perspectives, and practical analysis on agentic AI, organisational design, and AI-native operations from a Malawian and African viewpoint.',
       },

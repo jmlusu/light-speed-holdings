@@ -120,7 +120,7 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
       </div>
 
       <p className={`mt-8 text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#A0AEC0]'}`}>
-        Across every engagement, we focus on the same outcome: useful intelligence, clear accountability, and systems people can actually operate. Not AI for its own sake. AI for work that matters.
+        Across every engagement, we focus on the same outcome: useful intelligence, clear accountability, and systems people can operate. AI for work that matters.
       </p>
     </HomeSection>
   );

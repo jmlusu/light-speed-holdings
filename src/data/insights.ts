@@ -154,7 +154,7 @@ export const insightArticles: InsightArticle[] = [
         items: [
           'Connectivity, not token prices, is the real binding constraint for AI deployment in Malawi, where internet costs 8.45% of GNI per capita',
           'Open-source local models eliminate per-token costs, but governance and approval workflows require human attention and process investment',
-          'Sovereignty-by-default and offline-first design are not optional for African institutions — they are architectural requirements driven by data protection law and bandwidth reality',
+          'Data protection law and bandwidth reality make sovereignty-by-default and offline-first design architectural requirements for African institutions',
         ],
       },
     ],
@@ -260,8 +260,8 @@ export const insightArticles: InsightArticle[] = [
         kind: 'ul',
         items: [
           'Malawi\'s dual-currency economy (kwacha local, dollar international) requires priced rails that match each buyer\'s currency risk, not a single converted rate',
-          'Mobile money already reaches 75% of Malawian adults (MWK 8.6 trillion 2025 volume) — pricing must integrate with Airtel Money and TNM Mpamba from day one',
-          'Every ~USD figure in the catalog is an explicit estimate pending prospect validation — no public rate card will be invented, and all conversions are honesty-badged as estimates',
+          'Mobile money already reaches 75% of Malawian adults (MWK 8.6 trillion 2025 volume). Pricing must integrate with Airtel Money and TNM Mpamba from day one',
+          'Every ~USD figure in the catalog is an explicit estimate pending prospect validation. No public rate card will be invented, and all conversions are honesty-badged as estimates',
         ],
       },
     ],
@@ -365,16 +365,16 @@ export const insightArticles: InsightArticle[] = [
   },
   {
     slug: 'inside-a-90-agent-company',
-    title: 'Inside a 91-Agent Company: What the Registry, the Queue, and the Approval Gate Actually Do',
+    title: 'Inside a 90-Agent Company: What the Registry, the Queue, and the Approval Gate Actually Do',
     topic: 'AI COMPANY BUILDING',
-    dek: 'Building ninety-one personas takes an afternoon. Making them safe to run takes a control plane: a registry, a message bus, and an approval gate that scales friction with risk.',
+    dek: 'Building 90 role definitions takes an afternoon. Making them safe to run takes a control plane: a registry, a message bus, and an approval gate that scales friction with risk.',
     category: 'AI Company Building',
     readMins: 8,
     publishedAt: '2026-10-12',
     seo: {
-      title: 'Inside a 91-Agent Company | Registry, Queue, Gate',
+      title: 'Inside a 90-Agent Company | Registry, Queue, Gate',
       description:
-        '91 agents (90 AI + 1 human CEO) across 20 departments. What the registry, message bus, and five-tier approval gate actually do. Human CEO as the final accountable authority.',
+        '90 roles (89 AI agents + 1 human CEO) across 20 departments. What the registry, message bus, and five-tier approval gate actually do. Human CEO as the final accountable authority.',
     },
     source:
       'company-registry.yaml · src/ai_company/orchestrator/tier_rules.py · src/ai_company/orchestrator/approval.py · src/ai_company/orchestrator/message_bus.py · docs/Pharos/pillars/01-built-a-90-agent-company.md · docs/APPROVAL-UX-SPEC.md',
@@ -552,8 +552,8 @@ export const insightArticles: InsightArticle[] = [
       {
         kind: 'ul',
         items: [
-          'Human CEO remains the single accountable authority: 90 AI agents plus one human CEO, with all governance enforced through the registry and approval matrix',
-          'Offline-first and sovereignty-by-default are architectural requirements for African institutions, not optional deployments — driven by data protection law and bandwidth reality',
+          'Human CEO remains the single accountable authority: 89 AI agents plus one human CEO, with all governance enforced through the registry and approval matrix',
+          'Offline-first and sovereignty-by-default are architectural requirements for African institutions, driven by data protection law and bandwidth reality',
           'Governance scales with risk: a five-tier approval matrix ensures friction matches the consequence of each agent action',
         ],
       },
@@ -751,7 +751,7 @@ export const insightArticles: InsightArticle[] = [
         'Bandwidth, data protection, technology debt and AI skepticism are real. The engineering answers are already concrete. Human CEO perspective on government deployments.',
     },
     source:
-      'docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · pillars/01-built-a-90-agent-company.md · company-registry.yaml (91 agents / 20 departments)',
+      'docs/Pharos/pillars/03-agentic-ai-resource-constrained-africa.md · pillars/01-built-a-90-agent-company.md · company-registry.yaml (90 roles / 20 departments)',
     correction: { date: '2026-10-25', text: 'Correction (2026-10-25): the canonical operating model is 90 roles: 89 AI agents plus 1 Human CEO. Earlier wording in this article counted 91 agents by treating the Human CEO as an AI agent. The body is left unchanged for the audit trail.' },
     blocks: [
       {
@@ -803,14 +803,14 @@ export const insightArticles: InsightArticle[] = [
   },
   {
     slug: 'digital-to-ai-native-transformation',
-    title: 'From Digital Transformation to AI-Native Transformation',
+    title: 'Digital Transformation to AI-Native Transformation',
     topic: 'DIGITAL TRANSFORMATION',
     dek: 'Most organisations adopt AI the way they adopted email: they buy tools, hand them to people, and hope for a transformation. Here is the test that separates tool use from an operating model.',
     category: 'Digital transformation',
     readMins: 7,
     publishedAt: '2026-09-24',
     seo: {
-      title: 'From Digital Transformation to AI-Native Transformation | LightSpeed',
+      title: 'Digital Transformation to AI-Native Transformation | LightSpeed',
       description:
         'Most organisations adopt AI the way they adopted email: they buy tools, hand them to people, and hope for a transformation. The test that separates tool use from an operating model. Human CEO on tool use vs operating model.',
     },

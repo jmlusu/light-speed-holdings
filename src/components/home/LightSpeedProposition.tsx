@@ -85,8 +85,8 @@ export const LightSpeedProposition: React.FC<LightSpeedPropositionProps> = ({ th
         <SectionHeading
           theme={theme}
           eyebrow="THE LIGHTSPEED PROPOSITION"
-          title="Building Governed Operating Capability, Not Isolated Tools"
-          lead="LightSpeed does not sell point-solution chatbots or experimental AI widgets. We design and scale integrated operating capabilities where intelligence, orchestration, and governance reinforce one another."
+          title="Building Governed Operating Capability"
+          lead="We design and scale integrated operating capabilities where intelligence, orchestration, and governance reinforce one another, delivering predictable business outcomes from day one."
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">

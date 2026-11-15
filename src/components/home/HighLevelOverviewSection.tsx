@@ -28,7 +28,7 @@ export const HighLevelOverviewSection: React.FC<HighLevelOverviewSectionProps> =
     {
       title: 'Orchestrated Agentic Platform',
       description:
-        '89 AI agents + 1 Human CEO across 20 departments — a unified system for building, governing, and scaling AI-native operations.',
+        '89 AI agents + 1 Human CEO across 20 departments: a unified system for building, governing, and scaling AI-native operations.',
     },
     {
       title: 'Build & Govern',
@@ -43,7 +43,7 @@ export const HighLevelOverviewSection: React.FC<HighLevelOverviewSectionProps> =
     {
       title: 'Thesis in Practice',
       description:
-        'LightSpeed\'s thesis — "Human Direction. Intelligent Execution. Measurable Value." — becomes the HAOMTGV operating framework in practice.',
+        'LightSpeed\'s thesis, "Human Direction. Intelligent Execution. Measurable Value.", becomes the HAOMTGV operating framework in practice.',
     },
   ];
 
@@ -56,7 +56,7 @@ export const HighLevelOverviewSection: React.FC<HighLevelOverviewSectionProps> =
       <SectionHeading
         theme={theme}
         eyebrow="AI COMPANY BUILDER"
-        title="From Thesis to Operating Model"
+        title="Thesis to Operating Model"
         lead="LightSpeed Holdings™ does not position itself as a technology company that happens to use AI. We build governed operating models where human intent, agent execution, and measurable value are architecture, not afterthought."
       />
 

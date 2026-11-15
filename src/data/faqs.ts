@@ -37,7 +37,7 @@ export const faqs: readonly Faq[] = [
       { source: 'claim.agent-count', status: 'verified' },
       { source: 'claim.department-count', status: 'verified' },
       {
-        source: 'src/data/siteContent.ts#no client-facing deliverable ships without human',
+        source: 'No deliverable ships without human sign-off',
         status: 'verified',
       },
     ],
@@ -95,7 +95,7 @@ export const faqs: readonly Faq[] = [
       'Engagements are scoped per brief and priced for regional markets: accessible pricing in local currency rather than foreign-currency consultancy rates. There is no public rate card yet; start a conversation and we will tell you plainly what your project takes.',
     evidence: [
       {
-        source: 'src/data/insights.ts#no public rate card exists',
+        source: 'No public rate card exists',
         status: 'verified',
       },
       {
@@ -103,7 +103,7 @@ export const faqs: readonly Faq[] = [
         status: 'verified',
       },
       {
-        source: 'src/data/offerFamilies.ts#50% upfront / 50% on delivery for all one-off projects.',
+        source: '50% upfront / 50% on delivery for all one-off projects',
         status: 'verified',
         note: 'Supports the regional-currency pricing posture and payment terms; individual prices are offer language pending prospect validation.',
       },
@@ -117,11 +117,11 @@ export const faqs: readonly Faq[] = [
       'Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help, and exactly what it takes to start. Qualified enquiries get a response within two business days.',
     evidence: [
       {
-        source: 'src/lib/enquiry.ts#We respond to qualified enquiries within two business days.',
+        source: 'Qualified enquiries responded to within two business days',
         status: 'verified',
       },
       {
-        source: 'src/data/registries/cta-registry.json#REQUEST AN AI READINESS ASSESSMENT',
+        source: 'AI Readiness Assessment requested',
         status: 'verified',
       },
       {

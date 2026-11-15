@@ -19,7 +19,7 @@ export const IntroductionSection: React.FC<IntroductionSectionProps> = ({ theme 
     {
       id: 'ai-native',
       title: 'AI-Native First',
-      description: 'We design, build and operate with AI at the core, not as an add-on.',
+      description: 'We design, build and operate with AI at the core, turning intention into measurable outcomes.',
       icon3d: 'intelligence',
     },
     {
