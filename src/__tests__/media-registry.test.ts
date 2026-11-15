@@ -115,26 +115,11 @@ const MEDIA_TS_REGISTRY = 'src/data/media/registry.ts';
 /**
  * `src/data/media/registry.ts` declarations with no file under `public/` (P1 debt, exact set).
  *
- * 42 of the original 52 pinned-missing paths were removed by pruning 21 unconsumed
- * assets and dropping missing format keys from 3 consumed haomtgv variants whose
- * SVG (and, for the full-vertical, PNG) already exists. The 10 that remain belong
- * to assets that are consumed by id but whose every declared file is still absent
- * (africa-ai-economics, model-routing-full, org-chart-thumb, pharos chart/evidence/
- * model-comparison). Add the file and this suite asks you to drop the entry; declare
- * a new absent path and it fails immediately.
+ * Empty: the last 10 pinned-missing paths belonged to six assets with no consumer
+ * outside the registry, so the declarations were pruned rather than pinned. The list
+ * may only shrink, and any new absent declaration fails the suite immediately.
  */
-const KNOWN_MISSING_MEDIA_DECLARATIONS: string[] = [
-  '/assets/diagrams/africa-economics/africa-ai-economics.svg',
-  '/assets/diagrams/africa-economics/africa-ai-economics.webp',
-  '/assets/diagrams/model-routing/model-routing-full.avif',
-  '/assets/diagrams/model-routing/model-routing-full.svg',
-  '/assets/diagrams/model-routing/model-routing-full.webp',
-  '/assets/diagrams/org-chart/org-chart-thumb.svg',
-  '/assets/diagrams/org-chart/org-chart-thumb.webp',
-  '/assets/insights/pharos-chart-template.svg',
-  '/assets/insights/pharos-evidence-matrix.svg',
-  '/assets/insights/pharos-model-comparison.svg',
-];
+const KNOWN_MISSING_MEDIA_DECLARATIONS: string[] = [];
 
 /** Every image path declared by `src/data/media/registry.ts`, sorted and deduped. */
 const mediaDeclarations = (): string[] => {

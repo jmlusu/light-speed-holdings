@@ -24,9 +24,13 @@
 | 14 | `campaign-billboard-1400x600.png` | Billboard creative, 1400×600 pixels. Production skill: `ls-brand-advertising`. | ⬜ Pending | PNG | `docs/assets/campaign-billboard-1400x600.png` (not yet created) | `http://localhost:1441/assets/catalog/campaign-billboard-1400x600.png` | `http://localhost:1440/assets/catalog/campaign-billboard-1400x600.png` | **Evidence gap:** File not on disk. 1400×600 billboard format. |
 | 15 | `playground-fallback.png` | Terminal screenshot fallback for Playground component, 800×500 pixels. Production skill: `ls-frontend-design`. | ⬜ Pending | PNG | `docs/assets/playground-fallback.png` (not yet created) | `http://localhost:1441/assets/catalog/playground-fallback.png` | `http://localhost:1440/assets/catalog/playground-fallback.png` | **Evidence gap:** File not on disk. Terminal screenshot fallback; brand-palette constrained to `#070A40`/`#E63946`/`#00BFFF`/`#F2F2F2`/`#FFFFFF`/`#6B7280`/`#9CA3AF`. |
 
-## Appendix: Live Site Asset Mapping (manifest.json)
+## Appendix: Live Site Asset Mapping (historical manifest.json)
 
-The `public/assets/manifest.json` maps ~48 asset IDs to web-relative paths served identically on dev (`:1441`) and preview (`:1440`). These are the **live** catalog/insights/sectors/brand assets the Marketing Site serves at runtime. Key categories:
+`public/assets/manifest.json` was deleted on 2026-11-14: nothing in `src/` imported it
+and 122 of its 156 paths did not resolve. This appendix records what it described; the
+asset tree it pointed at is unchanged.
+
+The deleted `public/assets/manifest.json` mapped ~48 asset IDs to web-relative paths served identically on dev (`:1441`) and preview (`:1440`). These are the **live** catalog/insights/sectors/brand assets the Marketing Site serves at runtime. Key categories:
 
 - **Offers** (`offer-a-digital-presence`, `offer-b-business-automation`, `offer-c-data-analytics`, `offer-d-digital-marketing`, `offer-e-platform-licensing`) — HTML placeholder pages under `public/assets/catalog/`
 - **Sectors** (`industry-agri`, `industry-fintech`, `industry-gov`, `industry-health`, `industry-sme`, `sector-education`, `sector-financial-services`, `sector-government`, `sector-healthcare`) — HTML + SVG pairs
@@ -35,7 +39,7 @@ The `public/assets/manifest.json` maps ~48 asset IDs to web-relative paths serve
 - **Scenarios** (`scenario-fow01` through `scenario-fow08`) — Flow/svg scenario diagrams
 - **Insights** (`insight-...`) — Dashboard/metrics HTML/SVG
 
-These live assets are **separate** from the 15 planned generation-tracker assets above. The manifest entries are hand-maintained and serve the live site; the tracker assets are planned creative assets yet to be produced. No overlap exists between the two inventories per current repo state.
+These live assets are **separate** from the 15 planned generation-tracker assets above. The manifest entries were hand-maintained and served the live site; the tracker assets are planned creative assets yet to be produced. No overlap exists between the two inventories per current repo state.
 
 ## Generation Workflow Reference
 

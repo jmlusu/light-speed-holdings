@@ -270,9 +270,9 @@ section records the policy, not the work.
 `#385` and `#380` were written against a tree that no longer exists:
 
 - "`public/` currently serves only `brand/`" — false. `public/` also carries
-  `assets/{catalog,diagrams,insights,sectors,...}` with its own `manifest.json`, plus
-  `infographics/`, `visuals/`, `og-default.png`, the favicon chain and
-  `robots.txt`/`sitemap.xml`.
+  `assets/{catalog,diagrams,insights,sectors,...}` with a hand-written
+  `manifest.json` (deleted 2026-11-14, see below), plus `infographics/`, `visuals/`,
+  `og-default.png`, the favicon chain and `robots.txt`/`sitemap.xml`.
 - `#380`'s premise that the og image and favicons are undecided — both are already in
   `index.html` (`og:image` = `/og-default.png`, `favicon.svg`, `favicon.ico`). What
   remains open there is `twitter:card`, the canonical link tag, and favicon
@@ -281,24 +281,24 @@ section records the policy, not the work.
   15.5 MB, PNG/JPG/SVG only, no `.avif` anywhere in the tree. But
   `data/media/registry.ts` already declares `.webp` and `.avif` sources that resolve
   to nothing on disk.
-- **Update 2026-11-14 - the variant pipeline exists; the manifest does not.** A
+- **Update 2026-11-15 - the variant pipeline exists; the manifest is gone.** A
   sharp-based generator now ships: `scripts/maintenance/generate-media-variants.mjs`
   emits committed AVIF derivatives from `src/assets/images/`, and 35 such variants
   (2.27 MB total, 38-133 KB each) replaced 35 `/src/assets/images/*.jpg` literals that
   Vite never emitted and that returned the SPA shell in production. Decision 4's
-  "`public/assets/manifest.json` is generated from it by the maintenance script" is
-  still **not** true: `public/assets/manifest.json` is hand-written, nothing in `src/`
-  imports it, and 122 of its 156 paths do not resolve. Decision 4's "CI fails on any
-  registry `src` that does not resolve" is true only for `data/media/registry.ts`:
-  the 52 declarations still without a file are pinned in
-  `src/__tests__/media-registry.test.ts` and must shrink. Per-kind weight budgets are
-  now enforced in that same suite.
+  "`public/assets/manifest.json` is generated from it by the maintenance script" was
+  never true: the file was hand-written, nothing in `src/` imported it, and 122 of its
+  156 paths did not resolve, so it was deleted on 2026-11-14. Decision 4's "CI fails on
+  any registry `src` that does not resolve" is true for `data/media/registry.ts`: the
+  pinned-missing list in `src/__tests__/media-registry.test.ts` is now empty, so every
+  declaration resolves. Per-kind weight budgets are enforced in that same suite.
 
 ### Decision 1 — asset namespace: `public/assets/` is canonical
 
 No new `public/images/`. The canonical tree is the one `docs/MEDIA_ARCHITECTURE.md`
-already mandates — `public/assets/{brand,diagrams,hero,use-cases,insights,sectors,leadership}/`
-with `manifest.json` alongside. `public/brand/` remains a copy-overlay sync mirror of
+already mandates — `public/assets/{brand,diagrams,hero,use-cases,insights,sectors,leadership}/`.
+The asset index is `data/media/registry.ts`; there is no manifest file under `public/`
+(it was deleted on 2026-11-14). `public/brand/` remains a copy-overlay sync mirror of
 canonical `brand/`, owned by `scripts/build/sync-brand.ps1`, and is not a pipeline
 input. `public/` itself stays web-root only: og image, favicons, robots, sitemap.
 
@@ -342,9 +342,9 @@ gap closes. Existing components migrate opportunistically — no big-bang rewrit
 ### Decision 4 — build integration
 
 - **Registries.** `data/media/registry.ts` is canonical: typed, imported by components
-  via `@lightspeed/data/media`. `public/assets/manifest.json` is generated from it by
-  the maintenance script. CI fails on drift between the two, or on any registry `src`
-  that does not resolve.
+  via `@lightspeed/data/media`. CI fails on any registry `src` that does not resolve.
+  `public/assets/manifest.json` was deleted on 2026-11-14: it was hand-written, nothing
+  imported it, and 122 of its 156 paths did not resolve.
 - **`sync-brand.ps1`.** Stays brand-only. It mirrors canonical `brand/` (logo,
   guidelines, logos, print, digital) to `static/brand/` and `public/brand/` with
   `-DryRun`/`-Prune`/`-Verify` modes; it never widens to content assets.

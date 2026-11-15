@@ -299,14 +299,14 @@ Generate Variants
 Responsive Sizes
     - 400w, 800w, 1200w, 1600w, 2000w
     ↓
-Manifest Entry (public/assets/manifest.json)
+Registry Entry (data/media/registry.ts)
     ↓
 Deploy to public/assets/{type}/
     ↓
 Reference in data/media/registry.ts
 ```
 
-### Manifest Schema
+### Registry Entry Schema
 ```json
 {
   "id": "haomtgv-full-vertical",
@@ -367,7 +367,7 @@ public/assets/
 ├── leadership/            # Type J
 │   ├── jack-mlusu.webp
 │   └── ...
-└── manifest.json          # Master asset index
+└── (no manifest.json)     # data/media/registry.ts is the asset index
 ```
 
 ---
@@ -500,13 +500,13 @@ Each Pharos format has a consistent visual template:
 - [ ] Performant (optimized, responsive, lazy-loaded)
 - [ ] Strategically placed (per placement strategy)
 - [ ] Attributed (source, license, creator)
-- [ ] Versioned (in manifest, git-tracked for SVGs)
+- [ ] Versioned (git-tracked; SVGs committed as source)
 
 ### Asset Lifecycle
 1. **Commission/Create** → Brief aligned with media type spec
 2. **Review** → Creative Director + Brand approval
 3. **Optimize** → Pipeline generates variants
-4. **Register** → Entry in `data/media/registry.ts` + manifest
+4. **Register** → Entry in `data/media/registry.ts`
 5. **Deploy** → Commit to `public/assets/`
 6. **Reference** → Components import from registry
 7. **Audit** → Quarterly review for relevance, performance, honesty
