@@ -31,16 +31,7 @@ interface FaqLike {
   evidence?: EvidenceEntry[];
 }
 
-const root = (() => {
-  if (process.env.GITHUB_WORKSPACE) {
-    // Verify the path exists before using it
-    if (existsSync(process.env.GITHUB_WORKSPACE)) {
-      return process.env.GITHUB_WORKSPACE;
-    }
-  }
-  // Fall back to process.cwd() which in GitHub Actions is the repo root
-  return process.cwd();
-})();
+const root = join(__dirname, '..', '..');
 
 const readJson = (relativePath: string): Record<string, unknown> =>
   JSON.parse(readFileSync(join(root, relativePath), 'utf8')) as Record<string, unknown>;

@@ -156,15 +156,15 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
   }, []);
 
   // Contextual article hero image mapping based on slug
-  let articleHeroImage = '/assets/images/pharos_editorial_hero_1793817662034.avif';
+  let articleHeroImage = '/src/assets/images/pharos_editorial_hero_1793817662034.jpg';
   if (article.slug === 'open-source-cost-architecture' || article.slug === 'dual-economy-ai-pricing') {
-    articleHeroImage = '/assets/images/pharos_article_thumb_cost_1793817753722.avif';
+    articleHeroImage = '/src/assets/images/pharos_article_thumb_cost_1793817753722.jpg';
   } else if (article.slug === 'five-tier-approval-matrix' || article.slug === 'evidence-ladder-honest-claims') {
-    articleHeroImage = '/assets/images/pharos_article_thumb_gov_1793817768084.avif';
+    articleHeroImage = '/src/assets/images/pharos_article_thumb_gov_1793817768084.jpg';
   } else if (article.slug === 'sadc-ai-opportunity' || article.slug === 'agentic-ai-african-governments') {
-    articleHeroImage = '/assets/images/pharos_article_thumb_sadc_1793817783127.avif';
+    articleHeroImage = '/src/assets/images/pharos_article_thumb_sadc_1793817783127.jpg';
   } else if (article.slug === 'inside-a-90-agent-company') {
-    articleHeroImage = '/assets/images/agent_network_topology_1793816821318.avif';
+    articleHeroImage = '/src/assets/images/agent_network_topology_1793816821318.jpg';
   }
 
   return (

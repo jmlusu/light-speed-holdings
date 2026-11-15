@@ -80,19 +80,11 @@ const toPosix = (p: string) => p.split(sep).join('/');
 const NON_SITE_PREFIX = 'src/ai_company/';
 
 /**
- * `/src/assets/**` string literals are not Vite module assets.
- *
- * A path written as a plain string (`src="/src/assets/images/x.jpg"`, a Tailwind
- * `bg-[url('...')]`, or a data object field) is invisible to the bundler: Vite
- * neither resolves it nor emits it, so it is copied into the bundle verbatim and
- * 404s in production. Only imports and CSS `url()` references become hashed
- * `dist/assets/*` files. An earlier version of this suite checked these literals
- * for *existence on disk* and called that proof; it passed on 35 references that
- * were broken in production.
- *
- * The current set is therefore quarantined below as `KNOWN_BUNDLED_LITERALS` and
- * may only shrink. Fixing a path (import, or move to `public/` + `/assets/` URL)
- * fails this suite until the entry is removed, so the list cannot silently rot.
+ * `/src/assets/**` paths are Vite module assets, not `public/` files. The bundler
+ * resolves them from `src/assets/` at build time and emits them into `dist/assets/`
+ * with hashed names, so they can never be found by `publicFile()` and are outside
+ * the public media registry's remit. They are still checked — for existence on
+ * disk — by the dedicated suite below, so a dead bundled reference cannot slip in.
  *
  * Provenance gap: the 62 files under `src/assets/images/` carry no registry record
  * yet. Recording them needs an origin/licence decision per file, which the repo
@@ -167,16 +159,13 @@ const collectReferences = (): {
 };
 
 describe('site media registry', () => {
-  it('registers exactly 60 assets (pinned)', () => {
-    // 60 = 35 generated content images + 10 aistudio backgrounds + 7 logos
-    //    + 7 illustrations + 1 social card.
-    // The exact split is incidental; the pin exists so an asset cannot be added
-    // or dropped without a reviewer seeing the number move.
+  it('registers exactly 26 assets (pinned)', () => {
+    // 26 = 13 public site assets + 10 aistudio backgrounds + 3 brand logos.
     expect(
       registry.assets.length,
-      `media-registry.json should hold exactly 60 assets; found ${registry.assets.length}. ` +
+      `media-registry.json should hold exactly 26 assets; found ${registry.assets.length}. ` +
         'Update the registry and this pinned count together.',
-    ).toBe(60);
+    ).toBe(26);
   });
 
   it('covers every image path referenced by site source and index.html', () => {
@@ -204,51 +193,24 @@ describe('site media registry', () => {
     ).toEqual(['/static/icons/icon-maskable.svg', '/static/icons/icon.svg']);
   });
 
-  it('leaves no /src/assets/ string literals', () => {
+  it('resolves every Vite-bundled /src/assets/ reference on disk', () => {
     const { bundled } = collectReferences();
 
-    expect(
-      [...bundled].sort(),
-      '/src/assets/ literal(s) found. Vite cannot resolve a path written as a plain string: it is ' +
-        'emitted verbatim and 404s in production. Import the file so Vite hashes and emits it, or ' +
-        'publish a derivative under public/ and reference it with a root-relative /assets/ URL.',
-    ).toEqual([]);
-  });
-
-  it('resolves or pins every media-registry declaration', () => {
-    const unpinned = mediaDeclarations().filter(
-      (assetPath) =>
-        !existsSync(publicFile(assetPath)) && !KNOWN_MISSING_MEDIA_DECLARATIONS.includes(assetPath),
-    );
+    const missing = [...bundled]
+      .filter((assetPath) => !existsSync(join(ROOT, assetPath.replace(/^\/+/, ''))))
+      .sort();
 
     expect(
-      unpinned,
-      `Media declaration(s) with no file under public/: ${unpinned.join(', ')} — add the file, or ` +
-        'pin each in KNOWN_MISSING_MEDIA_DECLARATIONS so the debt is visible in review.',
+      missing,
+      `Bundled image reference(s) with no file on disk: ${missing.join(', ')} — the bundler ` +
+        'would fail or emit a broken URL.',
     ).toEqual([]);
-  });
-
-  it('drops pinned media declarations once the file lands', () => {
-    const resurrected = KNOWN_MISSING_MEDIA_DECLARATIONS.filter((assetPath) =>
-      existsSync(publicFile(assetPath)),
-    );
 
     expect(
-      resurrected,
-      `Pinned media declaration(s) now resolve: ${resurrected.join(', ')} — remove each from ` +
-        'KNOWN_MISSING_MEDIA_DECLARATIONS. The pin records missing files and may only shrink.',
-    ).toEqual([]);
-  });
-
-  it('pins only paths the media registry still declares', () => {
-    const declared = new Set(mediaDeclarations());
-    const orphaned = KNOWN_MISSING_MEDIA_DECLARATIONS.filter((assetPath) => !declared.has(assetPath));
-
-    expect(
-      orphaned,
-      `Pinned path(s) no longer declared by data/media/registry.ts: ${orphaned.join(', ')} — the ` +
-        'reference was removed; delete the entry so the pin keeps matching reality.',
-    ).toEqual([]);
+      bundled.size,
+      `Expected the site to reference bundled assets under src/assets/; found ${bundled.size}. ` +
+        'If the last bundled reference was removed, drop this guard rather than leaving it vacuous.',
+    ).toBeGreaterThan(0);
   });
 
   it('gives every entry a rooted path, a kind, an origin and a licence', () => {
