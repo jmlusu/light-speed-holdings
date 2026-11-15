@@ -6,7 +6,7 @@
 - Large-scale visualization of Malawian SME landscape
 - AI agent impact markers distributed across SME sectors (agriculture, manufacturing, retail, services)
 - Value impact gradient from individual SME to national economy
-- Color coding: LightSpeed brand colors (navy #070A40, red #E63946, cyan #00BFFF) representing different impact levels
+- Color coding: LightSpeed brand colors (navy #070A40, red #DC3641, cyan #00BFFF) representing different impact levels
 - Key metrics overlaid: revenue increase, productivity gains, market reach expansion
 - Central title: "Value & Impact Layer (V) - AI Agents for Malawian SMEs"
 - Legend showing impact tiers and sector classifications

@@ -14,7 +14,7 @@
 - LightSea brand color scheme applied across measurement dimensions:
   * Navy #070A40 for foundational metrics
   * Cyan #00BFFF for impact metrics
-  * Red #E63946 for strategic outcomes
+  * Red #DC3641 for strategic outcomes
   * Gold accent for performance thresholds
 - Comparative before/after AI-native transformation indicators
 - Real-time data refresh visualization (pulse animation or live indicator)

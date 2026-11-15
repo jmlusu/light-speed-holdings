@@ -312,7 +312,7 @@
 3. **Honesty badges** on all claim-bearing surfaces (ADR-020)
 4. **Demo labeling** on all simulated CLI/builder outputs
 5. **Accessibility** — WCAG AA on all new/modified components
-6. **Brand tokens only** — navy `#070A40`, red `#E63946`, cyan `#00BFFF`, Arial scale
+6. **Brand tokens only** — navy `#070A40`, red `#DC3641`, cyan `#00BFFF`, Arial scale
 
 ---
 

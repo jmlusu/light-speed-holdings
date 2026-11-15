@@ -15,7 +15,7 @@
   * Compass or guiding direction symbol
   * Heart/connection motifs
   * LightSpeed brand elements integrated purposefully
-- Color scheme: LightSpeed navy #070A40 as primary, with cyan #00BFFF and red #E63946 accents representing human elements
+- Color scheme: LightSpeed navy #070A40 as primary, with cyan #00BFFF and red #DC3641 accents representing human elements
 - Two side panels or insets:
   * Left: "Key Lessons Learned" bullet summary
   * Right: "Measuring Human Purpose" indicators

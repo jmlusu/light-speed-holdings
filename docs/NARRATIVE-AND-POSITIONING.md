@@ -16,7 +16,7 @@ LightSpeed occupies three intellectual territories that form the moat: AI Compan
 
 The mandate is Malawi first. As the North Star states: "Malawi first. Prove it. Then the world." The mission is to prove agentic AI works in Malawi by shipping real services — websites, automation, reporting, and marketing — for the organizations that need them most. The vision is that every organization, from Malawian clinics to global enterprises, operates with intelligent AI agents. LightSpeed has chosen to prove the hardest sentence in commercial AI: that agents can be deployed responsibly, reliably, and at scale — starting inside a market most of the world overlooks.
 
-The brand operates in the confirmed palette: navy #070A40, red #E63946, cyan #00BFFF, Arial type scale, 4px grid. The tagline is "ASPIRE. ACT. ACHIEVE." with ™ on first mention of "LightSpeed Holdings Limited™." No emojis. No generic AI commentary. No off-palette colors. Every statement is evidence-led, grounded in the already-deployed infrastructure, and verifiable through the audit trail.
+The brand operates in the confirmed palette: navy #070A40, red #DC3641, cyan #00BFFF, Arial type scale, 4px grid. The tagline is "ASPIRE. ACT. ACHIEVE." with ™ on first mention of "LightSpeed Holdings Limited™." No emojis. No generic AI commentary. No off-palette colors. Every statement is evidence-led, grounded in the already-deployed infrastructure, and verifiable through the audit trail.
 
 This is the AI-native company builder for Africa. Proven in Malawi. Designed to scale into Africa. Built to be the reference point for how African organizations transition from traditional human-operated companies into governed AI-native enterprises — powered by human leadership and agentic AI systems.
 
@@ -39,7 +39,7 @@ ASPIRE. ACT. ACHIEVE.
 ### 3.1 Brand Palette Must-Haves
 
 - **Navy #070A40** – dominant color; used for primary surfaces, headline backgrounds, logo text, and the CEO-dashboard rail.
-- **Red #E63946** – accent color; reserved for signal-wave details, CTA highlights, and key numerical call-outs.
+- **Red #DC3641** – accent color; reserved for signal-wave details, CTA highlights, and key numerical call-outs.
 - **Cyan #00BFFF** – accent color; used for shield bases, link styling on dark surfaces, and tagline rendering on navy.
 - **Ratio** – on brand-dominant surfaces apply roughly 60% navy / 20% red / 20% cyan. Navy remains dominant; red and cyan are substantial accents, not rare highlights. This 60/20/20 ratio is itself a documented brand decision dated 2026-11-01, superseding the former 80/10/10 split — any further change requires its own documented brand decision (color rules, brand-guidelines.md §32-34).
 
@@ -98,7 +98,7 @@ ASPIRE. ACT. ACHIEVE.
 
 ## 4. Core Capabilities
 
-LightSpeed Holdings orchestrates AI-driven growth across Malawi, SADC, and Africa. The chief-of-staff agent manages communication and task delegation via the MessageBus queue ensuring every agent operates from a single source of truth. Evidence-driven policy generation flows through the Pharos research pipeline (SADC scans, Malawi Monitor policy-drafts/), producing audit-traceable governance documents from verified primary sources. Scaling uses a community-ecosystem-builder model validating locally in Malawi before regional SADC and continental Africa rollout. Thought-leadership output (whitepapers, monthly monitors, LinkedIn long-form) is published via our queue to external platforms. All creative output is mandatorily routed through the `ls-design-system` skill first, enforcing brand tokens (navy #070A40, red #E63946, cyan #00BFFF, Arial type scale, 4px grid, lighthouse logo, ASPIRE ACT ACHIEVE tagline) for consistent visual and verbal identity.
+LightSpeed Holdings orchestrates AI-driven growth across Malawi, SADC, and Africa. The chief-of-staff agent manages communication and task delegation via the MessageBus queue ensuring every agent operates from a single source of truth. Evidence-driven policy generation flows through the Pharos research pipeline (SADC scans, Malawi Monitor policy-drafts/), producing audit-traceable governance documents from verified primary sources. Scaling uses a community-ecosystem-builder model validating locally in Malawi before regional SADC and continental Africa rollout. Thought-leadership output (whitepapers, monthly monitors, LinkedIn long-form) is published via our queue to external platforms. All creative output is mandatorily routed through the `ls-design-system` skill first, enforcing brand tokens (navy #070A40, red #DC3641, cyan #00BFFF, Arial type scale, 4px grid, lighthouse logo, ASPIRE ACT ACHIEVE tagline) for consistent visual and verbal identity.
 
 ---
 
@@ -128,7 +128,7 @@ The following claims are valid and supported by existing assets:
 - Three intellectual territories exist: AI Company Building / Agentic AI Use Cases / AI Governance & Policy (per Pharos positioning.md explicit territory list).
 - Malawi-first positioning with SADC/Africa ambition (per MISSION_AND_VISION.md North Star "Malawi first. Prove it. Then the world.").
 - 90 agents (89 AI + 1 human CEO) across 20 departments (per source-of-truth.yaml and company-registry.yaml reconciled count).
-- Brand palette (navy #070A40, red #E63946, cyan #00BFFF, Arial, 4px grid) and tagline "ASPIRE. ACT. ACHIEVE." (per brand-guidelines.md).
+- Brand palette (navy #070A40, red #DC3641, cyan #00BFFF, Arial, 4px grid) and tagline "ASPIRE. ACT. ACHIEVE." (per brand-guidelines.md).
 - "™" on first mention of "LightSpeed Holdings Limited™" (per brand-guidelines.md §70).
 - honesty_classification from USE-CASE-CATALOG.md further constrains all claims to verifiable facts grounded in these assets.
 
@@ -156,9 +156,9 @@ LightSpeed Holdings serves Malawian clinics and health workers, embodying our mi
 
 ## 9. Brand/System Integration Points
 
-(a) Every agent must load the `ls-design-system` skill before producing any creative output, per AGENTS.md and brand-guidelines.md §6; this enforces brand tokens (navy #070A40, red #E63946, cyan #00BFFF, Arial type scale, 4px grid) as the single source of truth.
+(a) Every agent must load the `ls-design-system` skill before producing any creative output, per AGENTS.md and brand-guidelines.md §6; this enforces brand tokens (navy #070A40, red #DC3641, cyan #00BFFF, Arial type scale, 4px grid) as the single source of truth.
 
-(b) Brand tokens (navy #070A40, red #E63946, cyan #00BFFF, Arial type scale, 4px grid) are the single source of truth—never invent brand colors or fonts.
+(b) Brand tokens (navy #070A40, red #DC3641, cyan #00BFFF, Arial type scale, 4px grid) are the single source of truth—never invent brand colors or fonts.
 
 (c) Logo usage: from official assets only, ™ on first mention, clear space 1× "L" height, vector for print, transparent PNG on dark backgrounds.
 

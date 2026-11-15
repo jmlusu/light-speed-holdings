@@ -1,0 +1,146 @@
+/* LightSpeed Holdings — Luxury Editorial Documentation Standard
+   Derives exclusively from: brand/tokens/brand-tokens.css + brand/tokens.json
+   No inline token re-declarations. All colors/fonts/spacing reference the
+   canonical token set. No new colors, fonts, or spacing tokens invented.
+   Purpose: import + @apply in your MDX/Vite/React theme so every document
+   automatically inherits the luxury aesthetic without per-file overrides.
+*/
+
+/* ── Imports the canonical token set ──────────────────────────────────── */
+@import "brand/tokens/brand-tokens.css";
+
+/* ── Layout primitives (spatial rhythm) ───────────────────────────────── */
+/* Macro whitespace between major sections: 64px–96px (--ls-space-8 to --ls-space-9) */
+.main-section {
+  margin-top: var(--ls-space-8);
+  margin-bottom: var(--ls-space-8);
+}
+
+/* Micro whitespace: generous line-height 1.65 on html; body inherits */
+.arch-overview p,
+.spec-matrix td,
+.security-callout {
+  line-height: 1.65;
+}
+
+/* Line-length constraint: 65ch max on body prose */
+.prose-body {
+  max-width: 65ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Component: Header Block ──────────────────────────────────────────── */
+.header-block {
+  max-width: 1200px;
+  margin: 0 auto 64px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--ls-border-light);
+}
+.header-block h1 {
+  font-size: clamp(28pt, 3vw, 36pt);
+  font-weight: 700;
+  color: var(--ls-navy);
+  margin: 0 0 8px;
+}
+.header-block .exec-summary {
+  font-size: 16pt;
+  color: var(--ls-grey-dark);
+  margin: 0 0 16px;
+  font-style: italic;
+}
+
+/* ── Component: Specification Matrix ──────────────────────────────────── */
+.spec-matrix {
+  max-width: 1200px;
+  margin: 0 auto 64px;
+  border-collapse: collapse;
+}
+.spec-matrix th,
+.spec-matrix td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--ls-border-light);
+  font-size: 14pt;
+  color: var(--ls-navy);
+  vertical-align: top;
+}
+.spec-matrix th {
+  white-space: nowrap;
+  color: var(--ls-grey-dark);
+  font-weight: 700;
+  width: 25%;
+}
+.spec-matrix td {
+  color: var(--ls-grey-dark);
+}
+.spec-matrix tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Component: Implementation Payload ────────────────────────────────── */
+.impl-payload {
+  max-width: 1200px;
+  margin: 0 auto 64px;
+  background-color: var(--ls-bg-dark);
+  color: var(--ls-white);
+  padding: 24px;
+  border-radius: 0;
+}
+.impl-payload pre {
+  font-family: ui-monospace, Menlo, Monaco, Arial, sans-serif;
+  font-size: 12pt;
+  color: var(--ls-white);
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  overflow-x: auto;
+}
+.impl-payload code {
+  color: var(--ls-cyan);
+}
+
+/* ── Component: Security Advisory Callout ─────────────────────────────── */
+.security-callout {
+  max-width: 1200px;
+  margin: 0 auto 64px;
+  padding: 24px 16px 24px 28px;
+  border-left: 2px solid var(--ls-red);
+  background-color: transparent;
+  color: var(--ls-grey-dark);
+  font-size: 14pt;
+  line-height: 1.6;
+}
+
+/* ── Component: Design Compliance Audit ───────────────────────────────── */
+.design-audit {
+  margin-top: 96px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--ls-border-light);
+}
+.design-audit h2 {
+  font-size: 14pt;
+  color: var(--ls-grey-dark);
+  margin: 0 0 16px;
+  font-weight: 700;
+}
+.design-audit table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.design-audit th,
+.design-audit td {
+  padding: 8px 0;
+  border: none;
+  font-size: 12pt;
+  color: var(--ls-grey-light-text);
+}
+.design-audit th {
+  width: 40%;
+  color: var(--ls-navy);
+  font-weight: 700;
+}
+
+/* ── Restraint: Primary Accent appears in ≤3 places per page ───────────── */
+/* Verification only — no accidental accent usage in this stylesheet */

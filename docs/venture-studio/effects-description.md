@@ -132,7 +132,7 @@ The website implements 4 primary effects across the Vite React SPA. All effects 
 ### Technical Implementation
 - **Component**: `src/ThreeCanvas.tsx`
 - **Three.js scene**: Renders abstract data flows or brand-reinforcing patterns in WebGL
-- **Brand palette integration**: Any colors rendered must be from the ADR-020 locked palette (navy `#070A40`, red `#E63946`, cyan `#00BFFF`)
+- **Brand palette integration**: Any colors rendered must be from the ADR-020 locked palette (navy `#070A40`, red `#DC3641`, cyan `#00BFFF`)
 - **Placement**: Appears on `/technology` page and solutions pages (`/solutions/*`), NOT on the homepage or `/about`
 
 ### Visual Design

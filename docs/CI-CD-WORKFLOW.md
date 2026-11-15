@@ -25,11 +25,11 @@ Branch conventions in use: `main` (protected trunk) accepts changes only through
 ```mermaid
 flowchart TD
     classDef branch fill:#070A40,stroke:#00BFFF,color:#fff
-    classDef main fill:#070A40,stroke:#E63946,color:#fff
+    classDef main fill:#070A40,stroke:#DC3641,color:#fff
     classDef work fill:#fff,stroke:#070A40,color:#070A40
     classDef opt fill:#F2F2F2,stroke:#6B7280,color:#070A40
     classDef acc fill:#00BFFF,stroke:#070A40,color:#070A40
-    classDef stop fill:#E63946,stroke:#070A40,color:#fff
+    classDef stop fill:#DC3641,stroke:#070A40,color:#fff
 
     M[(main · protected)]:::main
     TOPIC["Topic branches<br/>feat/*  fix/*  build/*  chore/*<br/>research/*  governance/*  resolve/*"]:::branch
@@ -72,11 +72,11 @@ Releases are tag-driven: publish `semver` tag → version-sync checks (pyproject
 
 ```mermaid
 flowchart TD
-    classDef main fill:#070A40,stroke:#E63946,color:#fff
+    classDef main fill:#070A40,stroke:#DC3641,color:#fff
     classDef job fill:#F2F2F2,stroke:#6B7280,color:#070A40
     classDef acc fill:#00BFFF,stroke:#070A40,color:#070A40
     classDef tgt fill:#070A40,stroke:#00BFFF,color:#fff
-    classDef stop fill:#E63946,stroke:#070A40,color:#fff
+    classDef stop fill:#DC3641,stroke:#070A40,color:#fff
 
     M[(main)]:::main -->|"git tag v*<br/>or scripts/deploy/release.ps1<br/>or workflow_dispatch"| R["Release · release.yml"]:::acc
     R --> VC{"Semver validation<br/>git tag == pyproject.toml == CHANGELOG"}:::stop
@@ -102,7 +102,7 @@ flowchart TD
     classDef sched fill:#070A40,stroke:#00BFFF,color:#fff
     classDef job fill:#F2F2F2,stroke:#6B7280,color:#070A40
     classDef acc fill:#00BFFF,stroke:#070A40,color:#070A40
-    classDef ceo fill:#E63946,stroke:#070A40,color:#fff
+    classDef ceo fill:#DC3641,stroke:#070A40,color:#fff
 
     T{{"GitHub Actions triggers<br/>schedule + issue/PR comments"}}:::sched
     T --> A["autonomous.yml · cron: 0 */6 * * *"]:::job
@@ -127,5 +127,5 @@ flowchart TD
 ## Rendering
 
 - **Engine:** Mermaid v11, rendered locally via `@mermaid-js/mermaid-cli`-style headless Playwright (Python playwright + chromium); no external diagram service.
-- **Brand:** navy `#070A40` / red `#E63946` / cyan `#00BFFF` / neutral `#F2F2F2` + `#6B7280` from the LightSpeed design system; Arial type.
+- **Brand:** navy `#070A40` / red `#DC3641` / cyan `#00BFFF` / neutral `#F2F2F2` + `#6B7280` from the LightSpeed design system; Arial type.
 - **Source files:** `docs/diagrams/cicd-branches-gate.mmd`, `cicd-release.mmd`, `cicd-scheduled.mmd` (rendered `*.svg` alongside). GitHub renders the embedded `mermaid` blocks natively in this doc.

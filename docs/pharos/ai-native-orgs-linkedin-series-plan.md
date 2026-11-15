@@ -153,7 +153,7 @@ RESEARCH → DRAFT → CEO REVIEW → VISUALS → QA → SCHEDULE → PUBLISH �
 
 ## 4. Visual Asset Requirements Per Post
 
-### Visual System: LightSpeed Brand (navy `#070A40` / red `#E63946` / cyan `#00BFFF`)
+### Visual System: LightSpeed Brand (navy `#070A40` / red `#DC3641` / cyan `#00BFFF`)
 
 | Post | Hero Visual | Carousel Cards | Diagram Type | Data Viz |
 |------|-------------|----------------|--------------|----------|

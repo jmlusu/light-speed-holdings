@@ -197,7 +197,7 @@ Mobile menu opens fullscreen overlay with same links.
 
 ## Brand Enforcement
 
-- **Primary palette**: Navy `#070A40`, Red `#E63946`, Cyan `#00BFFF` (ADR-020 locked)
+- **Primary palette**: Navy `#070A40`, Red `#DC3641`, Cyan `#00BFFF` (ADR-020 locked)
 - **Typography**: Arial type scale throughout; font-family: `ls-navy`, `ls-red`, `ls-cyan`, `ls-white`, `ls-grey-dark`, `ls-grey-light-text`
 - **Spacing**: 4px grid system (Tailwind `p-2`, `p-3`, `p-4`, etc.)
 - **Logo rules**: Official LightSpeed shield logo with tagline "MALAWI & SADC AI SYSTEMS"

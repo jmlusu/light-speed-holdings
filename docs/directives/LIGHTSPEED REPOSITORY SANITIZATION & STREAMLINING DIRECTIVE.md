@@ -930,7 +930,7 @@ to be independently repeated hundreds of times if it should be a token.
 The same applies to:
 
 ```text
-#E63946
+#DC3641
 #00BFFF
 #F2F2F2
 ...

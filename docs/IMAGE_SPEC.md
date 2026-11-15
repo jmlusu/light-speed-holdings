@@ -12,7 +12,7 @@ This specification is the single source of truth for all image/media handling ac
 **Key invariants:**
 - Every image is typed via `data-ls-image-type` (one of 5 kinds)
 - Brand assets are canonical at `brand/**`; mirrors at `static/brand/**` and `public/brand/**` are sync-only
-- WCAG AA contrast: brand red is `#DC3641` (rgb 220, 54, 65) per `reports/WCAG_AA_FIX_SUMMARY.md`, not `#E63946`. **Known gap:** `brand/tokens/brand-tokens.json:21` and `brand-tokens.css` still carry the legacy `#E63946` — the token-file half of that migration is outstanding (`tasks/brand-update/todo.md`, WS-B).
+- WCAG AA contrast: brand red is `#DC3641` (rgb 220, 54, 65) per `reports/WCAG_AA_FIX_SUMMARY.md`, not `#DC3641`. **Known gap:** `brand/tokens/brand-tokens.json:21` and `brand-tokens.css` still carry the legacy `#DC3641` — the token-file half of that migration is outstanding (`tasks/brand-update/todo.md`, WS-B).
 - All media rendering is behind feature flag `VITE_CONTENT_MEDIA_ENABLED`
 - `HonestyBadge` travels with media in the component layer — **never baked into the image file**
 

@@ -15,7 +15,7 @@ Define the v2 public site information architecture: canonical navigation and URL
 Constraints inherited:
 
 - **Migrate in place** (ADR-020): no Astro rebuild, no visual redesign without a UX or business reason (brief §23).
-- **Brand tokens only** (ADR-020 §7.1): navy `#070A40`, red `#E63946`, cyan `#00BFFF`, white, `#F2F2F2`, Arial type scale. No invented colors.
+- **Brand tokens only** (ADR-020 §7.1): navy `#070A40`, red `#DC3641`, cyan `#00BFFF`, white, `#F2F2F2`, Arial type scale. No invented colors.
 - **No marketing copy in homepage section definitions** — structure and intent only (brief §15).
 - **Evidence-backed claims / honesty badges** on solutions and proof surfaces (ADR-020; `HonestyBadge` already wired).
 - **Canonical tool vocabulary / public registry boundary** is out of scope here — see sibling `PUBLIC_INTERNAL_BOUNDARY.md` (T005).

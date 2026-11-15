@@ -152,7 +152,7 @@ src/
 
 ### 6.2 Brand translation (ADR-020 locked — no token edits)
 
-Navy `#070A40` = canvas/floor (~90%+ of pixels); white = ink; cyan `#00BFFF` = the *single* "active system" glow (links, live data, focus); red `#E63946` = CTA and proof only; greys = muted ink + grid lines. This is the 80/10/10 rule as lighting: darkness at 90–95% depth so accents glow; max 2–3 glow hues; no glow on body text; scrim behind any text over the scene; grain off on small viewports; slow ambient motion by default, all off under reduced-motion.
+Navy `#070A40` = canvas/floor (~90%+ of pixels); white = ink; cyan `#00BFFF` = the *single* "active system" glow (links, live data, focus); red `#DC3641` = CTA and proof only; greys = muted ink + grid lines. This is the 80/10/10 rule as lighting: darkness at 90–95% depth so accents glow; max 2–3 glow hues; no glow on body text; scrim behind any text over the scene; grain off on small viewports; slow ambient motion by default, all off under reduced-motion.
 
 ### 6.3 Fallback ladder (every tier a designed state, identical content/CTAs)
 

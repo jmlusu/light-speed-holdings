@@ -36,7 +36,7 @@ LightSpeed Holdings Limited has received official branding materials from the CE
 | Role | Hex | Usage |
 |------|-----|-------|
 | Navy Primary | `#070A40` | Headlines, logo text, business card backgrounds, letterhead accents |
-| Red Accent | `#E63946` (approx) | Signal waves in logo, accent elements |
+| Red Accent | `#DC3641` (approx) | Signal waves in logo, accent elements |
 | Cyan Accent | `#00BFFF` (approx) | Shield base in logo, accent elements |
 | Light Grey | `#F2F2F2` | Business card background, letterhead body |
 | White | `#FFFFFF` | Letterhead body, email signature backgrounds |
@@ -383,7 +383,7 @@ If we need to reference brand colors in CSS, email templates, or digital materia
   --ls-navy-dark: #040729;
 
   /* Accents */
-  --ls-red: #E63946;
+  --ls-red: #DC3641;
   --ls-cyan: #00BFFF;
 
   /* Neutrals */

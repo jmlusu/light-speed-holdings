@@ -101,14 +101,14 @@ Accepted and effective 2026-10-21 on the authority of the Human CEO.
 
 Follow-up implementation tasks (tracked separately, not part of this ADR):
 
-1. `.agents/skills/ls-artifact-qa/SKILL.md:35-37` — differentiate the palette gate by asset class and correct the stale `#E63946` reference. **Done 2026-10-21.**
+1. `.agents/skills/ls-artifact-qa/SKILL.md:35-37` — differentiate the palette gate by asset class and correct the stale `#DC3641` reference. **Done 2026-10-21.**
 2. `.agents/skills/ls-design-system/SKILL.md` — add the imagery policy (previously absent). **Done 2026-10-21.**
 3. `docs/IMAGE_STRATEGY.md` — complete the 2026-10-21 amendment: alt-text policy, consequences for `#382` items 3 and 4, and the illustrative TS block. **Done 2026-10-21.**
 4. `docs/IMAGE_SPEC.md:23` — correct the `src/types.ts` citation (declared 219–270; actual 205–227). **Done 2026-10-21.**
 5. `src/types.ts:214` — widen `IllustrationMedia.generated` so authored illustrations are expressible.
 6. `static/brand/templates/generate-social-assets.py` — remove or gate the avatar output path.
 7. Video production path — either add a video skill to the Creative Production Stack or document the Comfy/Seedance exception.
-8. **Brand red divergence (pre-existing, blocks reliable palette gates).** `reports/WCAG_AA_FIX_SUMMARY.md` records red moving `#E63946` → `#DC3641` (rgb 220, 54, 65) for WCAG AA, and most skills/templates already use `#DC3641`, but `brand/tokens/brand-tokens.json:21`, `brand/tokens/brand-tokens.css:8,75` and `docs/LIGHTSPEED_DESIGN_SYSTEM.md:89,119,171,185,537` still carry `#E63946`. `tasks/brand-update/todo.md` WS-B is still unchecked. Until the token files move, `check_brand_palette.py` (which reads the token file) will accept a hex the brand documents reject. Owner: CMO with design-system owner; needs a token-file change plus mirror re-sync (`pwsh scripts/build/sync-brand.ps1`).
+8. **Brand red divergence (pre-existing, blocks reliable palette gates).** `reports/WCAG_AA_FIX_SUMMARY.md` records red moving `#DC3641` → `#DC3641` (rgb 220, 54, 65) for WCAG AA, and most skills/templates already use `#DC3641`, but `brand/tokens/brand-tokens.json:21`, `brand/tokens/brand-tokens.css:8,75` and `docs/LIGHTSPEED_DESIGN_SYSTEM.md:89,119,171,185,537` still carry `#DC3641`. `tasks/brand-update/todo.md` WS-B is still unchecked. Until the token files move, `check_brand_palette.py` (which reads the token file) will accept a hex the brand documents reject. Owner: CMO with design-system owner; needs a token-file change plus mirror re-sync (`pwsh scripts/build/sync-brand.ps1`).
 
 ## Links
 

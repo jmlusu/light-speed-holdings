@@ -86,7 +86,7 @@ The design system embodies:
 | Token | CSS variable | Hex | Usage |
 |-------|--------------|-----|-------|
 | `navy` | `--ls-navy` | `#070A40` | Headlines, logo text, primary brand surfaces, primary backgrounds |
-| `red` | `--ls-red` | `#E63946` | Signal waves, accent elements, key highlights, **primary CTAs** |
+| `red` | `--ls-red` | `#DC3641` | Signal waves, accent elements, key highlights, **primary CTAs** |
 | `cyan` | `--ls-cyan` | `#00BFFF` | Shield base, accent elements, links on dark, focus rings |
 | `grey-light` | `--ls-grey-light` | `#F2F2F2` | Light grey neutral (borders, subtle fills) |
 | `white` | `--ls-white` | `#FFFFFF` | Clean backgrounds, text on navy |
@@ -116,7 +116,7 @@ The design system embodies:
 | `border-default` | grey-200 `#E5E7EB` | grey-700 `#374151` | Default borders |
 | `border-subtle` | grey-100 `#F2F2F2` | grey-800 `#1F2937` | Hairline dividers |
 | `border-focus` | cyan `#00BFFF` | cyan `#00BFFF` | Focus rings |
-| `border-error` | red `#E63946` | red `#E63946` | Error states |
+| `border-error` | red `#DC3641` | red `#DC3641` | Error states |
 
 ### Known Token Divergences
 
@@ -168,7 +168,7 @@ The app bridge (`src/brand/brand-tokens.css`) defines brand colors **twice**: as
 /* @theme — generates Tailwind utilities: bg-ls-navy, text-ls-cyan, border-ls-red … */
 @theme {
   --color-ls-navy: #070A40;
-  --color-ls-red: #E63946;
+  --color-ls-red: #DC3641;
   --color-ls-cyan: #00BFFF;
   --color-ls-mist: #F7F8F9;        /* morning mist */
   --color-ls-slate: #121518;       /* deep mineral */
@@ -182,7 +182,7 @@ The app bridge (`src/brand/brand-tokens.css`) defines brand colors **twice**: as
 :root {
   /* Brand */
   --ls-navy: #070A40;
-  --ls-red: #E63946;
+  --ls-red: #DC3641;
   --ls-cyan: #00BFFF;
   /* RGB channels for alpha compositing */
   --ls-navy-rgb: 7, 10, 64;
@@ -534,7 +534,7 @@ import { Badge } from '@lightspeed/design-system';
 | Variant | Border | Background | Text |
 |---------|--------|------------|------|
 | `proven` | `rgba(0,191,255,0.4)` (cyan/40) | `rgba(0,191,255,0.1)` (cyan/10) | `#00BFFF` |
-| `pilot` | `rgba(230,57,70,0.4)` (red/40) | `rgba(230,57,70,0.1)` (red/10) | `#E63946` |
+| `pilot` | `rgba(230,57,70,0.4)` (red/40) | `rgba(230,57,70,0.1)` (red/10) | `#DC3641` |
 | `fieldable` | `rgba(156,163,175,0.4)` (grey-light-text/40) | `rgba(156,163,175,0.1)` | `#9CA3AF` |
 | `development` | `rgba(107,114,128,0.4)` (grey-dark/40) | `rgba(107,114,128,0.1)` | `#6B7280` |
 | `neutral` | grey tokens — uncolored, for generic labels (see `Badge.tsx`) | | |

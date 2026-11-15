@@ -58,7 +58,7 @@
 
 ## Key Constraints (ADR-020 Locked)
 
-- **Palette**: Navy `#070A40` / Red `#E63946` / Cyan `#00BFFF` — no amendments
+- **Palette**: Navy `#070A40` / Red `#DC3641` / Cyan `#00BFFF` — no amendments
 - **Tokens**: Must not edit; any edits must be reverted
 - **Website**: Part 1 only shipped; Parts 2–5 documentation only — no code/registry/deploy changes
 - **Legacy content**: Must remain intact and visible where ADR-020 does not override

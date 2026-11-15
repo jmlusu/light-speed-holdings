@@ -12,7 +12,7 @@ Leading word: generate --- when this word is invoked in a prompt, the agent reac
 
 One source of truth: company-registry.yaml --- agent roles and KPIs (ATC >90%, velocity <60d, correction ratio, 3x capital efficiency) are the single source of truth; the deck references these but the registry is authoritative.
 
-Cut identity: The brand tokens (navy #070A40, red #E63946, cyan #00BFFF) and compliance checklist (Sec. 9) are also defined in brand/tokens/brand-tokens.json and brand/guidelines/brand-guidelines.md; this pointer directs to the primary references only.
+Cut identity: The brand tokens (navy #070A40, red #DC3641, cyan #00BFFF) and compliance checklist (Sec. 9) are also defined in brand/tokens/brand-tokens.json and brand/guidelines/brand-guidelines.md; this pointer directs to the primary references only.
 
 ## Render verification (AI Venture Studio deck)
 

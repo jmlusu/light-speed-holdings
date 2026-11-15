@@ -43,8 +43,7 @@ jobs:
         # Repo is public: client proposals/commercial terms must never be
         # tracked. Incident 2026-11-10 (proposal-deliverables/ on main).
         run: uv run python scripts/test/check-confidential-artifacts.py
-
-  typecheck:
+      typecheck:
     name: Type check (mypy)
     runs-on: ubuntu-latest
     steps:
@@ -212,6 +211,8 @@ jobs:
             fi
           fi
           echo "Generated agents are in sync with the registry."
+      - name: Run luxury linter
+        run: uv run python docs/compliance/luxury-linter.py docs/
 
   # Human-in-the-loop gate: company-registry.yaml must exactly match the
   # CEO-approved roster pinned in company/agent-baseline.json (AGENTS.md 9.4).

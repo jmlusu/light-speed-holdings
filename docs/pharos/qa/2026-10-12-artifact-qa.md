@@ -52,7 +52,7 @@ Logo: all three reference `/logo-full-v2.svg` (exists), `data-ls-image-type="bra
 - Minor: desktop governance SVG "T4 · CEO Only" sublabel is tight against the red gate border at 1280. Legible, not clipped.
 
 ### Brand QA
-- Declared tokens: navy `#070A40`, red `#E63946`, cyan `#00BFFF`, morning-mist, deep-mineral, grey-light, grey-dark, white, grey-light-text. They match `brand-tokens.json`.
+- Declared tokens: navy `#070A40`, red `#DC3641`, cyan `#00BFFF`, morning-mist, deep-mineral, grey-light, grey-dark, white, grey-light-text. They match `brand-tokens.json`.
 - **Exception:** line 279 `h1 .accent, .tagline, footer .foot-tag { color: #0077A8; }` is **off-palette**. It is not in `brand-tokens.json`. Contrast of `#0077A8` on white is approximately **5.0:1**, which passes WCAG AA normal text. `#00BFFF` on white would fail at roughly 1.7:1, so `#0077A8` appears to be a deliberate darkened cyan for light surfaces. Recommend adding it as a named token (for example `cyan-text`) rather than a one-off hex, or obtaining brand sign-off to keep the literal.
 - Tagline "ASPIRE. ACT. ACHIEVE." is present in header and footer; logo min-size is not violated (renders above the 120 px full-logo floor on desktop).
 
@@ -160,7 +160,7 @@ Do not ship to mobile channels until the overflow is fixed. Re-render after the 
 - The two-taxonomy panel (SADC draft Tiers 1–4 vs LightSpeed HITL T0–4) is visually separated and correctly not conflated.
 
 ### Brand QA
-- All declared hex values are brand tokens (`#070A40`, `#E63946`, `#00BFFF`, greys/white). There is **no `#0077A8`** on this artifact.
+- All declared hex values are brand tokens (`#070A40`, `#DC3641`, `#00BFFF`, greys/white). There is **no `#0077A8`** on this artifact.
 - Tagline, logo first-instance alt, footer lockup: compliant.
 - The CTA button uses red on white, which is on-brand.
 
@@ -195,7 +195,7 @@ Ship. No re-render required.
 
 Basis:
 1. **Declared colors are brand tokens.** Every `#hex` in CSS/SVG on artifact 1 is a `brand-tokens.json` value except the single light-surface text rule `#0077A8`, which is used for accent text on white and not for large fills or the dot matrix.
-2. **High-edge-density content.** The agent-layer diagram is an 89-dot cyan matrix plus borders, rules, and large body text. Subpixel/gray antialiasing at every glyph and shape edge converts exact `#00BFFF`/`#070A40`/`#E63946` pixels into intermediate values that a strict equality pixel count will not match.
+2. **High-edge-density content.** The agent-layer diagram is an 89-dot cyan matrix plus borders, rules, and large body text. Subpixel/gray antialiasing at every glyph and shape edge converts exact `#00BFFF`/`#070A40`/`#DC3641` pixels into intermediate values that a strict equality pixel count will not match.
 3. **No large off-palette fills.** Backgrounds and cards use `--navy`, `--white`, `--morning-mist`, `--grey-light` exactly. A wrong-palette redesign would show up as large contiguous non-token regions, which the screenshots do not show.
 4. **`#0077A8` is text-only.** Its footprint is a few dozen heading/tagline glyphs, which is far too small to explain a multi-percent coverage gap. It is a separate, documented brand exception, not the antialiasing story.
 
