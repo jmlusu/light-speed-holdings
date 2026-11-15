@@ -3,16 +3,8 @@ import { HeroSection } from '../components/HeroSection';
 import { IntroductionSection } from '../components/home/IntroductionSection';
 import { LightSpeedProposition } from '../components/home/LightSpeedProposition';
 import { VisitorPathsSection } from '../components/home/VisitorPathsSection';
-import { WhatWeBuildGrid } from '../components/home/WhatWeBuildGrid';
-import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
-import { IntentToExecutionLifecycle } from '../components/home/IntentToExecutionLifecycle';
 import { HumanApprovalMatrix } from '../components/HumanApprovalMatrix';
-
-import { InsightsSection } from '../components/home/InsightsSection';
-import { AboutSection } from '../components/home/AboutSection';
-import { FaqSection } from '../components/site/FaqSection';
-import { DistinctCTA } from '../components/DistinctCTA';
-import { Footer } from '../components/footer/Footer';
+import homeCopy, { VALUES } from '../data/homeCopy';
 
 interface HomePageProps {
   theme: 'light' | 'dark';
@@ -33,8 +25,8 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         {/* Sequence 2 - INTRODUCTION */}
         <IntroductionSection theme={theme} />
 
-        {/* Sequence 3 - LIGHTSPEED PROPOSITION */}
-        <LightSpeedProposition theme={theme} />
+      {/* 1c. Five-tier Human Approval Matrix — interactive component restored from AI Studio prototype */}
+      <HumanApprovalMatrix theme={theme} />
 
         {/* Sequence 4 - VISITOR PATHS */}
         <VisitorPathsSection theme={theme} />
