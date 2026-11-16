@@ -1,0 +1,3673 @@
+{
+  "counts": {
+    "ACCEPTANCE-CRITERIA-PHASE1-2.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 74,
+      "style": 0,
+      "token": 0
+    },
+    "AGENT-REGISTRY-TABLE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 130,
+      "style": 0,
+      "token": 0
+    },
+    "AGENT_EXECUTION_MATRIX.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 104,
+      "style": 0,
+      "token": 0
+    },
+    "AGENT_TEAM_PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 42,
+      "style": 0,
+      "token": 0
+    },
+    "AI_PROVIDER_COMPARISON.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 98,
+      "style": 0,
+      "token": 0
+    },
+    "API-REFERENCE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 38,
+      "style": 0,
+      "token": 0
+    },
+    "APPROVAL-CLI-COMMANDS.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "APPROVAL-DASHBOARD-UI.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 5
+    },
+    "APPROVAL-UX-SPEC.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 20,
+      "style": 0,
+      "token": 0
+    },
+    "APPROVED-VENDORS.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 26,
+      "style": 0,
+      "token": 0
+    },
+    "ARCHIFY-USAGE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "ARCHITECTURE-GAPS.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 71,
+      "style": 0,
+      "token": 0
+    },
+    "ARCHITECTURE-OMNIROUTE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "ARCHITECTURE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 50,
+      "style": 0,
+      "token": 0
+    },
+    "ARCHITECTURE_REMOTE_RUNTIME.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 156,
+      "style": 0,
+      "token": 0
+    },
+    "AUDIT-FIXES-2026-08-10.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "AUDIT-NARRATIVE-CLAIMS-2026-10-10.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "AUDIT-REPORT-FINAL.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 56,
+      "style": 0,
+      "token": 2
+    },
+    "BACKEND_IMPLEMENTATION_PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 104,
+      "style": 0,
+      "token": 0
+    },
+    "BACKLOG.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 20,
+      "style": 0,
+      "token": 0
+    },
+    "BOARD-GOVERNANCE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "BRAND_ADOPTION_ROADMAP.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 67,
+      "style": 1,
+      "token": 3
+    },
+    "BRAND_DEPLOYMENT_GUIDE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "CEO-DASHBOARD-OPERATIONALIZATION-PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 50,
+      "style": 0,
+      "token": 0
+    },
+    "CEO-DIRECTIVE-BLUEPRINT-ADOPTION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 95,
+      "style": 0,
+      "token": 0
+    },
+    "CEO_DASHBOARD_ARCHITECTURE_ANALYSIS.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 31,
+      "style": 0,
+      "token": 0
+    },
+    "CEO_DASHBOARD_DATA_MAPPING.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 62,
+      "style": 0,
+      "token": 0
+    },
+    "CEO_DASHBOARD_USER_GUIDE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 846,
+      "style": 0,
+      "token": 0
+    },
+    "CI-CD-WORKFLOW.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 19,
+      "style": 0,
+      "token": 0
+    },
+    "CLAIMS_GOVERNANCE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 70,
+      "style": 0,
+      "token": 0
+    },
+    "CODE_REVIEW_2026-08-10.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 81,
+      "style": 0,
+      "token": 0
+    },
+    "COMMAND-CENTER-API.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 1
+    },
+    "COMPANY-CONSTITUTION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "CONTENT_ARCHITECTURE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 53,
+      "style": 0,
+      "token": 0
+    },
+    "CREATIVE-PRODUCTION-ARCHITECTURE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 52,
+      "style": 0,
+      "token": 0
+    },
+    "DASHBOARD-HARDENING-C4-C5-SPEC.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 28,
+      "style": 0,
+      "token": 0
+    },
+    "DASHBOARD-HARDENING-RECONCILIATION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 41,
+      "style": 0,
+      "token": 0
+    },
+    "DASHBOARD_ARCHITECTURE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 146,
+      "style": 0,
+      "token": 0
+    },
+    "DASHBOARD_DATA_DICTIONARY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 466,
+      "style": 0,
+      "token": 15
+    },
+    "DASHBOARD_KEY_ROTATION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "DECISION-FRAMEWORK.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "DEEP-DIVE-WEBUILD-AI.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 55,
+      "style": 0,
+      "token": 0
+    },
+    "DEPLOYMENT-GUIDE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 0
+    },
+    "DEPLOYMENT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 92,
+      "style": 0,
+      "token": 3
+    },
+    "DESIGN-DASHBOARD-FEATURES.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 46,
+      "style": 1,
+      "token": 0
+    },
+    "DEVELOPER-GUIDE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 51,
+      "style": 0,
+      "token": 0
+    },
+    "DEVELOPMENT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 41,
+      "style": 0,
+      "token": 0
+    },
+    "DEVICE-SETUP.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "DEVOPS-PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 52,
+      "style": 0,
+      "token": 0
+    },
+    "DRIFT-PREVENTION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "ECL.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 39,
+      "style": 0,
+      "token": 0
+    },
+    "EXECUTIVE-STRATEGY-EXPANSION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 13,
+      "style": 0,
+      "token": 0
+    },
+    "EXECUTIVE_DASHBOARD_V1_STRATEGIC_PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 85,
+      "style": 0,
+      "token": 0
+    },
+    "FEATURE_COMPLETENESS_TASK_BREAKDOWN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 31,
+      "style": 0,
+      "token": 0
+    },
+    "FINAL-AUDIT-REPORT.md": {
+      "accent": 0,
+      "callout": 1,
+      "line": 51,
+      "style": 1,
+      "token": 2
+    },
+    "GEOGRAPHIC_POSITIONING_AUDIT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 59,
+      "style": 0,
+      "token": 0
+    },
+    "GEOGRAPHIC_POSITIONING_SPEC.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 19,
+      "style": 0,
+      "token": 0
+    },
+    "GIT-WORKFLOW.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "HARDENING-PATTERN-CATALOG.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 130,
+      "style": 0,
+      "token": 10
+    },
+    "HOSTING-CONTINGENCY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 34,
+      "style": 0,
+      "token": 0
+    },
+    "IMAGE_SPEC.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 125,
+      "style": 1,
+      "token": 2
+    },
+    "IMAGE_STRATEGY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 191,
+      "style": 0,
+      "token": 6
+    },
+    "IMPLEMENTATION-PHASES-REPORT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 55,
+      "style": 0,
+      "token": 2
+    },
+    "IMPLEMENTATION_AUDIT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 59,
+      "style": 0,
+      "token": 0
+    },
+    "IMPLEMENTATION_SUMMARY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 14,
+      "style": 0,
+      "token": 0
+    },
+    "INTEGRATION-ARCHITECTURE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 67,
+      "style": 0,
+      "token": 0
+    },
+    "INVESTOR_BRAND_READINESS_PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 94,
+      "style": 1,
+      "token": 0
+    },
+    "LIGHTSPEED_DESIGN_SYSTEM.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 153,
+      "style": 1,
+      "token": 17
+    },
+    "MALAWI_FOCUS_ALIGNMENT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 76,
+      "style": 0,
+      "token": 0
+    },
+    "MASTER_SPEC.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 50,
+      "style": 0,
+      "token": 1
+    },
+    "MEDIA_ARCHITECTURE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 57,
+      "style": 0,
+      "token": 0
+    },
+    "MISSION_AND_VISION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 74,
+      "style": 0,
+      "token": 0
+    },
+    "MODEL-ROUTING-POLICY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 37,
+      "style": 0,
+      "token": 0
+    },
+    "NARRATIVE-AND-POSITIONING.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 72,
+      "style": 0,
+      "token": 1
+    },
+    "OCI-FREE-TIER-DEPLOYMENT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 54,
+      "style": 0,
+      "token": 0
+    },
+    "ONBOARDING.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 37,
+      "style": 0,
+      "token": 0
+    },
+    "OP-16-OPERATING-PROOF-RUNBOOK.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 32,
+      "style": 0,
+      "token": 0
+    },
+    "OPEN-DESIGN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 76,
+      "style": 0,
+      "token": 1
+    },
+    "OPERATIONAL-RUNBOOK-2026-11-08.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 18,
+      "style": 0,
+      "token": 0
+    },
+    "ORCHESTRATION-PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 103,
+      "style": 0,
+      "token": 0
+    },
+    "ORGANIZATION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 31,
+      "style": 0,
+      "token": 0
+    },
+    "ORG_DESIGN_SYSTEM_REALIGNMENT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 69,
+      "style": 1,
+      "token": 1
+    },
+    "PHASE-1-COMPLETE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "PHASE-2-COMPLETE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "PHASE-3-PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "PHASE-4-PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 16,
+      "style": 0,
+      "token": 0
+    },
+    "PHASE-5-PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "PHASE3-AI-STRATEGY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 69,
+      "style": 0,
+      "token": 0
+    },
+    "PHASE3-EXECUTION-PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 127,
+      "style": 0,
+      "token": 0
+    },
+    "PHASE_3_COORDINATION_PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "PLATFORM_COMPARISON_RESEARCH.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 78,
+      "style": 0,
+      "token": 0
+    },
+    "PORTS-MONITORING-2026-10-07.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 14,
+      "style": 0,
+      "token": 0
+    },
+    "POSITIONING_DICTIONARY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 23,
+      "style": 0,
+      "token": 0
+    },
+    "PRODUCT-ROADMAP.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 44,
+      "style": 0,
+      "token": 0
+    },
+    "PROJECT-STATUS-ASSESSMENT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 30,
+      "style": 0,
+      "token": 0
+    },
+    "PROMPT-ENGINEERING-GUIDE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 39,
+      "style": 0,
+      "token": 0
+    },
+    "Plan.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 10
+    },
+    "QA-DASHBOARD-STABILIZATION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 95,
+      "style": 0,
+      "token": 0
+    },
+    "REMOTE_RUNTIME_ARTIFACTS_INDEX.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 22,
+      "style": 0,
+      "token": 0
+    },
+    "REPOSITORY_CLEANUP_PLAN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 172,
+      "style": 0,
+      "token": 0
+    },
+    "REPOSITORY_HEALTH.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 28,
+      "style": 0,
+      "token": 0
+    },
+    "RESERVATIONS-STRATEGY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 74,
+      "style": 0,
+      "token": 0
+    },
+    "RISK-REGISTER.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 22,
+      "style": 0,
+      "token": 0
+    },
+    "SECURITY_AUDIT_REPORT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 40,
+      "style": 0,
+      "token": 0
+    },
+    "SECURITY_HARDENING.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "SKILL_CURATION_POLICY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 45,
+      "style": 0,
+      "token": 0
+    },
+    "SOCIAL_MEDIA_UPLOAD_CHECKLIST.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "SPEC.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 59,
+      "style": 0,
+      "token": 0
+    },
+    "SPEC_WEBSITE_ARTIFACT_ROADMAP.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 45,
+      "style": 0,
+      "token": 5
+    },
+    "SPRINT-1-BACKLOG.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 66,
+      "style": 0,
+      "token": 0
+    },
+    "SPRINT-1-TRACKER.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 38,
+      "style": 0,
+      "token": 0
+    },
+    "SPRINT-2-BACKLOG.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 42,
+      "style": 0,
+      "token": 0
+    },
+    "SPRINT-3-BACKLOG.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 49,
+      "style": 0,
+      "token": 0
+    },
+    "SPRINT-3-DELEGATION-REPORT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 83,
+      "style": 0,
+      "token": 0
+    },
+    "SPRINT9-PHASE1-CORE-ARCHITECTURE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 33,
+      "style": 0,
+      "token": 0
+    },
+    "STATUS.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 28,
+      "style": 0,
+      "token": 24
+    },
+    "TASK-BOARD.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 29,
+      "style": 0,
+      "token": 0
+    },
+    "TESTING.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 44,
+      "style": 0,
+      "token": 0
+    },
+    "USER-GUIDE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 50,
+      "style": 0,
+      "token": 0
+    },
+    "USER-STORIES-PHASE3-5.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 85,
+      "style": 0,
+      "token": 0
+    },
+    "UX_USER_SATISFACTION_TASK_BREAKDOWN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 29,
+      "style": 0,
+      "token": 0
+    },
+    "WEBSITE_ARCHITECTURE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 16,
+      "style": 0,
+      "token": 0
+    },
+    "adr/001-typer-cli.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 14,
+      "style": 0,
+      "token": 0
+    },
+    "adr/002-json-message-bus.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "adr/003-react-agent-loop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 13,
+      "style": 0,
+      "token": 0
+    },
+    "adr/004-multi-provider-llm.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 16,
+      "style": 0,
+      "token": 0
+    },
+    "adr/005-file-based-persistence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "adr/008-evidence-separation-sequence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "adr/008-evidence-separation.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 42,
+      "style": 0,
+      "token": 2
+    },
+    "adr/010-t1-event-bus-alignment.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "adr/012-dashboard-rbac.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 13,
+      "style": 0,
+      "token": 0
+    },
+    "adr/013-browser-session-tokens.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "adr/014-api-url-versioning.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "adr/015-stale-lease-dead-worker-policy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 16,
+      "style": 0,
+      "token": 0
+    },
+    "adr/016-opentelemetry-tracing.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 18,
+      "style": 0,
+      "token": 0
+    },
+    "adr/017-async-approval-engine.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "adr/018-comfyui-media-generation.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 30,
+      "style": 0,
+      "token": 0
+    },
+    "adr/019-memory-knowledge-governance.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 0,
+      "style": 0,
+      "token": 2
+    },
+    "adr/020-client-facing-site-guiding-principles.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 26,
+      "style": 0,
+      "token": 7
+    },
+    "adr/020-pharos-content-intelligence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 47,
+      "style": 0,
+      "token": 0
+    },
+    "adr/021-enquiry-smtp-provider.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 2
+    },
+    "adr/022-enquiry-edge-runtime.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 8,
+      "style": 0,
+      "token": 0
+    },
+    "adr/024-dual-environment-compatibility.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 67,
+      "style": 0,
+      "token": 0
+    },
+    "adr/025-lsmem-sqlite-engine-coexistence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 48,
+      "style": 0,
+      "token": 0
+    },
+    "adr/025-mimo-provider-and-mimocode-cli.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 109,
+      "style": 0,
+      "token": 0
+    },
+    "adr/026-registry-write-seam.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 26,
+      "style": 0,
+      "token": 0
+    },
+    "adr/027-ai-generated-imagery-policy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 59,
+      "style": 0,
+      "token": 1
+    },
+    "adr/ADR-opencode-v2.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "agents/domain.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "agents/issue-tracker.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 20,
+      "style": 0,
+      "token": 0
+    },
+    "agents/pharos-agent-mapping.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "agents/subagents-vs-skills.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 42,
+      "style": 0,
+      "token": 0
+    },
+    "agents/triage-labels.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "ai-caas-pricing-model.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "anti-patterns/powershell/01_unstable-enumeration.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "anti-patterns/powershell/02_backtick-escape.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "anti-patterns/powershell/03_json-serialisation.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "anti-patterns/powershell/04_hook-timeout.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 7,
+      "style": 0,
+      "token": 0
+    },
+    "anti-patterns/powershell/05_cross-version.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "api/MOBILE-API.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "api/PUSH-NOTIFICATIONS.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 26,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/AGENT_CONSOLIDATION_152_TO_90.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 121,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/AI_COMPANY_BUILDER_UX.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 91,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/AI_WORKFORCE_90.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 87,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/EVIDENCE_ARCHITECTURE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 147,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/LIGHTSPEED_AI_COMPANY_BUILDER_WEB_ARCHITECTURE_V2.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 108,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/PUBLIC_AGENT_REGISTRY_SCHEMA.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 106,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/PUBLIC_INTERNAL_BOUNDARY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 60,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/ROUTE_MIGRATION_V2.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 103,
+      "style": 0,
+      "token": 1
+    },
+    "architecture/V2_IMPLEMENTATION_ROADMAP.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 130,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/WEB_INFORMATION_ARCHITECTURE_V2.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 138,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/025-agent-consolidation-152-to-90.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/026-single-owner-architecture.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/027-public-internal-boundary.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 20,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/028-public-agent-registry-schema.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 19,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/029-lightspeed-operating-system.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/030-ai-company-builder-architecture.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/031-route-consolidation.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 22,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/032-data-architecture.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 23,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/033-dynamic-metrics-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 23,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/034-framework-strategy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/035-canonical-production-host.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 20,
+      "style": 0,
+      "token": 0
+    },
+    "architecture/adr/036-three-js-exception-immersive-homepage.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 1
+    },
+    "architecture/adr/037-three-js-strip-immersive-homepage.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 3
+    },
+    "architecture/adr/README.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 22,
+      "style": 0,
+      "token": 0
+    },
+    "assets/README.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "assets/architecture.html": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 1,
+      "token": 42
+    },
+    "assets/inventory.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 36,
+      "style": 0,
+      "token": 0
+    },
+    "case-studies/lightspeed-scroll-page/README.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 43,
+      "style": 0,
+      "token": 0
+    },
+    "case-studies/social-media-automation-os.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 43,
+      "style": 0,
+      "token": 0
+    },
+    "case-studies/wlo-ai-native-consultancy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "ceo-dashboard-user-guide/00-outline-and-executive-summary.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 38,
+      "style": 0,
+      "token": 0
+    },
+    "ceo-dashboard-user-guide/02-quick-start-and-reference.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 104,
+      "style": 0,
+      "token": 0
+    },
+    "ceo-dashboard-user-guide/03-understanding-kpis.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 52,
+      "style": 0,
+      "token": 0
+    },
+    "ceo-dashboard-user-guide/04-operations-and-tasks.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 170,
+      "style": 0,
+      "token": 0
+    },
+    "ceo-dashboard-user-guide/05-page-by-page-guide.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 166,
+      "style": 0,
+      "token": 0
+    },
+    "ceo-dashboard-user-guide/06-health-monitoring.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 157,
+      "style": 0,
+      "token": 0
+    },
+    "ceo-dashboard-user-guide/07-technical-setup.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 52,
+      "style": 0,
+      "token": 0
+    },
+    "ceo-dashboard-user-guide/08-documentation-standards.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 107,
+      "style": 0,
+      "token": 0
+    },
+    "ceo-memo-positioning.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 29,
+      "style": 0,
+      "token": 0
+    },
+    "client-facing/USE-CASE-CATALOG.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 175,
+      "style": 0,
+      "token": 0
+    },
+    "client-facing/website-compliance-ticket-ledger.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 0,
+      "style": 0,
+      "token": 9
+    },
+    "content-architecture/README.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "content-architecture/decisions/adr-024-lca-architecture-implementation.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 20,
+      "style": 0,
+      "token": 0
+    },
+    "content-architecture/glossary.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "content-architecture/principles.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 0
+    },
+    "decisions/2026-10-26-deck-decisions.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 34,
+      "style": 0,
+      "token": 0
+    },
+    "deck-gate/KNOWN-GAPS.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "deck-generation.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 18,
+      "style": 0,
+      "token": 1
+    },
+    "deck-open-decisions.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 66,
+      "style": 0,
+      "token": 1
+    },
+    "design/DESIGN-TASK-PIPELINE-PAGINATION.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 43,
+      "style": 0,
+      "token": 0
+    },
+    "diagrams-4-5-6.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 33,
+      "style": 0,
+      "token": 0
+    },
+    "diagrams.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "diagrams/data-stores/README.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "directives/GEOGRAPHIC POSITIONING & MARKET ARCHITECTURE REFINEMENT DIRECTIVE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 88,
+      "style": 0,
+      "token": 0
+    },
+    "directives/LIGHTSPEED PHASED APPROVAL & ROLLBACK PROTOCOL.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "directives/LIGHTSPEED REPOSITORY SANITIZATION & STREAMLINING DIRECTIVE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "directives/REBUILD_DIRECTIVE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 1
+    },
+    "directives/RUNBOOK-LightspeedAI-Deployment-2026-10-03.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 119,
+      "style": 0,
+      "token": 0
+    },
+    "directives/WEBSITE TRANSFORMATION & REPOSITORY CONSOLIDATION DIRECTIVE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 0,
+      "style": 0,
+      "token": 1
+    },
+    "directives/dual_environment_compatibility_standard.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 22,
+      "style": 0,
+      "token": 0
+    },
+    "directives/lightspeed-aistudio-opencode-handoff-directive.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "directives/lightspeed-narrative-positioning.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 7,
+      "style": 0,
+      "token": 0
+    },
+    "directives/lightspeed-opencode-migration-directive.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 0
+    },
+    "governance-audit.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "known-issues.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 4
+    },
+    "legal/client-onboarding-policy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 18,
+      "style": 0,
+      "token": 0
+    },
+    "legal/gdpr-donor-addendum.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "legal/msa-template.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 44,
+      "style": 0,
+      "token": 0
+    },
+    "legal/privacy-policy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 62,
+      "style": 0,
+      "token": 0
+    },
+    "legal/sow-template.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "legal/terms-of-service.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 56,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/PHASE1_STATUS.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/REMAINING_SETUP.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/agent-team-posts.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 1,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/analytics-setup.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 32,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/atomized/01-pillar--social-pack.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 62,
+      "style": 0,
+      "token": 5
+    },
+    "marketing/atomized/02-pillar--social-pack.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 63,
+      "style": 0,
+      "token": 5
+    },
+    "marketing/atomized/03-pillar--social-pack.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 66,
+      "style": 0,
+      "token": 5
+    },
+    "marketing/atomized/facebook-first-post.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/atomized/instagram-first-post.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/atomized/linkedin-first-post.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/atomized/resend-note.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 1,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/atomized/substack-first.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/atomized/threads-first-post-updated.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/atomized/threads-first-post.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 1,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/atomized/tiktok-first-post.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 1,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/atomized/x-first-post.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 1,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/atomized/youtube-first-short.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 1,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/competitive-landscape.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 174,
+      "style": 0,
+      "token": 6
+    },
+    "marketing/content-calendar-90day.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 26,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/daily-cadence-checklist.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 28,
+      "style": 0,
+      "token": 1
+    },
+    "marketing/digital-asset-register.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 18,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/digital-identity-setup.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 148,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/keyword-master-list.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 40,
+      "style": 0,
+      "token": 0
+    },
+    "marketing/newsletter/layout.html": {
+      "accent": 0,
+      "callout": 0,
+      "line": 16,
+      "style": 1,
+      "token": 2
+    },
+    "marketing/newsletter/monitor-01.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 54,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/newsletter/monitor-plan.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 47,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/provisioning-kit.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 61,
+      "style": 0,
+      "token": 4
+    },
+    "marketing/provisioning-runbook.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 59,
+      "style": 0,
+      "token": 4
+    },
+    "marketing/social-media-positioning-status.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 80,
+      "style": 0,
+      "token": 3
+    },
+    "marketing/warmup-content-pack/facebook-post.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 8,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/warmup-content-pack/instagram-caption.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 16,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/warmup-content-pack/linkedin-post.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 3
+    },
+    "marketing/warmup-content-pack/tiktok-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/warmup-content-pack/week2-runbook.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 49,
+      "style": 0,
+      "token": 3
+    },
+    "marketing/warmup-content-pack/x-single.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 7,
+      "style": 0,
+      "token": 1
+    },
+    "marketing/warmup-content-pack/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 1
+    },
+    "marketing/warmup-content-pack/youtube-short.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 2
+    },
+    "marketing/warmup-log.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 1
+    },
+    "opencode-db-blob-design.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 1,
+      "style": 0,
+      "token": 0
+    },
+    "opencode-db-cache-metrics.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "opencode-db-p0-runbook.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 1,
+      "style": 0,
+      "token": 0
+    },
+    "organization/app-naming-and-port-assignments.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 0
+    },
+    "organization/cto-ratification-marketing-site-dashboard-boundary.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 71,
+      "style": 0,
+      "token": 1
+    },
+    "organization/reference-architecture-marketing-site-dashboard-boundary.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 51,
+      "style": 0,
+      "token": 0
+    },
+    "pharos-content-intelligence-walkthrough.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 44,
+      "style": 0,
+      "token": 0
+    },
+    "pharos-team-blueprint.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 76,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/README.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 23,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/REVIEW-INVENTORY-2026-11-10.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 74,
+      "style": 0,
+      "token": 1
+    },
+    "pharos/ai-native-orgs-linkedin-series-plan.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 109,
+      "style": 0,
+      "token": 1
+    },
+    "pharos/articles/h-a-o-m-t-g-v-seven-layers.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 71,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/case-study-pipeline.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 19,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/content-calendar.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/distribution-package-2026-10-12.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 85,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/h-a-o-m-t-g-v-framework.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 81,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-intro-post.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 35,
+      "style": 0,
+      "token": 2
+    },
+    "pharos/linkedin-series/CEO-review-batch-1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 1
+    },
+    "pharos/linkedin-series/post-01/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-01/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 45,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-01/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-01/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 23,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-01/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-01/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 7,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-01/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-01/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-02/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-02/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 41,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-02/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-02/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-02/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-02/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 7,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-02/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-02/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-03/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-03/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 45,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-03/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 13,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-03/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 16,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-03/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-03/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 8,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-03/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-03/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 37,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 31,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 18,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/visuals/carousel-1-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/visuals/carousel-2-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/visuals/carousel-3-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/visuals/carousel-4-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/visuals/carousel-5-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/visuals/hero-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-04/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 26,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 14,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/visuals/carousel-1-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/visuals/carousel-2-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/visuals/carousel-3-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 7,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/visuals/carousel-4-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/visuals/carousel-5-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/visuals/hero-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-05/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 27,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 16,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 39,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/visuals/carousel-1-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 8,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/visuals/carousel-2-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/visuals/carousel-3-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/visuals/carousel-4-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/visuals/carousel-5-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/visuals/hero-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-06/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 39,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 16,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/visuals/carousel-1-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/visuals/carousel-2-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/visuals/carousel-3-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/visuals/carousel-4-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/visuals/carousel-5-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/visuals/hero-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-07/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 8,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 34,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 22,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 34,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/visuals/carousel-1-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/visuals/carousel-2-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/visuals/carousel-3-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 1
+    },
+    "pharos/linkedin-series/post-08/visuals/carousel-4-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/visuals/carousel-5-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/visuals/hero-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-08/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 7,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 37,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 7,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 27,
+      "style": 0,
+      "token": 1
+    },
+    "pharos/linkedin-series/post-09/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 30,
+      "style": 0,
+      "token": 1
+    },
+    "pharos/linkedin-series/post-09/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/visuals/carousel-1-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/visuals/carousel-2-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/visuals/carousel-3-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/visuals/carousel-4-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/visuals/carousel-5-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/visuals/hero-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-09/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 8,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 45,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 8,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 28,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 27,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/visuals/carousel-1-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 7,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/visuals/carousel-2-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/visuals/carousel-3-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/visuals/carousel-4-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/visuals/carousel-5-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/visuals/hero-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-10/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 8,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/carousel-copy.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/draft-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/feed-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/qa-report.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 31,
+      "style": 0,
+      "token": 1
+    },
+    "pharos/linkedin-series/post-11/research-evidence.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 27,
+      "style": 0,
+      "token": 1
+    },
+    "pharos/linkedin-series/post-11/substack-section.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/video-script.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/visuals/carousel-1-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/visuals/carousel-2-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/visuals/carousel-3-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/visuals/carousel-4-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/visuals/carousel-5-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/visuals/hero-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/linkedin-series/post-11/x-thread.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 8,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/manifesto-draft.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 51,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/pillars/01-built-a-90-agent-company.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 62,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/pillars/02-5-tier-human-in-the-loop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 62,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/pillars/03-agentic-ai-resource-constrained-africa.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 49,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/policy-drafts/national-ai-strategy-comments.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/policy-drafts/sadc-agentic-ai-governance-framework.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 33,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/positioning.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 31,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/publishing-plan-2026-10-12.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 85,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/qa/2026-10-12-artifact-qa.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 82,
+      "style": 0,
+      "token": 1
+    },
+    "pharos/research-briefs/2026-10-12-africa-open-source-ecosystem.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 63,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/research-briefs/2026-10-12-ai-economics-sadc.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 42,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/research-briefs/2026-10-12-open-source-costs.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 40,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/roadmap.html": {
+      "accent": 0,
+      "callout": 0,
+      "line": 18,
+      "style": 1,
+      "token": 96
+    },
+    "pharos/roadmap.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 28,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/stakeholder-map.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 21,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/whitepaper/h-a-o-m-t-g-v-chapter.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 53,
+      "style": 0,
+      "token": 0
+    },
+    "pharos/whitepaper/resource-constrained-deployment-playbook.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 109,
+      "style": 0,
+      "token": 0
+    },
+    "raci-deployment.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "raci-escalation.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 6,
+      "style": 0,
+      "token": 0
+    },
+    "raci-hiring.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "redesign/05-plan.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 70,
+      "style": 0,
+      "token": 0
+    },
+    "redesign/progress.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 1,
+      "style": 0,
+      "token": 0
+    },
+    "redesign/redesign-prompt-playbook.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 332,
+      "style": 1,
+      "token": 15
+    },
+    "research/ai-gen-image-feasibility.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 51,
+      "style": 0,
+      "token": 2
+    },
+    "research/control-plane-inventory.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 158,
+      "style": 0,
+      "token": 3
+    },
+    "research/dashboard-frontend-wiring.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 0
+    },
+    "research/hardening-primitives-reuse.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 48,
+      "style": 0,
+      "token": 2
+    },
+    "research/immersive-3d-website-research.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 102,
+      "style": 0,
+      "token": 4
+    },
+    "research/onboarding-sop-mapping.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 14,
+      "style": 0,
+      "token": 0
+    },
+    "research/org-health-telemetry-sources.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 9,
+      "style": 0,
+      "token": 0
+    },
+    "research/tool-sandbox-design.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 24,
+      "style": 0,
+      "token": 0
+    },
+    "runbooks/evidence-stores-dr.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 38,
+      "style": 0,
+      "token": 0
+    },
+    "sectors-media-plan.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 44,
+      "style": 1,
+      "token": 0
+    },
+    "security-checklist.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "security/CREDENTIAL-ROTATION-RUNBOOK.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "security/EGRESS-AND-VENDOR-POLICY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "security/READ-DENY-POLICY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "service-catalog-malawi.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 72,
+      "style": 0,
+      "token": 0
+    },
+    "solutions-media-plan.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 48,
+      "style": 0,
+      "token": 0
+    },
+    "sop-budget-approval.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 3,
+      "style": 0,
+      "token": 0
+    },
+    "sop-content-repurposing.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 18,
+      "style": 0,
+      "token": 0
+    },
+    "sop-cost-management.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "sop-deployment-v2.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "sop-deployment.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 4,
+      "style": 0,
+      "token": 0
+    },
+    "sop-hr-onboarding.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "sop-incident-response-v2.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "sop-incident-response.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "sop-onboarding.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 53,
+      "style": 0,
+      "token": 0
+    },
+    "sop/customer-success-sop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 37,
+      "style": 0,
+      "token": 0
+    },
+    "sop/engineering-sop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "sop/finance-sop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 37,
+      "style": 0,
+      "token": 0
+    },
+    "sop/hr-sop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 22,
+      "style": 0,
+      "token": 0
+    },
+    "sop/legal-sop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 29,
+      "style": 0,
+      "token": 0
+    },
+    "sop/marketing-sop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 36,
+      "style": 0,
+      "token": 0
+    },
+    "sop/operations-sop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 30,
+      "style": 0,
+      "token": 0
+    },
+    "sop/sales-sop.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 29,
+      "style": 0,
+      "token": 0
+    },
+    "sop/service-delivery-offer-a.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 19,
+      "style": 0,
+      "token": 0
+    },
+    "sop/service-delivery-offer-b.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 23,
+      "style": 0,
+      "token": 0
+    },
+    "sop/service-delivery-offer-c.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 36,
+      "style": 0,
+      "token": 0
+    },
+    "sop/service-delivery-offer-d.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 10,
+      "style": 0,
+      "token": 0
+    },
+    "sop/service-delivery-offer-e.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 18,
+      "style": 0,
+      "token": 0
+    },
+    "standards/LUXURY-EDITORIAL-STANDARD.md": {
+      "accent": 0,
+      "callout": 1,
+      "line": 59,
+      "style": 1,
+      "token": 43
+    },
+    "superpowers/specs/2026-11-08-unified-usage-tracker-design.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 0
+    },
+    "templates/invoice.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "templates/quotation.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "tool-usage-issues.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 13,
+      "style": 0,
+      "token": 1
+    },
+    "ux/ACCESSIBILITY.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 8
+    },
+    "ux/CLI-DESIGN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 12,
+      "style": 0,
+      "token": 8
+    },
+    "ux/DASHBOARD-DESIGN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 2,
+      "style": 0,
+      "token": 0
+    },
+    "ux/DEVELOPER-EXPERIENCE.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 0,
+      "token": 0
+    },
+    "ux/NOTIFICATION-DESIGN.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 11,
+      "style": 0,
+      "token": 0
+    },
+    "ux/README.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 5,
+      "style": 1,
+      "token": 5
+    },
+    "venture-studio/02-sector-positioning.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 32,
+      "style": 0,
+      "token": 0
+    },
+    "venture-studio/03-operating-model.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 36,
+      "style": 0,
+      "token": 0
+    },
+    "venture-studio/04-technical-architecture.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 46,
+      "style": 0,
+      "token": 0
+    },
+    "venture-studio/05-kpi-scorecard.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 25,
+      "style": 0,
+      "token": 0
+    },
+    "venture-studio/06-team-structure.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 28,
+      "style": 0,
+      "token": 0
+    },
+    "venture-studio/07-website-story.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 35,
+      "style": 0,
+      "token": 0
+    },
+    "venture-studio/08-sitemap.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "venture-studio/09-diagram.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 27,
+      "style": 0,
+      "token": 2
+    },
+    "venture-studio/10-rationale-defense.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 106,
+      "style": 0,
+      "token": 1
+    },
+    "venture-studio/11-pilot-outreach-pack.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 27,
+      "style": 0,
+      "token": 1
+    },
+    "venture-studio/12-T3-call-scripts.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 45,
+      "style": 0,
+      "token": 1
+    },
+    "venture-studio/README.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 15,
+      "style": 0,
+      "token": 0
+    },
+    "venture-studio/effects-description.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 66,
+      "style": 0,
+      "token": 0
+    },
+    "venture-studio/scoreboard-v1.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 17,
+      "style": 0,
+      "token": 5
+    },
+    "wayfinder/45-health-anomaly-monitor.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 77,
+      "style": 0,
+      "token": 0
+    },
+    "wayfinder/46-revenue-attribution-model.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 46,
+      "style": 0,
+      "token": 0
+    },
+    "wayfinder/48-searchable-execution-timeline.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 58,
+      "style": 0,
+      "token": 0
+    },
+    "wayfinder/50-command-bar-and-voice-scope.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 69,
+      "style": 0,
+      "token": 0
+    },
+    "wayfinder/map2-scraper-discovery-gap-analysis.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 80,
+      "style": 0,
+      "token": 3
+    },
+    "website-imagery-spec.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 106,
+      "style": 1,
+      "token": 1
+    },
+    "website-refinement/WEBSITE_DESIGN_SKILLS_ASSESSMENT.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 148,
+      "style": 0,
+      "token": 0
+    },
+    "website-refinement/homepage-audits/01-visual-quality.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 20,
+      "style": 0,
+      "token": 1
+    },
+    "website-refinement/homepage-audits/02-frontend-design.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 64,
+      "style": 1,
+      "token": 0
+    },
+    "website-refinement/homepage-audits/03-motion-review.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 61,
+      "style": 0,
+      "token": 0
+    },
+    "website/HANDOVER-REPORT-2026-10-13.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 73,
+      "style": 0,
+      "token": 6
+    },
+    "website/SPEC.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 61,
+      "style": 0,
+      "token": 0
+    },
+    "website/audit-2026-10-13-post-implementation.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 74,
+      "style": 0,
+      "token": 3
+    },
+    "wlo-domain-agent-mapping.md": {
+      "accent": 0,
+      "callout": 0,
+      "line": 26,
+      "style": 0,
+      "token": 0
+    }
+  },
+  "description": "Luxury linter debt baseline. Counts are per file and per check. A count above its recorded baseline fails CI; lower the number as debt is paid down."
+}

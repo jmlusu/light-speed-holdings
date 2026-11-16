@@ -42,7 +42,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     architectureConnection: 'Connects Human Authority (H) directly to Orchestration (O) and Value (V) measurement.',
     diagramTitle: 'Venture Creation Pipeline',
     diagramSteps: ['Opportunity Definition', 'Operating Model Synthesis', 'Agent Workforce Deployment', 'Sovereign Launch'],
-    relatedResearch: [{ title: 'Inside a 91-Agent Company', slug: 'inside-a-90-agent-company' }]
+    relatedResearch: [{ title: 'Inside a 90-Agent Company', slug: 'inside-a-90-agent-company' }]
   },
   {
     id: 'cap-2',
@@ -83,7 +83,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     architectureConnection: 'Form the core Orchestration (O) engine coordinating Agents (A) and Memory (M).',
     diagramTitle: 'Agent Network Routing',
     diagramSteps: ['Goal Parsing', 'Task Decomposition', 'Parallel Agent Execution', 'Result Synthesis'],
-    relatedResearch: [{ title: 'Inside a 91-Agent Company', slug: 'inside-a-90-agent-company' }]
+    relatedResearch: [{ title: 'Inside a 90-Agent Company', slug: 'inside-a-90-agent-company' }]
   },
   {
     id: 'cap-4',

@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-16T00:00:00Z",
+  "title": "Design System: LightSpeed Holdings",
+  "extensions": {
+    "colorMeta": {
+      "navy": {
+        "role": "primary",
+        "displayName": "Navy",
+        "canonical": "#070A40",
+        "tonalRamp": [
+          "oklch(15% 0.10 250)",
+          "oklch(25% 0.10 250)",
+          "oklch(35% 0.10 250)",
+          "oklch(45% 0.10 250)",
+          "oklch(55% 0.10 250)",
+          "oklch(65% 0.10 250)",
+          "oklch(75% 0.10 250)",
+          "oklch(95% 0.10 250)"
+        ]
+      },
+      "red": {
+        "role": "accent",
+        "displayName": "Red",
+        "canonical": "#E63946",
+        "tonalRamp": [
+          "oklch(20% 0.20 20)",
+          "oklch(30% 0.20 20)",
+          "oklch(40% 0.20 20)",
+          "oklch(50% 0.20 20)",
+          "oklch(60% 0.20 20)",
+          "oklch(70% 0.20 20)",
+          "oklch(80% 0.20 20)",
+          "oklch(90% 0.20 20)"
+        ]
+      },
+      "cyan": {
+        "role": "trust",
+        "displayName": "Cyan",
+        "canonical": "#00BFFF",
+        "tonalRamp": [
+          "oklch(30% 0.25 190)",
+          "oklch(40% 0.25 190)",
+          "oklch(50% 0.25 190)",
+          "oklch(60% 0.25 190)",
+          "oklch(70% 0.25 190)",
+          "oklch(80% 0.25 190)",
+          "oklch(90% 0.25 190)",
+          "oklch(96% 0.005 230)"
+        ]
+      },
+      "morningMist": {
+        "role": "neutral-bg",
+        "displayName": "Morning Mist",
+        "canonical": "#F7F8F9",
+        "tonalRamp": [
+          "oklch(90% 0.02 90)",
+          "oklch(85% 0.02 90)",
+          "oklch(80% 0.02 90)",
+          "oklch(75% 0.02 90)",
+          "oklch(70% 0.02 90)",
+          "oklch(65% 0.02 90)",
+          "oklch(60% 0.02 90)",
+          "oklch(50% 0.02 90)"
+        ]
+      },
+      "deepMineral": {
+        "role": "neutral-bg-dark",
+        "displayName": "Deep Mineral",
+        "canonical": "#121518",
+        "tonalRamp": [
+          "oklch(20% 0.08 340)",
+          "oklch(25% 0.08 340)",
+          "oklch(30% 0.08 340)",
+          "oklch(35% 0.08 340)",
+          "oklch(40% 0.08 340)",
+          "oklch(45% 0.08 340)",
+          "oklch(50% 0.08 340)",
+          "oklch(55% 0.08 340)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headlines only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient-low",
+        "value": "0 1px 2px rgba(0, 0, 0, 0.05)",
+        "purpose": "Diffuse hover glow under accent elements."
+      },
+      {
+        "name": "md",
+        "value": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        "purpose": "Default elevation for cards and surfaces."
+      },
+      {
+        "name": "glowCyan",
+        "value": "0 0 20px rgba(0, 191, 255, 0.3)",
+        "purpose": "Cyan glow on primary actions."
+      },
+      {
+        "name": "glowRed",
+        "value": "0 0 20px rgba(230, 57, 70, 0.3)",
+        "purpose": "Red glow on error or primary CTAs."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Default easing for state transitions."
+      },
+      {
+        "name": "reveal",
+        "value": "600ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Reveal animations for page entries."
+      },
+      {
+        "name": "fade",
+        "value": "300ms ease-out",
+        "purpose": "Fade transitions for modals and overlays."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "1024px"
+      },
+      {
+        "name": "lg",
+        "value": "1280px"
+      },
+      {
+        "name": "xl",
+        "value": "1536px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The main call-to-action button, used sparingly per the One Voice Rule.",
+      "html": "<button class=\"ds-btn-primary\">ENGAGE LIGHTSPEED</button>",
+      "css": ".ds-btn-primary { background: #E63946; color: #fff; padding: 16px 48px; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; border: none; border-radius: 4px; transition: background 0.2s, transform 0.2s; } .ds-btn-primary:hover { background: rgba(230, 57, 70, 0.9); transform: translateY(-2px); } .ds-btn-primary:focus-visible { outline: 3px solid #00BFFF; outline-offset: 2px; background: #E63946; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ghost-style secondary action.",
+      "html": "<button class=\"ds-btn-secondary\">EXPLORE PHAROS</button>",
+      "css": ".ds-btn-secondary { border: 1px solid #070A40; color: #070A40; padding: 16px 48px; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; background: transparent; border-radius: 4px; transition: background 0.2s; } .ds-btn-secondary:hover { background: rgba(7, 10, 64, 0.05); } .ds-btn-secondary:focus-visible { outline: 3px solid #00BFFF; outline-offset: 2px; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Contextual link within page navigation.",
+      "html": "<a class=\"ds-nav-link\" href=\"/\">Learn more</a>",
+      "css": ".ds-nav-link { color: #00BFFF; text-decoration: none; transition: color 0.2s; } .ds-nav-link:hover { color: #E63946; }"
+    },
+    {
+      "name": "Honesty Badge - Proven",
+      "kind": "custom",
+      "description": "Badge indicating a capability rated as proven.",
+      "html": "<span class=\"ds-badge-proven\">Proven</span>",
+      "css": ".ds-badge-proven { border: rgba(0, 191, 255, 0.4); background: rgba(0, 191, 255, 0.1); color: #00BFFF; padding: 4px 8px; border-radius: 4px; font-size: 12pt; font-weight: 700; }"
+    },
+    {
+      "name": "Honesty Badge - Pilot",
+      "kind": "custom",
+      "description": "Badge indicating a capability rated as pilot.",
+      "html": "<span class=\"ds-badge-pilot\">Pilot</span>",
+      "css": ".ds-badge-pilot { border: rgba(230, 57, 70, 0.4); background: rgba(230, 57, 70, 0.1); color: #E63946; padding: 4px 8px; border-radius: 4px; font-size: 12pt; font-weight: 700; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Editorial Sanctuary",
+    "overview": "LightSpeed Holdings is the AI-native company builder for Southern Africa. The visual system reflects institutional credibility with a disciplined, geometry-first aesthetic: navy as the anchoring authority, cyan as the trust signal, and red as the accent that demands attention. The design language treats the web as a set of editorial pages — structured, scannable, and grounded in hierarchy. Every element either serves the content or recedes.",
+    "keyCharacteristics": [
+      "Governance-visible: the approval matrix, lifecycle, and honesty badges are not decoration — they are the product",
+      "Typographic rhythm: Arial as the single system font, with a clear display-to-body scale",
+      "Navy-first colour strategy: the primary accent is rare by design, making its appearance meaningful",
+      "Mobile-first spacing: the 4px grid resolves to compact mobile units before expanding to desktop rhythm",
+      "Transparency in evidence: the four-level honesty badge system is surface-visible, not hidden"
+    ],
+    "rules": [
+      {
+        "name": "The One Voice Rule",
+        "body": "The primary accent (navy `#070A40`) is used on ≤10% of any given screen. Its rarity is the point.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cyan-Is-Trust Rule",
+        "body": "Cyan `#00BFFF` is the sole trust signal. It replaces green in all status, success, and error contexts.",
+        "section": "colors"
+      },
+      {
+        "name": "The Arial-Only Rule",
+        "body": "No custom web fonts are loaded. Arial is the single typeface family across all surfaces and modes.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Use navy `#070A40` as the primary accent, keeping it ≤10% of any screen surface",
+      "Use cyan `#00BFFF` as the trust signal — on focus rings, link colours, and success states",
+      "Use red `#E63946` as the CTA accent; use it sparingly",
+      "Honesty badge colours exactly as specified — do not substitute or remix",
+      "Arial as the single typeface family across all themes and surfaces",
+      "4px corner radius on buttons, inputs, cards, and containers",
+      "16px base unit / 4px scale for all spacing",
+      "Vertical section rhythm of 64px on desktop, 48px on mobile",
+      "The cyan focus-visible ring (3px, 2px offset) on every focusable element",
+      "Honour prefers-reduced-motion by collapsing all animation/transition durations to 0.01ms"
+    ],
+    "donts": [
+      "Use green for status or success — cyan is the trust signal, not green",
+      "Invent additional colour roles beyond primary/accent/trust/neutral",
+      "Apply custom web fonts; Arial only",
+      "Use border-radius: 0 on interactive components (buttons, inputs, cards)",
+      "Add decorative drop shadows beyond the specified elevation tokens",
+      "Layer more than one primary accent colour on a single surface",
+      "Skip the skip link or focus-visible ring on the marketing site"
+    ]
+  }
+}

@@ -183,7 +183,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
                             PILLAR {selected.letter}
                           </span>
                           <h4 className={`text-sm font-bold font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-                            {selected.name} — {selected.role}
+                            {selected.name} - {selected.role}
                           </h4>
                         </div>
                         <p className={`text-xs mt-1.5 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>

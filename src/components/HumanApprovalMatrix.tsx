@@ -123,7 +123,7 @@ export const HumanApprovalMatrix: React.FC<HumanApprovalMatrixProps> = ({ theme 
                         {tier.name}
                       </h4>
                       <p className={`text-xs font-mono ${isSelected ? (isLight ? 'text-white/80' : 'text-slate-300') : (isLight ? 'text-slate-500' : 'text-slate-400')}`}>
-                        {tier.code} — {tier.authority}
+                        {tier.code} - {tier.authority}
                       </p>
                     </div>
                   </div>

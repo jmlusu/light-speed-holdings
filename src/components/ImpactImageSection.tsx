@@ -61,7 +61,7 @@ export const ImpactImageSection: React.FC<ImpactImageSectionProps> = ({
             </p>
             {author && (
               <p className="text-xs text-[#00BFFF] mt-3 font-bold uppercase tracking-widest">
-                — {author}
+                - {author}
               </p>
             )}
           </div>

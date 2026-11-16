@@ -43,7 +43,6 @@ jobs:
         # Repo is public: client proposals/commercial terms must never be
         # tracked. Incident 2026-11-10 (proposal-deliverables/ on main).
         run: uv run python scripts/test/check-confidential-artifacts.py
-
   typecheck:
     name: Type check (mypy)
     runs-on: ubuntu-latest
@@ -213,12 +212,11 @@ jobs:
           fi
           echo "Generated agents are in sync with the registry."
       - name: Run luxury linter
-        # Scoped to the documents the Luxury Editorial Standard governs: the
-        # standard itself, the theme layer and the compliance tooling. The
-        # standard (§3.3) explicitly exempts the wider procedural corpus from
-        # the editorial line-length budget, so linting all of docs/ would flag
-        # hundreds of historical SOPs and audit records it never governed.
-        run: uv run python docs/compliance/luxury-linter.py docs/standards docs/theme docs/compliance
+        # The corpus carries recorded debt, so the linter runs as a ratchet:
+        # counts equal to the baseline pass, anything above it fails the gate.
+        run: >
+          uv run python docs/compliance/luxury-linter.py docs
+          --baseline docs/compliance/luxury-linter-baseline.json
 
   # Human-in-the-loop gate: company-registry.yaml must exactly match the
   # CEO-approved roster pinned in company/agent-baseline.json (AGENTS.md 9.4).

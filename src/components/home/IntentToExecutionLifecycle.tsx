@@ -57,7 +57,7 @@ export const IntentToExecutionLifecycle: React.FC<IntentToExecutionLifecycleProp
         <SectionHeading
           theme={theme}
           eyebrow="OPERATIONAL LIFECYCLE"
-          title="From Human Intent to Executable Value"
+          title="Human Intent to Executable Value"
           lead="The 10-stage lifecycle governing every operation at LightSpeed Holdings. Human direction initiates the sequence, governance guards every transition, and persistent memory learns from every outcome."
         />
 
