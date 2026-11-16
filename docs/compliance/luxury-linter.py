@@ -41,7 +41,30 @@ IGNORE_DIRS = {
     "open-design",
 }
 MAX_LINE_LENGTH = 75
+MAX_PROCEDURAL_LINE_LENGTH = 100  # standard §3.3 relaxed threshold
 MAX_ACCENT_PLACES = 3  # --ls-red appear in no more than 3 places
+
+# Directories whose prose is editorial/narrative/client-facing. Everything
+# else is treated as procedural documentation (SOPs, API references, ADRs,
+# audit records), where the standard allows a relaxed line-length threshold
+# and flags over-long lines as informational notes rather than errors.
+EDITORIAL_DIRS = {
+    "case-studies",
+    "client-facing",
+    "content-architecture",
+    "design",
+    "marketing",
+    "pharos",
+    "standards",
+    "website",
+    "website-refinement",
+}
+
+# Specification documents define the standard and therefore contain the
+# palette values and counter-examples the linter would otherwise flag.
+EXEMPT_FILES = {
+    "LUXURY-EDITORIAL-STANDARD.md",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -62,19 +85,12 @@ def hex_in_document(doc: str, hex_val: str) -> bool:
     """Return True if *hex_val* appears as a raw hex code in *doc*."""
     # Match bare hex like #DC3641 or #DC3641; avoid matching CSS custom properties
     # that are already captured by the linter's token-check.
-    return bool(re.search(r"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b", doc))
+    return bool(re.search(r"#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6})(?![0-9a-fA-F])", doc))
 
 
 # ---------------------------------------------------------------------------
 # HTMLParser to count occurrences of a CSS custom property usage
 # ---------------------------------------------------------------------------
-def count_accent_places(doc: str) -> int:
-    """Return how many distinct places --ls-red appears in the HTML."""
-    counter = AccentCounter()
-    counter.feed(doc)
-    return counter.count
-
-
 class AccentCounter(HTMLParser):
     """Count occurrences of var(--ls-red) in an HTML document."""
 
@@ -126,8 +142,10 @@ def check_token_compliance(doc_path: Path) -> list[str]:
         "#9CA3AF",  # --ls-grey-light-text
     }
 
-    # Find all raw hex codes in the document (outside code blocks)
-    raw_hexes = set(re.findall(r"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b", clean_text))
+    # Find all raw 6/8-digit hex codes in the document (outside code blocks).
+    # Three-digit shorthand is skipped on purpose: issue references such as
+    # "PR #409" are valid hex syntax but are not colours.
+    raw_hexes = set(re.findall(r"#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6})(?![0-9a-fA-F])", clean_text))
 
     for hex_code in raw_hexes:
         if hex_code not in allowed_hex:
@@ -162,8 +180,8 @@ def check_accent_count(doc_path: Path) -> list[str]:
     return issues
 
 
-def check_line_length(doc_path: Path) -> list[str]:
-    """Return issues if any prose line exceeds MAX_LINE_LENGTH chars."""
+def check_line_length(doc_path: Path, limit: int = MAX_LINE_LENGTH) -> list[str]:
+    """Return issues if any prose line exceeds *limit* characters."""
     issues = []
     text = read_text_safe(doc_path)
 
@@ -177,10 +195,11 @@ def check_line_length(doc_path: Path) -> list[str]:
         stripped = line.strip()
         if not stripped or stripped.startswith(("#", "```", "<")):
             continue
-        if len(stripped) > MAX_LINE_LENGTH:
-            issues.append(
-                f"Line {i} exceeds {MAX_LINE_LENGTH} characters: {stripped[: MAX_LINE_LENGTH + 20]}..."
-            )
+        # Markdown table rows are structural, not prose.
+        if stripped.startswith("|"):
+            continue
+        if len(stripped) > limit:
+            issues.append(f"Line {i} exceeds {limit} characters: {stripped[: limit + 20]}...")
     return issues
 
 
@@ -234,7 +253,9 @@ def check_no_shadows_borders(doc_path: Path) -> list[str]:
 def iter_doc_files(root: Path) -> list[Path]:
     """Walk *root* yielding .md, .html, .mdx files, skipping IGNORE_DIRS."""
     files: list[Path] = []
-    for dirpath, _dirnames, filenames in os.walk(root):
+    for dirpath, dirnames, filenames in os.walk(root):
+        # Skip hidden directories (tooling, audit dumps, archival trees).
+        dirnames[:] = [d for d in dirnames if not d.startswith(".")]
         # Skip ignored directories
         dirpath_str = Path(dirpath)
         if any(ign in dirpath_str.parts for ign in IGNORE_DIRS):
@@ -302,7 +323,7 @@ def main(argv: list[str] | None = None) -> int:
     root, baseline_path, write_baseline = parse_args(argv)
     files = iter_doc_files(root)
     if not files:
-        print("No documentation files found under", root)
+        print("No documentation files found under", ", ".join(str(r) for r in roots))
         return 0
 
     allowed: dict[str, dict[str, int]] = {}
@@ -364,4 +385,5 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    targets = [Path(arg) for arg in sys.argv[1:]] or [Path(".")]
+    sys.exit(main(targets))
