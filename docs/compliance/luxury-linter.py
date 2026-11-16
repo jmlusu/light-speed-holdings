@@ -21,6 +21,7 @@ Checks:
 # ---------------------------------------------------------------------------
 # Boilerplate
 # ---------------------------------------------------------------------------
+import json
 import os
 import re
 import sys
@@ -40,30 +41,7 @@ IGNORE_DIRS = {
     "open-design",
 }
 MAX_LINE_LENGTH = 75
-MAX_PROCEDURAL_LINE_LENGTH = 100  # standard §3.3 relaxed threshold
 MAX_ACCENT_PLACES = 3  # --ls-red appear in no more than 3 places
-
-# Directories whose prose is editorial/narrative/client-facing. Everything
-# else is treated as procedural documentation (SOPs, API references, ADRs,
-# audit records), where the standard allows a relaxed line-length threshold
-# and flags over-long lines as informational notes rather than errors.
-EDITORIAL_DIRS = {
-    "case-studies",
-    "client-facing",
-    "content-architecture",
-    "design",
-    "marketing",
-    "pharos",
-    "standards",
-    "website",
-    "website-refinement",
-}
-
-# Specification documents define the standard and therefore contain the
-# palette values and counter-examples the linter would otherwise flag.
-EXEMPT_FILES = {
-    "LUXURY-EDITORIAL-STANDARD.md",
-}
 
 
 # ---------------------------------------------------------------------------
@@ -84,12 +62,19 @@ def hex_in_document(doc: str, hex_val: str) -> bool:
     """Return True if *hex_val* appears as a raw hex code in *doc*."""
     # Match bare hex like #DC3641 or #DC3641; avoid matching CSS custom properties
     # that are already captured by the linter's token-check.
-    return bool(re.search(r"#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6})(?![0-9a-fA-F])", doc))
+    return bool(re.search(r"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b", doc))
 
 
 # ---------------------------------------------------------------------------
 # HTMLParser to count occurrences of a CSS custom property usage
 # ---------------------------------------------------------------------------
+def count_accent_places(doc: str) -> int:
+    """Return how many distinct places --ls-red appears in the HTML."""
+    counter = AccentCounter()
+    counter.feed(doc)
+    return counter.count
+
+
 class AccentCounter(HTMLParser):
     """Count occurrences of var(--ls-red) in an HTML document."""
 
@@ -102,13 +87,6 @@ class AccentCounter(HTMLParser):
         for name, value in attrs:
             if name == "style" and isinstance(value, str) and re.search(r"var\(--ls-red\)", value):
                 self.count += 1
-
-
-def count_accent_places(doc: str) -> int:
-    """Return how many distinct places --ls-red appears in the HTML."""
-    counter = AccentCounter()
-    counter.feed(doc)
-    return counter.count
 
 
 # ---------------------------------------------------------------------------
@@ -148,10 +126,8 @@ def check_token_compliance(doc_path: Path) -> list[str]:
         "#9CA3AF",  # --ls-grey-light-text
     }
 
-    # Find all raw 6/8-digit hex codes in the document (outside code blocks).
-    # Three-digit shorthand is skipped on purpose: issue references such as
-    # "PR #409" are valid hex syntax but are not colours.
-    raw_hexes = set(re.findall(r"#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6})(?![0-9a-fA-F])", clean_text))
+    # Find all raw hex codes in the document (outside code blocks)
+    raw_hexes = set(re.findall(r"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b", clean_text))
 
     for hex_code in raw_hexes:
         if hex_code not in allowed_hex:
@@ -186,8 +162,8 @@ def check_accent_count(doc_path: Path) -> list[str]:
     return issues
 
 
-def check_line_length(doc_path: Path, limit: int = MAX_LINE_LENGTH) -> list[str]:
-    """Return issues if any prose line exceeds *limit* characters."""
+def check_line_length(doc_path: Path) -> list[str]:
+    """Return issues if any prose line exceeds MAX_LINE_LENGTH chars."""
     issues = []
     text = read_text_safe(doc_path)
 
@@ -201,11 +177,10 @@ def check_line_length(doc_path: Path, limit: int = MAX_LINE_LENGTH) -> list[str]
         stripped = line.strip()
         if not stripped or stripped.startswith(("#", "```", "<")):
             continue
-        # Markdown table rows are structural, not prose.
-        if stripped.startswith("|"):
-            continue
-        if len(stripped) > limit:
-            issues.append(f"Line {i} exceeds {limit} characters: {stripped[: limit + 20]}...")
+        if len(stripped) > MAX_LINE_LENGTH:
+            issues.append(
+                f"Line {i} exceeds {MAX_LINE_LENGTH} characters: {stripped[: MAX_LINE_LENGTH + 20]}..."
+            )
     return issues
 
 
@@ -259,9 +234,7 @@ def check_no_shadows_borders(doc_path: Path) -> list[str]:
 def iter_doc_files(root: Path) -> list[Path]:
     """Walk *root* yielding .md, .html, .mdx files, skipping IGNORE_DIRS."""
     files: list[Path] = []
-    for dirpath, dirnames, filenames in os.walk(root):
-        # Skip hidden directories (tooling, audit dumps, archival trees).
-        dirnames[:] = [d for d in dirnames if not d.startswith(".")]
+    for dirpath, _dirnames, filenames in os.walk(root):
         # Skip ignored directories
         dirpath_str = Path(dirpath)
         if any(ign in dirpath_str.parts for ign in IGNORE_DIRS):
@@ -275,69 +248,120 @@ def iter_doc_files(root: Path) -> list[Path]:
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def main(roots: list[Path] | None = None) -> int:
-    """Run the linter on all documentation files under *roots*."""
+CHECK_ORDER = ("token", "accent", "line", "callout", "style")
 
-    roots = roots or [Path(".")]
-    files: list[Path] = []
-    for root in roots:
-        files.extend((fp, root) for fp in iter_doc_files(root))
+
+def collect_issues(doc_path: Path) -> dict[str, list[str]]:
+    """Run every check against *doc_path*, keyed by check name."""
+    return {
+        "token": check_token_compliance(doc_path),
+        "accent": check_accent_count(doc_path),
+        "line": check_line_length(doc_path),
+        "callout": check_callout_format(doc_path),
+        "style": check_no_shadows_borders(doc_path),
+    }
+
+
+def parse_args(argv: list[str]) -> tuple[Path, Path | None, bool]:
+    """Return (root, baseline_path, write_baseline) from CLI arguments."""
+    root = Path(".")
+    baseline_path: Path | None = None
+    write_baseline = False
+    positionals: list[str] = []
+
+    i = 0
+    while i < len(argv):
+        arg = argv[i]
+        if arg == "--baseline":
+            i += 1
+            if i >= len(argv):
+                raise SystemExit("--baseline requires a path")
+            baseline_path = Path(argv[i])
+        elif arg.startswith("--baseline="):
+            baseline_path = Path(arg.split("=", 1)[1])
+        elif arg == "--write-baseline":
+            write_baseline = True
+        elif arg in ("-h", "--help"):
+            print(__doc__)
+            print("Usage: luxury-linter.py [ROOT] [--baseline PATH] [--write-baseline]")
+            raise SystemExit(0)
+        else:
+            positionals.append(arg)
+        i += 1
+
+    if positionals:
+        root = Path(positionals[0])
+    return root, baseline_path, write_baseline
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Run the linter on all documentation files under the requested root."""
+    if argv is None:
+        argv = sys.argv[1:]
+
+    root, baseline_path, write_baseline = parse_args(argv)
+    files = iter_doc_files(root)
     if not files:
-        print("No documentation files found under", ", ".join(str(r) for r in roots))
+        print("No documentation files found under", root)
         return 0
 
-    overall_status = 0
-    for fp, root in files:
-        rel = fp.relative_to(root)
-        print(f"> {fp.as_posix()}")
-        issues: list[str] = []
-        notes: list[str] = []
+    allowed: dict[str, dict[str, int]] = {}
+    if baseline_path is not None and baseline_path.exists() and not write_baseline:
+        baseline_data = json.loads(read_text_safe(baseline_path))
+        allowed = baseline_data.get("counts", {})
 
-        if fp.name in EXEMPT_FILES:
-            print("   exempt (specification document)")
+    counts: dict[str, dict[str, int]] = {}
+    overall_status = 0
+    new_violations = 0
+
+    for fp in files:
+        rel = fp.relative_to(root).as_posix()
+        issues = collect_issues(fp)
+        file_counts = {name: len(items) for name, items in issues.items()}
+        if any(file_counts.values()):
+            counts[rel] = file_counts
+
+        if write_baseline:
             continue
 
-        # Editorial docs hold the full 75-character line budget; procedural
-        # docs get the relaxed threshold and report over-long lines as notes.
-        is_editorial = bool(EDITORIAL_DIRS.intersection(rel.parts[:-1]))
-        line_limit = MAX_LINE_LENGTH if is_editorial else MAX_PROCEDURAL_LINE_LENGTH
-        line_issues = check_line_length(fp, line_limit)
-        if is_editorial:
-            issues.extend(line_issues)
-        else:
-            notes.extend(line_issues)
-
-        # 1) Token compliance
-        issues.extend(check_token_compliance(fp))
-
-        # 2) Accent colour count
-        issues.extend(check_accent_count(fp))
-
-        # 4) Callout format
-        issues.extend(check_callout_format(fp))
-
-        # 5) No shadows / thick borders / saturated fills
-        issues.extend(check_no_shadows_borders(fp))
-
-        if issues:
+        for name in CHECK_ORDER:
+            items = issues[name]
+            budget = allowed.get(rel, {}).get(name, 0)
+            excess = items[budget:]
+            if not excess:
+                continue
             overall_status = 1
-            print(f"   ISSUES ({len(issues)}):")
-            for iv in issues:
-                # Encode safely to avoid cp1252 crash on Windows with non-ASCII chars
-                line = iv.encode("ascii", "replace").decode("ascii")
-                print(f"   - {line}")
-        elif notes:
-            print(f"   compliant (all checks pass; {len(notes)} advisory note(s))")
-            for iv in notes:
-                line = iv.encode("ascii", "replace").decode("ascii")
-                print(f"   ~ {line}")
-        else:
-            print("   compliant (all checks pass)")
+            new_violations += len(excess)
+            print(f"> {rel}")
+            print(f"   NEW {name} issues ({len(excess)} over baseline {budget}):")
+            for issue in excess:
+                print("   - " + issue.encode("ascii", "replace").decode("ascii"))
 
+    if write_baseline:
+        if baseline_path is None:
+            raise SystemExit("--write-baseline requires --baseline PATH")
+        payload = {
+            "description": (
+                "Luxury linter debt baseline. Counts are per file and per check. "
+                "A count above its recorded baseline fails CI; lower the number "
+                "as debt is paid down."
+            ),
+            "counts": counts,
+        }
+        baseline_path.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        print(f"Wrote baseline for {len(counts)} files to {baseline_path}")
+        return 0
+
+    if baseline_path is not None:
+        print(f"\nBaseline: {baseline_path} ({len(allowed)} files with recorded debt)")
     print("\n--- Linter finished ---")
+    if overall_status == 0 and baseline_path is not None:
+        print("No new violations beyond the recorded baseline.")
     return overall_status
 
 
 if __name__ == "__main__":
-    targets = [Path(arg) for arg in sys.argv[1:]] or [Path(".")]
-    sys.exit(main(targets))
+    sys.exit(main())
