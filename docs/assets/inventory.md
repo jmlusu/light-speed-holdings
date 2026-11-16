@@ -22,7 +22,7 @@
 | 12 | `campaign-gdn-336x280.png` | Google Display ad, 336×280 pixels. Production skill: `ls-brand-advertising`. | ⬜ Pending | PNG | `docs/assets/campaign-gdn-336x280.png` (not yet created) | `http://localhost:1441/assets/catalog/campaign-gdn-336x280.png` | `http://localhost:1440/assets/catalog/campaign-gdn-336x280.png` | **Evidence gap:** File not on disk. 336×280 format. |
 | 13 | `campaign-gdn-970x250.png` | Google Display ad, 970×250 pixels (large rectangle/leaderboard). Production skill: `ls-brand-advertising`. | ⬜ Pending | PNG | `docs/assets/campaign-gdn-970x250.png` (not yet created) | `http://localhost:1441/assets/catalog/campaign-gdn-970x250.png` | `http://localhost:1440/assets/catalog/campaign-gdn-970x250.png` | **Evidence gap:** File not on disk. 970×250 large rectangle. |
 | 14 | `campaign-billboard-1400x600.png` | Billboard creative, 1400×600 pixels. Production skill: `ls-brand-advertising`. | ⬜ Pending | PNG | `docs/assets/campaign-billboard-1400x600.png` (not yet created) | `http://localhost:1441/assets/catalog/campaign-billboard-1400x600.png` | `http://localhost:1440/assets/catalog/campaign-billboard-1400x600.png` | **Evidence gap:** File not on disk. 1400×600 billboard format. |
-| 15 | `playground-fallback.png` | Terminal screenshot fallback for Playground component, 800×500 pixels. Production skill: `ls-frontend-design`. | ⬜ Pending | PNG | `docs/assets/playground-fallback.png` (not yet created) | `http://localhost:1441/assets/catalog/playground-fallback.png` | `http://localhost:1440/assets/catalog/playground-fallback.png` | **Evidence gap:** File not on disk. Terminal screenshot fallback; brand-palette constrained to `#070A40`/`#E63946`/`#00BFFF`/`#F2F2F2`/`#FFFFFF`/`#6B7280`/`#9CA3AF`. |
+| 15 | `playground-fallback.png` | Terminal screenshot fallback for Playground component, 800×500 pixels. Production skill: `ls-frontend-design`. | ⬜ Pending | PNG | `docs/assets/playground-fallback.png` (not yet created) | `http://localhost:1441/assets/catalog/playground-fallback.png` | `http://localhost:1440/assets/catalog/playground-fallback.png` | **Evidence gap:** File not on disk. Terminal screenshot fallback; brand-palette constrained to `#070A40`/`#DC3641`/`#00BFFF`/`#F2F2F2`/`#FFFFFF`/`#6B7280`/`#9CA3AF`. |
 
 ## Appendix: Live Site Asset Mapping (historical manifest.json)
 
@@ -52,7 +52,7 @@ Per `docs/assets/README.md` generation commands:
 
 ## QA Checklist (all assets)
 
-- Palette: only `#070A40`, `#E63946`, `#00BFFF`, `#F2F2F2`, `#FFFFFF`, `#6B7280`, `#9CA3AF`
+- Palette: only `#070A40`, `#DC3641`, `#00BFFF`, `#F2F2F2`, `#FFFFFF`, `#6B7280`, `#9CA3AF`
 - Logo: official asset from `brand/logo/`, clear space = 1× "L" height
 - Typography: Arial 700/400 only, sizes from brand scale
 - Spacing: 4px base grid (4/8/12/16/24/32/48/64/96)

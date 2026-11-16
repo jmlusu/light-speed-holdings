@@ -34,7 +34,7 @@
 | `ls-document-design` | Creates whitepapers/reports/proposals/PDFs | Renders via `ls-od-image` (Document mode) or `ls-od-deck` |
 | `ls-artifact-qa` | Final gatekeeper — visual/brand/UX/content QA | Validates Open Design output; runs palette checker green before APPROVE |
 | `ls-od-runtime` | Daemon lifecycle, CLI verbs, MCP wiring, Windows failure modes | Starts/stops `od` daemon; verifies MCP registration; troubleshoots render failures |
-| `ls-od-brand` | `design-systems/lightspeed/DESIGN.md`, brand-token handoff, brand QA | Ensures every Open Design render remaps to LightSpeed palette (navy #070A40, red #E63946, cyan #00BFFF) |
+| `ls-od-brand` | `design-systems/lightspeed/DESIGN.md`, brand-token handoff, brand QA | Ensures every Open Design render remaps to LightSpeed palette (navy #070A40, red #DC3641, cyan #00BFFF) |
 | `ls-od-catalogue` | Choosing between functional skills and design templates; id selection rules | Selects right Open Design template for each artifact type (deck, infographic, image, document) |
 
 ---
@@ -92,7 +92,7 @@ ls-creative-director (orchestrator)
     │   ├─► creates visual narrative (headline → key stat → context → problem → comparison → implication → opportunity → CTA)
     │   │
     │   └─► enforces LightSpeed palette post-render:
-    │       - Remap to LS palette (navy #070A40 dominant, cyan #00BFFF secondary, red #E63946 for CTA)
+    │       - Remap to LS palette (navy #070A40 dominant, cyan #00BFFF secondary, red #DC3641 for CTA)
     │       - Run palette checker: `uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.py <image> --tolerance 3`
     │       - Must PASS before submitting to ls-artifact-qa
     │
@@ -197,7 +197,7 @@ open-design create \
 - 13-slide pitch deck (navy cover, cyan tagline "ASPIRE. ACT. ACHIEVE.", red accent divider)
 - Speaker notes (2–4 sentences per slide, proof point, transition)
 - KPI cards (light-grey rounded rects, big navy figure, dark-grey label)
-- Branded palette enforced throughout (navy #070A40, red #E63946, cyan #00BFFF)
+- Branded palette enforced throughout (navy #070A40, red #DC3641, cyan #00BFFF)
 
 ---
 
@@ -239,7 +239,7 @@ agentic-research-lead → ls-creative-director → ls-diagramming → ls-od-imag
 **Outputs**:
 - Mermaid diagram (flowchart, sequenceDiagram, stateDiagram, gantt, journey, erDiagram)
 - Custom SVG with brand palette when Mermaid is too rigid — rendered via `ls-od-image`
-- Node fills: navy `#070A40` (primary), white/grey-light `#F2F2F2` (supporting), cyan `#00BFFF` (accent), red `#E63946` (CTAs/warnings)
+- Node fills: navy `#070A40` (primary), white/grey-light `#F2F2F2` (supporting), cyan `#00BFFF` (accent), red `#DC3641` (CTAs/warnings)
 - Edge labels: dark-grey `#6B7280`; highlighted paths cyan
 - Labels: Arial, 12–14pt node labels, 10–11pt edge labels
 
@@ -332,7 +332,7 @@ QA GATE: ls-artifact-qa (visual/brand/UX/content passes)
 - **Pharos Agent → Valid `subagent_type` Mapping**: `docs/agents/pharos-agent-mapping.md`
 - **Creative Production Stack**: `ls-creative-director` → one primary production skill + support → `ls-artifact-qa`
 - **Brand Tokals**: `brand/tokens/brand-tokens.json`, `brand/guidelines/brand-guidelines.md`
-- **LightSpeed Design System**: navy `#070A40`, red `#E63946`, cyan `#00BFFF`, Arial type scale, 4px grid
+- **LightSpeed Design System**: navy `#070A40`, red `#DC3641`, cyan `#00BFFF`, Arial type scale, 4px grid
 - **Digital Asset Register**: `docs/marketing/digital-asset-register.md`
 - **Key Rotation Procedure**: `docs/DASHBOARD_KEY_ROTATION.md`
 - **Approved Vendors**: `docs/APPROVED-VENDORS.md`
@@ -350,7 +350,7 @@ uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerato
 task(subagent_type="content-writer", prompt="You are the Thought Leadership Author for Light Speed Holdings Pharos department. Write a LinkedIn intro post introducing our agentic AI company building organization. Use builder register voice, cite exact metrics from company-registry.yaml, and include a CTA.")
 
 # Run creative director to orchestrate a LinkedIn campaign
-task(subagent_type="general", prompt="You are the LightSpeed Creative Director. Orchestrate a LinkedIn thought leadership campaign for our agentic AI organization. One core thesis, multi-channel campaign (LinkedIn article + carousel + X thread + Instagram carousel + Facebook post). Enforce LightSpeed brand palette (navy #070A40, red #E63946, cyan #00BFFF). No emojis, evidence-led voice, every claim must have a source.")
+task(subagent_type="general", prompt="You are the LightSpeed Creative Director. Orchestrate a LinkedIn thought leadership campaign for our agentic AI organization. One core thesis, multi-channel campaign (LinkedIn article + carousel + X thread + Instagram carousel + Facebook post). Enforce LightSpeed brand palette (navy #070A40, red #DC3641, cyan #00BFFF). No emojis, evidence-led voice, every claim must have a source.")
 
 # Run QA on finished artifact
 task(subagent_type="general", prompt="You are the ls-artifact-qa critic. Review the LinkedIn campaign artifact for: visual hierarchy, brand palette (navy/red/cyan), CTA clarity, accessibility (alt text, heading order), and content QA (traceable facts, no invented statistics, builder register voice). Output PASS/FAIL for each of the 5 passes with findings and fix instructions if any FAIL.")

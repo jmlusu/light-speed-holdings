@@ -34,7 +34,7 @@ Human CMO/CEO ratified (2026-09-15, no redlines):
 2. **Sprint scope — full compliance.** All 12 Appendix C items plus the whole
    "Appendices A-D" bundle (evidence rules, ACK roster, review gate, QA gate).
 3. **Design authority — section 7.1 supersedes map #157.** Canonical tokens only:
-   navy `#070A40` / red `#E63946` / cyan `#00BFFF` / white / `#F2F2F2`, Arial type
+   navy `#070A40` / red `#DC3641` / cyan `#00BFFF` / white / `#F2F2F2`, Arial type
    scale. Prior locks (Geist font, cream/sage palette) are void.
 4. **Form SLA copy** — ship "We respond to qualified enquiries within two business
    days" next to every contact surface (ContactSection, ExecutiveBriefingModal,

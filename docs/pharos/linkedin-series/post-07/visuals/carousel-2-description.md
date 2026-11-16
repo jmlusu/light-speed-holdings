@@ -13,7 +13,7 @@
 - LightSpeed brand color coding for default states:
   * Cyan #00BFFF: Open defaults
   * Navy #070A40: Consent-based
-  * Red #E63946: Closed/sovereign
+  * Red #DC3641: Closed/sovereign
 - Key policy annotations: data sovereignty, citizen consent rights, cross-border restrictions
 - Title: "Sovereign Data Defaults in Financial Inclusion"
 

@@ -50,7 +50,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
           subtitle="Speak with LightSpeed executives to evaluate your workflow automation readiness and design your target HAOMTGV architecture."
           primaryActionText="ENGAGE LIGHTSPEED"
           primaryActionHref="/contact"
-          secondaryActionText="EXPLORE PHAROS INSIGHTS"
+          secondaryActionText="EXPLORE PHAROS"
           secondaryActionHref="/insights"
         />
 

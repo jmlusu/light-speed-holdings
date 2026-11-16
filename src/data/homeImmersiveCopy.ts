@@ -27,7 +27,7 @@ export const homeImmersiveCopy: HomeImmersiveCopy = {
     { id: 'haomtgv', num: '01', label: 'HAOMTGV' },
     { id: 'paths', num: '02', label: 'Choose Path' },
     { id: 'solutions', num: '03', label: 'Solutions' },
-    { id: 'insights', num: '04', label: 'Insights' },
+    { id: 'insights', num: '04', label: 'Pharos' },
     { id: 'about', num: '05', label: 'About' },
   ],
   scrimHint: 'Every claim is labeled. Every number is auditable.',

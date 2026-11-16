@@ -59,7 +59,7 @@ export const pathwayCards: PathwayCard[] = [
     id: 'business-leaders',
     title: 'Business Leaders',
     intent: 'I lead a team and need AI to deliver measurable outcomes',
-    body: 'Start with the outcome you need. Each solution maps to real-world results — cost reduction, latency improvement, or adoption velocity — and links to the sectors where it applies.',
+    body: 'Start with the outcome you need. Each solution maps to real-world results - cost reduction, latency improvement, or adoption velocity - and links to the sectors where it applies.',
     primaryLabel: 'Explore Solutions',
     primaryTo: '/solutions',
     secondaryLabels: [
@@ -166,7 +166,7 @@ export const pharosTeaser: ArticleCard[] = [
     category: 'WAVEFORM',
     title: 'Measuring What Matters: Value Over vanity Metrics',
     slug: 'measuring-value',
-    excerpt: 'Cost, latency, quality, and adoption fed back into strategy — the only score that counts.',
+    excerpt: 'Cost, latency, quality, and adoption fed back into strategy - the only score that counts.',
     readTime: '4 min read',
   },
 ];

@@ -1,7 +1,7 @@
 # LightSpeed Holdings — Website Imagery Specification
 
 **Project:** lightspeedholdings.vercel.app external client-facing website
-**Brand System:** LightSpeed Design System (navy `#070A40`, red `#E63946`, cyan `#00BFFF`, Arial, 4px grid)
+**Brand System:** LightSpeed Design System (navy `#070A40`, red `#DC3641`, cyan `#00BFFF`, Arial, 4px grid)
 **Canonical Assets:** `brand/` (tokens, logos, guidelines) — mirrors at `static/brand/`, `public/brand/`
 **Production Stack:** `ls-creative-director` → `ls-design-system` → production skills → `ls-artifact-qa`
 **QA Gate:** All assets must pass `ls-artifact-qa` (visual/brand/UX/a11y/content) before deploy
@@ -43,7 +43,7 @@ ls-creative-director (brief intake)
 | Token | Hex | Usage |
 |-------|-----|-------|
 | Navy | `#070A40` | Primary surfaces, headlines, slide rails, logo text |
-| Red | `#E63946` | Accent — CTAs, highlights, signal waves, key results |
+| Red | `#DC3641` | Accent — CTAs, highlights, signal waves, key results |
 | Cyan | `#00BFFF` | Accent — shield base, links on dark, taglines on navy |
 | Light Grey | `#F2F2F2` | Backgrounds, cards, callouts |
 | White | `#FFFFFF` | Clean backgrounds, text on navy |
@@ -94,7 +94,7 @@ ls-creative-director (brief intake)
 **Left Column (Content):**
 - Headline: "Build Your Agent Company" (36pt Arial 700, Navy `#070A40`)
 - Subhead: "YAML-defined. Type-safe. Auditable. Deploy hierarchies of AI agents with governance built in." (18pt Arial 400, Dark Grey `#6B7280`)
-- Primary CTA: "Start Free →" (16pt Arial 700, Navy button, Red `#E63946` hover)
+- Primary CTA: "Start Free →" (16pt Arial 700, Navy button, Red `#DC3641` hover)
 - Secondary CTA: "View Architecture" (16pt Arial 400, Cyan `#00BFFF` link)
 
 **Right Column (Interactive Diagram):**
@@ -139,7 +139,7 @@ ls-creative-director (brief intake)
 - Title: 28pt Arial 700, Navy
 - Body: 14pt Arial 400, Dark Grey `#6B7280`
 - Link: "Learn more" → Cyan `#00BFFF`, 14pt Arial 400
-- Red badge "Open Source" on Card 2 (12pt, Red `#E63946` background, White text)
+- Red badge "Open Source" on Card 2 (12pt, Red `#DC3641` background, White text)
 
 #### Brand Check
 
@@ -175,7 +175,7 @@ ls-creative-director (brief intake)
 - Background: Navy `#070A40`
 - Numbers: 72pt Arial 700, White `#FFFFFF` (animated count-up on scroll)
 - Labels: 18pt Arial 400, Cyan `#00BFFF`
-- Dividers: Red `#E63946` accent lines (2px, 32px width) between metrics
+- Dividers: Red `#DC3641` accent lines (2px, 32px width) between metrics
 
 #### Brand Check
 
@@ -236,7 +236,7 @@ flowchart TB
     GATE --> AUDIT
     EXEC -.-> DLQ
 
-    style GATE fill:#E63946,color:#fff
+    style GATE fill:#DC3641,color:#fff
     style YAML fill:#070A40,color:#fff
     style GEN fill:#00BFFF,color:#070A40
     style BUS fill:#F2F2F2,color:#070A40
@@ -414,7 +414,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
 #### Brand Check (Post-Render + Palette Remap)
 
 - [ ] **Mandatory:** Run `check_brand_palette.py` after generation (Grav style is carve-out but accents must map to LS tokens)
-- [ ] Remap any off-palette pixels to: Navy `#070A40`, Red `#E63946`, Cyan `#00BFFF`, Greys `#6B7280`/`#F2F2F2`/`#9CA3AF`, White `#FFFFFF`
+- [ ] Remap any off-palette pixels to: Navy `#070A40`, Red `#DC3641`, Cyan `#00BFFF`, Greys `#6B7280`/`#F2F2F2`/`#9CA3AF`, White `#FFFFFF`
 - [ ] PASS on palette checker before `ls-artifact-qa`
 
 ---
@@ -441,7 +441,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
 
 #### Case Study Cards (3)
 
-| # | Client | Headline | Metric (Red `#E63946` callout) | Source |
+| # | Client | Headline | Metric (Red `#DC3641` callout) | Source |
 |---|--------|----------|--------------------------------|--------|
 | 1 | Malawi Government | "National AI Strategy consultation delivered in 6 weeks" | **40% faster** | `results/malawi-ai-strategy.json` |
 | 2 | SADC Secretariat | "Agentic governance framework ratified" | **12 member states** | `results/sadc-framework.json` |
@@ -452,7 +452,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
 - Background: White
 - Client logo: top-left, 32px height
 - Headline: 18pt Arial 700, Navy
-- Metric: 24pt Arial 700, Red `#E63946`
+- Metric: 24pt Arial 700, Red `#DC3641`
 - Body: 14pt Arial 400, Dark Grey
 - `™` on first "LightSpeed" mention in copy
 
@@ -481,7 +481,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
 
 | # | Human | Title | Agent Counterpart | Badge Colors |
 |---|-------|-------|-------------------|--------------|
-| 1 | Jack Mlusu | CEO | `human-ceo` | Human: Red `#E63946` / Agent: Cyan `#00BFFF` |
+| 1 | Jack Mlusu | CEO | `human-ceo` | Human: Red `#DC3641` / Agent: Cyan `#00BFFF` |
 | 2 | [CAIO Name] | CAIO | `llm-platform-owner` | Human: Red / Agent: Cyan |
 | 3 | [CTO Name] | CTO | `orchestration-owner` | Human: Red / Agent: Cyan |
 | 4 | [CISO Name] | CISO | `security-compliance-lead` | Human: Red / Agent: Cyan |
@@ -498,7 +498,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
 #### Brand Check
 
 - [ ] Consistent photo treatment (or illustrated avatars from `brand/digital/avatars/`)
-- [ ] Badge colors exact: Red `#E63946`, Cyan `#00BFFF`
+- [ ] Badge colors exact: Red `#DC3641`, Cyan `#00BFFF`
 - [ ] Arial type scale throughout
 - [ ] Horizontal scroll with snap (desktop), stack (mobile)
 
@@ -545,7 +545,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
 - **Subhead:** White `#FFFFFF`, 18pt Arial 400
 - **Diagram:** Simplified architecture (3 nodes: Registry → Generator → Orchestrator) in brand palette
 - **Logo:** Official, top-left or bottom-right, clear space
-- **CTA Button:** Red `#E63946` bg, White text, 16pt Arial 700, radius 8px
+- **CTA Button:** Red `#DC3641` bg, White text, 16pt Arial 700, radius 8px
 - **Safe Zones:** Content ≥15% inset from edges (social platforms)
 
 #### Generation Brief (for `media-generation-owner` via `task`)
@@ -556,7 +556,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
   "model": "gemini-2.5-flash-image",
   "prompt": "Professional B2B tech campaign hero. Navy background (#070A40). Clean geometric diagram showing three connected nodes: 'Registry (YAML)' → 'Generator (Jinja2)' → 'Orchestrator (MessageBus)'. Nodes in navy with cyan borders, connections in cyan. Subtle grid pattern. LightSpeed logo top-left. Headline 'Deploy an agent company in 5 minutes' in cyan. Red CTA button 'Start Free'. Corporate, trustworthy, engineering-led aesthetic. No people, no stock photos.",
   "dimensions": "{PER_PLATFORM}",
-  "brandPalette": ["#070A40", "#E63946", "#00BFFF", "#F2F2F2"],
+  "brandPalette": ["#070A40", "#DC3641", "#00BFFF", "#F2F2F2"],
   "clearSpace": "official logo clear-space rules",
   "outputPath": "docs/assets/campaign-2026-q4/",
   "expiresAt": "2026-12-31T23:59:59Z"
@@ -598,7 +598,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
   ai-company validate
   ai-company deploy --dry-run
   ```
-- Output: Green `#10B981` success, Red `#E63946` errors, Cyan `#00BFFF` info
+- Output: Green `#10B981` success, Red `#DC3641` errors, Cyan `#00BFFF` info
 - Font: Monospace (JetBrains Mono or system monospace), 14pt
 - Keyboard navigable, accessible
 
@@ -617,7 +617,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
 #### Brand Check
 
 - [ ] Terminal uses brand Navy `#070A40`
-- [ ] Prompt Cyan `#00BFFF`, success Green (acceptable semantic color), error Red `#E63946`
+- [ ] Prompt Cyan `#00BFFF`, success Green (acceptable semantic color), error Red `#DC3641`
 - [ ] Monospace font, 14pt
 - [ ] Accessible contrast (WCAG AA)
 - [ ] Keyboard navigable (tab through commands, enter to run)

@@ -23,7 +23,7 @@ export const TelemetryBar: React.FC<TelemetryBarProps> = ({
       const hours = String(now.getUTCHours()).padStart(2, '0');
       const mins = String(now.getUTCMinutes()).padStart(2, '0');
       const secs = String(now.getUTCSeconds()).padStart(2, '0');
-      setTimeString(`${year}.${month}.${day} — ${hours}:${mins}:${secs} UTC`);
+      setTimeString(`${year}.${month}.${day} - ${hours}:${mins}:${secs} UTC`);
     };
 
     updateTime();
@@ -90,7 +90,7 @@ export const TelemetryBar: React.FC<TelemetryBarProps> = ({
       <div className="flex items-center gap-2 ml-auto sm:ml-0">
         <span className="w-1.5 h-1.5 bg-[#c9a96e] block" />
         <span className="text-[#f0f0f0] font-medium tracking-wider">
-          {timeString || '2026.11.04 — 12:55:20 UTC'}
+          {timeString || '2026.11.04 - 12:55:20 UTC'}
         </span>
       </div>
     </div>

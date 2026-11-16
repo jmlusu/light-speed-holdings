@@ -303,7 +303,7 @@ export const GOVERNANCE_SOLUTION = {
 export const proofCaseStudies = [
   {
     id: 'ws-01',
-    title: 'Regulatory Reporting Automation — Proven In-House',
+    title: 'Regulatory Reporting Automation - Proven In-House',
     description: 'A governed multi-agent compliance framework running in LightSpeed\'s own operations, assembling regulatory reports with full audit trail generation.',
     text: 'A governed multi-agent compliance framework running in LightSpeed\'s own operations, assembling regulatory reports with full audit trail generation. No client deployment yet.',
     honestyBadge: 'Proven in-house' as const,

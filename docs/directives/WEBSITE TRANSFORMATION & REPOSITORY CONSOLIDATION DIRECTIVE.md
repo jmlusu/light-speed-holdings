@@ -321,7 +321,7 @@ Cyan:
 #00BFFF
 
 Red:
-#E63946
+#DC3641
 
 Morning Mist:
 #F7F8F9

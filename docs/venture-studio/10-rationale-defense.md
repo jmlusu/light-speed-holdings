@@ -16,7 +16,7 @@ Every element on this website exists in service of four core principles, derived
 
 ### Main Headline: "BUILD THE INTELLIGENT ENTERPRISE" with gradient text red→cyan→navy
 
-**Rationale**: The gradient spanning the three ADR-020 locked tokens (red `#E63946`, cyan `#00BFFF`, navy `#070A40`) visually unifies the brand. The word "BUILD" is the imperative verb that connects the company's operating model to action.
+**Rationale**: The gradient spanning the three ADR-020 locked tokens (red `#DC3641`, cyan `#00BFFF`, navy `#070A40`) visually unifies the brand. The word "BUILD" is the imperative verb that connects the company's operating model to action.
 
 **Defense**: The gradient is part of ADR-020 — the palette is locked. Any alternative color scheme would violate the CEO's decision. The headline text size (`text-4xl sm:text-6xl md:text-7xl`) establishes visual hierarchy.
 
@@ -147,7 +147,7 @@ Every element on this website exists in service of four core principles, derived
 **Rationale**: Anchors the "proven" philosophy. Displays honesty badges (Proven in-house / Live proof / Fieldable in 2026 / In active development) with brand-color coding. These badges are the visual representation of "Ship, Don't Promise."
 
 **Defense**:
-- **Badge colors**: Red `#E63946` for "Proven in-house" and "In active development" (high-certainty, established). Cyan `#00BFFF` for "Live proof" and "Fieldable in 2026" (medium-certainty, emerging).
+- **Badge colors**: Red `#DC3641` for "Proven in-house" and "In active development" (high-certainty, established). Cyan `#00BFFF` for "Live proof" and "Fieldable in 2026" (medium-certainty, emerging).
 - **12 proof points**: Correspond to the 12 entries in the proof tab of the UseCaseCatalogSection.
 - **No unsupported claims**: Every badge has a defined category. There is no "generic" badge.
 
@@ -276,12 +276,12 @@ Every element on this website exists in service of four core principles, derived
 |---------|-------|-------|---------|
 | Primary text (dark) | `#121518` (very dark navy) | Navy `#070A40` | Body copy, increased contrast |
 | Primary text (light) | `#F7F8F9` (off-white) | Navy `#070A40` | Light theme body background |
-| Headings | `#E63946` | Red `#E63946` | Main headlines, accent |
+| Headings | `#DC3641` | Red `#DC3641` | Main headlines, accent |
 | Link text | `#00BFFF` | Cyan `#00BFFF` | Hyperlinks, pip active states |
-| Badges "Proven in-house" | `#E63946` | Red `#E63946` | High-certainty proof |
+| Badges "Proven in-house" | `#DC3641` | Red `#DC3641` | High-certainty proof |
 | Badges "Live proof" | `#00BFFF` | Cyan `#00BFFF` | Medium-certainty proof |
 | Badges "Fieldable in 2026" | `#00BFFF` | Cyan `#00BFFF` | Emerging proof |
-| Borders (alternating) | `#E63946`, `#00BFFF` | Red, Cyan | Pillar tags, table rows |
+| Borders (alternating) | `#DC3641`, `#00BFFF` | Red, Cyan | Pillar tags, table rows |
 | Backgrounds (light) | `#F7F8F9` | Outside ADR-020 (legacy) | Must NOT appear on new pages |
 | Backgrounds (dark) | `#070A40` | Navy `#070A40` | Dark theme surfaces |
 

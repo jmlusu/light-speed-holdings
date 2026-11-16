@@ -14,7 +14,7 @@
 - Color coding by tier using LightSpeed palette:
   * Tier 1: Cyan #00BFFF (automated)
   * Tier 2: Navy #070A40 (supervisory)
-  * Tier 3: Red #E63946 (managerial)
+  * Tier 3: Red #DC3641 (managerial)
   * Tier 4: Gold/Yellow accent (executive)
   * Tier 5: Purple accent (board-level)
 - Central title: "Governance Layer (G) - 5-Tier Approval Matrix for Financial Inclusion"

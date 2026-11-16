@@ -38,7 +38,7 @@ export const companyIdentity: CompanyIdentity = {
   geographicProgression: ['Malawi', 'SADC', 'Africa'],
   northStar: 'We build AI-native companies.',
   heroHeadline: 'Build, Govern & Scale Your Autonomous AI Workforce',
-  heroSubline: 'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems — in Malawi, across SADC, and beyond.',
+  heroSubline: 'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems, in Malawi, across SADC, and beyond.',
   valueCycle: [
     'Strategy & Roadmap',
     'AI Design Sprint',

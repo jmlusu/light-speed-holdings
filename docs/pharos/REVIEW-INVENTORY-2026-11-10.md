@@ -139,7 +139,7 @@ plus 3 modified existing files (see Section 7)
 
 | ID | Fix Summary |
 |----|-------------|
-| D2 | Generated 1200×627 PNG placeholders with **LightSpeed brand color scheme backgrounds** (navy #070A40 base with cyan #00BFFF and red #E63946 accent strips) and subtle gray placeholder text labeling each image type (e.g., "H-A-O-M-T-G-V Framework Diagram — Post 4"). This ensures brand compliance even without final artwork. |
+| D2 | Generated 1200×627 PNG placeholders with **LightSpeed brand color scheme backgrounds** (navy #070A40 base with cyan #00BFFF and red #DC3641 accent strips) and subtle gray placeholder text labeling each image type (e.g., "H-A-O-M-T-G-V Framework Diagram — Post 4"). This ensures brand compliance even without final artwork. |
 | D3 | Each carousel set follows a **narrative arc** of 5 escalating themes per post: (1) core concept, (2) key metrics, (3) real-world application, (4) governance/compliance, (5) call-to-action/future state. This was designed per-post based on the draft-v1.md content. |
 | D5 | Added full framework sequence **H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Models run sovereign. T → Tools stay sandboxed. G → Gates approve every high‑impact move. V → Verification records it all so value can be proven, not promised** to Post 02 draft after the "Follow along" section. |
 | D6 | Added identical full framework sequence to Post 03 draft after the "Follow along" section. |

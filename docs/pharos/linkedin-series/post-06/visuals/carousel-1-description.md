@@ -12,7 +12,7 @@
 - Tool 6:合规检查 (Compliance checking) - with gavel/legal icon
 - Tool 7:隐私保护执行 (Privacy protection execution) - with lock/shield icon
 - Each tool with: visual icon, permission status (allowed/restricted), health context justification
-- Color coding: green #00BFFF for allowed tools, red #E63946 for restricted tools (if any)
+- Color coding: green #00BFFF for allowed tools, red #DC3641 for restricted tools (if any)
 - Health context annotations: patient data protections, PHI compliance, ethical guidelines
 - Title: "7-Tool Restrictions for Agentic AI in Health Contexts"
 

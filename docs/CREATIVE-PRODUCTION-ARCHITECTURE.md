@@ -192,7 +192,7 @@ Two gates, recorded separately:
 
 1. **QA gate** (`default_qa`, pluggable per run):
    - `outputs_exist` — every recorded output exists and is non-empty
-   - `no_legacy_red` — no readable output carries the legacy `#E63946`
+   - `no_legacy_red` — no readable output carries the legacy `#DC3641`
    - `brand_tokens` — canonical `#DC3641` detected (`skipped` + note for
      palette-free artifacts)
    This is the deterministic offline floor. Deeper visual/UX/accessibility

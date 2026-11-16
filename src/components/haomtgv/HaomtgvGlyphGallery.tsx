@@ -33,8 +33,9 @@ export const HaomtgvGlyphGallery: React.FC<HaomtgvGlyphGalleryProps> = ({ theme 
           {glyphs.map((asset, idx) => {
             const isGovernance = asset.id === 'glyph-governance';
             const letter = asset.id.replace(/^glyph-/, '').charAt(0).toUpperCase();
-            // Registry title "H — Human Glyph" → "Human" (matches pillar titles).
-            const title = asset.title.replace(/^[A-Z]\s*—\s*/, '').replace(/\s+Glyph$/, '');
+            // Registry title "H - Human Glyph" -> "Human" (matches pillar titles);
+            // hyphen, en dash, and em dash all appear as separators.
+            const title = asset.title.replace(/^[A-Z]\s*[\u2013\u2014-]\s*/, '').replace(/\s+Glyph$/, '');
             return (
               <Reveal key={asset.id} delay={idx * 0.04}>
                 <article

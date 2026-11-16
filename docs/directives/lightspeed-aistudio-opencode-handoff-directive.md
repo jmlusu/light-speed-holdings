@@ -147,7 +147,7 @@ Primary colors:
 
 ```text
 Navy:   #070A40
-Red:    #E63946
+Red:    #DC3641
 Cyan:   #00BFFF
 Grey:   #F2F2F2
 Grey:   #6B7280

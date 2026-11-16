@@ -34,7 +34,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ theme }) => {
         links={[
           { to: '/what-we-do', label: 'What We Do' },
           { to: '/haomtgv', label: 'HAOMTGV Framework' },
-          { to: '/insights', label: 'Pharos Insights' },
+          { to: '/insights', label: 'Pharos' },
           { to: '/contact', label: 'Contact Us' },
         ]}
       />

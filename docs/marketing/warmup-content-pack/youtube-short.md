@@ -27,7 +27,7 @@
 ## Production notes
 
 - Spoken word count ≈ 140 (comfortable for ~55s; record a dry run and trim).
-- Visuals: brand palette only (navy `#070A40`, red `#E63946`, cyan `#00BFFF`),
+- Visuals: brand palette only (navy `#070A40`, red `#DC3641`, cyan `#00BFFF`),
   Arial type, official icon-only logo. Keep the approval ladder legible on mobile.
 - When #314 template output lands, use the generated Short thumbnail; until then
   the end card above is the branded poster frame.

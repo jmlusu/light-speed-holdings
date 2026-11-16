@@ -111,7 +111,7 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
           theme={theme}
           eyebrow="THOUGHT-LEADERSHIP ENGINE"
           title="Pharos – LightSpeed's Thought-Leadership Engine"
-          lead="Pharos transforms LightSpeed's agentic-AI research, experiments and field observations into a steady stream of high-impact, evidence-led insights. Each month we publish policy briefs, whitepapers, system maps, data stories, AI-economics analyses and Africa Watch regional monitors that clearly link our findings to real-world use cases, solutions and sectors across Malawi, the SADC region and the broader African continent."
+          lead="Pharos transforms LightSpeed's agentic-AI research, experiments and field observations into a steady stream of high-impact evidence-led research. Each month we publish policy briefs, whitepapers, system maps, data stories, AI-economics analyses and Africa Watch regional monitors that clearly link our findings to real-world use cases, solutions and sectors across Malawi, the SADC region and the broader African continent."
         />
 
       {/* OUR EIGHT MONTHLY FORMATS SECTION */}

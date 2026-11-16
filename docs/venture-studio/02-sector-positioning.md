@@ -69,7 +69,7 @@ Three market facts as of 2026-09 (see full scan for entity detail):
 **we prove it in Malawi first**, then scale the model into SADC.
 
 **Tagline lock:** ASPIRE. ACT. ACHIEVE.™
-**Palette lock:** navy `#070A40` / red `#E63946` / cyan `#00BFFF` (ADR-020; Part 1 brand-psychology effects did not amend tokens).
+**Palette lock:** navy `#070A40` / red `#DC3641` / cyan `#00BFFF` (ADR-020; Part 1 brand-psychology effects did not amend tokens).
 
 ---
 

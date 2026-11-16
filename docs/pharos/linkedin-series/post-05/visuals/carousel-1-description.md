@@ -14,7 +14,7 @@
 - Product 8: Cross-SME network effect subscription (shared learning)
 - Each product with icon representing the revenue type
 - Price tier indicators or revenue potential markers
-- Color scheme: LightSpeed brand with emphasis on red #E63946 for premium products and cyan #00BFFF for standard
+- Color scheme: LightSpeed brand with emphasis on red #DC3641 for premium products and cyan #00BFFF for standard
 - Layout: Horizontal flow or radial pattern showing product interconnections
 - Title: "8 Recurring Revenue Products for AI Agents in Malawian SMEs"
 

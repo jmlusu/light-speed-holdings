@@ -103,7 +103,7 @@ node .agents/skills/ls-artifact-qa/scripts/visual_check.js
 ## QA Checklist Per Asset
 
 ### All Assets
-- [ ] Palette: only `#070A40`, `#E63946`, `#00BFFF`, `#F2F2F2`, `#FFFFFF`, `#6B7280`, `#9CA3AF`
+- [ ] Palette: only `#070A40`, `#DC3641`, `#00BFFF`, `#F2F2F2`, `#FFFFFF`, `#6B7280`, `#9CA3AF`
 - [ ] Logo: official asset from `brand/logo/`, clear space = 1× "L" height
 - [ ] Typography: Arial 700/400 only, sizes from brand scale
 - [ ] Spacing: 4px base grid (4/8/12/16/24/32/48/64/96)

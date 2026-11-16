@@ -98,7 +98,7 @@ Segmentation mechanics: one audience-wide list initially; split into "policy/gov
 
 - [ ] Every claim in the claim ledger maps to a repo file (path) or a live public URL with publication/access date.
 - [ ] No invented numbers; registry counts re-verified against `company-registry.yaml` on the issue date.
-- [ ] Brand tokens from `brand/tokens/brand-tokens.json`: navy `#070A40`, red `#E63946`, cyan `#00BFFF` only for accents/CTA; Arial stack; wordmark "LightSpeed Holdings Limited™" on first mention; tagline "ASPIRE. ACT. ACHIEVE."
+- [ ] Brand tokens from `brand/tokens/brand-tokens.json`: navy `#070A40`, red `#DC3641`, cyan `#00BFFF` only for accents/CTA; Arial stack; wordmark "LightSpeed Holdings Limited™" on first mention; tagline "ASPIRE. ACT. ACHIEVE."
 - [ ] Layout passes strict email-HTML rules (table-based, inline styles, bgcolor attrs, no JS, absolute image URLs, alt text, explicit font sizes/colors/line-heights).
 - [ ] `ls-artifact-qa` review: visual, brand, UX, accessibility, content.
 - [ ] Dry-run receipt from publish-queue reviewed before any operator-approved send.

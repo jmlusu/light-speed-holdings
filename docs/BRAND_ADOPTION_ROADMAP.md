@@ -185,7 +185,7 @@ This roadmap tracks the organization-wide adoption of official LightSpeed Holdin
 | **Company Name** | LIGHTSPEED HOLDINGS LIMITED |
 | **Tagline** | MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY |
 | **Primary Color** | Dark Navy `#070A40` |
-| **Accent — Red** | `#E63946` |
+| **Accent — Red** | `#DC3641` |
 | **Accent — Cyan** | `#00BFFF` |
 | **Neutral — Light Grey** | `#F2F2F2` |
 | **Neutral — White** | `#FFFFFF` |

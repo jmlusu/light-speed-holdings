@@ -14,7 +14,7 @@
   - T: Technology stack, agent tooling, operational tools
   - G: Policy frameworks, approval workflows, compliance mechanisms
   - V: Business outcomes, impact metrics, ROI measurement
-- Color-coded layers (consistent with LightSpeed brand: navy #070A40, red #E63946, cyan #00BFFF)
+- Color-coded layers (consistent with LightSpeed brand: navy #070A40, red #DC3641, cyan #00BFFF)
 - Title overlay: "The H-A-O-M-T-G-V Framework"
 - Background: subtle grid pattern or gradient consistent with Pharos visual style
 

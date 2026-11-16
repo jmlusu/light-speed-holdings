@@ -58,8 +58,8 @@ export const MissionVisionValuesGrid: React.FC<MissionVisionValuesGridProps> = (
           </h3>
         </div>
         <p className={`text-xs leading-relaxed font-sans ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-          We are not a generic software outsourcer. We provide concrete architectural proof, OpenCode agent standards, African regulatory alignment, and fiduciary execution.
-        </p>
+        We provide concrete architectural proof, OpenCode agent standards, African regulatory alignment, and fiduciary execution — every solution validated against real-world outcomes.
+      </p>
       </div>
 
     </div>

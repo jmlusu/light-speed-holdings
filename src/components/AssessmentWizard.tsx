@@ -51,7 +51,7 @@ export const DOMAINS: AssessmentDomain[] = [
       'Evaluates operational data availability, structured pipelines, access controls, and localized data sovereignty posture.',
     options: [
       {
-        label: 'Foundational — Fragmented & Siloed Data',
+        label: 'Foundational - Fragmented & Siloed Data',
         description:
           'Data is stored across legacy databases or spreadsheets with manual access requests and limited central governance.',
         level: 'Foundational',
@@ -59,7 +59,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Establish unified data schemas, localized storage policies, and centralized role-based access controls.',
       },
       {
-        label: 'Developing — Centralized Storage, Manual APIs',
+        label: 'Developing - Centralized Storage, Manual APIs',
         description:
           'Core operational data is centralized in data warehouses with basic access controls, but real-time API access remains restricted.',
         level: 'Developing',
@@ -67,7 +67,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Expose secure REST/GraphQL endpoints and event streams to enable real-time agentic data queries.',
       },
       {
-        label: 'Advanced — API-First Architecture & Structured Streams',
+        label: 'Advanced - API-First Architecture & Structured Streams',
         description:
           'Well-structured data pipelines with role-based access controls, event streams, and defined data ownership across departments.',
         level: 'Advanced',
@@ -75,7 +75,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Integrate cryptographic audit logging and localized sovereignty boundaries for sensitive operational data.',
       },
       {
-        label: 'Optimized — Governed Real-Time Data & Cryptographic Trails',
+        label: 'Optimized - Governed Real-Time Data & Cryptographic Trails',
         description:
           'Governed, real-time data layer with cryptographic audit trails, localized data sovereignty controls, and automated compliance policy enforcement.',
         level: 'Optimized',
@@ -95,7 +95,7 @@ export const DOMAINS: AssessmentDomain[] = [
       'Evaluates core IT architecture, API ecosystem, event queues, and deployment environment readiness.',
     options: [
       {
-        label: 'Foundational — Legacy Monoliths & Batch Operations',
+        label: 'Foundational - Legacy Monoliths & Batch Operations',
         description:
           'Legacy or monolithic systems requiring custom scrapers, batch files, or manual data entry with no webhooks or REST APIs.',
         level: 'Foundational',
@@ -103,7 +103,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Implement API wrapper layers or microservice gateways around legacy core systems.',
       },
       {
-        label: 'Developing — Hybrid Cloud & Webhook Integrations',
+        label: 'Developing - Hybrid Cloud & Webhook Integrations',
         description:
           'Mixed environment with several cloud services offering REST APIs, but integration requires custom middleware and manual triggers.',
         level: 'Developing',
@@ -111,7 +111,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Deploy deterministic MessageBus queues and standardize tool interfaces for multi-agent routing.',
       },
       {
-        label: 'Advanced — Event-Driven Queue & Microservices',
+        label: 'Advanced - Event-Driven Queue & Microservices',
         description:
           'API-first architecture with event-driven message queues, microservices, and containerized deployment pipelines.',
         level: 'Advanced',
@@ -119,7 +119,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Incorporate latency-aware agent routing and local Ollama model options for zero-API-cost execution.',
       },
       {
-        label: 'Optimized — Sovereign MessageBus & Multi-Provider Stack',
+        label: 'Optimized - Sovereign MessageBus & Multi-Provider Stack',
         description:
           'Modular, hybrid-cloud or sovereign edge infrastructure with secure MessageBus orchestration, rate-limited agent tools, and multi-provider failover.',
         level: 'Optimized',
@@ -139,7 +139,7 @@ export const DOMAINS: AssessmentDomain[] = [
       'Evaluates Human-in-the-Loop (HITL) frameworks, risk classifications, sign-off hierarchies, and compliance controls.',
     options: [
       {
-        label: 'Foundational — Informal & Ad-Hoc Approvals',
+        label: 'Foundational - Informal & Ad-Hoc Approvals',
         description:
           'Ad-hoc decision-making with informal approval steps and no formal AI risk classification or audit logging.',
         level: 'Foundational',
@@ -147,7 +147,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Define formal risk classification tiers for all automated tasks and mandate human sign-off for financial/regulatory actions.',
       },
       {
-        label: 'Developing — Documented Approval Workflows',
+        label: 'Developing - Documented Approval Workflows',
         description:
           'Documented departmental approval workflows with basic sign-off requirements, but AI usage is ad-hoc or unmonitored.',
         level: 'Developing',
@@ -155,7 +155,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Implement explicit 5-tier Human-in-the-Loop approval gating mapped to organizational authorization levels.',
       },
       {
-        label: 'Advanced — Risk-Classified HITL Approval Gates',
+        label: 'Advanced - Risk-Classified HITL Approval Gates',
         description:
           'Formal risk classification tiers for automated tasks with human-in-the-Loop sign-off for critical financial or regulatory actions.',
         level: 'Advanced',
@@ -163,7 +163,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Enforce append-only SHA-256 audit sealing on all human sign-offs and automated expiry sweeps on stale approvals.',
       },
       {
-        label: 'Optimized — 5-Tier Gated Matrix & Cryptographic Audit',
+        label: 'Optimized - 5-Tier Gated Matrix & Cryptographic Audit',
         description:
           'Multi-tier Human-in-the-Loop (HITL) approval matrix (Tier 1 Auto to Tier 5 Executive) with append-only cryptographically sealed audit trails.',
         level: 'Optimized',
@@ -183,7 +183,7 @@ export const DOMAINS: AssessmentDomain[] = [
       'Evaluates organizational capacity, prompt engineering skills, agent delegation fluency, and change management.',
     options: [
       {
-        label: 'Foundational — Ad-Hoc Assistant Awareness',
+        label: 'Foundational - Ad-Hoc Assistant Awareness',
         description:
           'Limited internal familiarity with agentic workflows; AI is viewed primarily as an experimental search or drafting assistant.',
         level: 'Foundational',
@@ -191,7 +191,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Conduct executive briefing sessions and foundational agent delegation workshops for key department leads.',
       },
       {
-        label: 'Developing — Specialized IT & Analytics Adoption',
+        label: 'Developing - Specialized IT & Analytics Adoption',
         description:
           'Specific teams (e.g. IT, Analytics) utilize AI tooling, but broader business units lack structured agent delegation frameworks.',
         level: 'Developing',
@@ -199,7 +199,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Establish departmental agent champions and formal RACI matrices for human-AI task ownership.',
       },
       {
-        label: 'Advanced — Departmental Agent Delegation',
+        label: 'Advanced - Departmental Agent Delegation',
         description:
           'Department leads understand role-scoped agent delegation and actively manage hybrid human-AI workflows for routine tasks.',
         level: 'Advanced',
@@ -207,7 +207,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Expand agentic capacity across cross-departmental workflows and establish continuous feedback loops.',
       },
       {
-        label: 'Optimized — Executive AI-Native Operating Culture',
+        label: 'Optimized - Executive AI-Native Operating Culture',
         description:
           'Executive leadership actively stewards an AI-native operating model with clear RACI matrices for human authority and agent delegation.',
         level: 'Optimized',
@@ -227,7 +227,7 @@ export const DOMAINS: AssessmentDomain[] = [
       'Evaluates current manual overhead, workflow collapsing opportunities, and multi-agent coordination potential.',
     options: [
       {
-        label: 'Foundational — Manual Handoffs & Siloed Spreadsheets',
+        label: 'Foundational - Manual Handoffs & Siloed Spreadsheets',
         description:
           'High volume of repetitive manual tasks in email, spreadsheets, and chat; workflows rely on individual memory and manual handoffs.',
         level: 'Foundational',
@@ -235,7 +235,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Identify top 3 high-friction, repetitive workflows for initial Workflow Collapsing and agentic automation.',
       },
       {
-        label: 'Developing — Linear Scripts & Basic RPA',
+        label: 'Developing - Linear Scripts & Basic RPA',
         description:
           'Linear RPA or rule-based scripts handle specific back-office tasks, but cross-departmental coordination remains manual.',
         level: 'Developing',
@@ -243,7 +243,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Transition linear scripts into autonomous, role-scoped agent units governed by approval gates.',
       },
       {
-        label: 'Advanced — Governed Departmental Agent Workflows',
+        label: 'Advanced - Governed Departmental Agent Workflows',
         description:
           'Governed multi-step agentic workflows execute routine departmental processes with automated escalation for edge cases.',
         level: 'Advanced',
@@ -251,7 +251,7 @@ export const DOMAINS: AssessmentDomain[] = [
           'Collapse multi-departmental approval chains into instant, orchestrated execution paths under executive oversight.',
       },
       {
-        label: 'Optimized — Fully Orchestrated Multi-Agent Topology',
+        label: 'Optimized - Fully Orchestrated Multi-Agent Topology',
         description:
           'Fully orchestrated, context-aware agent topologies executing end-to-end business functions under continuous human oversight and real-time KPI tracking.',
         level: 'Optimized',

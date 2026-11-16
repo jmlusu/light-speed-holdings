@@ -12,7 +12,7 @@
 - Color-coded zones for each governance element using LightSea palette:
   * DPA: Navy #070A40 zone
   * MACRA: Cyan #00BFFF zone
-  * Four reservations: Red #E63946 accent zones
+  * Four reservations: Red #DC3641 accent zones
   * SADC: Gold/Yellow integration border
 - Key legislative citations prominently displayed:
   * "Data Protection Act (DPA) 2017, updated 2024"

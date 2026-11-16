@@ -17,9 +17,6 @@ import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { HaomtgvPage } from './pages/HAOMTGVPage';
 
-import { FaqPage } from './pages/FaqPage';
-
-
 const HomePageRoute = withSite(HomePage);
 const WhatWeDoPageRoute = withSite(WhatWeDoPage);
 const AiAssessmentPageRoute = withSite(AiAssessmentPage);
@@ -31,10 +28,6 @@ const ContactPageRoute = withSite(ContactPage);
 const PrivacyPageRoute = withSite(PrivacyPage);
 const TermsPageRoute = withSite(TermsPage);
 const HaomtgvPageRoute = withSite(HaomtgvPage);
-
-const FaqPageRoute = withSite(FaqPage);
-
-
 
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<Theme>(() => {

@@ -3,11 +3,11 @@
 ## Mermaid Architecture Diagram
 
 ```mermaid
-%% {init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#070A40', 'primaryContentColor': '#FFFFFF', 'secondaryColor': '#E63946', 'tertiaryColor': '#00BFFF', 'fontFamily': 'Arial, Helvetica, sans-serif'}}}%%
+%% {init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#070A40', 'primaryContentColor': '#FFFFFF', 'secondaryColor': '#DC3641', 'tertiaryColor': '#00BFFF', 'fontFamily': 'Arial, Helvetica, sans-serif'}}}%%
 
 flowchart TB
     %% Brand/Palette node
-    style BrandPalette fill:#070A40,stroke:#E63946,stroke-width:2px
+    style BrandPalette fill:#070A40,stroke:#DC3641,stroke-width:2px
     class BrandPalette
 
     %% UI Layer
@@ -28,10 +28,10 @@ flowchart TB
     subgraph Tokens["Brand Token Layer\n(ADR-020 Locked)"]
         direction LR
         Navy["Navy #070A40"]
-        Red["Red #E63946"]
+        Red["Red #DC3641"]
         Cyan["Cyan #00BFFF"]
         style Navy fill:#070A40,color:#FFFFFF
-        style Red fill:#E63946,color:#FFFFFF
+        style Red fill:#DC3641,color:#FFFFFF
         style Cyan fill:#00BFFF,color:#FFFFFF
     end
 
@@ -106,18 +106,18 @@ flowchart TB
     Flow --> ECL
 
     style UI fill:#F0F9FF,stroke:#070A40,stroke-width:1px
-    style Tokens fill:#F0F9FF,stroke:#E63946,stroke-width:1px
+    style Tokens fill:#F0F9FF,stroke:#DC3641,stroke-width:1px
     style Effects fill:#F0F9FF,stroke:#00BFFF,stroke-width:1px
     style Nav fill:#F0F9FF,stroke:#070A40,stroke-width:1px
     style Data fill:#F0F9FF,stroke:#070A40,stroke-width:1px
-    style Flow fill:#F0F9FF,stroke:#E63946,stroke-width:1px
+    style Flow fill:#F0F9FF,stroke:#DC3641,stroke-width:1px
 ```
 
 ## Mermaid Venture-Studio Workflow Diagram
 
 ```mermaid
 flowchart TD
-    style BrandPalette fill:#070A40,stroke:#E63946,stroke-width:2px
+    style BrandPalette fill:#070A40,stroke:#DC3641,stroke-width:2px
     class BrandPalette
 
     Start["🟢 Start: Idea & Scoping\n\n- Market need identification\n- CEO approval (Jack Mlusu)\n- Define Part boundary (1–5)"]
@@ -175,7 +175,7 @@ flowchart TD
 ## Color Mapping (ADR-020)
 
 - **Navy `#070A40`**: Primary accent, primary text, section borders
-- **Red `#E63946`**: Secondary accent, error states, CTA primary, honesty "Proven in-house" badges
+- **Red `#DC3641`**: Secondary accent, error states, CTA primary, honesty "Proven in-house" badges
 - **Cyan `#00BFFF`**: Highlight accent, fieldable badges, pip active states, link highlights
 - **White `#FFFFFF`**: Backgrounds, card surfaces (light theme)
 - **Grey-dark `#334155`**: Default body text

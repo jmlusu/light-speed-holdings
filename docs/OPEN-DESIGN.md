@@ -270,7 +270,7 @@ store credentials in persisted JSON.
   `static/brand/**` or `public/brand/**` mirrors — sync them with
   `pwsh scripts/build/sync-brand.ps1`.
 
-Brand tokens: navy `#070A40`, red `#E63946`, cyan `#00BFFF`, morning-mist
+Brand tokens: navy `#070A40`, red `#DC3641`, cyan `#00BFFF`, morning-mist
 `#F7F8F9`, deep-mineral `#121518`, white `#FFFFFF`, grey-dark `#6B7280`. Type is
 Arial; spacing is a 4px base scale. Full token table and logo rules:
 `.agents/skills/ls-od-brand/SKILL.md`.

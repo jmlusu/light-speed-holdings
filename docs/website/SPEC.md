@@ -11,7 +11,7 @@
 - Eight-item primary navigation (Home, What We Do, AI Company Builder, Solutions, Use Cases, Sectors, Insights, About) is intact and functional across all routes
 - H-A-O-M-T-G-V framework explained as "90 operating roles. 89 AI agents. One Human CEO." with no contradictory claims
 - FAQ component is accessible, keyboard-navigable, and contains at least 22 evidence-controlled questions
-- Brand tokens (navy #070A40, cyan #00BFFF, red #E63946, white #FFFFFF, light grey #F2F2F2, dark grey #6B7280, light text grey #9CA3AF) are centralized and consistent across all pages
+- Brand tokens (navy #070A40, cyan #00BFFF, red #DC3641, white #FFFFFF, light grey #F2F2F2, dark grey #6B7280, light text grey #9CA3AF) are centralized and consistent across all pages
 - No unsupported commercial, partnership, deployment or performance claims are introduced
 - Public and internal application boundaries remain intact (no exposure of secrets, private prompts, internal databases, credentials, or sensitive orchestration details)
 - Production build passes type checking and automated tests

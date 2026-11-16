@@ -72,7 +72,7 @@ The page was produced by the scroll-craft skill (orchestrated by
 | QA gate | `ls-artifact-qa` | visual / brand / UX / accessibility / content review |
 
 **Standing page constraints (enforced throughout):** verbatim copy; no em
-dashes in page copy; no scroll cues; single `.sc-label`; accent `#E63946` in
+dashes in page copy; no scroll cues; single `.sc-label`; accent `#DC3641` in
 exactly one region; no code comments; no `data-sc-progress`; `.sc-split`
 kinetic line-split; flag math inherited even in flow acts.
 

@@ -17,13 +17,13 @@
 
 **What exists today:**
 
-- **`brand/tokens/brand-tokens.json`** — Machine-readable design tokens (W3C Community Group format). Defines all colors (navy #070A40, red #E63946, cyan #00BFFF), Arial type scale (36pt display-xl → 12pt caption), 4px spacing grid, radius, grid layout, and logo minimum sizes. This is the canonical source of truth.
+- **`brand/tokens/brand-tokens.json`** — Machine-readable design tokens (W3C Community Group format). Defines all colors (navy #070A40, red #DC3641, cyan #00BFFF), Arial type scale (36pt display-xl → 12pt caption), 4px spacing grid, radius, grid layout, and logo minimum sizes. This is the canonical source of truth.
 - **`brand/tokens/brand-tokens.css`** — CSS custom properties for web integration.
 - **`brand/guidelines/brand-guidelines.md`** — Comprehensive brand guidelines. Covers color system, logo usage (8 variants plus transparent twins), typography, layout, voice, templates, compliance checklist, and dashboard exception.
 - **`static/brand/BRAND_GUIDELINES.md`** — Quick reference doc for agents.
 - **Logo suite** — 31 files in `brand/logo/` covering 8 concepts (`logo-full`, `logo-light-bg`, `logo-dark-bg`, `logo-mark`, `logo-mark-mono`, `logo-avatar`, `logo-favicon`, `logo-og`), each as SVG + PNG with transparent twins where the base was opaque. Current guidance: `brand/guidelines/brand-guidelines.md` § 3.
 - **Print assets** — Business cards (front/back, 5 formats), letterheads (2 designs, SVG/PDF/PNG), email signatures (2 designs).
-- **Brand tokens reflect the correct palette:** navy `#070A40`, red `#E63946`, cyan `#00BFFF`, grey-light `#F2F2F2`, white `#FFFFFF`, grey-dark `#6B7280`, grey-light-text `#9CA3AF`. The 60/20/20 ratio rule is documented.
+- **Brand tokens reflect the correct palette:** navy `#070A40`, red `#DC3641`, cyan `#00BFFF`, grey-light `#F2F2F2`, white `#FFFFFF`, grey-dark `#6B7280`, grey-light-text `#9CA3AF`. The 60/20/20 ratio rule is documented.
 
 **Readiness Score: 4/5**
 

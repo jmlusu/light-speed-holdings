@@ -16,7 +16,7 @@
   * Market expansion opportunities
 - Visual metaphor: balance scale, see-through comparison, or before/after dashboard
 - Color coding:
-  * Red #E63946 for costs (transparent overlay)
+  * Red #DC3641 for costs (transparent overlay)
   * Cyan #00BFFF for benefits/value
   * Navy #070A40 for baseline/neutral elements
 - ROI percentage indicators and break-even timelines

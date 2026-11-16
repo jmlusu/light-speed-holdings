@@ -16,7 +16,7 @@
 - Color coding using LightSea palette for each reservation:
   * Navy #070A40: Data sovereignty
   * Cyan #00BFFF: Privacy protections
-  * Red #E63946: Security standards
+  * Red #DC3641: Security standards
   * Gold #FFD700: Consent requirements
 - Connection lines showing interdependencies between reservations
 - Malawi-specific context annotations (national data holder, citizen rights, etc.)
