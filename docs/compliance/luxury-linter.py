@@ -21,6 +21,7 @@ Checks:
 # ---------------------------------------------------------------------------
 # Boilerplate
 # ---------------------------------------------------------------------------
+import json
 import os
 import re
 import sys
@@ -86,13 +87,6 @@ class AccentCounter(HTMLParser):
         for name, value in attrs:
             if name == "style" and isinstance(value, str) and re.search(r"var\(--ls-red\)", value):
                 self.count += 1
-
-
-def count_accent_places(doc: str) -> int:
-    """Return how many distinct places --ls-red appears in the HTML."""
-    counter = AccentCounter()
-    counter.feed(doc)
-    return counter.count
 
 
 # ---------------------------------------------------------------------------
@@ -254,46 +248,118 @@ def iter_doc_files(root: Path) -> list[Path]:
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def main(root: Path = Path(".")) -> int:
-    """Run the linter on all documentation files under *root*."""
+CHECK_ORDER = ("token", "accent", "line", "callout", "style")
 
+
+def collect_issues(doc_path: Path) -> dict[str, list[str]]:
+    """Run every check against *doc_path*, keyed by check name."""
+    return {
+        "token": check_token_compliance(doc_path),
+        "accent": check_accent_count(doc_path),
+        "line": check_line_length(doc_path),
+        "callout": check_callout_format(doc_path),
+        "style": check_no_shadows_borders(doc_path),
+    }
+
+
+def parse_args(argv: list[str]) -> tuple[Path, Path | None, bool]:
+    """Return (root, baseline_path, write_baseline) from CLI arguments."""
+    root = Path(".")
+    baseline_path: Path | None = None
+    write_baseline = False
+    positionals: list[str] = []
+
+    i = 0
+    while i < len(argv):
+        arg = argv[i]
+        if arg == "--baseline":
+            i += 1
+            if i >= len(argv):
+                raise SystemExit("--baseline requires a path")
+            baseline_path = Path(argv[i])
+        elif arg.startswith("--baseline="):
+            baseline_path = Path(arg.split("=", 1)[1])
+        elif arg == "--write-baseline":
+            write_baseline = True
+        elif arg in ("-h", "--help"):
+            print(__doc__)
+            print("Usage: luxury-linter.py [ROOT] [--baseline PATH] [--write-baseline]")
+            raise SystemExit(0)
+        else:
+            positionals.append(arg)
+        i += 1
+
+    if positionals:
+        root = Path(positionals[0])
+    return root, baseline_path, write_baseline
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Run the linter on all documentation files under the requested root."""
+    if argv is None:
+        argv = sys.argv[1:]
+
+    root, baseline_path, write_baseline = parse_args(argv)
     files = iter_doc_files(root)
     if not files:
         print("No documentation files found under", root)
         return 0
 
+    allowed: dict[str, dict[str, int]] = {}
+    if baseline_path is not None and baseline_path.exists() and not write_baseline:
+        baseline_data = json.loads(read_text_safe(baseline_path))
+        allowed = baseline_data.get("counts", {})
+
+    counts: dict[str, dict[str, int]] = {}
     overall_status = 0
+    new_violations = 0
+
     for fp in files:
-        rel = fp.relative_to(root)
-        print(f"> {rel.as_posix()}")
-        issues: list[str] = []
+        rel = fp.relative_to(root).as_posix()
+        issues = collect_issues(fp)
+        file_counts = {name: len(items) for name, items in issues.items()}
+        if any(file_counts.values()):
+            counts[rel] = file_counts
 
-        # 1) Token compliance
-        issues.extend(check_token_compliance(fp))
+        if write_baseline:
+            continue
 
-        # 2) Accent colour count
-        issues.extend(check_accent_count(fp))
-
-        # 3) Line length
-        issues.extend(check_line_length(fp))
-
-        # 4) Callout format
-        issues.extend(check_callout_format(fp))
-
-        # 5) No shadows / thick borders / saturated fills
-        issues.extend(check_no_shadows_borders(fp))
-
-        if issues:
+        for name in CHECK_ORDER:
+            items = issues[name]
+            budget = allowed.get(rel, {}).get(name, 0)
+            excess = items[budget:]
+            if not excess:
+                continue
             overall_status = 1
-            print(f"   ISSUES ({len(issues)}):")
-            for iv in issues:
-                # Encode safely to avoid cp1252 crash on Windows with non-ASCII chars
-                line = iv.encode("ascii", "replace").decode("ascii")
-                print(f"   - {line}")
-        else:
-            print("   compliant (all checks pass)")
+            new_violations += len(excess)
+            print(f"> {rel}")
+            print(f"   NEW {name} issues ({len(excess)} over baseline {budget}):")
+            for issue in excess:
+                print("   - " + issue.encode("ascii", "replace").decode("ascii"))
 
+    if write_baseline:
+        if baseline_path is None:
+            raise SystemExit("--write-baseline requires --baseline PATH")
+        payload = {
+            "description": (
+                "Luxury linter debt baseline. Counts are per file and per check. "
+                "A count above its recorded baseline fails CI; lower the number "
+                "as debt is paid down."
+            ),
+            "counts": counts,
+        }
+        baseline_path.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        print(f"Wrote baseline for {len(counts)} files to {baseline_path}")
+        return 0
+
+    if baseline_path is not None:
+        print(f"\nBaseline: {baseline_path} ({len(allowed)} files with recorded debt)")
     print("\n--- Linter finished ---")
+    if overall_status == 0 and baseline_path is not None:
+        print("No new violations beyond the recorded baseline.")
     return overall_status
 
 
