@@ -128,7 +128,7 @@ describe('HaomtgvPage', () => {
     expect(screen.getByRole('link', { name: /Sectors/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Solutions/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /What We Do/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Pharos Insights/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Pharos/i })).toBeInTheDocument();
   });
 
   it('applies the light theme hero gradient', () => {

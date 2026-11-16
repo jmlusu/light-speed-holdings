@@ -159,13 +159,16 @@ const collectReferences = (): {
 };
 
 describe('site media registry', () => {
-  it('registers exactly 26 assets (pinned)', () => {
-    // 26 = 13 public site assets + 10 aistudio backgrounds + 3 brand logos.
+  it('registers exactly 61 assets (pinned)', () => {
+    // 61 = the 26 public-site assets (13 public + 10 aistudio backgrounds + 3
+    // brand logos) plus the 35 assets restored with the AI Studio component set
+    // in #586. Breakdown by kind: 45 ai-generated, 7 illustration, 7 logo,
+    // 1 social-card, 1 missing.
     expect(
       registry.assets.length,
-      `media-registry.json should hold exactly 26 assets; found ${registry.assets.length}. ` +
+      `media-registry.json should hold exactly 61 assets; found ${registry.assets.length}. ` +
         'Update the registry and this pinned count together.',
-    ).toBe(26);
+    ).toBe(61);
   });
 
   it('covers every image path referenced by site source and index.html', () => {

@@ -83,15 +83,16 @@ export const SiteLayout: React.FC = () => {
           <Outlet />
         </main>
 
-      <ExecutiveBriefingModal
-        isOpen={isBriefingOpen}
-        onClose={closeBriefing}
-        prefillSummary={briefingSummary}
-        theme={theme}
-      />
+        <ExecutiveBriefingModal
+          isOpen={isBriefingOpen}
+          onClose={closeBriefing}
+          prefillSummary={briefingSummary}
+          theme={theme}
+        />
 
-      <BackToTop theme={theme} />
-    </>
+        <BackToTop theme={theme} />
+      </div>
+    </div>
   );
 };
 
