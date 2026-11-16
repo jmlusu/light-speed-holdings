@@ -85,7 +85,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     source: 'src/data/offerFamilies.ts (OFFER_FAMILIES)',
     category: 'outcome',
     evidence:
-      'Honesty classification (CATALOG_POSITIONING, retired with useCaseCatalogData.ts 2026-10-13): nothing delivered to paying clients; offers carry honesty-ladder badges — see siteContent.ts trustEvidence and faqs.proven-clients.',
+      'Honesty classification (CATALOG_POSITIONING, retired with useCaseCatalogData.ts 2026-10-13): nothing delivered to paying clients; offers carry honesty-ladder badges - see siteContent.ts trustEvidence and faqs.proven-clients.',
     lastReviewed: '2026-09-28',
   },
   {
@@ -111,7 +111,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     source: 'src/data/siteContent.ts (proofCaseStudies, proofPolicy)',
     category: 'outcome',
     evidence:
-      'Honesty classification (CATALOG_POSITIONING, retired 2026-10-13): case studies are fieldable/pilot work, not delivered client outcomes — see siteContent.ts proofCaseStudies honesty badges.',
+      'Honesty classification (CATALOG_POSITIONING, retired 2026-10-13): case studies are fieldable/pilot work, not delivered client outcomes - see siteContent.ts proofCaseStudies honesty badges.',
     lastReviewed: '2026-09-28',
   },
   {

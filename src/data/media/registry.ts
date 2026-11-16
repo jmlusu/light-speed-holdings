@@ -84,7 +84,7 @@ export const mediaRegistry: MediaAsset[] = [
     id: 'haomtgv-progressive',
     type: 'HAOMTGV_INFOGRAPHIC',
     title: 'H-A-O-M-T-G-V Framework (Progressive Reveal)',
-    description: 'Animated progressive reveal version for hero sections — each layer reveals on scroll.',
+    description: 'Animated progressive reveal version for hero sections - each layer reveals on scroll.',
     src: {
       svg: '/assets/diagrams/haomtgv/haomtgv-progressive.svg',
     },
@@ -103,7 +103,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'glyph-human',
     type: 'MICRO_ILLUSTRATIONS',
-    title: 'H — Human Glyph',
+    title: 'H - Human Glyph',
     description: 'Stylized figure with intent arrow for Human layer.',
     src: {
       svg: '/assets/diagrams/micro-illustrations/glyph-human.svg',
@@ -121,7 +121,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'glyph-agents',
     type: 'MICRO_ILLUSTRATIONS',
-    title: 'A — Agents Glyph',
+    title: 'A - Agents Glyph',
     description: 'Interlocking geometric forms for Agents layer.',
     src: {
       svg: '/assets/diagrams/micro-illustrations/glyph-agents.svg',
@@ -139,7 +139,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'glyph-orchestration',
     type: 'MICRO_ILLUSTRATIONS',
-    title: 'O — Orchestration Glyph',
+    title: 'O - Orchestration Glyph',
     description: 'Flow lines and nodes for Orchestration layer.',
     src: {
       svg: '/assets/diagrams/micro-illustrations/glyph-orchestration.svg',
@@ -157,7 +157,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'glyph-memory',
     type: 'MICRO_ILLUSTRATIONS',
-    title: 'M — Memory Glyph',
+    title: 'M - Memory Glyph',
     description: 'Layered cylinders for Memory layer.',
     src: {
       svg: '/assets/diagrams/micro-illustrations/glyph-memory.svg',
@@ -175,7 +175,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'glyph-tools',
     type: 'MICRO_ILLUSTRATIONS',
-    title: 'T — Tools Glyph',
+    title: 'T - Tools Glyph',
     description: 'Wrench/terminal hybrid for Tools layer.',
     src: {
       svg: '/assets/diagrams/micro-illustrations/glyph-tools.svg',
@@ -193,7 +193,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'glyph-governance',
     type: 'MICRO_ILLUSTRATIONS',
-    title: 'G — Governance Glyph',
+    title: 'G - Governance Glyph',
     description: 'Shield with check for Governance layer.',
     src: {
       svg: '/assets/diagrams/micro-illustrations/glyph-governance.svg',
@@ -211,7 +211,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'glyph-value',
     type: 'MICRO_ILLUSTRATIONS',
-    title: 'V — Value Glyph',
+    title: 'V - Value Glyph',
     description: 'Upward chart/diamond for Value layer.',
     src: {
       svg: '/assets/diagrams/micro-illustrations/glyph-value.svg',
@@ -233,7 +233,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'logo-full-color',
     type: 'HERO_IMAGERY',
-    title: 'LightSpeed Logo — Full',
+    title: 'LightSpeed Logo - Full',
     description: 'Canonical mark plus wordmark on a light background, for headers and covers.',
     src: {
       svg: '/brand/logo/logo-full.svg',
@@ -252,7 +252,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'logo-dark-bg',
     type: 'HERO_IMAGERY',
-    title: 'LightSpeed Logo — Dark Background',
+    title: 'LightSpeed Logo - Dark Background',
     description: 'Logo variant tuned for navy and other dark backgrounds.',
     src: {
       svg: '/brand/logo/logo-dark-bg.svg',
@@ -271,7 +271,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'logo-light-bg',
     type: 'HERO_IMAGERY',
-    title: 'LightSpeed Logo — Light Background',
+    title: 'LightSpeed Logo - Light Background',
     description: 'Logo variant tuned for white and other light backgrounds.',
     src: {
       svg: '/brand/logo/logo-light-bg.svg',
@@ -309,7 +309,7 @@ export const mediaRegistry: MediaAsset[] = [
   {
     id: 'logo-monochrome',
     type: 'HERO_IMAGERY',
-    title: 'LightSpeed Mark — Monochrome',
+    title: 'LightSpeed Mark - Monochrome',
     description: 'Single-colour navy mark for print and limited-colour contexts.',
     src: {
       svg: '/brand/logo/logo-mark-mono.svg',
