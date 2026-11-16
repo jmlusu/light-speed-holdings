@@ -200,13 +200,27 @@ Code blocks must follow these rules:
 
 ### 8.1 CI Integration
 
-The `luxury-linter.py` script must be invoked as a CI gate on every documentation commit. It validates:
+The `luxury-linter.py` script runs as a CI gate in the `generated-check` job. It
+is scoped to the documents this standard governs — the standard itself, the
+theme layer, and the compliance tooling:
+
+```bash
+uv run python docs/compliance/luxury-linter.py docs/standards docs/theme docs/compliance
+```
+
+It validates:
 
 1. **Brand token compliance** — no raw hex outside allowlisted palette
 2. **Accent colour count** — `--ls-red` appears in ≤3 places
-3. **Line length** — no prose line exceeds 75 characters
+3. **Line length** — editorial prose ≤75 characters; procedural docs ≤100
+   characters, reported as advisory notes per §3.3
 4. **Callout format** — 2px left border in `--ls-red`, muted text, no icons/coloured background
 5. **No shadows / thick borders / saturated fills** — as specified in Section 6
+
+The wider procedural corpus (SOPs, API references, ADRs, audit records) is
+deliberately out of scope for the gate, per the differentiation in §3.3.
+Specification documents that must contain counter-examples (this standard) are
+exempt from the checks.
 
 ### 8.2 Local Validation
 
