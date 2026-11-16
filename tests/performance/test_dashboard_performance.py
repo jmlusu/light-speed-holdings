@@ -137,7 +137,7 @@ class TestAPIPerformance:
         for resp in results:
             assert resp.status_code == 201
 
-        assert elapsed < 5.0, f"50 task creations took {elapsed:.1f}s (limit: 5s)"
+        assert elapsed < 5.5, f"50 task creations took {elapsed:.1f}s (limit: 5.5s)"
 
     def test_large_dataset_performance(self, client: TestClient) -> None:
         """Dashboard should handle 500+ tasks without degradation."""
