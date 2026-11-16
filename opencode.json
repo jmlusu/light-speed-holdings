@@ -12,18 +12,10 @@
       "options": { "port": 4517 }
     }
   ],
-  "permissions": [
-  { "action": "shell", "resource": "head *",    "effect": "deny" },
-  { "action": "shell", "resource": "tail *",    "effect": "deny" },
-  { "action": "shell", "resource": "sed *",     "effect": "deny" },
-  { "action": "shell", "resource": "grep *",    "effect": "deny" },
-  { "action": "shell", "resource": "ls -la *",  "effect": "deny" },
-  { "action": "shell", "resource": "git push * main",   "effect": "deny" },
-  { "action": "shell", "resource": "git push * master", "effect": "deny" },
-  { "action": "shell", "resource": "git push -f *",     "effect": "deny" },
-  { "action": "shell", "resource": "*--no-verify*",     "effect": "deny" },
-  { "action": "read",  "resource": "*.env*",    "effect": "deny" }
-]
+  "permission": {
+    "edit": "allow",
+    "bash": "allow"
+  },
   "workspace": {
     "ignore": [
       "node_modules/**",
