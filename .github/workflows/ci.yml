@@ -43,7 +43,7 @@ jobs:
         # Repo is public: client proposals/commercial terms must never be
         # tracked. Incident 2026-11-10 (proposal-deliverables/ on main).
         run: uv run python scripts/test/check-confidential-artifacts.py
-      -  typecheck:
+  typecheck:
     name: Type check (mypy)
     runs-on: ubuntu-latest
     steps:

@@ -50,9 +50,9 @@ const VISITOR_PATHS: VisitorPathCard[] = [
     id: 'researchers',
     stage: 'ENQUIRY',
     intent: 'Researchers',
-    body: 'Access Pharos insights, research briefs, and policy commentary on the evolution of AI in Africa.',
+    body: 'Access Pharos research briefs and policy commentary on how AI is changing Africa.',
     image: '/src/assets/images/audience_researchers_1793515174898.jpg',
-    primary: { label: 'Read Insights', to: '/insights' },
+    primary: { label: 'Explore Pharos', to: '/insights' },
     secondary: [
       { label: 'Pharos practice', to: '/about' },
     ],
