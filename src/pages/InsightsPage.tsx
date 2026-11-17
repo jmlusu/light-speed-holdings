@@ -79,11 +79,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
       <section className={`relative overflow-hidden px-6 lg:px-12 pt-28 sm:pt-32 pb-14 ${isLight ? 'bg-ls-white' : 'bg-[#03061C]'}`}>
         {/* Background Atmosphere */}
         <div className="absolute inset-0 pointer-events-none select-none z-0">
-          <div className={`absolute inset-0 ${
-            isLight
-              ? 'bg-ls-white'
-              : 'bg-[#03061C]'
-          }`} />
+          <div className={`absolute inset-0 ${isLight ? 'bg-ls-white' : 'bg-[#03061C]'}`} />
         </div>
 
         <div className="max-w-7xl mx-auto w-full space-y-4 relative z-10">
@@ -92,135 +88,13 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
             <span>PHAROS // RESEARCH HUB</span>
           </div>
           <h1 className={`text-3xl lg:text-5xl font-bold tracking-tight font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-            Evidence, Research &amp; the Agentic AI Canon
+            Evidence, Research & the Agentic AI Canon
           </h1>
           <p className={`max-w-2xl text-base leading-relaxed ${secondaryText}`}>
             Original research, cited sources, and executive briefings on AI strategy, data residency, and governance, written for boards and grounded in production systems.
           </p>
         </div>
       </section>
-
-      {/* OPERATING MODEL ARCHITECTURAL DISTINCTION BANNER */}
-      <section className="px-6 lg:px-12 max-w-7xl mx-auto w-full pt-12 pb-6" aria-label="Operating Model Architecture Distinction">
-        <div className={`rounded-3xl p-8 lg:p-10 transition-all relative overflow-hidden ${
-          isLight
-            ? 'bg-cyan-50/70 text-ls-navy shadow-sm'
-            : 'bg-cyan-950/30 text-white shadow-xl'
-        }`}>
-          {/* Subtle Architecture Visual Backdrop */}
-          <div className="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none select-none opacity-10 dark:opacity-20 z-0 hidden lg:block">
-            <img
-              src="/src/assets/images/pharos_canonical_architecture_1793817675241.jpg"
-              alt="Canonical Agentic Architecture Hierarchy"
-              className="w-full h-full object-cover object-left filter saturate-120"
-              loading="lazy"
-            />
-            <div className={`absolute inset-0 ${
-              isLight
-                ? 'bg-gradient-to-r from-cyan-50 via-cyan-50/70 to-transparent'
-                : 'bg-gradient-to-r from-[#03061C] via-[#03061C]/80 to-transparent'
-            }`} />
-          </div>
-
-          <div className="relative z-10">
-            <div className="flex flex-wrap items-center gap-2.5 mb-4">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
-              <span className="font-mono text-xs font-bold tracking-widest text-cyan-700 dark:text-cyan-400 uppercase">
-                OPERATING ARCHITECTURE // CANONICAL DISTINCTION
-              </span>
-            </div>
-
-            <h2 className={`text-2xl lg:text-3xl font-bold font-display tracking-tight mb-3 ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-              LightSpeed Internal Reference Model vs. Client Implementation Framework
-            </h2>
-            <p className={`text-sm leading-relaxed max-w-4xl mb-8 ${secondaryText}`}>
-              Pharos thought leadership documents the empirical research and operational findings of LightSpeed&apos;s internal AI-native company. We maintain a strict boundary between our in-house reference architecture and client venture deployments.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Model 1: Internal Reference Model */}
-            <div className={`rounded-2xl p-6 flex flex-col justify-between ${
-              isLight ? 'bg-ls-white shadow-sm' : 'bg-slate-900/90 shadow-lg'
-            }`}>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <Icon3D name="users" size="xs" />
-                    <span className="font-mono text-xs font-bold tracking-wider text-cyan-600 dark:text-cyan-400 uppercase">
-                      INTERNAL REFERENCE MODEL
-                    </span>
-                  </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-300">
-                    Live In-House
-                  </span>
-                </div>
-                <h3 className={`text-xl font-bold font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-                  89 AI Agents + 1 Human CEO
-                </h3>
-                <p className={`text-xs sm:text-sm leading-relaxed ${secondaryText}`}>
-                  LightSpeed&apos;s internal operating structure is a live, stress-tested benchmark comprising <strong>90 canonical operating roles</strong> (89 specialized AI agents and 1 Human CEO) across 20 functional departments.
-                </p>
-                <ul className={`space-y-2 text-xs pt-2 ${secondaryText}`}>
-                  <li className="flex items-start gap-2">
-                    <span className="text-cyan-500 font-bold shrink-0">✓</span>
-                    <span><strong>Human Sovereign Authority:</strong> The Human CEO retains exclusive sign-off on Tier 4 constitutional, financial, and irreversible actions.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-cyan-500 font-bold shrink-0">✓</span>
-                    <span><strong>Empirical Laboratory:</strong> All 9 Pharos research briefs examine the real-world mechanics, task queues, and failure modes of this in-house fleet.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-cyan-500 font-bold shrink-0">✓</span>
-                    <span><strong>Deterministic Gate:</strong> Five-tier approval matrix enforced in code with SHA-256 sealed audit trails.</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Model 2: Client Implementation Framework */}
-            <div className={`rounded-2xl p-6 flex flex-col justify-between ${
-              isLight ? 'bg-ls-red/10 shadow-sm' : 'bg-slate-900/90 shadow-lg'
-            }`}>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <Icon3D name="orchestration" size="xs" />
-                    <span className="font-mono text-xs font-bold tracking-wider text-ls-red uppercase">
-                      CLIENT IMPLEMENTATION MODEL
-                    </span>
-                  </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-ls-red/10 text-ls-red">
-                    Configurable &amp; Scalable
-                  </span>
-                </div>
-                <h3 className={`text-xl font-bold font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-                  Configurable AI Agent Teams (1 to N+)
-                </h3>
-                <p className={`text-xs sm:text-sm leading-relaxed ${secondaryText}`}>
-                  For enterprise and institutional partners, LightSpeed builds and deploys <strong>modular, right-sized AI agent teams</strong> that scale dynamically according to specific business goals, operational complexity, and workload.
-                </p>
-                <ul className={`space-y-2 text-xs pt-2 ${secondaryText}`}>
-                  <li className="flex items-start gap-2">
-                    <span className="text-ls-red font-bold shrink-0">✓</span>
-                    <span><strong>No Fixed-Size Mandate:</strong> Clients are never required to adopt 90 roles, 89 agents, or an arbitrary fixed-size workforce.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-ls-red font-bold shrink-0">✓</span>
-                    <span><strong>Scalable Governance:</strong> The identical five-tier approval matrix and human sovereign control apply whether running 1 agent or 50.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-ls-red font-bold shrink-0">✓</span>
-                    <span><strong>Strict ROI Evaluation:</strong> Governed by transparent evaluation criteria: cycle time, operating expense, and defect elimination.</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
 
       {/* Featured Whitepaper Spotlight */}
       <section className="px-6 lg:px-12 max-w-7xl mx-auto w-full py-10">
@@ -232,9 +106,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
           {FEATURED_WHITEPAPERS.map((wp) => (
             <div
               key={wp.id}
-              className={`rounded-2xl overflow-hidden flex flex-col justify-between group transition-all duration-300 border ${
-                isLight ? 'border-slate-200 hover:shadow-xl' : 'border-white/10 hover:border-cyan-500/40 hover:shadow-2xl'
-              } ${cardBg}`}
+              className={`rounded-2xl overflow-hidden flex flex-col justify-between group transition-all duration-300 border ${isLight ? 'border-slate-200 hover:shadow-xl' : 'border-white/10 hover:border-cyan-500/40 hover:shadow-2xl'} ${cardBg}`}
             >
               <div>
                 {/* 3D Academic Research Cover Artwork */}
@@ -271,18 +143,16 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
                     {wp.abstract}
                   </p>
                 </div>
-              </div>
 
-              <div className={`px-8 py-5 flex items-center justify-between border-t ${
-                isLight ? 'bg-ls-grey-light/50 border-slate-200' : 'bg-slate-950/80 border-white/10'
-              }`}>
-                <button
-                  onClick={() => setActiveWhitepaper(wp)}
-                  className="btn-milled btn-milled-primary px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-98"
-                >
-                  <Icon3D name="notepad" size="xs" /> Read Whitepaper
-                </button>
-                <span className={`text-xs font-mono ${mutedText}`}>Cited Sources</span>
+                <div className={`px-8 py-5 flex items-center justify-between border-t ${isLight ? 'bg-ls-grey-light/50 border-slate-200' : 'bg-slate-950/80 border-white/10'}`}>
+                  <button
+                    onClick={() => setActiveWhitepaper(wp)}
+                    className="btn-milled btn-milled-primary px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-98"
+                  >
+                    <Icon3D name="notepad" size="xs" /> Read Whitepaper
+                  </button>
+                  <span className={`text-xs font-mono ${mutedText}`}>Cited Sources</span>
+                </div>
               </div>
             </div>
           ))}
@@ -302,13 +172,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`btn-milled ${isSelected ? 'btn-milled-primary' : 'btn-milled-secondary'} px-4 py-2 rounded-full text-xs font-medium tracking-wider transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-ls-red text-white shadow-md font-bold'
-                    : isLight
-                    ? 'bg-ls-white text-ls-navy hover:bg-ls-grey-light shadow-sm'
-                    : 'bg-slate-900 text-slate-200 hover:bg-slate-800'
-                }`}
+                className={`btn-milled ${isSelected ? 'btn-milled-primary' : 'btn-milled-secondary'} px-4 py-2 rounded-full text-xs font-medium tracking-wider transition-all cursor-pointer ${isSelected ? 'bg-ls-red text-white shadow-md font-bold' : isLight ? 'bg-ls-white text-ls-navy hover:bg-ls-grey-light shadow-sm' : 'bg-slate-900 text-slate-200 hover:bg-slate-800'}`}
               >
                 {cat === 'All' ? 'All Topics' : cat}
               </button>
@@ -323,7 +187,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
           <div>
             <span className="text-xs font-semibold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">CANONICAL ESSAYS</span>
             <h2 className={`text-2xl font-bold mt-1 ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-              Featured Articles &amp; Briefings {selectedCategory !== 'All' && `· ${selectedCategory}`}
+              Featured Articles & Briefings {selectedCategory !== 'All' && `· ${selectedCategory}`}
             </h2>
           </div>
           <span className={`text-xs font-mono ${mutedText}`}>
@@ -360,9 +224,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
                 <Link
                   key={article.slug}
                   to={`/insights/${article.slug}`}
-                  className={`group rounded-2xl overflow-hidden h-full flex flex-col justify-between transition-all border ${
-                    isLight ? 'border-slate-200 hover:shadow-lg' : 'border-white/10 hover:border-cyan-500/30 hover:shadow-xl'
-                  } ${cardBg}`}
+                  className={`group rounded-2xl overflow-hidden h-full flex flex-col justify-between transition-all border ${isLight ? 'border-slate-200 hover:shadow-lg' : 'border-white/10 hover:border-cyan-500/30 hover:shadow-xl'} ${cardBg}`}
                 >
                   <div>
                     {thumbImage && (
@@ -381,28 +243,22 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
                       </div>
                     )}
 
-                      <div className="p-6 space-y-3">
-                        <div className="flex flex-wrap gap-2">
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider ${
-                            isLight ? 'bg-cyan-500/10 text-cyan-600 border border-cyan-500/20' : 'bg-cyan-950/50 text-cyan-400 border border-cyan-800'
-                          }`}>
-                            {article.topic}
-                          </span>
-                        </div>
-                        <h3 className={`text-lg font-bold leading-snug group-hover:text-cyan-500 dark:group-hover:text-cyan-300 transition-colors ${
-                          isLight ? 'text-ls-navy' : 'text-white'
-                        }`}>
-                          {article.title}
-                        </h3>
-                        <p className={`text-sm leading-relaxed ${secondaryText} line-clamp-3`}>
-                          {article.dek}
-                        </p>
+                    <div className="p-6 space-y-3">
+                      <div className="flex flex-wrap gap-2">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider ${isLight ? 'bg-cyan-500/10 text-cyan-600 border border-cyan-500/20' : 'bg-cyan-950/50 text-cyan-400 border border-cyan-800'}`}>
+                          {article.topic}
+                        </span>
                       </div>
+                      <h3 className={`text-lg font-bold leading-snug group-hover:text-cyan-500 dark:group-hover:text-cyan-300 transition-colors ${isLight ? 'text-ls-navy' : 'text-white'}`}>
+                        {article.title}
+                      </h3>
+                      <p className={`text-sm leading-relaxed ${secondaryText} line-clamp-3`}>
+                        {article.dek}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className={`px-6 py-4 border-t flex items-center justify-between text-xs font-mono ${mutedText} ${
-                    isLight ? 'bg-slate-50/50 border-slate-200' : 'bg-slate-950/40 border-white/5'
-                  }`}>
+                  <div className={`px-6 py-4 border-t flex items-center justify-between text-xs font-mono ${mutedText} ${isLight ? 'bg-slate-50/50 border-slate-200' : 'bg-slate-950/40 border-white/5'}`}>
                     <span>{formatInsightDate(article.publishedAt)} · {article.readMins} MIN</span>
                     <span className="inline-flex items-center gap-1 text-cyan-600 dark:text-cyan-400 font-semibold group-hover:translate-x-1 transition-transform">
                       Read Briefing →
