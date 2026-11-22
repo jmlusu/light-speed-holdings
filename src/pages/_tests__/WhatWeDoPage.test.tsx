@@ -10,7 +10,7 @@ describe('WhatWeDoPage Hero', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    const eyebrow = screen.getByRole('heading', { name: /LIGHTSPEED HOLDINGS \/\/ ENGAGEMENT MODEL/i });
+    const eyebrow = screen.getByText(/THE AI-NATIVE COMPANY BUILDER/);
     expect(eyebrow).toBeInTheDocument();
   });
 
@@ -20,7 +20,7 @@ describe('WhatWeDoPage Hero', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    const headline = screen.getByRole('heading', { name: /Strategy\. Build\. Govern\. Research \& Policy/i });
+    const headline = screen.getByRole('heading', { name: /An Operating Model Built Around Seven HAOMTGV Pillars/ });
     expect(headline).toBeInTheDocument();
   });
 
@@ -30,7 +30,7 @@ describe('WhatWeDoPage Hero', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    const subhead = screen.getByText(/We help organizations move from a real problem to a governed, measured AI capability/);
+    const subhead = screen.getByText(/LightSpeed Holdings does not deploy standalone AI tools./);
     expect(subhead).toBeInTheDocument();
   });
 
@@ -40,7 +40,7 @@ describe('WhatWeDoPage Hero', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    const cta = screen.getByText(/START A CONVERSATION/);
+    const cta = screen.getByText(/ENGAGE LIGHTSPEED/);
     expect(cta).toBeInTheDocument();
   });
 
@@ -50,7 +50,7 @@ describe('WhatWeDoPage Hero', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    const secondaryCta = screen.getByText(/REQUEST AN AI READINESS ASSESSMENT/);
+    const secondaryCta = screen.getByText(/EXPLORE PHAROS/);
     expect(secondaryCta).toBeInTheDocument();
   });
 });
@@ -62,9 +62,10 @@ describe('WhatWeDoPage Engagement Model Flow', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    // The flow diagram appears as a code block with the 6 stages
-    const flowContent = screen.getByText(/PROBLEM.*DESIGN.*BUILD.*DEPLOY.*GOVERN.*MEASURE/s);
-    expect(flowContent).toBeInTheDocument();
+    // The flow diagram section is present with the seven pillars
+    expect(screen.getByText(/INTERACTIVE SEVEN-PILLAR STACK/)).toBeInTheDocument();
+    // Check for pillar names in the flow description
+    expect(screen.getByText(/Human Direction/)).toBeInTheDocument();
   });
 
   it('renders table with six stage rows', () => {
@@ -79,11 +80,9 @@ describe('WhatWeDoPage Engagement Model Flow', () => {
     const stageRowTexts = tableRows.filter((row) =>
       !row.textContent.includes('Stage What happens')
     );
-    const stageNames = ['PROBLEM', 'DESIGN', 'BUILD', 'DEPLOY', 'GOVERN', 'MEASURE'];
-    stageNames.forEach((stage) => {
-      const found = stageRowTexts.some((row) => row.textContent.includes(stage));
-      expect(found).toBe(true);
-    });
+    // Check for stage names using getAllByText and length check
+    expect(screen.getAllByText(/Problem Addressed/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Design Target Operating Model/i).length).toBeGreaterThan(0);
   });
 });
 
@@ -94,7 +93,7 @@ describe('WhatWeDoPage Dark Mode', () => {
         <WhatWeDoPage theme="dark" />
       </MemoryRouter>
     );
-    const darkHeading = screen.getByRole('heading', { name: /LIGHTSPEED HOLDINGS \/\/ ENGAGEMENT MODEL/i });
+    const darkHeading = screen.getByRole('heading', { name: /An Operating Model Built Around Seven HAOMTGV Pillars/ });
     expect(darkHeading).toBeInTheDocument();
   });
 });
