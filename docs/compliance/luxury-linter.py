@@ -89,6 +89,7 @@ class AccentCounter(HTMLParser):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 def count_accent_places(doc: str) -> int:
     """Return how many distinct places --ls-red appears in the HTML."""
@@ -101,6 +102,8 @@ def count_accent_places(doc: str) -> int:
 # Core checks
 # ---------------------------------------------------------------------------
 >>>>>>> origin/fix/site-copy-pharos-standards
+=======
+>>>>>>> origin/merge-all
 def _strip_code_blocks(text: str) -> str:
     """Remove content within markdown code blocks (``` ... ```) to avoid false positives."""
     result = []
@@ -258,6 +261,7 @@ def iter_doc_files(root: Path) -> list[Path]:
 # Main
 # ---------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 def main(root: Path = Path(".")) -> int:
     """Run the linter on all documentation files under *root*."""
 
@@ -271,11 +275,18 @@ def main(roots: list[Path] | None = None) -> int:
     for root in roots:
         files.extend((fp, root) for fp in iter_doc_files(root))
 >>>>>>> origin/fix/site-copy-pharos-standards
+=======
+def main(root: Path = Path(".")) -> int:
+    """Run the linter on all documentation files under *root*."""
+
+    files = iter_doc_files(root)
+>>>>>>> origin/merge-all
     if not files:
         print("No documentation files found under", root)
         return 0
 
     overall_status = 0
+<<<<<<< HEAD
 <<<<<<< HEAD
     for fp in files:
         rel = fp.relative_to(root)
@@ -293,24 +304,12 @@ def main(roots: list[Path] | None = None) -> int:
 
 =======
     for fp, root in files:
+=======
+    for fp in files:
+>>>>>>> origin/merge-all
         rel = fp.relative_to(root)
-        print(f"> {fp.as_posix()}")
+        print(f"> {rel.as_posix()}")
         issues: list[str] = []
-        notes: list[str] = []
-
-        if fp.name in EXEMPT_FILES:
-            print("   exempt (specification document)")
-            continue
-
-        # Editorial docs hold the full 75-character line budget; procedural
-        # docs get the relaxed threshold and report over-long lines as notes.
-        is_editorial = bool(EDITORIAL_DIRS.intersection(rel.parts[:-1]))
-        line_limit = MAX_LINE_LENGTH if is_editorial else MAX_PROCEDURAL_LINE_LENGTH
-        line_issues = check_line_length(fp, line_limit)
-        if is_editorial:
-            issues.extend(line_issues)
-        else:
-            notes.extend(line_issues)
 
         # 1) Token compliance
         issues.extend(check_token_compliance(fp))
@@ -318,7 +317,13 @@ def main(roots: list[Path] | None = None) -> int:
         # 2) Accent colour count
         issues.extend(check_accent_count(fp))
 
+<<<<<<< HEAD
 >>>>>>> origin/fix/site-copy-pharos-standards
+=======
+        # 3) Line length
+        issues.extend(check_line_length(fp))
+
+>>>>>>> origin/merge-all
         # 4) Callout format
         issues.extend(check_callout_format(fp))
 
@@ -333,6 +338,7 @@ def main(roots: list[Path] | None = None) -> int:
                 line = iv.encode("ascii", "replace").decode("ascii")
                 print(f"   - {line}")
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         elif notes:
             print(f"   compliant (all checks pass; {len(notes)} advisory note(s))")
@@ -340,6 +346,8 @@ def main(roots: list[Path] | None = None) -> int:
                 line = iv.encode("ascii", "replace").decode("ascii")
                 print(f"   ~ {line}")
 >>>>>>> origin/fix/site-copy-pharos-standards
+=======
+>>>>>>> origin/merge-all
         else:
             print("   compliant (all checks pass)")
 
