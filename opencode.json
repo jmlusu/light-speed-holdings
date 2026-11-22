@@ -45,6 +45,11 @@
       "environment": { "GBRAIN_HOME": "C:/Users/jmlus/brains/lightspeed" },
       "enabled": true
     },
+    "browser": {
+      "type": "local",
+      "command": ["npx", "opencode-browser", "start"],
+      "enabled": true
+    },
     "resend": {
       "type": "remote",
       "url": "https://mcp.resend.com/mcp",
