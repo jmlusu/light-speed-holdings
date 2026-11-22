@@ -64,8 +64,8 @@ describe('WhatWeDoPage Engagement Model Flow', () => {
     );
     // The flow diagram section is present with the seven pillars
     expect(screen.getByText(/INTERACTIVE SEVEN-PILLAR STACK/)).toBeInTheDocument();
-    // Check for pillar names in the flow description
-    expect(screen.getByText(/Human Direction/)).toBeInTheDocument();
+    // Pillar names appear in both the selector and the detail panel.
+    expect(screen.getAllByText(/Human Direction/).length).toBeGreaterThan(0);
   });
 
   it('renders table with six stage rows', () => {
@@ -74,13 +74,8 @@ describe('WhatWeDoPage Engagement Model Flow', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    // Find the engagement model table by looking for the specific stage content
-    const tableRows = screen.getAllByRole('row');
-    // Filter to rows that contain stage names (exclude header row by checking for "Stage" text)
-    const stageRowTexts = tableRows.filter((row) =>
-      !row.textContent.includes('Stage What happens')
-    );
-    // Check for stage names using getAllByText and length check
+    // The old engagement table was replaced by interactive pillar/lifecycle
+    // panels, so assert the stage content is rendered instead of table rows.
     expect(screen.getAllByText(/Problem Addressed/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Design Target Operating Model/i).length).toBeGreaterThan(0);
   });
