@@ -1,3 +1,6 @@
 [submodule "open-design"]
 	path = open-design
 	url = https://github.com/nexu-io/open-design.git
+[submodule "opencode-browser"]
+	path = opencode-browser
+	url = https://github.com/benjaminshafii/opencode-browser.git
