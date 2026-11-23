@@ -1,5 +1,5 @@
 export const ENQUIRY_SLA_COPY =
-  'We respond to qualified enquiries within two business days.';
+  'We reply to qualified enquiries within two business days.';
 
 export interface EnquiryFields {
   form: 'contact' | 'briefing';

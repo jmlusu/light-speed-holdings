@@ -395,7 +395,7 @@ export const AskLightSpeed: React.FC = () => {
                 onClick={handleStartConversation}
                 className="btn-milled btn-milled-primary inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 hover:bg-ls-red/90 cursor-pointer"
               >
-                {CTAS.primary.label}
+                Contact Us
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -417,7 +417,7 @@ export const AskLightSpeed: React.FC = () => {
                   onClick={handleStartConversation}
                   className="btn-milled btn-milled-primary inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 hover:bg-ls-red/90 cursor-pointer"
                 >
-                  {CTAS.primary.label}
+                  Contact Us
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
                 <Link
@@ -495,7 +495,7 @@ export const AskLightSpeed: React.FC = () => {
 
         <CtaBand
           theme={theme}
-          title={`Or Skip the Chat. ${CTAS.primary.label}`}
+          title="Or Skip the Chat. Contact Us"
           text="If you prefer a human conversation immediately, our team responds within two business days."
         />
       </div>

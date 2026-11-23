@@ -23,7 +23,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ theme, id }) => {
   return (
     <section
       id={id}
-      aria-label="Frequently asked questions"
+      aria-label="Frequently Asked Questions"
       className={`relative w-full py-[100px] px-6 lg:px-12 scroll-mt-28 overflow-hidden transition-colors duration-300 ${
         isLight ? 'bg-[#F2F2F2] text-ls-navy' : 'bg-[#121518] text-white'
       }`}

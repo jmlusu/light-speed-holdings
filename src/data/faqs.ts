@@ -1,14 +1,6 @@
-/* FAQ registry - MASTER_SPEC §15.
- * Every answer is grounded in a canonical source file; no invented numbers,
- * clients, prices, or outcomes (MASTER_SPEC §17 evidence rules).
- *
- * Evidence contract (2026-10-25): every rendered FAQ carries at least one
- * `evidence` entry. A `verified` entry must point at a claim id in
- * src/data/registries/claims-registry.json or at a repo path plus literal
- * anchor text that actually contains the supporting wording. When no source
- * supports an answer, mark the entry `unknown` and say why in `note` - an
- * honest unknown beats a false verified. Guarded by
- * src/__tests__/faq-evidence.test.ts. */
+/* FAQ registry - shared by the FAQ page and FAQ card/section surfaces.
+ * Keep answers grounded in canonical sources; no invented numbers, clients, prices, or outcomes.
+ */
 
 export interface FaqEvidence {
   /** Claim id from claims-registry.json, or "repo/relative/path.md#literal anchor text". */
@@ -32,7 +24,7 @@ export const faqs: readonly Faq[] = [
     registryId: 'faq-02',
     question: 'What is the AI Company Builder?',
     answer:
-      'A governed multi-agent orchestration platform where 89 AI agents and 1 Human CEO work across 20 departments. Work flows from brief to inbox task to assigned agents to human review to deliverable; no client-facing deliverable ships without human sign-off.',
+      'AI Company Builder is a governed multi-agent platform where 89 AI agents and 1 Human CEO work across 20 departments. Work moves from a brief to an inbox task, assigned agents, human review, and a deliverable. No client-facing deliverable ships without human sign-off.',
     evidence: [
       { source: 'claim.agent-count', status: 'verified' },
       { source: 'claim.department-count', status: 'verified' },
@@ -47,7 +39,7 @@ export const faqs: readonly Faq[] = [
     registryId: 'faq-05',
     question: 'Does this replace our staff?',
     answer:
-      'No. Agents execute tasks; people own outcomes. Every engagement runs through 5-tier human-in-the-loop approvals, so your team keeps decision authority while the platform carries the workload.',
+      'No. Agents handle execution; people remain accountable for outcomes. Every engagement uses 5-tier human-in-the-loop approvals, so your team keeps decision authority while the platform handles the workload.',
     evidence: [
       { source: 'claim.five-tier-approval', status: 'verified' },
       {
@@ -61,7 +53,7 @@ export const faqs: readonly Faq[] = [
     registryId: 'faq-17',
     question: 'How is our data protected?',
     answer:
-      'The platform is designed for offline-first operation on local infrastructure and compliance with the Malawi Data Protection Act 2017/2024 and GDPR from day one. Every action writes to an append-only audit trail that is queryable and never overwritten.',
+      'The platform is designed for offline-first operation on local infrastructure. It is built for compliance with the Malawi Data Protection Act 2024 and GDPR from day one. Every action is written to an append-only audit trail that can be queried but never overwritten.',
     evidence: [
       { source: 'claim.sovereign-offline-first', status: 'verified' },
       { source: 'claim.data-protection-act-compliance', status: 'verified' },
@@ -77,7 +69,7 @@ export const faqs: readonly Faq[] = [
     registryId: 'faq-24',
     question: 'Is this proven with paying clients?',
     answer:
-      'Honestly: not yet. Nothing has been delivered to paying clients. All offers are fieldable in 2026, in pilot, or in active development, and every proof point on this site carries an explicit honesty badge. We would rather show you exactly where we are than invent a track record.',
+      'Not yet. Nothing has been delivered to paying clients. All offers are fieldable in 2026, in pilot, or in active development. Every proof point on this site carries an explicit honesty badge. We would rather show where we are than invent a track record.',
     evidence: [
       { source: 'claim.no-paying-clients', status: 'verified' },
       {
@@ -92,10 +84,10 @@ export const faqs: readonly Faq[] = [
     registryId: 'faq-27',
     question: 'What does it cost?',
     answer:
-      'Engagements are scoped per brief and priced for regional markets: accessible pricing in local currency rather than foreign-currency consultancy rates. There is no public rate card yet; start a conversation and we will tell you plainly what your project takes.',
+      'Engagements are scoped per brief and priced for the market they serve. Where possible, we quote in local currency instead of foreign-currency consultancy rates. There is no public rate card yet. Start a conversation and we will tell you plainly what your project requires.',
     evidence: [
       {
-        source: 'src/data/insights.ts#no public rate card exists',
+        source: 'docs/MISSION_AND_VISION.md#Priced in the local currency',
         status: 'verified',
       },
       {
@@ -114,10 +106,10 @@ export const faqs: readonly Faq[] = [
     registryId: 'faq-25',
     question: 'How do we start?',
     answer:
-      'Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help, and exactly what it takes to start. Qualified enquiries get a response within two business days.',
+      'Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help and what it takes to begin. Qualified enquiries receive a response within two business days.',
     evidence: [
       {
-        source: 'src/lib/enquiry.ts#We respond to qualified enquiries within two business days.',
+        source: 'src/lib/enquiry.ts#We reply to qualified enquiries within two business days.',
         status: 'verified',
       },
       {
@@ -126,7 +118,7 @@ export const faqs: readonly Faq[] = [
       },
       {
         source:
-          'src/components/ContactSection.tsx#We will be honest about whether we can help, and exactly what it takes to start.',
+          'src/components/site/CtaBand.tsx#Tell us where your organisation stands today. We will tell you whether we can help and what you need to start.',
         status: 'verified',
       },
     ],

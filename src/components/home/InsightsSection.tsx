@@ -65,7 +65,7 @@ const PHAROS_FORMATS: FormatCard[] = [
   {
     id: 'africa-watch',
     title: 'Africa Watch Regional Monitors',
-    subtitle: 'Market intelligence and regional policy monitoring across Malawi & SADC.',
+    subtitle: 'Market intelligence and regional policy monitoring across Malawi and SADC.',
     icon3d: 'africa-map',
     to: '/insights/sadc-ai-opportunity',
   },
@@ -109,12 +109,12 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <SectionHeading
           theme={theme}
-          eyebrow="THOUGHT-LEADERSHIP ENGINE"
-          title="Pharos – LightSpeed's Thought-Leadership Engine"
-          lead="Pharos transforms LightSpeed's agentic-AI research, experiments and field observations into a steady stream of high-impact evidence-led research. Each month we publish policy briefs, whitepapers, system maps, data stories, AI-economics analyses and Africa Watch regional monitors that clearly link our findings to real-world use cases, solutions and sectors across Malawi, the SADC region and the broader African continent."
+          eyebrow="Research and Insights"
+          title="Pharos — LightSpeed’s Research and Insights Engine"
+          lead="Pharos turns LightSpeed’s agentic AI research, field observations, and operating experience into evidence-led publications. We publish briefs, white papers, system maps, data stories, AI-economics analyses, and Africa Watch monitors that connect findings to real use cases across Malawi, SADC, and Africa."
         />
 
-      {/* OUR EIGHT MONTHLY FORMATS SECTION */}
+      {/* Our Eight Publication Formats SECTION */}
       <div className="mt-12">
         <div className="flex items-center justify-between border-b pb-4 mb-8 border-white/10 dark:border-white/10 border-slate-300">
           <div className="flex items-center gap-2">
@@ -122,11 +122,11 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
             <h3 className={`text-xs font-mono font-bold tracking-[0.25em] uppercase ${
               isLight ? 'text-ls-navy' : 'text-ls-cyan'
             }`}>
-              OUR EIGHT MONTHLY FORMATS
+              Our Eight Publication Formats
             </h3>
           </div>
           <span className={`text-xs font-mono hidden sm:block ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-            8 PUBLICATION CHANNELS
+            8 Publication Channels
           </span>
         </div>
 
@@ -166,7 +166,7 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-white/10 dark:border-white/10 border-slate-200 flex items-center justify-between text-[11px] font-mono font-bold">
-                  <span className={isLight ? 'text-ls-red' : 'text-ls-cyan'}>EXPLORE</span>
+                  <span className={isLight ? 'text-ls-red' : 'text-ls-cyan'}>Explore</span>
                   <span className="transform group-hover:translate-x-1 transition-transform">→</span>
                 </div>
               </Link>

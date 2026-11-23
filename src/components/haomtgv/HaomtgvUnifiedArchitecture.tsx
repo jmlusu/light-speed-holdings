@@ -49,9 +49,9 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     letter: 'H',
     title: 'Human Authority',
     role: 'Sovereign Intent & Final Decision Authority',
-    tagline: 'Machines execute, humans approve. Accountability cannot be delegated.',
+    tagline: 'Agents execute; people approve. Accountability stays with people.',
     corePrinciple:
-      'Human intent establishes operational boundaries, ethical baselines, and capital allocations. Autonomous agents propose; human directors decide what ships.',
+      'Human intent sets operating boundaries, ethical baselines, and capital allocations. Agents propose; human directors decide what ships.',
     executiveSummary:
       'Human leadership sits at the sovereign pinnacle of the HAOMTGV architecture. Strategy, risk tolerance, and fiduciary accountability originate solely with human leadership. Rather than replacing human operators, the system augments executive judgment with verifiable intelligence while reserving all high-impact decision rights.',
     Icon: Brain,
@@ -78,7 +78,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     governanceInterlock:
       'Tied directly to Tier 4 (Strategic Authority) and Tier 5 (Absolute Sovereign Control). Irreversible production releases and financial commitments require multi-factor human authorization.',
     systemExample:
-      'Chief Executive Officer and Lead Architect authorize the production deployment manifest and budget allocations before agent automation initiates live transactions.',
+      'The Chief Executive Officer and Lead Architect authorize the production deployment manifest and budget before agents start live transactions.',
     metrics: [
       { label: 'Decision Authority', value: '100% Human' },
       { label: 'Sovereign Veto', value: 'Absolute' },
@@ -91,7 +91,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     letter: 'A',
     title: 'Configurable Agents',
     role: 'Bounded Operational Execution',
-    tagline: 'Specialized roles scaling from 1 to N+ agents, bounded by strict contracts.',
+    tagline: 'Specialized roles scale from one to N+ agents under strict contracts.',
     corePrinciple:
       'Agents operate as deterministic, role-specialized units with explicit system prompts, tool permissions, and risk tiers. General-purpose, unbounded chatbots are strictly barred.',
     executiveSummary:
@@ -120,7 +120,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     governanceInterlock:
       'Constrained by Tier 1 (Auto-execution) and Tier 2 (Supervised Recommendation). Agents cannot alter their own system prompts, bypass sandboxes, or access production credentials directly.',
     systemExample:
-      'An Architecture Auditor Agent inspects pull requests against TypeScript strictness rules and security guidelines, generating a detailed compliance report for human review.',
+      'An Architecture Auditor Agent checks pull requests against TypeScript strictness rules and security guidelines, then generates a compliance report for human review.',
     metrics: [
       { label: 'Team Scalability', value: '1 to N+ Agents' },
       { label: 'Autonomous Scope', value: 'Strictly Bounded' },
@@ -162,7 +162,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     governanceInterlock:
       'Enforces Tier 3 (Tactical Decision Gate) and workflow checkpoints. Halts automated progression instantly if an unexpected state divergence occurs.',
     systemExample:
-      'The Orchestration broker coordinates identity and credential verification workflows, queuing human approval before account activation.',
+      'The orchestration broker coordinates identity and credential verification, then queues human approval before account activation.',
     metrics: [
       { label: 'Routing Model', value: 'In-House Bus / Target DAG' },
       { label: 'Traceability', value: '100% Auditable' },
@@ -175,7 +175,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     letter: 'M',
     title: 'Persistent Memory',
     role: 'Contextual Operational State',
-    tagline: 'Context survives across cycles so agents recall before they act.',
+    tagline: 'Context survives across cycles so agents retrieve relevant information before acting.',
     corePrinciple:
       'Agents never operate from a blank slate. Structured vector embeddings, organizational entity registers, and episodic audit ledgers maintain long-term institutional continuity.',
     executiveSummary:
@@ -204,7 +204,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     governanceInterlock:
       'Governed by tenant-isolation policies and automated data redaction. Memory pipelines strip sensitive personally identifiable information (PII) before storage.',
     systemExample:
-      'A Compliance Review Agent queries the Memory store to cross-reference a draft corporate contract against regional procurement acts and historical precedents.',
+      'A Compliance Review Agent queries memory to check a draft corporate contract against regional procurement laws and historical precedents.',
     metrics: [
       { label: 'State Model', value: 'Multi-Tier Memory' },
       { label: 'Data Isolation', value: 'Enterprise Data Isolation Architecture' },
@@ -217,7 +217,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     letter: 'T',
     title: 'Sandboxed Tools',
     role: 'Controlled Real-World Interfaces',
-    tagline: 'Isolated execution boundaries and scoped API access provide safe execution.',
+    tagline: 'Isolated execution boundaries and scoped API access control external actions.',
     corePrinciple:
       'Tools represent the sole mechanism through which agents touch operational systems. Every invocation occurs within isolated execution boundaries with least-privilege credentials.',
     executiveSummary:
@@ -246,7 +246,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     governanceInterlock:
       'Enforces least-privilege access and credential encapsulation. Tools never expose raw secrets to model prompts and automatically restrict high-risk transactional tools to Tier 4 approval.',
     systemExample:
-      'A regulated disbursement workflow supports approved supplier invoice settlements, applying transaction limits and human authorization controls.',
+      'A regulated disbursement workflow supports approved supplier invoice payments with transaction limits and human authorization.',
     metrics: [
       { label: 'Execution Boundary', value: 'Isolated Execution Boundaries & Scoped API Access' },
       { label: 'Access Control', value: 'Least Privilege' },
@@ -258,8 +258,8 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     id: 'governance',
     letter: 'G',
     title: 'Transverse Governance',
-    role: 'Continuous System-Wide Control Fabric',
-    tagline: 'Woven through every dimension: five-tier approvals and cryptographic audit trails.',
+    role: 'Continuous System-Wide Control',
+    tagline: 'Five-tier approvals and cryptographic audit records apply across every dimension.',
     corePrinciple:
       'Governance is not a final inspection gate; it is a continuous, transverse control plane that inspects, constrains, and verifies every input, transition, and output in real time.',
     executiveSummary:
@@ -288,9 +288,9 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     governanceInterlock:
       'The Governance engine itself holds unilateral authority to pause or terminate any workflow that violates security thresholds or attempts unauthorized parameter alterations.',
     systemExample:
-      'When an automated workflow prepares a strategic contract modification, the Governance layer freezes execution at Tier 4, alerting the Executive Director for cryptographic sign-off.',
+      'When a workflow prepares a strategic contract change, Governance stops execution at Tier 4 and alerts the Executive Director for cryptographic sign-off.',
     metrics: [
-      { label: 'Architecture Role', value: 'Transverse Fabric' },
+      { label: 'Architecture Role', value: 'Transverse Control' },
       { label: 'Human Gates', value: '5-Tier Matrix (In-House)' },
       { label: 'Audit Verification', value: 'SHA-256 State Receipts' },
     ],
@@ -300,8 +300,8 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     id: 'value',
     letter: 'V',
     title: 'Measured Value',
-    role: 'Empirical Business Outcomes & Strategy Feedback',
-    tagline: 'Measured business outcomes fed back into strategy, not vanity metrics.',
+    role: 'Business Outcomes & Strategy Feedback',
+    tagline: 'The system measures business outcomes and feeds them into strategy.',
     corePrinciple:
       'Value is the only score that counts. Automation is justifiable only when it delivers measurable reductions in cycle time, operational expense, error rates, and capital drag.',
     executiveSummary:
@@ -330,7 +330,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     governanceInterlock:
       'Value telemetry is audited by the Governance engine to ensure that efficiency targets never compromise regulatory compliance or operational integrity.',
     systemExample:
-      'In-house regulatory reporting automation demonstrates governed agent workflows with SHA-256-sealed audit trails for individual reported figures.',
+      'In-house regulatory reporting automation demonstrates governed agent workflows with SHA-256 sealed audit records for individual reported figures.',
     metrics: [
       { label: 'Evaluation Criteria', value: 'Cycle, Opex, Quality' },
       { label: 'Optimization Target', value: 'Measurable Efficiency' },

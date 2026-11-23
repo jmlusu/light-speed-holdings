@@ -78,7 +78,7 @@ describe('sitemap coverage', () => {
     expect(new Set(locs).size).toBe(locs.length);
   });
 
-  it('lists exactly 19 URLs (10 static + 9 insight articles)', () => {
-    expect(locs).toHaveLength(19);
+  it('lists exactly 20 URLs (10 static + 10 insight articles)', () => {
+    expect(locs).toHaveLength(20);
   });
 });

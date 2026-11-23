@@ -133,7 +133,7 @@ describe('HaomtgvGlyphGallery', () => {
     expect(screen.getByText('THE SEVEN GLYPHS')).toBeInTheDocument();
     expect(screen.getByText('H-A-O-M-T-G-V Glyphs')).toBeInTheDocument();
     expect(screen.getByText(/Type K micro-illustrations/)).toBeInTheDocument();
-    expect(screen.getByText(/brand cyan throughout and Governance marked in red/)).toBeInTheDocument();
+    expect(screen.getByText(/Brand cyan identifies the layers; red marks Governance/)).toBeInTheDocument();
   });
 
   it('renders all 7 glyph cards in grid', () => {

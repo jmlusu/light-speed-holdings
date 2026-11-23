@@ -26,7 +26,7 @@ export const HaomtgvGlyphGallery: React.FC<HaomtgvGlyphGalleryProps> = ({ theme 
           theme={theme}
           eyebrow="THE SEVEN GLYPHS"
           title="H-A-O-M-T-G-V Glyphs"
-          lead="Type K micro-illustrations: a single-color line-art glyph system for each HAOMTGV layer, with brand cyan throughout and Governance marked in red."
+          lead="Type K micro-illustrations provide a single-color line-art glyph for each HAOMTGV layer. Brand cyan identifies the layers; red marks Governance."
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

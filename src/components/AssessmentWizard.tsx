@@ -45,218 +45,203 @@ export const DOMAINS: AssessmentDomain[] = [
     title: 'Data Maturity & Sovereignty',
     eyebrow: 'DOMAIN 01 / 05',
     icon: Database,
-    question:
-      'How would you describe your organization’s current data infrastructure and access governance?',
+    question: 'How would you describe your current data architecture and governance?',
     description:
-      'Evaluates operational data availability, structured pipelines, access controls, and localized data sovereignty posture.',
+      'Evaluates data structure, access, governance, and readiness for agent-supported workflows.',
     options: [
       {
-        label: 'Foundational - Fragmented & Siloed Data',
+        label: 'Fragmented / Silos (Foundational)',
         description:
-          'Data is stored across legacy databases or spreadsheets with manual access requests and limited central governance.',
+          'Data sits in spreadsheets, local drives, and disconnected SaaS tools without a common schema.',
         level: 'Foundational',
         recommendation:
-          'Establish unified data schemas, localized storage policies, and centralized role-based access controls.',
+          'Unify your data and establish a central knowledge base that can support vector search.',
       },
       {
-        label: 'Developing - Centralized Storage, Manual APIs',
+        label: 'Centralized but Static (Developing)',
         description:
-          'Core operational data is centralized in data warehouses with basic access controls, but real-time API access remains restricted.',
+          'You have a data warehouse or central ERP, but access is manual and governance is inconsistent.',
         level: 'Developing',
         recommendation:
-          'Expose secure REST/GraphQL endpoints and event streams to enable real-time agentic data queries.',
+          'Define data governance policies and API access for future agent use.',
       },
       {
-        label: 'Advanced - API-First Architecture & Structured Streams',
+        label: 'Governed & Accessible (Advanced)',
         description:
-          'Well-structured data pipelines with role-based access controls, event streams, and defined data ownership across departments.',
+          'Structured data is accessible through APIs under defined access controls and compliance policies.',
         level: 'Advanced',
         recommendation:
-          'Integrate cryptographic audit logging and localized sovereignty boundaries for sensitive operational data.',
+          'Prepare for agent grounding by mapping domain-specific knowledge graphs.',
       },
       {
-        label: 'Optimized - Governed Real-Time Data & Cryptographic Trails',
+        label: 'Sovereign & Agent-Ready (Optimized)',
         description:
-          'Governed, real-time data layer with cryptographic audit trails, localized data sovereignty controls, and automated compliance policy enforcement.',
+          'Real-time governed pipelines include residency controls, audit records, and semantic indexing.',
         level: 'Optimized',
         recommendation:
-          'Maintain append-only SHA-256 sealed audit trails and zero-cloud PII boundary controls for sensitive workflows.',
+          'Deploy retrieval-augmented generation (RAG) and multi-agent memory systems.',
       },
     ],
   },
   {
     id: 'infrastructure-integration',
-    title: 'Infrastructure & Integration',
+    title: 'Core Infrastructure & Integration',
     eyebrow: 'DOMAIN 02 / 05',
     icon: Cpu,
-    question:
-      'What is the readiness of your core systems to integrate with autonomous or semi-autonomous AI agents?',
-    description:
-      'Evaluates core IT architecture, API ecosystem, event queues, and deployment environment readiness.',
+    question: 'What is the state of your technology stack and API readiness?',
+    description: 'Evaluates integration readiness, system architecture, and deployment constraints.',
     options: [
       {
-        label: 'Foundational - Legacy Monoliths & Batch Operations',
+        label: 'Legacy / Manual (Foundational)',
         description:
-          'Legacy or monolithic systems requiring custom scrapers, batch files, or manual data entry with no webhooks or REST APIs.',
+          'Core systems run on-premises, lack modern APIs, and depend on manual data entry.',
         level: 'Foundational',
-        recommendation:
-          'Implement API wrapper layers or microservice gateways around legacy core systems.',
+        recommendation: 'Add an API gateway layer around legacy systems.',
       },
       {
-        label: 'Developing - Hybrid Cloud & Webhook Integrations',
+        label: 'Cloud-Hybrid / Partial APIs (Developing)',
         description:
-          'Mixed environment with several cloud services offering REST APIs, but integration requires custom middleware and manual triggers.',
+          'You mix cloud and legacy systems. Some APIs exist, but integration needs custom middleware.',
         level: 'Developing',
         recommendation:
-          'Deploy deterministic MessageBus queues and standardize tool interfaces for multi-agent routing.',
+          'Standardize integration patterns and use an enterprise service bus or iPaaS.',
       },
       {
-        label: 'Advanced - Event-Driven Queue & Microservices',
-        description:
-          'API-first architecture with event-driven message queues, microservices, and containerized deployment pipelines.',
+        label: 'API-First / Cloud-Native (Advanced)',
+        description: 'You use microservices, documented APIs, and CI/CD pipelines.',
         level: 'Advanced',
-        recommendation:
-          'Incorporate latency-aware agent routing and local Ollama model options for zero-API-cost execution.',
+        recommendation: 'Add agent tool interfaces to existing API endpoints.',
       },
       {
-        label: 'Optimized - Sovereign MessageBus & Multi-Provider Stack',
-        description:
-          'Modular, hybrid-cloud or sovereign edge infrastructure with secure MessageBus orchestration, rate-limited agent tools, and multi-provider failover.',
+        label: 'Event-Driven / Composable (Optimized)',
+        description: 'Your architecture supports real-time, event-driven agent orchestration.',
         level: 'Optimized',
         recommendation:
-          'Scale agentic throughput with automated health checks, circuit breakers, and rate-aware model selection.',
+          'Implement coordinated agent teams using Model Context Protocol (MCP) toolsets.',
       },
     ],
   },
   {
     id: 'governance-haomtgv',
-    title: 'Governance & HAOMTGV Alignment',
+    title: 'Governance, Risk & Compliance',
     eyebrow: 'DOMAIN 03 / 05',
     icon: ShieldCheck,
-    question:
-      'How are decision rights, approval gates, and accountability currently structured for automated operations?',
-    description:
-      'Evaluates Human-in-the-Loop (HITL) frameworks, risk classifications, sign-off hierarchies, and compliance controls.',
+    question: 'How prepared is your organisation to govern autonomous AI systems?',
+    description: 'Evaluates policy, oversight, risk controls, and audit readiness.',
     options: [
       {
-        label: 'Foundational - Informal & Ad-Hoc Approvals',
+        label: 'Unregulated / Ad-hoc (Foundational)',
         description:
-          'Ad-hoc decision-making with informal approval steps and no formal AI risk classification or audit logging.',
+          'You have no formal AI policy. Staff use public AI tools without data controls.',
         level: 'Foundational',
         recommendation:
-          'Define formal risk classification tiers for all automated tasks and mandate human sign-off for financial/regulatory actions.',
+          'Establish an AI acceptable-use policy and data loss prevention (DLP) controls now.',
       },
       {
-        label: 'Developing - Documented Approval Workflows',
+        label: 'Exploratory Guidelines (Developing)',
         description:
-          'Documented departmental approval workflows with basic sign-off requirements, but AI usage is ad-hoc or unmonitored.',
+          'Basic IT policies exist, but you have no framework for agent autonomy or human review.',
         level: 'Developing',
         recommendation:
-          'Implement explicit 5-tier Human-in-the-Loop approval gating mapped to organizational authorization levels.',
+          'Form an AI steering committee and define risk tiers for automated decisions.',
       },
       {
-        label: 'Advanced - Risk-Classified HITL Approval Gates',
+        label: 'Structured AI Policy (Advanced)',
         description:
-          'Formal risk classification tiers for automated tasks with human-in-the-Loop sign-off for critical financial or regulatory actions.',
+          'You have a formal AI governance framework with GDPR or local data-protection compliance mapping.',
         level: 'Advanced',
         recommendation:
-          'Enforce append-only SHA-256 audit sealing on all human sign-offs and automated expiry sweeps on stale approvals.',
+          'Enforce policies through technical guardrails and automated audit logging.',
       },
       {
-        label: 'Optimized - 5-Tier Gated Matrix & Cryptographic Audit',
+        label: 'Continuous Audit / Cryptographic (Optimized)',
         description:
-          'Multi-tier Human-in-the-Loop (HITL) approval matrix (Tier 1 Auto to Tier 5 Executive) with append-only cryptographically sealed audit trails.',
+          'You use real-time compliance monitoring, cryptographic audit records, and tiered human approval.',
         level: 'Optimized',
         recommendation:
-          'Sustain continuous regulatory compliance monitoring and automated audit preparation packages for institutional review.',
+          "Scale deployment with LightSpeed's HAOMTGV five-tier approval matrix.",
       },
     ],
   },
   {
     id: 'talent-change',
-    title: 'Talent & Change Readiness',
+    title: 'Talent, Culture & Leadership',
     eyebrow: 'DOMAIN 04 / 05',
     icon: Users,
-    question:
-      'How prepared is your leadership and workforce to direct and collaborate with AI agentic teams?',
-    description:
-      'Evaluates organizational capacity, prompt engineering skills, agent delegation fluency, and change management.',
+    question: 'How ready is your organisation for AI-native workflows?',
+    description: 'Evaluates leadership alignment, skills, and operating culture.',
     options: [
       {
-        label: 'Foundational - Ad-Hoc Assistant Awareness',
+        label: 'Skeptical / Unaware (Foundational)',
         description:
-          'Limited internal familiarity with agentic workflows; AI is viewed primarily as an experimental search or drafting assistant.',
+          'Leadership sees AI as hype or a threat. Staff lack basic AI literacy.',
         level: 'Foundational',
         recommendation:
-          'Conduct executive briefing sessions and foundational agent delegation workshops for key department leads.',
+          'Run executive briefings and baseline AI literacy training for all staff.',
       },
       {
-        label: 'Developing - Specialized IT & Analytics Adoption',
+        label: 'Experimenting / Pockets (Developing)',
         description:
-          'Specific teams (e.g. IT, Analytics) utilize AI tooling, but broader business units lack structured agent delegation frameworks.',
+          'Separate teams use AI tools without a central strategy or training programme.',
         level: 'Developing',
         recommendation:
-          'Establish departmental agent champions and formal RACI matrices for human-AI task ownership.',
+          'Build an enterprise AI training plan and identify internal AI champions.',
       },
       {
-        label: 'Advanced - Departmental Agent Delegation',
+        label: 'Strategic Alignment (Advanced)',
         description:
-          'Department leads understand role-scoped agent delegation and actively manage hybrid human-AI workflows for routine tasks.',
+          'You have executive sponsorship, a dedicated budget, and teams working across departments.',
         level: 'Advanced',
         recommendation:
-          'Expand agentic capacity across cross-departmental workflows and establish continuous feedback loops.',
+          'Move from isolated use cases to an AI-native operating model.',
       },
       {
-        label: 'Optimized - Executive AI-Native Operating Culture',
-        description:
-          'Executive leadership actively stewards an AI-native operating model with clear RACI matrices for human authority and agent delegation.',
+        label: 'AI-Native Culture (Optimized)',
+        description: 'AI forms part of core KPIs. Staff know how to work with agent systems.',
         level: 'Optimized',
         recommendation:
-          'Institutionalize university and talent pipelines to continuously train and certify sovereign AI workforce engineers.',
+          'Improve human-agent working protocols and continue refining system performance.',
       },
     ],
   },
   {
     id: 'automation-potential',
-    title: 'Automation & Agentic Potential',
+    title: 'Agentic Workflow Potential',
     eyebrow: 'DOMAIN 05 / 05',
     icon: Zap,
-    question:
-      'Which best describes the current state of process automation and workflow orchestration in your key operating units?',
-    description:
-      'Evaluates current manual overhead, workflow collapsing opportunities, and multi-agent coordination potential.',
+    question: 'Where does your organisation stand on autonomous agent workflows?',
+    description: 'Evaluates automation maturity and potential for governed agent workflows.',
     options: [
       {
-        label: 'Foundational - Manual Handoffs & Siloed Spreadsheets',
-        description:
-          'High volume of repetitive manual tasks in email, spreadsheets, and chat; workflows rely on individual memory and manual handoffs.',
+        label: 'No Automation (Foundational)',
+        description: 'People route work and make every decision manually.',
         level: 'Foundational',
         recommendation:
-          'Identify top 3 high-friction, repetitive workflows for initial Workflow Collapsing and agentic automation.',
+          'Identify high-volume, low-complexity tasks for basic RPA or scripts.',
       },
       {
-        label: 'Developing - Linear Scripts & Basic RPA',
+        label: 'Rule-Based Automation (Developing)',
         description:
-          'Linear RPA or rule-based scripts handle specific back-office tasks, but cross-departmental coordination remains manual.',
+          'You use RPA or rigid if/then workflows without generative capabilities.',
         level: 'Developing',
         recommendation:
-          'Transition linear scripts into autonomous, role-scoped agent units governed by approval gates.',
+          'Add language-model routing and document understanding to rigid workflows.',
       },
       {
-        label: 'Advanced - Governed Departmental Agent Workflows',
+        label: 'Cognitive Assistants (Advanced)',
         description:
-          'Governed multi-step agentic workflows execute routine departmental processes with automated escalation for edge cases.',
+          'Copilots and chatbots assist people, but people still perform every action.',
         level: 'Advanced',
         recommendation:
-          'Collapse multi-departmental approval chains into instant, orchestrated execution paths under executive oversight.',
+          'Pilot bounded workflows where agents execute actions under human review.',
       },
       {
-        label: 'Optimized - Fully Orchestrated Multi-Agent Topology',
+        label: 'Multi-Agent Orchestration (Optimized)',
         description:
-          'Fully orchestrated, context-aware agent topologies executing end-to-end business functions under continuous human oversight and real-time KPI tracking.',
+          'You are ready to deploy, or already use, agents that plan, execute, and coordinate work.',
         level: 'Optimized',
         recommendation:
-          'Explore venture builder scaling and licensing options to deploy governed AI workforces as core business capabilities.',
+          'Implement the full HAOMTGV architecture for enterprise orchestration.',
       },
     ],
   },
@@ -366,18 +351,25 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
               </div>
 
               {/* Progress Bar */}
-              <div className="flex items-center gap-3">
-                <div className="w-32 sm:w-44 h-2 rounded-full bg-ls-grey-light dark:bg-ls-white/10 overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-ls-cyan to-ls-red transition-all duration-300 rounded-full"
-                    style={{ width: `${((currentStep + 1) / DOMAINS.length) * 100}%` }}
-                  />
-                </div>
-                <span className={`text-xs font-bold font-body tracking-wider ${
+              <div className="flex flex-col items-end gap-1.5">
+                <span className={`text-[10px] font-bold font-body tracking-widest uppercase ${
                   isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'
                 }`}>
-                  {currentStep + 1} / {DOMAINS.length}
+                  DOMAIN {currentStep + 1} OF {DOMAINS.length}
                 </span>
+                <div className="flex items-center gap-3">
+                  <div className="w-32 sm:w-44 h-2 rounded-full bg-ls-grey-light dark:bg-ls-white/10 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-ls-cyan to-ls-red transition-all duration-300 rounded-full"
+                      style={{ width: `${((currentStep + 1) / DOMAINS.length) * 100}%` }}
+                    />
+                  </div>
+                  <span className={`text-xs font-bold font-body tracking-wider ${
+                    isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'
+                  }`}>
+                    OVERALL READINESS
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -461,7 +453,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                 }`}
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Back</span>
+                <span>Previous Domain</span>
               </button>
 
               <button
@@ -472,7 +464,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                   selectedOptionIndex === undefined ? 'opacity-40 cursor-not-allowed' : ''
                 }`}
               >
-                <span>{currentStep === DOMAINS.length - 1 ? 'View Diagnostic Summary' : 'Next Domain'}</span>
+                <span>{currentStep === DOMAINS.length - 1 ? 'Analyze Readiness Profile' : 'Next Domain'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -488,12 +480,12 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ls-red/10 text-ls-red text-[11px] font-bold tracking-widest uppercase mb-3">
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>DIAGNOSTIC READOUT COMPLETE</span>
+                    <span>DIAGNOSTIC COMPLETE</span>
                   </div>
                   <h2 className={`font-display font-bold text-2xl sm:text-3xl tracking-tight ${
                     isLight ? 'text-ls-navy' : 'text-ls-white'
                   }`}>
-                    Your AI Readiness Posture Summary
+                    Organizational Readiness Profile
                   </h2>
                 </div>
 
@@ -507,15 +499,11 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                 </button>
               </div>
 
-              {/* High-Level HAOMTGV Strategic Synthesis */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-ls-cyan/10 text-xs sm:text-sm leading-relaxed space-y-2">
-                <span className="font-body text-[10px] font-bold tracking-widest text-ls-cyan uppercase block">
-                  HAOMTGV STRATEGIC SYNTHESIS
-                </span>
-                <p className={`font-medium ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                  Your organization demonstrates a clear diagnostic posture across the 5 domains. Alignment with LightSpeed’s Human-led, Agentic Operating Model (HAOMTGV) highlights target opportunities to collapse operational latency and establish cryptographically governed agent workflows.
-                </p>
-              </div>
+              <p className={`text-sm sm:text-base leading-relaxed ${
+                isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+              }`}>
+                Your answers show a readiness profile across five domains. Compare the results with HAOMTGV to identify where you can reduce operational delays and introduce governed agent workflows.
+              </p>
             </div>
 
             {/* Domain Readiness Cards Grid */}
@@ -576,7 +564,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
               <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-500/10 text-amber-700 dark:text-amber-300 text-xs leading-relaxed">
                 <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
                 <p>
-                  <strong>Disclaimer:</strong> This diagnostic summary provides a preliminary qualitative read of your organization’s readiness. It is a discovery tool and does not constitute a finalized architectural blueprint, guaranteed ROI, or production-ready deployment plan.
+                  <strong>Disclaimer:</strong> This diagnostic gives a preliminary qualitative view of your organisation’s readiness. Use it for discovery. It is not a final architecture, a guaranteed ROI, or a production deployment plan.
                 </p>
               </div>
 
@@ -591,7 +579,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
                   <p className={`text-xs ${
                     isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                   }`}>
-                    Schedule a 2-week Advisory Architecture Sprint or Executive Briefing session.
+                    Schedule a two-week Advisory Architecture Sprint or an Executive Briefing session.
                   </p>
                 </div>
 

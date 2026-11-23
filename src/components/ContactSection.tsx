@@ -16,11 +16,11 @@ interface ContactStep {
 }
 
 const steps: ContactStep[] = [
-  { id: 1, key: 'DISCOVER', name: 'Discover', description: 'Tell us who you are and where your organisation sits today.' },
-  { id: 2, key: 'DIAGNOSE', name: 'Diagnose', description: 'Share the engagement model and the bottlenecks you want us to examine.' },
-  { id: 3, key: 'DESIGN', name: 'Design', description: 'Set the timeline so we can shape a realistic starting point.' },
-  { id: 4, key: 'BUILD', name: 'Build', description: 'Review everything you have entered before we prepare your brief.' },
-  { id: 5, key: 'GOVERN', name: 'Govern', description: 'Submit securely. A human reviews every enquiry under our governance standard.' }
+  { id: 1, key: 'DISCOVER', name: 'Discover', description: 'Tell us who you are and where your organisation stands today.' },
+  { id: 2, key: 'DIAGNOSE', name: 'Diagnose', description: 'Choose the engagement model and describe the constraints you want us to examine.' },
+  { id: 3, key: 'DESIGN', name: 'Design', description: 'Set your timeline so we can propose a realistic starting point.' },
+  { id: 4, key: 'BUILD', name: 'Build', description: 'Review your entries before we prepare your brief.' },
+  { id: 5, key: 'GOVERN', name: 'Govern', description: 'Confirm your request. A person reviews every enquiry before we respond.' }
 ];
 
 export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
@@ -43,9 +43,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
     title: '',
     organization: '',
     email: '',
-    scope: 'Advisory Architecture Sprint (2 Weeks)',
+    scope: '',
     objective: '',
-    timeline: 'Within 30 days'
+    timeline: ''
   });
 
   const goToStep = (step: number) => {
@@ -57,7 +57,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
   const canAdvance = (): boolean => {
     switch (currentStep) {
       case 1:
-        return Boolean(contactFormData.name && contactFormData.title && contactFormData.organization && contactFormData.email);
+        return Boolean(contactFormData.name && contactFormData.organization && contactFormData.email);
       case 2:
         return Boolean(contactFormData.scope && contactFormData.objective.trim());
       default:
@@ -141,31 +141,23 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
 
         <div className="lg:col-span-5 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest font-bold">
-            <span>START A CONVERSATION</span>
+            <span>CONTACT</span>
           </div>
           <h1 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
             isLight ? 'text-ls-navy' : 'text-ls-white'
           }`}>
-            Tell Us Where You Are
+            Start the Conversation
           </h1>
           <p className={`text-left text-sm sm:text-base leading-relaxed ${
             isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
-            We will be honest about whether we can help, and exactly what it takes to start. A human reviews every submission and responds within two business days.
+            Tell us where your organisation stands today. We will tell you whether we can help and what you need to start.
           </p>
 
-          <div className={`space-y-4 pt-4 ${isLight ? '' : ''}`}>
-            <div className={`flex items-center gap-3 text-xs font-medium ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
-              <ShieldCheck className="w-4 h-4 text-ls-cyan shrink-0" />
-              <span>Strict non-disclosure agreement standard</span>
-            </div>
-            <div className={`flex items-center gap-3 text-xs font-medium ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
+          <div className="space-y-4 pt-4">
+            <div className={`inline-flex items-center gap-3 text-xs font-medium ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
               <Clock className="w-4 h-4 text-ls-red shrink-0" />
-              <span>Executive response within two business days</span>
-            </div>
-            <div className={`flex items-center gap-3 text-xs font-medium ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
-              <Globe2 className="w-4 h-4 text-ls-cyan shrink-0" />
-              <span>International Advisory Network</span>
+              <span>{ENQUIRY_SLA_COPY}</span>
             </div>
           </div>
         </div>
@@ -196,27 +188,39 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h3 className={`text-2xl font-black tracking-tight ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                  Message Received
+                  Inquiry Received
                 </h3>
                 <p className={`text-left text-sm max-w-md mx-auto leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  Thank you. A human will review your message and contact you directly within two business days.
+                  We have securely routed your message to the LightSpeed Holdings executive team. A person will review it and respond within two business days to arrange a confidential briefing.
                 </p>
                 {referenceId ? (
                   <p className={`text-xs font-mono ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                     Reference: {referenceId}
                   </p>
                 ) : null}
-                <button
-                  onClick={() => {
-                    setContactSubmitted(false);
-                    setReferenceId(null);
-                    setSubmitError(null);
-                    setCurrentStep(1);
-                  }}
-                  className="btn-milled btn-milled-primary px-6 py-2.5 rounded-xl bg-ls-red text-ls-white font-bold text-xs tracking-wider cursor-pointer shadow-md hover:bg-ls-red transition-all"
-                >
-                  Submit Another Inquiry
-                </button>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                  <a
+                    href="/"
+                    className="btn-milled btn-milled-primary px-6 py-2.5 rounded-xl bg-ls-red text-ls-white font-bold text-xs tracking-wider cursor-pointer shadow-md hover:bg-ls-red/90 transition-all"
+                  >
+                    Back to Home
+                  </a>
+                  <a
+                    href="/contact"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setContactSubmitted(false);
+                      setReferenceId(null);
+                      setSubmitError(null);
+                      setCurrentStep(1);
+                    }}
+                    className={`btn-milled btn-milled-secondary px-6 py-2.5 rounded-xl font-bold text-xs tracking-wider cursor-pointer transition-all ${
+                      isLight ? 'text-ls-navy hover:bg-ls-grey-light' : 'text-ls-white hover:bg-ls-white/10'
+                    }`}
+                  >
+                    Book a Consultation Call
+                  </a>
+                </div>
               </div>
             ) : (
               <>
@@ -274,24 +278,23 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="ct-executive-name" className={labelClass}>Executive Name *</label>
+                          <label htmlFor="ct-full-name" className={labelClass}>Full Name *</label>
                           <input
-                            id="ct-executive-name"
+                            id="ct-full-name"
                             type="text"
                             required
-                            placeholder="e.g. Dr. K. Mlangeni"
+                            placeholder="Jane Mbewe"
                             value={contactFormData.name}
                             onChange={(e) => setContactFormData({ ...contactFormData, name: e.target.value })}
                             className={fieldInputClass}
                           />
                         </div>
                         <div>
-                          <label htmlFor="ct-executive-title" className={labelClass}>Executive Title *</label>
+                          <label htmlFor="ct-title" className={labelClass}>Title</label>
                           <input
-                            id="ct-executive-title"
+                            id="ct-title"
                             type="text"
-                            required
-                            placeholder="e.g. Chief Executive Officer"
+                            placeholder="Director of Operations"
                             value={contactFormData.title}
                             onChange={(e) => setContactFormData({ ...contactFormData, title: e.target.value })}
                             className={fieldInputClass}
@@ -300,24 +303,24 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="ct-organization" className={labelClass}>Institution / Entity *</label>
+                          <label htmlFor="ct-organization" className={labelClass}>Institution / Company *</label>
                           <input
                             id="ct-organization"
                             type="text"
                             required
-                            placeholder="e.g. Your Organisation"
+                            placeholder="LightSpeed Holdings"
                             value={contactFormData.organization}
                             onChange={(e) => setContactFormData({ ...contactFormData, organization: e.target.value })}
                             className={fieldInputClass}
                           />
                         </div>
                         <div>
-                          <label htmlFor="ct-email" className={labelClass}>Official Email *</label>
+                          <label htmlFor="ct-email" className={labelClass}>Work Email *</label>
                           <input
                             id="ct-email"
                             type="email"
                             required
-                            placeholder="executive@institution.com"
+                            placeholder="you@company.com"
                             value={contactFormData.email}
                             onChange={(e) => setContactFormData({ ...contactFormData, email: e.target.value })}
                             className={fieldInputClass}
@@ -331,21 +334,27 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                   {currentStep === 2 && (
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="ct-scope" className={labelClass}>Target Engagement Model</label>
+                        <label htmlFor="ct-scope" className={labelClass}>Primary Engagement Model *</label>
                         <select
                           id="ct-scope"
+                          required
                           value={contactFormData.scope}
                           onChange={(e) => setContactFormData({ ...contactFormData, scope: e.target.value })}
                           className={fieldInputClass}
                         >
-                          <option value="Advisory Architecture Sprint (2 Weeks)">Advisory Architecture Sprint (2 Weeks)</option>
-                          <option value="Co-Engineered Pilot (90 Days)">Co-Engineered Pilot (90 Days)</option>
-                          <option value="Enterprise Deployment">Enterprise Deployment</option>
-                          <option value="Executive Boardroom Briefing">Executive Boardroom Briefing</option>
+                          <option value="">Select a model...</option>
+                          <option value="AI-Native Company Building">AI-Native Company Building</option>
+                          <option value="Intelligent Workflow Automation">Intelligent Workflow Automation</option>
+                          <option value="Agentic Systems & Orchestration">Agentic Systems & Orchestration</option>
+                          <option value="Enterprise AI Integration">Enterprise AI Integration</option>
+                          <option value="Organizational Memory & Knowledge">Organizational Memory & Knowledge</option>
+                          <option value="AI Governance & Decision Infrastructure">AI Governance & Decision Infrastructure</option>
+                          <option value="AI Readiness Assessment">AI Readiness Assessment</option>
+                          <option value="Other / Not sure yet">Other / Not sure yet</option>
                         </select>
                       </div>
                       <div>
-                        <label htmlFor="ct-objective" className={labelClass}>Strategic Objectives & Context</label>
+                        <label htmlFor="ct-objective" className={labelClass}>Strategic Objective & Friction Points *</label>
                         <textarea
                           id="ct-objective"
                           rows={4}
@@ -362,17 +371,19 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                   {/* Step 3: DESIGN */}
                   {currentStep === 3 && (
                     <div>
-                      <label htmlFor="ct-timeline" className={labelClass}>Preferred Timeline</label>
+                      <label htmlFor="ct-timeline" className={labelClass}>Estimated Deployment Timeline</label>
                       <select
                         id="ct-timeline"
                         value={contactFormData.timeline}
                         onChange={(e) => setContactFormData({ ...contactFormData, timeline: e.target.value })}
                         className={fieldInputClass}
                       >
-                        <option value="Within 30 days">Within 30 days</option>
-                        <option value="This quarter">This quarter</option>
-                        <option value="Next quarter">Next quarter</option>
-                        <option value="Exploring only">Exploring only</option>
+                        <option value="">Select timeline...</option>
+                        <option value="Immediate (0-30 days)">Immediate (0-30 days)</option>
+                        <option value="Short-term (1-3 months)">Short-term (1-3 months)</option>
+                        <option value="Medium-term (3-6 months)">Medium-term (3-6 months)</option>
+                        <option value="Long-term (6-12 months)">Long-term (6-12 months)</option>
+                        <option value="Exploratory / No fixed date">Exploratory / No fixed date</option>
                       </select>
                     </div>
                   )}
@@ -403,7 +414,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                   {currentStep === 5 && (
                     <div className="space-y-3">
                       <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                        Submission is governed: a human reviews every enquiry, Turnstile verifies the request, and your details are used only to respond to this conversation.
+                        A person reviews every enquiry. Turnstile verifies the request. We use your details only to respond to this conversation.
                       </p>
                       {siteKey ? <div ref={containerRef} className="scale-90 origin-left" /> : null}
                     </div>

@@ -14,7 +14,7 @@ import { SiteFooter } from '../components/SiteFooter';
  */
 
 const DISCLOSURE =
-  'Illustrations and architectural diagrams are original vector artwork created in-house.';
+  'Illustrations and architectural diagrams are original artwork created in-house.';
 
 describe('footer imagery disclosure', () => {
   it('renders the exact in-house vector artwork sentence', () => {

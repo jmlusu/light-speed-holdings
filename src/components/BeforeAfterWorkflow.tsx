@@ -69,23 +69,23 @@ const WORKFLOW_PAIRS: WorkflowPair[] = [
     categoryLabel: 'Execution & Tools',
     traditional: {
       title: 'Disconnected Tools',
-      desc: 'Fragmented toolchain requiring manual setup, API glue, and handoffs.',
+      desc: 'Copying data between incompatible applications, spreadsheets, and email threads increases compliance risk.',
       icon: Layers,
       metric: '14+ SaaS Silos',
       riskLevel: 'Severe',
     },
     lightspeed: {
       title: 'Governed Execution',
-      desc: 'Deterministic workflows with enterprise-grade controls.',
+      desc: 'A HAOMTGV tool router validates permissions before changing any connected system.',
       icon: GitBranch,
       metric: 'Single Execution Graph',
       haomtgvPillar: 'Tools & Orchestration',
       governanceTier: 'Level 5 Deterministic',
     },
     deepDive: {
-      problemAnalysis: 'Data must be copied across incompatible web apps, spreadsheet exports, and manual email threads, creating extreme surface area for compliance breaches.',
-      solutionMechanism: 'LightSpeed replaces fragmented APIs with a unified HAOMTGV tool router that validates permissions prior to any system mutation.',
-      quantifiedImpact: '94% reduction in manual setup time; 100% encrypted trace logging.',
+      problemAnalysis: 'Copying data between incompatible applications, spreadsheets, and email threads increases compliance risk.',
+      solutionMechanism: 'A HAOMTGV tool router validates permissions before changing any connected system.',
+      quantifiedImpact: '94% less manual setup time; 100% encrypted trace logging.',
     },
   },
   {
@@ -94,23 +94,23 @@ const WORKFLOW_PAIRS: WorkflowPair[] = [
     categoryLabel: 'Execution & Tools',
     traditional: {
       title: 'Manual Handoffs',
-      desc: 'Tasks move between teams, increasing delay, friction, and human error.',
+      desc: 'Cross-team approvals and handoffs create delays and rework.',
       icon: Clock,
       metric: '4.8 Days Avg Delay',
       riskLevel: 'Critical',
     },
     lightspeed: {
       title: 'Contextual Intelligence',
-      desc: 'AI-driven decisions with full institutional context.',
+      desc: 'Agents use organizational memory to respond quickly while keeping human decision checkpoints.',
       icon: Brain,
       metric: '< 250ms Response',
       haomtgvPillar: 'Agents & Memory',
       governanceTier: 'Level 4 Context Aware',
     },
     deepDive: {
-      problemAnalysis: 'Cross-departmental approvals stall in queues for days while context is repeatedly re-explained to new reviewers.',
-      solutionMechanism: 'Autonomous AI agents equipped with vector-indexed organizational memory process inputs instantaneously and flag only true anomalies for human oversight.',
-      quantifiedImpact: 'Eliminates 98% of approval latency while maintaining strict human-in-the-loop decision checkpoints.',
+      problemAnalysis: 'Cross-team approvals and handoffs create delays and rework.',
+      solutionMechanism: 'Agents use organizational memory to respond quickly while keeping human decision checkpoints.',
+      quantifiedImpact: '98% less approval latency while retaining human decision checkpoints.',
     },
   },
   {
@@ -119,23 +119,23 @@ const WORKFLOW_PAIRS: WorkflowPair[] = [
     categoryLabel: 'Intelligence & Context',
     traditional: {
       title: 'Fragmented Information',
-      desc: 'Critical context scattered across disparate systems and unindexed files.',
+      desc: 'Critical context is scattered across systems and files.',
       icon: Puzzle,
       metric: '35% Information Loss',
       riskLevel: 'High',
     },
     lightspeed: {
       title: 'Orchestrated Workflows',
-      desc: 'Multi-step tasks executed seamlessly across multi-agent networks.',
+      desc: 'Persistent memory and orchestration keep context with the work.',
       icon: Lock,
       metric: '100% Context Synthesis',
       haomtgvPillar: 'Orchestration',
       governanceTier: 'Level 5 Zero-Trust',
     },
     deepDive: {
-      problemAnalysis: 'Employees spend up to 20% of workweeks searching for files, historical decisions, or system status across Slack, Drive, and Jira.',
-      solutionMechanism: 'LightSpeed orchestrates persistent memory graphs that continuously synthesize real-time data into actionable, audit-ready operational state.',
-      quantifiedImpact: 'Zero lost context across shift handoffs and cross-functional task executions.',
+      problemAnalysis: 'Critical context is scattered across systems and files.',
+      solutionMechanism: 'Persistent memory and orchestration keep context with the work.',
+      quantifiedImpact: 'No lost context across shift handoffs or task transfers between teams.',
     },
   },
   {
@@ -144,22 +144,22 @@ const WORKFLOW_PAIRS: WorkflowPair[] = [
     categoryLabel: 'Governance & Oversight',
     traditional: {
       title: 'Reactive Coordination',
-      desc: 'Operational failures addressed after damage occurs due to blind spots.',
+      desc: 'Failures are often discovered after damage occurs.',
       icon: Settings,
       metric: 'Post-Mortem Only',
       riskLevel: 'Severe',
     },
     lightspeed: {
       title: 'Tiered Approval Memory',
-      desc: 'Human oversight at every critical threshold with tamper-proof logging.',
+      desc: 'Policy gates check high-risk actions before execution and log decisions.',
       icon: HardDrive,
       metric: 'Pre-Execution Audit',
       haomtgvPillar: 'Governance',
       governanceTier: 'Level 5 Audit Verified',
     },
     deepDive: {
-      problemAnalysis: 'Legacy operations rely on periodic compliance audits that catch violations weeks or months after execution.',
-      solutionMechanism: 'Deterministic policy gates intercept high-risk actions before execution, enforcing tiered approval requirements based on transaction value and sensitivity.',
+      problemAnalysis: 'Failures are often discovered after damage occurs.',
+      solutionMechanism: 'Policy gates check high-risk actions before execution and log decisions.',
       quantifiedImpact: '100% pre-execution policy enforcement; zero compliance surprises.',
     },
   },
@@ -169,23 +169,23 @@ const WORKFLOW_PAIRS: WorkflowPair[] = [
     categoryLabel: 'Governance & Oversight',
     traditional: {
       title: 'Limited Organizational Memory',
-      desc: 'Institutional knowledge lost when personnel churn or change roles.',
+      desc: 'Knowledge leaves when people change roles or depart.',
       icon: BarChart2,
       metric: 'High Attrition Risk',
       riskLevel: 'High',
     },
     lightspeed: {
       title: 'Human-Directed Execution',
-      desc: 'Trusted outcomes under direct executive control and strategy.',
+      desc: 'Operational patterns are captured into reusable, auditable execution records under human direction.',
       icon: Trophy,
       metric: 'Immutable Knowledge',
       haomtgvPillar: 'Human Authority & Value',
       governanceTier: 'Level 5 Executive Directed',
     },
     deepDive: {
-      problemAnalysis: 'Critical domain knowledge lives in individual minds, leaving the enterprise vulnerable when key team members leave.',
-      solutionMechanism: 'LightSpeed captures operational patterns into reusable, version-controlled execution recipes that continuously improve while preserving human oversight.',
-      quantifiedImpact: 'Permanent preservation of operational capital and strategy execution.',
+      problemAnalysis: 'Knowledge leaves when people change roles or depart.',
+      solutionMechanism: 'Operational patterns are captured into reusable, auditable execution records under human direction.',
+      quantifiedImpact: 'Preserves operational knowledge and strategy execution records.',
     },
   },
 ];
@@ -248,7 +248,7 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
       {/* Background Architectural Atmosphere & Sector Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <img
-          src={isLight ? '/src/assets/images/before_after_sector_bg_daytime_1793890712154.jpg' : '/assets/aistudio/BeforeAfterSectorBackground_d538f2ff.jpg'}
+          src={isLight ? '/assets/images/before_after_sector_bg_daytime_1793890712154.avif' : '/assets/aistudio/BeforeAfterSectorBackground_d538f2ff.jpg'}
           alt="Workflow Collapsing Sector Architecture"
           className="w-full h-full object-cover object-center opacity-40 dark:opacity-55 transition-opacity duration-500 filter brightness-95"
           loading="lazy"
@@ -288,18 +288,14 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
           <h2 className={`text-3xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight leading-tight ${
             isLight ? 'text-[#070A40]' : 'text-white'
           }`}>
-            The Shift to{' '}
-            <span className="bg-gradient-to-r from-[#00BFFF] via-[#38BDF8] to-[#00BFFF] bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(0,191,255,0.4)]">
-              Governed AI-Native
-            </span>{' '}
-            Operations
+            Governed AI-Native Operations
           </h2>
 
           {/* Supporting Copy */}
           <p className={`text-base sm:text-lg leading-relaxed max-w-3xl mx-auto font-sans font-medium ${
             isLight ? 'text-[#6B7280]' : 'text-[#9CA3AF]'
           }`}>
-            LightSpeed collapses multi-step operational friction, fragmented SaaS silos, and manual handoffs into deterministic, governed execution graphs.
+            LightSpeed replaces fragmented tools and manual handoffs with governed execution graphs.
           </p>
 
           {/* Corporate Tagline & Cyan Dividers */}

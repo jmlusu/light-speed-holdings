@@ -46,9 +46,9 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         {/* 6. ENGAGEMENT CTA */}
         <DistinctCTA
           theme={theme}
-          title="READY TO TRANSFORM YOUR OPERATING MODEL?"
-          subtitle="Speak with LightSpeed executives to evaluate your workflow automation readiness and design your target HAOMTGV architecture."
-          primaryActionText="ENGAGE LIGHTSPEED"
+          title="Ready to Transform Your Operating Model?"
+          subtitle="Speak with LightSpeed to assess workflow readiness and design a governed HAOMTGV architecture for your organisation."
+          primaryActionText="Contact Us"
           primaryActionHref="/contact"
           secondaryActionText="EXPLORE PHAROS"
           secondaryActionHref="/insights"

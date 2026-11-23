@@ -33,7 +33,7 @@ export const FaqCardList: React.FC<FaqCardListProps> = ({ theme }) => {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search questions, registry IDs, or topics..."
+          placeholder="Search questions, answers, or registry IDs..."
           className={`w-full pl-11 pr-4 py-3.5 rounded-2xl text-sm font-sans transition-all outline-none ${
             isLight
               ? 'bg-white text-ls-navy border border-slate-300 shadow-sm focus:border-ls-cyan'
@@ -123,10 +123,22 @@ export const FaqCardList: React.FC<FaqCardListProps> = ({ theme }) => {
       {filteredFaqs.length === 0 && (
         <div className={`text-center py-16 rounded-3xl ${isLight ? 'bg-white border border-slate-200' : 'bg-ls-navy/60 border border-white/10'}`}>
           <p className={`text-sm ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-            No frequently asked questions match &ldquo;{searchQuery}&rdquo;. Try another search term or contact our team directly.
+            No questions match your search.
           </p>
         </div>
       )}
+
+      <div className={`text-center pt-4 text-sm ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+        <span>Can&apos;t find the answer? </span>
+        <a
+          href="/contact"
+          className={`font-bold tracking-wide transition-colors ${
+            isLight ? 'text-ls-red hover:text-ls-navy' : 'text-ls-cyan hover:text-white'
+          }`}
+        >
+          Contact Support →
+        </a>
+      </div>
     </div>
   );
 };

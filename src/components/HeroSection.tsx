@@ -17,8 +17,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
   const copy = homeImmersiveCopy;
 
   const bgImage = isLight
-    ? '/src/assets/images/hero_cinematic_landscape_day.jpg'
-    : '/src/assets/images/hero_cinematic_landscape_night_1793514971805.jpg';
+    ? '/assets/images/hero_cinematic_landscape_day.avif'
+    : '/assets/images/hero_cinematic_landscape_night_1793514971805.avif';
 
   const logoSrc = isLight
     ? '/brand/logo/logo-light-bg.svg'
@@ -121,7 +121,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
               <div className="w-5 h-5 rounded-full bg-ls-white/20 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
                 <ArrowRight className="w-3 h-3" aria-hidden="true" />
               </div>
-              <span>ENGAGE LIGHTSPEED</span>
+              <span>Contact Us</span>
             </Link>
 
             <Link
@@ -132,7 +132,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
                   : 'bg-ls-navy/90 hover:bg-ls-navy text-ls-white border border-white/10'
               }`}
             >
-              <span className="text-[#00BFFF]">EXPLORE WHAT WE DO</span>
+              <span className="text-[#00BFFF]">Explore What We Do</span>
               <ArrowRight className="w-3 h-3 text-[#00BFFF]" aria-hidden="true" />
             </Link>
           </div>

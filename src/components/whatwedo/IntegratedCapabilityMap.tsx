@@ -10,12 +10,12 @@ interface MappingRow {
 }
 
 const MAPPING_ROWS: MappingRow[] = [
-  { id: 'map-1', capability: 'AI-Native Company Building', primaryPillars: ['H', 'O', 'V'], connectionDescription: 'Human direction initiates company creation; Orchestration coordinates workforce; Value cycle measures ROI.' },
-  { id: 'map-2', capability: 'Intelligent Workflow Automation', primaryPillars: ['A', 'T', 'G'], connectionDescription: 'Specialized Agents invoke System Tools guarded by automated 5-tier Governance gates.' },
-  { id: 'map-3', capability: 'Agentic Systems & Orchestration', primaryPillars: ['A', 'O', 'M'], connectionDescription: 'Multi-agent networks coordinated by Orchestration engine grounded in Organizational Memory.' },
-  { id: 'map-4', capability: 'Enterprise AI Integration', primaryPillars: ['T', 'G'], connectionDescription: 'API sandboxes and tool gateways secured by risk-classified compliance checks.' },
-  { id: 'map-5', capability: 'Organizational Memory & Knowledge', primaryPillars: ['M', 'A'], connectionDescription: 'Vector context stores providing domain grounding for every agent decision.' },
-  { id: 'map-6', capability: 'AI Governance & Decision Infrastructure', primaryPillars: ['G', 'H'], connectionDescription: 'Continuous oversight layer holding human approval authority at sovereign gates.' },
+  { id: 'map-1', capability: 'AI-Native Company Building', primaryPillars: ['H', 'O', 'V'], connectionDescription: 'Human direction starts company creation; Orchestration coordinates the workforce; Value measurement tracks ROI.' },
+  { id: 'map-2', capability: 'Intelligent Workflow Automation', primaryPillars: ['A', 'T', 'G'], connectionDescription: 'Agents invoke tools under five-tier governance checks.' },
+  { id: 'map-3', capability: 'Agentic Systems & Orchestration', primaryPillars: ['A', 'O', 'M'], connectionDescription: 'Orchestration coordinates agent networks with organizational memory.' },
+  { id: 'map-4', capability: 'Enterprise AI Integration', primaryPillars: ['T', 'G'], connectionDescription: 'Risk-classified compliance checks secure API sandboxes and tool gateways.' },
+  { id: 'map-5', capability: 'Organizational Memory & Knowledge', primaryPillars: ['M', 'A'], connectionDescription: 'Vector stores supply domain context for agent decisions.' },
+  { id: 'map-6', capability: 'AI Governance & Decision Infrastructure', primaryPillars: ['G', 'H'], connectionDescription: 'Governance checks retain human approval authority for consequential decisions.' },
 ];
 
 const ALL_PILLARS = [
@@ -46,8 +46,8 @@ export const IntegratedCapabilityMap: React.FC<IntegratedCapabilityMapProps> = (
         <SectionHeading
           theme={theme}
           eyebrow="ARCHITECTURE MATRIX"
-          title="Integrated Capability-to-HAOMTGV Map"
-          lead="Interactive relationship architecture connecting LightSpeed's six capability areas directly into the seven HAOMTGV operating pillars."
+          title="How Six Capabilities Connect to HAOMTGV"
+          lead="Select a practice area to see which HAOMTGV pillars it uses."
         />
 
         {/* Interactive Interactive Topology Visualizer */}

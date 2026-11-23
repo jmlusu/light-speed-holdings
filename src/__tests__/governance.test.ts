@@ -89,8 +89,8 @@ describe('content governance (MASTER_SPEC §17)', () => {
 
 describe('CTA registry (MASTER_SPEC §10)', () => {
   it('primary CTA is the single canonical label', () => {
-    expect(CTAS.primary.label).toBe('ENGAGE LIGHTSPEED');
-    expect(PRIMARY_CTA_LABEL).toBe('ENGAGE LIGHTSPEED');
+    expect(CTAS.primary.label).toBe('Contact Us');
+    expect(PRIMARY_CTA_LABEL).toBe('Contact Us');
     expect(CTAS.primary.to).toBe('/contact');
   });
 

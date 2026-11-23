@@ -189,7 +189,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
               <Send className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
             <p className="text-center text-[11px] text-ls-grey-light-text">
-              We respond to qualified enquiries within two business days. Unsubscribe anytime.
+              We reply to qualified enquiries within two business days. Unsubscribe anytime.
             </p>
           </form>
         </div>

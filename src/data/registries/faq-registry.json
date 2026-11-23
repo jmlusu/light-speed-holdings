@@ -424,7 +424,7 @@
       "answer": "Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help, and exactly what it takes to start. Qualified enquiries get a response within two business days. The engagement path: Brief â†’ AI Readiness Assessment â†’ Governance Gates (G1-G4) â†’ Scoped Proposal â†’ Deployment. No hidden steps, no surprise costs.",
       "evidence": [
         {
-          "source": "src/lib/enquiry.ts#We respond to qualified enquiries within two business days.",
+          "source": "src/lib/enquiry.ts#We reply to qualified enquiries within two business days.",
           "status": "verified"
         },
         {
@@ -484,7 +484,7 @@
       "answer": "Qualified enquiries receive a response within two business days. AI Readiness Assessments can begin within one week of agreement. Platform licensing (E1) setup takes 1-2 weeks. Pilot engagements typically start within 2-3 weeks after governance gates clear. The bottleneck is governance (G1-G4), not capacity: we prioritize doing it right over doing it fast.",
       "evidence": [
         {
-          "source": "src/lib/enquiry.ts#We respond to qualified enquiries within two business days.",
+          "source": "src/lib/enquiry.ts#We reply to qualified enquiries within two business days.",
           "status": "verified"
         },
         {

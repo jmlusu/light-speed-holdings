@@ -84,7 +84,7 @@ export const HumanApprovalMatrix: React.FC<HumanApprovalMatrixProps> = ({ theme 
         <SectionHeading
           theme={theme}
           eyebrow="HUMAN-IN-THE-LOOP GOVERNANCE"
-          title="The Five-Tier Human Approval Matrix"
+          title="Human Approval Matrix"
           lead="LightSpeed ensures human authority remains unmistakable. Autonomous agents operate strictly within bounded guardrails backed by immutable decision gates from AUTO_APPROVE (0) to CEO_ONLY (4)."
         />
 

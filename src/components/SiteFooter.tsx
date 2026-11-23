@@ -22,21 +22,18 @@ const COLUMNS: FooterColumn[] = [
     heading: 'CAPABILITIES',
     links: [
       { name: 'What We Do', to: '/what-we-do' },
-      { name: 'AI Company Builder', to: '/ai-company-builder' },
       { name: 'HAOMTGV Framework', to: '/haomtgv' },
-      { name: 'Agent Registry', to: '/agent-registry' },
       { name: 'AI Assessment', to: '/ai-assessment' },
-      { name: 'Operating Model', to: '/what-we-do' },
-      { name: 'AI Venture Studio', to: '/ai-company-builder' },
+      { name: 'Contact Us', to: '/contact' },
     ],
   },
   {
     heading: 'RESEARCH & COMPANY',
     links: [
       { name: 'Pharos', to: '/insights' },
-      { name: 'Who We Are', to: '/about' },
-      { name: 'Frequently Asked Questions', to: '/faq' },
-      { name: 'Contact', to: '/contact' },
+      { name: 'About Us', to: '/about' },
+      { name: 'FAQ', to: '/faq' },
+      { name: 'Contact Us', to: '/contact' },
       { name: 'Privacy Policy', to: '/legal/privacy' },
       { name: 'Terms of Service', to: '/legal/terms' },
     ],
@@ -44,10 +41,10 @@ const COLUMNS: FooterColumn[] = [
   {
     heading: 'CONNECT',
     links: [
-      { name: 'Facebook', to: 'https://facebook.com', external: true },
-      { name: 'X', to: 'https://x.com', external: true },
-      { name: 'Instagram', to: 'https://instagram.com', external: true },
-      { name: 'LinkedIn', to: 'https://linkedin.com', external: true },
+      { name: 'Facebook', to: 'https://facebook.com/lightspeedholdings', external: true },
+      { name: 'X', to: 'https://x.com/lightspeedholdings', external: true },
+      { name: 'Instagram', to: 'https://instagram.com/lightspeedholdings', external: true },
+      { name: 'LinkedIn', to: 'https://linkedin.com/company/lightspeedholdings', external: true },
     ],
   },
 ];
@@ -61,15 +58,13 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
         ? 'bg-[#F2F2F2] border-slate-300 text-[#070A40]'
         : 'bg-[#070A40] border-ls-cyan/30 text-white shadow-[0_-10px_30px_rgba(0,0,0,0.8)]'
     }`}>
-      {/* Background Architectural Sector Image (Uniform with Home Page Sections) */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
         <img
-          src="/src/assets/images/before_after_sector_bg_light_1793889809250.jpg"
+          src="/assets/images/before_after_sector_bg_light_1793889809250.avif"
           alt="LightSpeed Footer Architectural Sector Background"
           className="w-full h-full object-cover object-center transition-all duration-700 opacity-65 dark:opacity-75 filter saturate-110 brightness-100"
           loading="lazy"
         />
-        {/* Uniform Atmospheric Scrim Overlay */}
         <div
           className={`absolute inset-0 transition-colors duration-500 ${
             isLight
@@ -80,7 +75,6 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
       </div>
 
       <div className="px-6 lg:px-12 max-w-7xl mx-auto w-full relative z-10">
-        {/* Top Header Block with Imposing Straight Divider */}
         <div className={`flex flex-wrap items-start justify-between gap-x-12 gap-y-10 pb-16 border-b ${
           isLight ? 'border-slate-300/60' : 'border-ls-cyan/20'
         }`}>
@@ -93,19 +87,19 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
                 <span className={`text-sm font-bold tracking-widest uppercase font-sans ${
                   isLight ? 'text-[#070A40]' : 'text-white'
                 }`}>
-                  LightSpeed Holdings Limited™
+                  LightSpeed Holdings Limited
                 </span>
                 <span className={`text-[10px] tracking-[0.2em] font-bold font-mono ${
                   isLight ? 'text-ls-red' : 'text-ls-cyan'
                 }`}>
-                  LILONGWE, MALAWI // ASPIRE. ACT. ACHIEVE.
+                  Lilongwe, Malawi // Aspire. Act. Achieve.
                 </span>
               </div>
             </div>
             <p className={`mt-6 text-sm leading-relaxed font-sans ${
               isLight ? 'text-slate-600' : 'text-[#9CA3AF]'
             }`}>
-              LightSpeed Holdings Limited™ is an AI-Native Company Builder transforming human intent into governed, intelligent, and executable business operations.
+              LightSpeed Holdings is an AI-native strategy, venture-building, and technology company. We design governed agentic systems for organisations in Malawi and across SADC.
             </p>
           </div>
 
@@ -132,12 +126,11 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
             <div className={`text-[10px] font-mono tabular-nums pt-1 border-t ${
               isLight ? 'border-slate-200 text-slate-500' : 'border-white/10 text-[#9CA3AF]'
             }`}>
-              FRAMEWORK: HAOMTGV // GOV: TIER-5 VERIFIED
+              FRAMEWORK: HAOMTGV // HUMAN ACCOUNTABILITY
             </div>
           </div>
         </div>
 
-        {/* Sharp Column Divisions */}
         <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 py-16 border-b ${
           isLight ? 'border-slate-300/60' : 'border-white/10'
         }`}>
@@ -190,13 +183,12 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
           ))}
         </div>
 
-        {/* Bottom Legal & Telemetry Metadata */}
         <div className={`pt-10 flex flex-col md:flex-row items-center justify-between gap-6 text-[11px] ${
           isLight ? 'text-slate-500' : 'text-[#9CA3AF]'
         }`}>
           <div className="flex flex-col gap-1 text-center md:text-left font-sans">
             <span className={isLight ? 'text-slate-700' : 'text-slate-300'}>© {new Date().getFullYear()} LightSpeed Holdings Limited. All rights reserved.</span>
-            <span className={isLight ? 'text-slate-500' : 'text-slate-500'}>Illustrations and architectural diagrams are original vector artwork created in-house.</span>
+            <span className={isLight ? 'text-slate-500' : 'text-slate-500'}>Illustrations and architectural diagrams are original artwork created in-house.</span>
           </div>
           <div className={`flex items-center gap-4 font-mono text-[10px] tracking-wider uppercase ${
             isLight ? 'text-ls-red' : 'text-ls-cyan'
@@ -205,7 +197,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
               <span className={`w-1.5 h-1.5 shadow-[0_0_6px] ${
                 isLight ? 'bg-ls-red shadow-ls-red/40' : 'bg-ls-cyan shadow-[#00BFFF]'
               }`} />
-              ACTIVE OPERATING MODEL
+              GOVERNED OPERATING MODEL
             </span>
             <span className={isLight ? 'text-slate-300' : 'text-white/20'}>|</span>
             <span className={`font-bold tracking-widest uppercase ${
