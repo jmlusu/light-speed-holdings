@@ -4,7 +4,7 @@
 **Date:** 2026-11-23
 **Resolved:** resolved
 **Commit:** eea7fe4fc25e054d80635ac4b97fde8f7e85a5ea
-**Issue:** (none - conventional-commit fix: without an issue reference)
+**Issue:** #604 — https://github.com/jmlusu/light-speed-holdings/issues/604
 
 ## Original Issue Body
 
@@ -77,4 +77,10 @@ returned `200 image/avif`.
 
 - Local: `npm run build` passed; `npm test` passed (17 files, 154 tests).
 - Built JS bundle contains no `/src/assets/images/` literals.
-- CI: PR #603 checks re-running after the corrective commit.
+- CI: PR #603 — 18 checks passed, 1 skipped; main branch — 18 passed, 2 skipped.
+- Vercel production deployment `CqaGiexC2k5orBxd6axLvBfgRbrT` succeeded; live bundle has 0 broken image literals and the hero AVIF serves `200 image/avif`.
+
+## Link an Issue
+
+Tracked in #604 (https://github.com/jmlusu/light-speed-holdings/issues/604).
+The fix shipped in PR #603, merged to main as a930e6bb.
