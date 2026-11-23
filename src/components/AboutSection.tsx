@@ -416,7 +416,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
 
           <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] rounded-2xl overflow-hidden border border-white/10 shadow-xl group">
             <img
-              src="/src/assets/images/modular_agent_architecture_1793818142394.jpg"
+              src="/assets/images/modular_agent_architecture_1793818142394.avif"
               alt="Modular and configurable agentic enterprise architecture visual"
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               loading="lazy"

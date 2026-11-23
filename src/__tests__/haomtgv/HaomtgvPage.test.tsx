@@ -85,9 +85,9 @@ describe('HaomtgvPage', () => {
 
   it('renders the architectural paradigm section', () => {
     renderPage('dark');
-    expect(screen.getByText('THE ARCHITECTURAL PARADIGM')).toBeInTheDocument();
+    expect(screen.getByText('ARCHITECTURE PRINCIPLES')).toBeInTheDocument();
     expect(
-      screen.getByText('Beyond Black-Box Prompts: Governed Enterprise Execution'),
+      screen.getByText('Governed Enterprise Execution'),
     ).toBeInTheDocument();
   });
 
@@ -100,7 +100,7 @@ describe('HaomtgvPage', () => {
 
   it('renders the five-tier governance matrix anchor target', () => {
     renderPage('dark');
-    expect(screen.getByText('CONTINUOUS GOVERNANCE FABRIC')).toBeInTheDocument();
+    expect(screen.getByText('CONTINUOUS GOVERNANCE')).toBeInTheDocument();
     expect(screen.getByText('The Five-Tier Human Approval Matrix')).toBeInTheDocument();
     expect(document.getElementById('governance-matrix')).not.toBeNull();
   });
@@ -120,7 +120,7 @@ describe('HaomtgvPage', () => {
         name: 'Ready to Deploy Governed AI in Your Organization?',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /ENGAGE LIGHTSPEED/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Contact Us/i })).toBeInTheDocument();
   });
 
   it('renders the related architectural links', () => {

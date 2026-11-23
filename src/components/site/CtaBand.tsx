@@ -67,7 +67,7 @@ export const CtaBand: React.FC<CtaBandProps> = ({
           {/* Subtle Architectural Visual Overlay */}
           <div className="absolute inset-0 pointer-events-none select-none opacity-20 dark:opacity-25 z-0">
             <img
-              src="/src/assets/images/pharos_cta_pure_1793817814419.jpg"
+              src="/assets/images/pharos_cta_pure_1793817814419.avif"
               alt="Architectural visualization of research-to-enterprise bridge"
               className="w-full h-full object-cover object-center filter saturate-110"
               loading="lazy"

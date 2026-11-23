@@ -196,24 +196,18 @@ describe('site media registry', () => {
     ).toEqual(['/static/icons/icon-maskable.svg', '/static/icons/icon.svg']);
   });
 
-  it('resolves every Vite-bundled /src/assets/ reference on disk', () => {
+  it('references no Vite-bundled /src/assets/ image at all', () => {
     const { bundled } = collectReferences();
 
-    const missing = [...bundled]
-      .filter((assetPath) => !existsSync(join(ROOT, assetPath.replace(/^\/+/, ''))))
-      .sort();
-
+    // A quoted '/src/assets/**' string is copied verbatim into the production
+    // bundle (Vite only rewrites real imports / CSS urls), so every such image
+    // 404s behind the SPA fallback. All of them were migrated to the generated
+    // '/assets/images/*.avif' variants under public/. Keep this set empty so
+    // that regression cannot recur.
     expect(
-      missing,
-      `Bundled image reference(s) with no file on disk: ${missing.join(', ')} — the bundler ` +
-        'would fail or emit a broken URL.',
+      [...bundled].sort(),
+      'Site source must not reference /src/assets/** image paths — use the published /assets/images/*.avif variants.',
     ).toEqual([]);
-
-    expect(
-      bundled.size,
-      `Expected the site to reference bundled assets under src/assets/; found ${bundled.size}. ` +
-        'If the last bundled reference was removed, drop this guard rather than leaving it vacuous.',
-    ).toBeGreaterThan(0);
   });
 
   it('gives every entry a rooted path, a kind, an origin and a licence', () => {

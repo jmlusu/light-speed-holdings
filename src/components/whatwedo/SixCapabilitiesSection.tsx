@@ -31,7 +31,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: Building2,
     icon3d: 'home',
-    image: '/src/assets/images/cap1_company_building_1793817051020.jpg',
+    image: '/assets/images/cap1_company_building_1793817051020.avif',
     whatItIs: 'A strategy and build capability for launching and scaling companies where AI agents perform core execution.',
     problem: 'New ventures face management overhead, hiring delays, and slow operational setup.',
     whatWeBuild: [
@@ -52,7 +52,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/20',
     icon: Zap,
     icon3d: 'lightning',
-    image: '/src/assets/images/cap2_workflow_automation_1793817065625.jpg',
+    image: '/assets/images/cap2_workflow_automation_1793817065625.avif',
     whatItIs: 'Automation that turns multi-step manual tasks into defined execution paths.',
     problem: 'Work waits for staff, manual copying between applications, and email approvals.',
     whatWeBuild: [
@@ -72,7 +72,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: GitFork,
     icon3d: 'orchestration',
-    image: '/src/assets/images/cap3_agentic_orchestration_1793817079580.jpg',
+    image: '/assets/images/cap3_agentic_orchestration_1793817079580.avif',
     whatItIs: 'Multi-agent task graphs that break complex work into coordinated subtasks.',
     problem: 'General-purpose chatbots struggle with multi-step work that needs specialized roles and controlled state.',
     whatWeBuild: [
@@ -93,7 +93,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
     icon: Network,
     icon3d: 'network',
-    image: '/src/assets/images/cap4_integration_pure_1793817124475.jpg',
+    image: '/assets/images/cap4_integration_pure_1793817124475.avif',
     whatItIs: 'Integration architecture that connects AI models to ERP, CRM, database, and internal software systems.',
     problem: 'Isolated AI prototypes cannot securely access legacy databases or perform transactional writes.',
     whatWeBuild: [
@@ -113,7 +113,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/20',
     icon: HardDrive,
     icon3d: 'memory',
-    image: '/src/assets/images/cap5_organizational_memory_1793817139478.jpg',
+    image: '/assets/images/cap5_organizational_memory_1793817139478.avif',
     whatItIs: 'Persistent context storage for policies, historical lessons, and domain knowledge.',
     problem: 'Knowledge leaves when employees depart or rotate, so teams repeat solved problems.',
     whatWeBuild: [
@@ -133,7 +133,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: ShieldCheck,
     icon3d: 'governance',
-    image: '/src/assets/images/cap6_governance_infrastructure_1793817153646.jpg',
+    image: '/assets/images/cap6_governance_infrastructure_1793817153646.avif',
     whatItIs: 'A risk-classified governance framework with human approval gates, compliance checks, and cryptographic audit records.',
     problem: 'Uncontrolled AI deployment can cause reputational damage, regulatory breaches, and incorrect automated actions.',
     whatWeBuild: [

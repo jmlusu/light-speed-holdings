@@ -57,7 +57,7 @@ export const LightSpeedProposition: React.FC<LightSpeedPropositionProps> = ({ th
 
   const bgImage = isLight
     ? '/assets/aistudio/ValuePropositionBackground_beecaad0.jpg'
-    : '/src/assets/images/val_prop_bg_night_1793997847272.jpg';
+    : '/assets/images/val_prop_bg_night_1793997847272.avif';
 
   return (
     <section id="proposition" className={`py-24 px-6 lg:px-12 relative overflow-hidden transition-colors duration-300 ${

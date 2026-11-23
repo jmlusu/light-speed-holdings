@@ -78,7 +78,7 @@ export const WhatWeBuildGrid: React.FC<WhatWeBuildGridProps> = ({ theme = 'dark'
       {/* Background Architectural Modular Agent Image */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
         <img
-          src="/src/assets/images/modular_agent_architecture_1793818142394.jpg"
+          src="/assets/images/modular_agent_architecture_1793818142394.avif"
           alt="Modular Agent Architecture Visual"
           className="w-full h-full object-cover object-center transition-all duration-700 opacity-65 dark:opacity-75 filter saturate-110 brightness-100"
           loading="lazy"

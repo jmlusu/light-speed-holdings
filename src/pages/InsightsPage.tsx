@@ -20,7 +20,7 @@ const FEATURED_WHITEPAPERS = [
     category: 'Research Whitepaper',
     readTime: '12 min read',
     date: 'October 2026',
-    image: '/src/assets/images/whitepaper_a_cover_clean_1793817703115.jpg',
+    image: '/assets/images/whitepaper_a_cover_clean_1793817703115.avif',
     abstract: 'This whitepaper defines a framework for deploying deterministic agent workflows in complex enterprises while retaining human decision authority.',
     content: [
       'As you move from passive software tools to autonomous agents, governance becomes the central design problem. LightSpeed Holdings developed HAOMTGV to keep agent actions bounded, auditable, and aligned with human intent.',
@@ -35,7 +35,7 @@ const FEATURED_WHITEPAPERS = [
     category: 'Geostrategic Analysis',
     readTime: '9 min read',
     date: 'September 2026',
-    image: '/src/assets/images/whitepaper_b_cover_clean_1793817739118.jpg',
+    image: '/assets/images/whitepaper_b_cover_clean_1793817739118.avif',
     abstract: 'This analysis examines cross-border data residency requirements, economic integration, and self-service intelligence platforms in developing markets.',
     content: [
       'Regional deployments need local intelligence infrastructure that respects data governance requirements and uses suitable machine-learning models.',
@@ -211,13 +211,13 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
               // Contextual editorial thumbnail mapping based on topic/slug
               let thumbImage: string | null = null;
               if (article.slug === 'open-source-cost-architecture' || article.slug === 'dual-economy-ai-pricing') {
-                thumbImage = '/src/assets/images/pharos_article_thumb_cost_1793817753722.jpg';
+                thumbImage = '/assets/images/pharos_article_thumb_cost_1793817753722.avif';
               } else if (article.slug === 'five-tier-approval-matrix' || article.slug === 'evidence-ladder-honest-claims') {
-                thumbImage = '/src/assets/images/pharos_article_thumb_gov_1793817768084.jpg';
+                thumbImage = '/assets/images/pharos_article_thumb_gov_1793817768084.avif';
               } else if (article.slug === 'sadc-ai-opportunity' || article.slug === 'agentic-ai-african-governments' || article.slug === 'offline-first-ai-for-africa') {
-                thumbImage = '/src/assets/images/pharos_article_thumb_sadc_1793817783127.jpg';
+                thumbImage = '/assets/images/pharos_article_thumb_sadc_1793817783127.avif';
               } else if (article.slug === 'inside-a-90-agent-company' || article.slug === 'digital-to-ai-native-transformation') {
-                thumbImage = '/src/assets/images/agent_network_topology_1793816821318.jpg';
+                thumbImage = '/assets/images/agent_network_topology_1793816821318.avif';
               }
 
               return (

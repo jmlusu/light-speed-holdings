@@ -42,7 +42,7 @@ describe('FloatingNav — primary navigation', () => {
   it('points the primary CTA at /contact and does not open the briefing modal (D2)', () => {
     const onRequestBriefing = vi.fn();
     renderNav('dark', '/', onRequestBriefing);
-    const cta = screen.getByRole('link', { name: 'ENGAGE LIGHTSPEED' });
+    const cta = screen.getByRole('link', { name: 'Contact Us' });
     expect(cta).toHaveAttribute('href', '/contact');
     fireEvent.click(cta);
     expect(onRequestBriefing).not.toHaveBeenCalled();
