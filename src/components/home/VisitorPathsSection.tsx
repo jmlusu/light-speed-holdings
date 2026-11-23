@@ -92,7 +92,7 @@ const ACCENT_ICON: Record<VisitorPathCard['accent'], string> = {
 export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
   return (
-    <HomeSection id="paths" label="Choose your path" theme={theme} variant="secondary">
+    <HomeSection id="paths" label="Choose Your Path" theme={theme} variant="secondary">
       <SectionHeading
         theme={theme}
         eyebrow="START HERE"

@@ -24,8 +24,8 @@ export const AiAssessmentPage: React.FC<AiAssessmentPageProps> = ({
       <PageIntro
         theme={theme}
         eyebrow="AI READINESS DIAGNOSTIC"
-        title="AI Readiness Assessment Wizard"
-        lead="A 5-step qualitative diagnostic evaluating your organization across data maturity, core infrastructure, governance alignment, talent readiness, and agentic workflow potential. Evaluate your posture in minutes."
+        title="AI Readiness Assessment"
+        lead="Check your organisation across five domains: data maturity, infrastructure, governance, talent, and agentic workflow potential. The qualitative assessment takes minutes."
       />
 
       <section className="px-6 lg:px-12 max-w-7xl mx-auto w-full pt-6 pb-20">

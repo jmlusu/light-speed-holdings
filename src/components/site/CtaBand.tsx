@@ -24,7 +24,7 @@ interface CtaBandProps {
 export const CtaBand: React.FC<CtaBandProps> = ({
   theme,
   title = CTAS.primary.label,
-  text = 'Tell us where your organisation is today. We will be honest about whether we can help, and exactly what it takes to start.',
+  text = 'Tell us where your organisation stands today. We will tell you whether we can help and what you need to start.',
   ctaLabel = CTAS.primary.label,
   ctaTo = CTAS.primary.to,
   id,
@@ -115,7 +115,7 @@ export const CtaBand: React.FC<CtaBandProps> = ({
               <p className={`text-[11px] font-body mt-3 font-medium ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>
-                We respond to qualified enquiries within two business days.
+                We reply to qualified enquiries within two business days.
               </p>
             </div>
           </div>

@@ -14,14 +14,14 @@ interface Stage {
 }
 
 const DELIVERY_STAGES: Stage[] = [
-  { stage: 1, title: 'Understand Intent & Objectives', focus: 'Strategic Alignment', description: 'Clarify leadership intent, expected business outcomes, and key performance targets.', icon: Compass, icon3d: 'compass', deliverables: 'Executive Intent Charter & Scope Boundary' },
-  { stage: 2, title: 'Assess Workflows & Constraints', focus: 'Baseline Discovery', description: 'Map existing manual processes, data silos, network limits, and regional compliance needs.', icon: Search, icon3d: 'intelligence', deliverables: 'Friction Topology & Latency Baseline' },
-  { stage: 3, title: 'Design Target Operating Model', focus: 'HAOMTGV Blueprinting', description: 'Define the target AI-native structure combining human leadership and agentic automation.', icon: Layout, icon3d: 'home', deliverables: 'Target Architecture & Role Taxonomy' },
-  { stage: 4, title: 'Define Governance Boundaries', focus: 'Approval Gates', description: 'Establish 5-tier approval thresholds, risk classification, and decision rights.', icon: ShieldCheck, icon3d: 'safe', deliverables: 'Decision Matrix & Cryptographic Policy' },
-  { stage: 5, title: 'Architect HAOMTGV Stack', focus: 'Technical Specs', description: 'Configure specialized agent roles, vector memory schemas, and API tool sandboxes.', icon: Cpu, icon3d: 'orchestration', deliverables: 'Agent Task Graphs & Sandboxed Schemas' },
-  { stage: 6, title: 'Build & Integrate', focus: 'Iterative Sprints', description: 'Develop agent workflows, integrate mobile-money/ERP APIs, and run regression suites.', icon: Code2, icon3d: 'tools', deliverables: 'Tested Workflows & Verified Connectors' },
-  { stage: 7, title: 'Validate & Authorize', focus: 'Gate Sign-Off', description: 'Run G1–G4 security/DPA reviews and obtain human executive sign-off before launch.', icon: CheckCircle, icon3d: 'verification', deliverables: 'Executive Authorization & Audit Ledger Entry' },
-  { stage: 8, title: 'Measure, Learn & Improve', focus: 'Continuous Value', description: 'Track latency, cost, and quality KPIs to continuously optimize agent memory and prompts.', icon: BarChart3, icon3d: 'chart', deliverables: 'Continuous SLA Feedback Loop' },
+  { stage: 1, title: 'Understand Intent & Objectives', focus: 'Strategic Alignment', description: 'Clarify leadership intent, expected outcomes, and performance targets.', icon: Compass, icon3d: 'compass', deliverables: 'Executive Intent Charter & Scope Boundary' },
+  { stage: 2, title: 'Assess Workflows & Constraints', focus: 'Baseline Discovery', description: 'Map manual processes, data silos, network limits, and regional compliance requirements.', icon: Search, icon3d: 'intelligence', deliverables: 'Friction Topology & Latency Baseline' },
+  { stage: 3, title: 'Design Target Operating Model', focus: 'HAOMTGV Blueprinting', description: 'Define the AI-native structure, human leadership roles, and agent automation.', icon: Layout, icon3d: 'home', deliverables: 'Target Architecture & Role Taxonomy' },
+  { stage: 4, title: 'Define Governance Boundaries', focus: 'Approval Gates', description: 'Set five approval tiers, risk classes, and decision rights.', icon: ShieldCheck, icon3d: 'safe', deliverables: 'Decision Matrix & Cryptographic Policy' },
+  { stage: 5, title: 'Architect HAOMTGV Stack', focus: 'Technical Specs', description: 'Configure agent roles, vector memory schemas, and API sandboxes.', icon: Cpu, icon3d: 'orchestration', deliverables: 'Agent Task Graphs & Sandboxed Schemas' },
+  { stage: 6, title: 'Build & Integrate', focus: 'Iterative Sprints', description: 'Build workflows, integrate mobile-money and ERP APIs, and run regression tests.', icon: Code2, icon3d: 'tools', deliverables: 'Tested Workflows & Verified Connectors' },
+  { stage: 7, title: 'Validate & Authorize', focus: 'Gate Sign-Off', description: 'Complete G1–G4 security and DPA reviews and obtain executive approval before launch.', icon: CheckCircle, icon3d: 'verification', deliverables: 'Executive Authorization & Audit Ledger Entry' },
+  { stage: 8, title: 'Measure, Learn & Improve', focus: 'Continuous Value', description: 'Track latency, cost, and quality KPIs; use results to improve memory and prompts.', icon: BarChart3, icon3d: 'chart', deliverables: 'Continuous SLA Feedback Loop' },
 ];
 
 interface DeliveryLifecycleSectionProps {
@@ -43,7 +43,7 @@ export const DeliveryLifecycleSection: React.FC<DeliveryLifecycleSectionProps> =
           theme={theme}
           eyebrow="DELIVERY APPROACH"
           title="Eight-Stage Delivery Lifecycle"
-          lead="Explanatory model detailing how LightSpeed moves projects from strategic intent to governed, operational capability in a continuous improvement loop."
+          lead="This model shows how LightSpeed turns strategic intent into governed operating capability, then uses measured results to improve it."
         />
 
         {/* Continuous Pathway Stepper Visualizer */}

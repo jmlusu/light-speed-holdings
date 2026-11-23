@@ -16,7 +16,7 @@ interface DistinctCTAProps {
 export const DistinctCTA: React.FC<DistinctCTAProps> = ({
   title = "BUSINESS IS BUILT, NOT PREDICTED",
   subtitle = "Partner with LightSpeed Holdings Limited™ to design, govern, and scale your autonomous enterprise operating model.",
-  primaryActionText = "ENGAGE LIGHTSPEED",
+  primaryActionText = "Contact Us",
   primaryActionHref = "/contact",
   secondaryActionText = "EXPLORE WHAT WE DO",
   secondaryActionHref = "/what-we-do",

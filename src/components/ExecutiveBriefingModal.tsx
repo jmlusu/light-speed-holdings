@@ -316,7 +316,7 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="Outline your primary strategic bottlenecks, legacy IT dependencies, or compliance requirements..."
+                  placeholder="Describe your main operational constraints, existing IT dependencies, and compliance requirements."
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   className={`w-full px-3.5 py-2.5 rounded-xl text-xs outline-none focus:ring-1 focus:ring-ls-red transition-all resize-none font-medium ${

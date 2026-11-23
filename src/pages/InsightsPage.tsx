@@ -16,16 +16,16 @@ const FEATURED_WHITEPAPERS = [
   {
     id: 'w1',
     title: 'Agentic Enterprise Architecture & Governance v1.1',
-    subtitle: 'Strategic Blueprint for Autonomous Operations',
+    subtitle: 'A Strategic Blueprint for Autonomous Operations',
     category: 'Research Whitepaper',
     readTime: '12 min read',
     date: 'October 2026',
     image: '/src/assets/images/whitepaper_a_cover_clean_1793817703115.jpg',
-    abstract: 'This foundational whitepaper establishes the canonical framework for deploying deterministic agentic workflows across complex enterprise environments while maintaining rigorous human sovereign control.',
+    abstract: 'This whitepaper defines a framework for deploying deterministic agent workflows in complex enterprises while retaining human decision authority.',
     content: [
-      'As organizations transition from passive software tools to autonomous agentic systems, the primary challenge shifts from capability to governance. LightSpeed Holdings has pioneered the H-A-O-M-T-G-V architecture to ensure every agent action is bounded, auditable, and aligned with human intent.',
-      'Through in-house operational benchmarks and pilot workflows, we demonstrate how workflow collapsing streamlines multi-step processes without compromising compliance or data residency.',
-      'The five-tier human approval matrix provides an uncompromised escalation pathway for strategic decisions, ensuring accountability remains firmly anchored to executive decision-makers.'
+      'As you move from passive software tools to autonomous agents, governance becomes the central design problem. LightSpeed Holdings developed HAOMTGV to keep agent actions bounded, auditable, and aligned with human intent.',
+      'Our in-house benchmarks and pilot workflows show how workflow compression can reduce process steps while preserving compliance and data residency controls. These are internal results, not a promise of identical client outcomes.',
+      'The five-tier approval matrix escalates strategic decisions to named executives, keeping accountability with human decision-makers.'
     ]
   },
   {
@@ -36,11 +36,11 @@ const FEATURED_WHITEPAPERS = [
     readTime: '9 min read',
     date: 'September 2026',
     image: '/src/assets/images/whitepaper_b_cover_clean_1793817739118.jpg',
-    abstract: 'An in-depth analysis of cross-border data residency requirements, economic integration, and the deployment of self-service intelligence platforms across developing markets.',
+    abstract: 'This analysis examines cross-border data residency requirements, economic integration, and self-service intelligence platforms in developing markets.',
     content: [
-      'Regional development requires localized intelligence infrastructure that respects sovereign data governance while leveraging cutting-edge machine learning models.',
-      'Pharos evaluates the architectural trade-offs between centralized hyperscale models and distributed edge deployment in resource-constrained environments.',
-      'Our findings indicate that hybrid architectures paired with open-weight models deliver superior cost efficiency and regulatory compliance for institutional stakeholders.'
+      'Regional deployments need local intelligence infrastructure that respects data governance requirements and uses suitable machine-learning models.',
+      'Pharos compares centralized hyperscale models with distributed edge deployments in resource-constrained environments.',
+      'Our analysis favors hybrid architectures with open-weight models for cost efficiency and regulatory compliance. Treat this as a deployment-dependent finding; validate it against your workload, jurisdiction, and quality requirements.'
     ]
   }
 ];
@@ -88,10 +88,10 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
             <span>PHAROS // RESEARCH HUB</span>
           </div>
           <h1 className={`text-3xl lg:text-5xl font-bold tracking-tight font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-            Evidence, Research & the Agentic AI Canon
+            Evidence and Research for Governed AI
           </h1>
           <p className={`max-w-2xl text-base leading-relaxed ${secondaryText}`}>
-            Original research, cited sources, and executive briefings on AI strategy, data residency, and governance, written for boards and grounded in production systems.
+            Read original research, cited sources, and executive briefings on AI strategy, data residency, and governance. We write for boards and base our analysis on operating systems.
           </p>
         </div>
       </section>

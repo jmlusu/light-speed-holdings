@@ -22,7 +22,7 @@ export const NotFoundPage: React.FC = () => {
             Page not found
           </Heading>
           <Text variant="lead" style={{ marginBottom: tokens.spacing[8] }}>
-            The page you are looking for does not exist or has moved.
+            This page does not exist or has moved.
           </Text>
           <Stack direction="horizontal" gap={3} justify="center" wrap>
             <Link
@@ -33,7 +33,7 @@ export const NotFoundPage: React.FC = () => {
                   : 'bg-ls-navy text-ls-white'
               }`}
             >
-              <span>Back to home</span>
+              <span>Go home</span>
             </Link>
             <Link
               to="/contact"

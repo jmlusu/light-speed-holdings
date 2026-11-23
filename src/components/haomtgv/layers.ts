@@ -12,22 +12,22 @@ export const HAOMTGV_LAYERS: HaomtgvLayer[] = [
   {
     id: 'human',
     letter: 'H',
-    title: 'Human',
-    heroDescription: 'People set intent and hold final authority.',
+    title: 'Human Authority',
+    heroDescription: 'People set intent and retain final decision authority.',
     Icon: Brain,
   },
   {
     id: 'agents',
     letter: 'A',
     title: 'Agents',
-    heroDescription: 'Specialized AI roles with explicit scopes.',
+    heroDescription: 'Specialized AI roles perform bounded, specialized tasks.',
     Icon: Bot,
   },
   {
     id: 'orchestration',
     letter: 'O',
     title: 'Orchestration',
-    heroDescription: 'Deterministic routing of tasks and decisions.',
+    heroDescription: 'Deterministic routing of tasks, handoffs, and decisions.',
     Icon: GitBranch,
   },
   {
@@ -48,14 +48,14 @@ export const HAOMTGV_LAYERS: HaomtgvLayer[] = [
     id: 'governance',
     letter: 'G',
     title: 'Governance',
-    heroDescription: 'Five-tier approval woven through every layer.',
+    heroDescription: 'Five-tier approval checks run across every layer.',
     Icon: ShieldCheck,
   },
   {
     id: 'value',
     letter: 'V',
     title: 'Value',
-    heroDescription: 'Measured business outcomes fed back into strategy.',
+    heroDescription: 'Measured business outcomes inform strategy.',
     Icon: TrendingUp,
   },
 ];

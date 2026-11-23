@@ -26,7 +26,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       letter: 'H',
       name: 'Human Direction',
       role: 'Sovereign Leader',
-      desc: 'Sets intent, defines policy boundaries, and retains absolute decision authority.',
+      desc: 'Sets intent, defines policy limits, and retains final decision authority.',
       icon: User,
       icon3d: 'users',
       color: 'text-ls-red bg-ls-red/10 border-ls-red/30',
@@ -37,7 +37,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       letter: 'A',
       name: 'Specialized Agents',
       role: 'Executing Units',
-      desc: 'Scoped AI roles executing discrete sub-tasks with bounded permission limits.',
+      desc: 'AI roles perform discrete subtasks within defined permissions.',
       icon: Bot,
       icon3d: 'intelligence',
       color: 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
@@ -48,7 +48,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       letter: 'O',
       name: 'Orchestration Engine',
       role: 'Deterministic Router',
-      desc: 'Task graph decomposition and automated dependency management.',
+      desc: 'Breaks work into task graphs and manages dependencies.',
       icon: GitBranch,
       icon3d: 'orchestration',
       color: 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
@@ -59,7 +59,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       letter: 'M',
       name: 'Organizational Memory',
       role: 'Context Store',
-      desc: 'Persistent vector database providing long-term enterprise domain grounding.',
+      desc: 'A persistent vector database supplies long-term enterprise context.',
       icon: HardDrive,
       icon3d: 'memory',
       color: 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
@@ -70,7 +70,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       letter: 'T',
       name: 'System Tools',
       role: 'Execution Sandboxes',
-      desc: 'Isolated API integrations and secure connectors for real-world execution.',
+      desc: 'Isolated APIs and secure connectors perform external actions.',
       icon: Wrench,
       icon3d: 'tools',
       color: 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
@@ -81,7 +81,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       letter: 'G',
       name: 'Governance Control',
       role: '5-Tier Approval Gate',
-      desc: 'Continuous risk classification and append-only SHA-256 audit logging.',
+      desc: 'Classifies risk and writes append-only SHA-256 audit records.',
       icon: ShieldCheck,
       icon3d: 'safe',
       color: 'text-ls-red bg-ls-red/10 border-ls-red/30',
@@ -92,7 +92,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       letter: 'V',
       name: 'Measurable Value',
       role: 'Outcome Benchmark',
-      desc: 'Operational cost, turnaround SLA, and quality feedback loops.',
+      desc: 'Tracks operating cost, turnaround against SLAs, and quality.',
       icon: TrendingUp,
       icon3d: 'chart',
       color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30',
@@ -109,8 +109,8 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
         <SectionHeading
           theme={theme}
           eyebrow="THE AI-NATIVE COMPANY BUILDER"
-          title="An Operating Model Built Around Seven HAOMTGV Pillars"
-          lead="LightSpeed Holdings does not deploy standalone AI tools. We engineer complete operating models where human authority directs coordinated agent execution across a bounded, auditable architecture."
+          title="An Operating Model Built on Seven HAOMTGV Pillars"
+          lead="LightSpeed Holdings builds complete operating models, with human authority directing coordinated agents inside defined, auditable boundaries."
         />
 
         {/* Interactive Architecture Visual Overview */}
@@ -123,7 +123,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
               <span>INTERACTIVE SEVEN-PILLAR STACK</span>
             </div>
             <span className="text-[11px] font-mono text-slate-400">
-              Hover or select a pillar to inspect operational boundaries
+              Hover or select a pillar to inspect its operating boundaries.
             </span>
           </div>
 

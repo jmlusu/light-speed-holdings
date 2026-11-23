@@ -53,16 +53,16 @@ export const company = {
 export const insightCategories: string[] = [
   'Agentic AI',
   'AI Company Building',
-  'AI governance',
-  'AI policy',
-  'Data architecture',
-  'Digital transformation',
+  'AI Governance',
+  'AI Policy',
+  'Data Architecture',
+  'Digital Transformation',
   'African AI',
-  'Malawi technology',
-  'African technology',
-  'Market intelligence',
-  'Operating models',
-  'AI implementation',
+  'Malawi Technology',
+  'African Technology',
+  'Market Intelligence',
+  'Operating Models',
+  'AI Implementation',
 ];
 
 export const insightTeasers: { title: string; topic: string; to: string; image?: string }[] = [

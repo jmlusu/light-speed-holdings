@@ -32,9 +32,9 @@ const APPROVAL_TIERS = [
   {
     tier: 1,
     name: 'Operational Auto-Execution',
-    scope: 'Routine data formatting, low-risk classification, and internal summarization.',
-    authority: 'Fully Autonomous Agent (Zero Human Gate)',
-    auditLevel: 'Automated Log & Telemetry',
+    scope: 'Routine data formatting, low-risk classification, and internal summaries.',
+    authority: 'Fully autonomous agent; no human gate.',
+    auditLevel: 'Automated log and telemetry.',
     description: 'Executed instantly by specialized agents under strict deterministic sandbox rules.',
     riskLevel: 'Negligible',
     badgeColor: 'text-cyan-400 bg-cyan-950/40',
@@ -42,9 +42,9 @@ const APPROVAL_TIERS = [
   {
     tier: 2,
     name: 'Supervised Recommendation',
-    scope: 'Drafting reports, code generation, and moderate operational recommendations.',
-    authority: 'Junior Operator Review',
-    auditLevel: 'Standard Timestamp & Diff Review',
+    scope: 'Report drafts, code generation, and moderate operational recommendations.',
+    authority: 'Junior operator review.',
+    auditLevel: 'Timestamp and diff review.',
     description: 'Agent prepares complete draft artifacts requiring single-click human sign-off.',
     riskLevel: 'Low',
     badgeColor: 'text-cyan-400 bg-cyan-950/40',
@@ -53,8 +53,8 @@ const APPROVAL_TIERS = [
     tier: 3,
     name: 'Tactical Decision Gate',
     scope: 'Resource allocation, workflow overrides, and departmental integrations.',
-    authority: 'Department Lead / Manager',
-    auditLevel: 'Structured Audit Trail & Rationale Log',
+    authority: 'Department lead or manager.',
+    auditLevel: 'Structured audit record and rationale log.',
     description: 'Requires explicit human authorization before agent proceeds with transactional actions.',
     riskLevel: 'Moderate',
     badgeColor: 'text-cyan-300 bg-cyan-950/60',
@@ -62,9 +62,9 @@ const APPROVAL_TIERS = [
   {
     tier: 4,
     name: 'Strategic Authority Gate',
-    scope: 'Financial commitments, external partnerships, and policy modifications.',
-    authority: 'Executive Sponsor / Director',
-    auditLevel: 'Cryptographic Sign-Off & Compliance Tag',
+    scope: 'Financial commitments, external partnerships, and policy changes.',
+    authority: 'Executive sponsor or director.',
+    auditLevel: 'Cryptographic sign-off and compliance tag.',
     description: 'High-impact boundary requiring verified executive credentials and multi-factor validation.',
     riskLevel: 'High',
     badgeColor: 'text-ls-red bg-ls-red/10',
@@ -72,9 +72,9 @@ const APPROVAL_TIERS = [
   {
     tier: 5,
     name: 'Absolute Sovereign Control',
-    scope: 'Venture launch, core governance reset, and irreversible system architecture changes.',
-    authority: 'Chief Executive Officer / Board',
-    auditLevel: 'Immutable Board Ledger & Compliance Archive',
+    scope: 'Venture launch, governance reset, and irreversible architecture changes.',
+    authority: 'Chief Executive Officer or board.',
+    auditLevel: 'Immutable board ledger and compliance archive.',
     description: 'The ultimate human accountability anchor. No autonomous agent can bypass Tier 5.',
     riskLevel: 'Critical',
     badgeColor: 'text-ls-red bg-ls-red/20',
@@ -87,7 +87,7 @@ const WORKFLOW_STEPS = [
     layer: 'Human Authority',
     letter: 'H',
     title: 'Strategic Intent & Boundary Definition',
-    desc: 'Human directors define commercial objectives, acceptable risk limits, and budget parameters.',
+    desc: 'Human directors define commercial objectives, risk limits, and budgets.',
     actor: 'Human CEO / Executive',
   },
   {
@@ -95,7 +95,7 @@ const WORKFLOW_STEPS = [
     layer: 'Orchestration',
     letter: 'O',
     title: 'Deterministic DAG Decomposition',
-    desc: 'The orchestrator translates human intent into a directed task graph with explicit checkpoints.',
+    desc: 'The orchestrator turns intent into a directed task graph with explicit checkpoints.',
     actor: 'Workflow State Engine',
   },
   {
@@ -103,7 +103,7 @@ const WORKFLOW_STEPS = [
     layer: 'Persistent Memory',
     letter: 'M',
     title: 'Contextual Knowledge Retrieval',
-    desc: 'Context vectors, compliance rules, and historical precedence are queried from isolated memory.',
+    desc: 'The system queries isolated memory for context vectors, compliance rules, and historical precedents.',
     actor: 'Tenant Vector Store',
   },
   {
@@ -111,7 +111,7 @@ const WORKFLOW_STEPS = [
     layer: 'Configurable Agents',
     letter: 'A',
     title: 'Role-Bounded Task Execution',
-    desc: 'Specialized agents execute scoped computational tasks, generating structured artifacts and diffs.',
+    desc: 'Specialized agents perform scoped tasks and generate structured artifacts and diffs.',
     actor: 'Configurable Agent Team',
   },
   {
@@ -119,7 +119,7 @@ const WORKFLOW_STEPS = [
     layer: 'Sandboxed Tools',
     letter: 'T',
     title: 'Controlled External Invocation',
-    desc: 'Sandboxed APIs and containerized kernels execute external transactions under credential limits.',
+    desc: 'Sandboxed APIs and containerized kernels execute external transactions within credential limits.',
     actor: 'Sandboxed Tool Proxy',
   },
   {
@@ -127,7 +127,7 @@ const WORKFLOW_STEPS = [
     layer: 'Transverse Governance',
     letter: 'G',
     title: 'Human Gatekeeper Authorization',
-    desc: 'Automated policy validation inspects outputs; decisions matching Tiers 2-5 require human sign-off.',
+    desc: 'Policy checks inspect outputs. Tiers 2-5 require human sign-off.',
     actor: 'Human Approval Matrix',
   },
   {
@@ -135,7 +135,7 @@ const WORKFLOW_STEPS = [
     layer: 'Measured Value',
     letter: 'V',
     title: 'Outcome Feedback & Strategy Refinement',
-    desc: 'Verified ROI, latency reduction, and quality metrics are delivered back to human leadership.',
+    desc: 'The system returns verified ROI, latency reduction, and quality metrics to human leadership.',
     actor: 'Empirical Audit Engine',
   },
 ];
@@ -232,20 +232,15 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
                 'text-base sm:text-lg leading-relaxed text-ls-grey-light-text max-w-3xl mx-auto font-body'
               )}
             >
-              The foundational operating system behind the LightSpeed AI-Native Company Builder.
-              Machines execute bounded, specialized tasks; human directors retain sovereign
-              decision authority. Seven interconnected dimensions orchestrated into an auditable,
-              scalable enterprise engine.
+              HAOMTGV is the operating architecture behind the LightSpeed AI-Native Company Builder. Agents perform bounded, specialized tasks; human directors retain final decision authority. Seven connected dimensions form an auditable, scalable enterprise system.
             </p>
 
-            {/* Official Tagline Badge */}
             <div className={heroReveal.getRevealClass('fade', 4, 'pt-2')}>
               <span className="inline-block text-xs font-mono font-bold tracking-[0.3em] text-ls-white/80 uppercase px-4 py-1.5 rounded-md bg-white/5">
                 ASPIRE. ACT. ACHIEVE.
               </span>
             </div>
 
-            {/* Action buttons */}
             <div
               className={heroReveal.getRevealClass(
                 'up',
@@ -293,14 +288,13 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
           <div className={paradigmReveal.getRevealClass('fade', 1)}>
             <SectionHeading
               theme={theme}
-              eyebrow="THE ARCHITECTURAL PARADIGM"
-              title="Beyond Black-Box Prompts: Governed Enterprise Execution"
-              lead="Traditional AI deployments fail because they treat large language models as unconstrained chatbots. HAOMTGV treats AI as a governed execution layer constrained by deterministic orchestration and sovereign human oversight."
+              eyebrow="ARCHITECTURE PRINCIPLES"
+              title="Governed Enterprise Execution"
+              lead="Unconstrained chatbot deployments leave too much authority with the model. HAOMTGV constrains AI execution through deterministic orchestration, explicit permissions, and human decision rights."
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            {/* Unbounded Chaos */}
             <div className={paradigmReveal.getRevealClass('up', 2, 'h-full')}>
               <div
                 className={`rounded-2xl p-8 h-full flex flex-col justify-between ${
@@ -320,33 +314,30 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
                     The High-Risk Black Box
                   </h3>
                   <p className="text-sm leading-relaxed text-slate-400">
-                    Deploying generic chatbots with unstructured prompt instructions and direct
-                    database access introduces unvetted hallucination risk, compliance breaches, and
-                    cost blowouts.
+                    Generic chatbots with unstructured prompts and direct database access can produce unchecked errors, compliance breaches, and unexpected costs.
                   </p>
                   <ul className="space-y-2.5 pt-2 text-xs text-slate-400 font-body">
                     <li className="flex items-start gap-2">
                       <span className="text-ls-red font-bold">✕</span>
-                      <span>Uncontrolled model autonomy with zero hard decision gates</span>
+                      <span>Uncontrolled model autonomy without hard decision gates.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-ls-red font-bold">✕</span>
-                      <span>Ephemeral context loss across multi-step enterprise workflows</span>
+                      <span>Context loss across multi-step enterprise workflows.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-ls-red font-bold">✕</span>
-                      <span>Direct credential exposure and unvetted API execution</span>
+                      <span>Direct credential exposure and unchecked API execution.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-ls-red font-bold">✕</span>
-                      <span>No cryptographic audit trails or regulatory accountability</span>
+                      <span>No cryptographic audit records or clear regulatory accountability.</span>
                     </li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            {/* Governed HAOMTGV */}
             <div className={paradigmReveal.getRevealClass('up', 3, 'h-full')}>
               <div
                 className={`rounded-2xl p-8 h-full flex flex-col justify-between ${
@@ -366,26 +357,24 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
                     Deterministic, Scalable Control
                   </h3>
                   <p className="text-sm leading-relaxed text-slate-300">
-                    A multi-layered architecture where human authority runs through every phase,
-                    governance permeates every tool call, and business outcomes are measured
-                    empirically.
+                    Human authority applies at every phase. Governance checks each tool call. The system measures business outcomes.
                   </p>
                   <ul className="space-y-2.5 pt-2 text-xs text-slate-300 font-body">
                     <li className="flex items-start gap-2">
                       <span className="text-ls-cyan font-bold">✓</span>
-                      <span>Pinnacle Human Authority with non-negotiable sovereign veto</span>
+                      <span>Human authority with a non-negotiable final veto.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-ls-cyan font-bold">✓</span>
-                      <span>Configurable AI agent teams scaling from 1 to N+ specialized roles</span>
+                      <span>Configurable AI agent teams, from one to N+ specialized roles.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-ls-cyan font-bold">✓</span>
-                      <span>Deterministic DAG orchestration with persistent tenant memory</span>
+                      <span>Deterministic DAG orchestration with persistent tenant memory.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-ls-cyan font-bold">✓</span>
-                      <span>Transverse Five-Tier Human Approval Matrix with SHA-256 state receipts</span>
+                      <span>A five-tier human approval matrix across the system, with SHA-256 state receipts.</span>
                     </li>
                   </ul>
                 </div>
@@ -409,7 +398,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
               theme={theme}
               eyebrow="THE SEVEN DIMENSIONS"
               title="Unified Operating Architecture"
-              lead="An integrated architectural view of the seven HAOMTGV dimensions: Human Authority at the sovereign pinnacle, continuous Governance spanning every layer, deterministic core execution, and empirical Value closing the strategic feedback loop."
+              lead="Explore the seven HAOMTGV dimensions. Human Authority sets direction, Governance checks every layer, deterministic components execute work, and Value measurement informs strategy."
             />
           </div>
 
@@ -431,9 +420,9 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
           <div className={governanceReveal.getRevealClass('fade', 1)}>
             <SectionHeading
               theme={theme}
-              eyebrow="CONTINUOUS GOVERNANCE FABRIC"
+              eyebrow="CONTINUOUS GOVERNANCE"
               title="The Five-Tier Human Approval Matrix"
-              lead="Governance in HAOMTGV is a continuous, transverse control fabric spanning every dimension. High-risk decisions are cryptographically gated by human authorities."
+              lead="Governance checks run across every HAOMTGV dimension. Named human authorities approve high-risk decisions through cryptographic gates."
             />
           </div>
 
@@ -600,7 +589,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
               theme={theme}
               eyebrow="CLOSED-LOOP EXECUTION"
               title="How the Architecture Executes Work"
-              lead="A real-world walkthrough illustrating how strategic human intent cascades through orchestration, memory, configurable agents, and tools under continuous governance to deliver verified value."
+              lead="Follow a business goal through orchestration, memory, agents, and tools under continuous governance, then review the measured result."
             />
             <div className="mt-12">
               <HaomtgvPipelineDiagram theme={theme} />
@@ -714,9 +703,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
               'text-sm sm:text-base leading-relaxed text-ls-grey-light-text max-w-2xl mx-auto font-body'
             )}
           >
-            Schedule an architectural briefing with LightSpeed leadership. We will evaluate your
-            workflows, map them to the HAOMTGV operating model, and demonstrate how configurable
-            agent teams operate under sovereign human governance.
+            Schedule an architecture briefing with LightSpeed leadership. We will assess your workflows, map them to HAOMTGV, and demonstrate how configurable agent teams operate under human governance.
           </p>
 
           <div

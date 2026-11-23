@@ -97,7 +97,7 @@ export const WhatWeBuildGrid: React.FC<WhatWeBuildGridProps> = ({ theme = 'dark'
         <SectionHeading
           theme={theme}
           eyebrow="PRACTICE AREAS"
-          title="What We Build"
+          title="Six Capabilities. One Governed System."
           lead="LightSpeed engineers production-grade AI-native capabilities. Each practice area solves a fundamental enterprise operational bottleneck."
         />
 

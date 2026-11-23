@@ -12,55 +12,55 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
   {
     heading: '1. Who We Are',
     paragraphs: [
-      'This website is operated by LightSpeed Holdings Limited, Lilongwe, Malawi. References to \u201cLightSpeed\u201d, \u201cwe\u201d, or \u201cus\u201d mean LightSpeed Holdings Limited.',
+      'LightSpeed Holdings Limited, Lilongwe, Malawi, operates this website. \u201cLightSpeed\u201d, \u201cwe\u201d, and \u201cus\u201d mean LightSpeed Holdings Limited.',
     ],
   },
   {
     heading: '2. Our Services',
     paragraphs: [
-      'We provide websites, automation, reporting, digital marketing, data and analytics, agentic AI systems, and the AI Company Builder license. Scope, price, and deliverables are agreed in writing per engagement. Nothing on this website is itself an offer that binds either party.',
+      'We provide websites, automation, reporting, digital marketing, data and analytics, agentic AI systems, and the AI Company Builder licence. We agree scope, price, and deliverables in writing for each engagement. This website does not itself create a binding offer.',
     ],
   },
   {
     heading: '3. Honesty & Claims',
     paragraphs: [
-      'We label every claim with its evidence status: Proven in-house, In pilot, Fieldable, or In development. Please treat statuses precisely as they read. We do, and we expect the same in return. If a marketing statement ever overstates what we can prove, tell us; that is a bug we will fix.',
+      'We label claims as Proven in-house, In pilot, Fieldable in 2026, or In development. We do not invent client logos, testimonials, headcount figures, or ROI numbers. Published numbers must come from our verified operational record.',
     ],
   },
   {
     heading: '4. Payments & Invoicing',
     paragraphs: [
-      'Local SMEs pay in Malawi Kwacha (MWK) via Airtel Money, TNM Mpamba, or bank transfer. NGO and international clients are invoiced in USD, generally net-15 with a 50% upfront payment. Every description of cost on this site includes what the deliverable actually costs to produce. We publish unit economics, not just prices.',
+      'Local SMEs pay in Malawi Kwacha (MWK) through Airtel Money, TNM Mpamba, or bank transfer. We generally invoice NGO and international clients in USD on net-15 terms with 50% upfront. Cost descriptions on this site include the actual production cost of the deliverable. We publish unit economics alongside prices.',
     ],
   },
   {
     heading: '5. No Lock-In',
     paragraphs: [
-      'Your website, data, dashboards, and agents are yours after delivery. We do not lock you into proprietary formats, and we help you take your assets with you if you leave.',
+      'You own your website, data, dashboards, and agents after delivery. We do not lock you into proprietary formats. If you leave, we help you take your assets with you.',
     ],
   },
   {
     heading: '6. Confidentiality & Security',
     paragraphs: [
-      'We apply a strict non-disclosure posture to client information by default. Our systems enforce least-privilege access, append-only SHA-256 sealed audit trails, and human approval on consequential actions. We treat client data as if it were our own, and we are transparent the moment something goes wrong.',
+      'We keep client information confidential by default. Our systems enforce least-privilege access, append-only SHA-256 sealed audit records, and human approval for consequential actions. We protect client data and disclose problems when they occur.',
     ],
   },
   {
     heading: '7. Intellectual Property',
     paragraphs: [
-      'Deliverables produced for you belong to you once paid in full. Our underlying platform, templates, and agent orchestration engine remain the property of LightSpeed Holdings Limited and are licensed to you where applicable (for example, under the AI Company Builder license), not sold.',
+      'You own deliverables produced for you once you pay in full. LightSpeed Holdings Limited retains ownership of the underlying platform, templates, and agent orchestration engine. Where applicable, we license these to you, including under the AI Company Builder licence; we do not sell them.',
     ],
   },
   {
     heading: '8. Limitation of Liability',
     paragraphs: [
-      'To the fullest extent permitted by the laws of Malawi, our aggregate liability for any engagement is limited to the fees paid for that engagement. Nothing in these terms limits liability that cannot be limited by law.',
+      'To the fullest extent permitted by Malawi law, our aggregate liability for an engagement is limited to the fees paid for that engagement. These terms do not limit liability that cannot be limited by law.',
     ],
   },
   {
     heading: '9. Governing Law',
     paragraphs: [
-      'These terms and any engagement governed by them are subject to the laws of the Republic of Malawi, and any disputes are subject to the jurisdiction of the courts of Malawi.',
+      'Malawi law governs these terms and any engagement governed by them. The courts of Malawi have jurisdiction over disputes.',
     ],
   },
 ];
@@ -84,7 +84,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ theme }) => {
         theme={theme}
         eyebrow="LEGAL // TERMS"
         title="Terms of Service"
-        lead="Last updated: September 2026. The short version: we ship what we promise, we are transparent about every claim, and your data is yours."
+        lead="Last updated: September 2026. We deliver what we agree, label our claims, and respect your ownership of your data."
       />
 
       <section className="px-6 lg:px-12 max-w-4xl mx-auto w-full pt-10 pb-16">
@@ -98,7 +98,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ theme }) => {
             <ShieldCheck className="w-5 h-5 text-ls-cyan shrink-0 mt-0.5" aria-hidden="true" />
             <p className="text-xs sm:text-sm leading-relaxed font-medium">
               <strong className="font-bold text-ls-red">Disclaimer: </strong>
-              The information provided on this page serves as LightSpeed Holdings Limited’s general digital operational baseline. Bespoke client engagements, enterprise licenses, and specific project deliverables are governed by executed Master Services Agreements (MSAs) and Statements of Work (SOWs) reviewed by qualified legal counsel.
+              This page describes LightSpeed Holdings Limited's general digital operating baseline. Executed Master Services Agreements (MSAs) and Statements of Work (SOWs), reviewed by qualified legal counsel, govern bespoke client engagements, enterprise licences, and specific project deliverables.
             </p>
           </div>
 
@@ -126,7 +126,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ theme }) => {
           <p className={`text-xs leading-relaxed pt-6 border-t ${
             isLight ? 'border-slate-200 text-slate-500' : 'border-white/10 text-slate-400'
           }`}>
-            LightSpeed Holdings Limited, Lilongwe, Malawi. Questions about these terms reach a human through the contact page.
+            LightSpeed Holdings Limited, Lilongwe, Malawi. Send questions about these terms through the contact page; a person will respond.
           </p>
         </div>
       </section>

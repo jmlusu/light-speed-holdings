@@ -246,7 +246,7 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
             LightSpeed Internal Reference Fleet vs. Client Implementations
           </p>
           <p className={isLight ? 'text-slate-700' : 'text-slate-200'}>
-            The <strong>89 AI agents + 1 Human CEO</strong> operating model documented across Pharos research is LightSpeed Holdings&apos; internal reference architecture and stress-tested production benchmark. For enterprise, institutional, and SME client engagements, LightSpeed designs and deploys <strong>configurable AI agent teams scaling from 1 to N+ agents</strong> according to specific business requirements, complexity, and workload. Clients are never required to adopt an 89+1 or fixed-size workforce; sovereign human decision authority and multi-tier approval governance remain strictly enforced regardless of team scale.
+            Our internal agent fleet is a reference implementation. Client deployments have their own scopes, permissions, and approval rules. Do not read internal counts or examples as a description of your deployment.
           </p>
         </div>
       </section>

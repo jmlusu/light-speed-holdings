@@ -59,7 +59,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ theme }) => {
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <SectionHeading
           theme={theme}
-          eyebrow="WHO WE ARE"
+          eyebrow="Who We Are"
           title="ASPIRE. ACT. ACHIEVE."
           lead="LightSpeed Holdings Limited™ is an AI-native strategy, venture-building, and technology organization transforming human intent into governed, intelligent, and executable business operations."
         />

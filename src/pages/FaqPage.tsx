@@ -20,7 +20,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ theme }) => {
         theme={theme}
         eyebrow="HONEST ANSWERS // REGISTRY §15"
         title="Frequently Asked Questions"
-        lead="Straight answers grounded in how the platform actually works, including what we have not proven yet. Every answer is backed by verified evidence citations."
+        lead="Get direct answers about how the platform works, including what we have not proven yet. Each answer includes its evidence citations."
       />
 
       <section className="px-6 lg:px-12 max-w-7xl mx-auto w-full pt-6 pb-20">
