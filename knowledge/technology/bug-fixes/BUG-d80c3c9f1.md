@@ -1,4 +1,4 @@
-# fix(site): hamburger dropdown, JSX parse fixes, nav cleanup
+﻿# fix(site): hamburger dropdown, JSX parse fixes, nav cleanup
 
 **ID:** BUG-d80c3c9f1
 **Date:** 2026-10-15
@@ -12,23 +12,36 @@
 
 ## Root Cause (filled by the resolving engineer)
 
-To be filled
+Not stated in the commit message. The commit records the change below but no explicit cause; inferring one from the diff would be speculation.
+
+_Source: commit d80c3c9f14939e1640c1d954062d9653345f6d8f message; no cause stated._
 
 ## Fix (filled by the resolving engineer)
 
-To be filled
+- FloatingNav: add mobile dropdown nav panel; remove HAOMTGV shield + governance modal (framework intact elsewhere)
+- HeroBanner, ThesisBanner: fix JSX className } parse errors
+- AboutSection: layout polish
+
+_Source: commit d80c3c9f14939e1640c1d954062d9653345f6d8f message (verbatim)._
 
 ## Files Changed
 
-To be filled
+src/components/AboutSection.tsx
+src/components/FloatingNav.tsx
+src/components/HeroBanner.tsx
+src/components/ThesisBanner.tsx
+
+_Source: GitHub commit d80c3c9f14939e1640c1d954062d9653345f6d8f file list, filtered to text/source files._
 
 ## Diagnostic Commands
 
-To be filled
+Not recorded in the commit message.
 
 ## Verification
 
-To be filled
+Not recorded in the commit message.
+
+Commit is not present in the current origin/main history (possibly squash-merged or from a PR head); landing was not verified from this repository.
 
 ## Link an Issue
 

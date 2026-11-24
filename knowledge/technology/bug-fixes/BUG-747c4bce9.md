@@ -1,4 +1,4 @@
-# fix(legal): soften immutable claim on Terms confidentiality section
+﻿# fix(legal): soften immutable claim on Terms confidentiality section
 
 **ID:** BUG-747c4bce9
 **Date:** 2026-10-13
@@ -12,23 +12,32 @@
 
 ## Root Cause (filled by the resolving engineer)
 
-To be filled
+Recorded in the commit message: --no-verify: pre-commit broken by unrelated WIP, same as #452/#453.
+
+_Source: commit 747c4bce9a1f2322a962952cdb6022ef3a5d0307 message (verbatim excerpt)._
 
 ## Fix (filled by the resolving engineer)
 
-To be filled
+Matches the append-only SHA-256 sealed audit trails phrasing used across the site registries (PR #455 follow-up to #451).
+--no-verify: pre-commit broken by unrelated WIP, same as #452/#453.
+
+_Source: commit 747c4bce9a1f2322a962952cdb6022ef3a5d0307 message (verbatim)._
 
 ## Files Changed
 
-To be filled
+src/pages/TermsPage.tsx
+
+_Source: GitHub commit 747c4bce9a1f2322a962952cdb6022ef3a5d0307 file list, filtered to text/source files._
 
 ## Diagnostic Commands
 
-To be filled
+Not recorded in the commit message.
 
 ## Verification
 
-To be filled
+Not recorded in the commit message.
+
+Commit is not present in the current origin/main history (possibly squash-merged or from a PR head); landing was not verified from this repository.
 
 ## Link an Issue
 
