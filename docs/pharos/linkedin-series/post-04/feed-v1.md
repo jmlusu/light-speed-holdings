@@ -12,7 +12,7 @@ The structural spine is deliberately boring: a task queue. Every piece of work e
 
 Tools stay sandboxed: read, edit, grep, list, bash, webfetch, task. No tool, no action. A tool not on the list cannot be talked into existence, cannot be granted by prompt injection, cannot be smuggled through a session variable. We know the failure mode first-hand, because the registry is a correction. You cannot govern a population you cannot enumerate, and you cannot enumerate a population that was never declared.
 
-H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Models run sovereign. T → Tools stay sandboxed. G → Gates approve every high-impact move. V → Verification records it all so value can be proven, not promised. The sequence is the design discipline. Install authorization and scope before you install throughput. Governance is not a parallel paperwork track. It is a state the workflow passes through.
+Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised. The sequence is the design discipline. Install authorization and scope before you install throughput. Governance is not a parallel paperwork track. It is a state the workflow passes through.
 
 Nothing in this structure requires our headcount or our cloud spend. One registry before any agents: define 8–12 agents with named owners, scopes, and approval tiers first. Sovereign data defaults (DPA 2017/2024, GDPR-grade handling), offline-capable operation, and visible variable cost still apply: a 90-day pilot validates the full framework on one department before it touches the institution.
 

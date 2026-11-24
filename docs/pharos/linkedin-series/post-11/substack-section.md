@@ -34,7 +34,7 @@ Capability before measurement: agents existed before the queue, the queue before
 
 ### The Framework, One Last Time
 
-H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Models run sovereign. T → Tools stay sandboxed. G → Gates approve every high-impact move. V → Verification records it all. Capability without the sequence is a demo; with it, it is a company you can hand to an auditor and say: look for yourself.
+Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised. Capability without the sequence is a demo; with it, it is a company you can hand to an auditor and say: look for yourself.
 
 ### Key Takeaways
 

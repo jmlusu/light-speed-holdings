@@ -50,7 +50,7 @@ I also over-indexed on demos and under-indexed on audit trails. Early stakeholde
 
 ## The Full Framework, One Last Time
 
-H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Memory runs sovereign. T → Tools stay sandboxed. G → Governance approves every high-impact move. V → Verification records it all so value can be proven, not promised.
+Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.
 
 The sequence is the design discipline, and the discipline is the point. Capability without it is a demo; with it, it is a company you can hand to an auditor, a board, or a regulator and say: look for yourself.
 

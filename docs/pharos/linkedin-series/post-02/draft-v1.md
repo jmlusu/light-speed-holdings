@@ -77,7 +77,7 @@ That discipline is the A layer. The layer that keeps agents orderly, the orchest
 
 **Follow along** if you are building or procuring AI in Malawi and SADC and want the architecture behind the number.
 
-The full framework sequence is: **H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Memory runs sovereign. T → Tools stay sandboxed. G → Governance approves every high‑impact move. V → Verification records it all so value can be proven, not promised.**
+The full framework sequence is: **Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.**
 
 ---
 

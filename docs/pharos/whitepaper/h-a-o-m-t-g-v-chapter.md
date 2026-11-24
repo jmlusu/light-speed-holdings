@@ -50,12 +50,9 @@ Five principles govern the layers that follow.
 Each layer states its control, its technical instantiation, and the failure it
 prevents.
 
-### H — Human Purpose & Authority
+### H — Humans authorize
 
-**Control.** Named humans hold final accountability for strategy, ethics,
-leadership, relationships, and irreversible decisions. High-impact actions,
-treasury disbursements, and policy changes require cryptographic human
-sign-off.
+**Control.** Authority starts with a named person and stays there. Humans set intent, own outcomes, and sign off on anything irreversible; agents are delegates, never principals. Delegation is revocable by design. The human is the last line of code in the organization.
 
 **Instantiation.** A five-tier approval matrix; an approval gate that sweeps
 expired `PENDING` requests to `EXPIRED` so stale or blocked items cannot drift
@@ -67,11 +64,9 @@ no human is answerable.
 **Institutional checkpoint.** Does the institution maintain a named principal
 for each agent-assigned authority? Is sign-off cryptographic and logged?
 
-### A — Agentic Workforce
+### A — Agents act
 
-**Control.** The agent population is a countable, documented roster. Each agent
-has a defined domain, a permission boundary, and a deterministic escalation
-path when work exceeds its scope.
+**Control.** The machine side is a roster, not a single "AI." Every agent is a role-bounded persona with an explicit domain, a declared toolset, and a deterministic escalation path. When work exceeds scope, the agent escalates — it does not improvise.
 
 **Instantiation.** Registry-defined personas (152 in the source deployment),
 compiled mechanically into runtime agent cards; role-bounded subagents;
@@ -84,12 +79,9 @@ bound, or audit.
 roster, each agent's scope of authority, and its permitted actions? What
 happens when an agent is asked to exceed its scope?
 
-### O — Orchestration & Organization
+### O — Orchestration orders
 
-**Control.** Agent work is observable and sequentialized through a message bus:
-every task has an owner, a lifecycle, and a failure path. The organization
-itself is encoded as computable topology, so department boundaries, budgets,
-and data classifications are enforceable schema, not prose.
+**Control.** Work does not happen off-script. Tasks move through a message bus with an owner, a lifecycle, and a failure path; the organization itself — departments, budgets, data classifications — is encoded as enforceable schema. "Is this allowed?" becomes a query, not a meeting.
 
 **Instantiation.** JSON task queues, dead-letter handling and replay, policy
 schemas aligned to the Malawi Data Protection Act 2017/2024 and King IV.
@@ -101,12 +93,9 @@ structure that exists only on paper.
 completion, and what happens on failure? Are the institution's boundaries
 enforceable in the system, or only in memos?
 
-### M — Model & Memory
+### M — Memory persists
 
-**Control.** Two obligations under one pillar. Inference runs on sovereign
-infrastructure in-country with zero telemetry leakage to third-party public
-clouds. The organization maintains structured institutional memory so decisions
-and lessons persist.
+**Control.** Two obligations share this pillar. Inference runs on soil we control, with local fallbacks and a circuit breaker, so the company does not export its operations to a cloud it cannot govern. And the company remembers: decisions, context, and lessons are captured in structured memory so it does not relearn the same lesson on every new task. Sovereignty is a deployment property. Memory is an operating habit.
 
 **Instantiation.** On-soil runtimes with fallback models behind a router and
 circuit breaker; multi-type memory store wired into the execution recall loop.
@@ -118,11 +107,9 @@ an organization that forgets its own decisions between tasks.
 leaves the jurisdiction? How is institutional knowledge retained and made
 recoverable for audit?
 
-### T — Tools & Actions
+### T — Tools stay sandboxed
 
-**Control.** Agents act only through a closed canonical tool vocabulary. There
-is no arbitrary code execution and no action surface the governance layer
-cannot enumerate.
+**Control.** An agent's world is a closed set of primitives: read, edit, grep, list, bash, webfetch, task. No arbitrary code execution, no hidden gateways. The runtime refuses anything outside the list — which is what makes "what can this agent do?" a finite, reviewable question, and governance a property of execution rather than a policy document.
 
 **Instantiation.** Seven canonical primitives — `read`, `edit`, `grep`, `list`,
 `bash`, `webfetch`, `task` — validated at runtime; unknown tools rejected;
@@ -134,11 +121,9 @@ institution does not know exist.
 **Institutional checkpoint.** Enumerate the agent's action surface. Who
 certified each tool? What is the default when a tool is not on the list?
 
-### G — Governance & Policy
+### G — Governance gates
 
-**Control.** Policy is code applied before execution. Thresholds, budgets, and
-regulatory covenants are evaluated pre-write; runaway loops are halted
-programmatically.
+**Control.** Control happens before the action, not after the incident. Every proposal is checked against thresholds, budgets, and covenants before an external write event fires, with deterministic states — pending, approved, rejected, expired — and a sweep that clears stale approvals. Post-hoc review is archaeology, not governance.
 
 **Instantiation.** Policy engine, five-tier approval state machine
 (`PENDING` / `APPROVED` / `REJECTED` / `EXPIRED`), circuit breakers, rate
@@ -150,11 +135,9 @@ limits, and the approval-gate expiry sweep.
 What thresholds trip which gates? Who authorizes the policy code, and when was
 it last audited?
 
-### V — Verification & Value
+### V — Value verified
 
-**Control.** Every prompt, tool invocation, human decision, and API response is
-immutably recorded. Outcomes are measured and reported as evidence, with drift
-telemetry signaling when a model degrades.
+**Control.** Every prompt, tool call, human decision, and response is written to a cryptographic hash chain. Audit is a byproduct of running the company, not a quarterly exercise. Above the trail, cost, productivity, service delivery, and impact are measured against KPIs with honest status. Seven layers of control exist for one reason: value that is real, attributable, and provable to the people it serves — demonstrated, not merely promised.
 
 **Instantiation.** SHA-256 hash-chain audit trails; continuous evaluation;
 dashboard KPI collectors; honest-status reporting of claims.

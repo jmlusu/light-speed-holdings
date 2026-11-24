@@ -78,7 +78,7 @@ The series-level mirror: we apply the same standard to this content series itsel
 
 ### The Full Framework in Sequence
 
-H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Memory runs sovereign. T → Tools stay sandboxed. G → Governance approves every high-impact move. V → Verification records it all so value can be proven, not promised.
+Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.
 
 The sequence is the design discipline. Value measurement sits last because it consumes everything the other six layers produce: without the registry there is no denominator, without the queue there is no process data, without the gates there is no decision ledger. Verification is not a dashboard you add at the end; it is the trace the first six layers were built to leave.
 

@@ -99,7 +99,7 @@ Every one of these exists as code or config in our stack: the mechanisms a regul
 
 ### The Full Framework in Sequence
 
-H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Memory runs sovereign. T → Tools stay sandboxed. G → Governance approves every high-impact move. V → Verification records it all so value can be proven, not promised.
+Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.
 
 Post 9 showed how the verification layer counts these decisions. This post showed where the decisions are allowed to originate. Post 11 closes the series with lessons from building LightSpeed, including the decisions we got wrong before the matrix existed.
 

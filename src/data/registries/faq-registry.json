@@ -106,15 +106,15 @@
       "answer": "H-A-O-M-T-G-V is LightSpeed's core intellectual and architectural framework: H: HUMAN (operational intent and final decision authority); A: AGENTS (90 specialized operating roles: 89 AI agents + 1 Human CEO); O: ORCHESTRATION (deterministic routing of data, tasks, and decisions across workflows); M: MEMORY (persistent contextual data storage across long-running tasks); T: TOOLS (isolated execution environments for API integrations and actions); G: GOVERNANCE (five-tier approval controls and append-only sealed logging); V: VALUE (measurable reductions in cost and operational latency). The Human layer remains above the system; Value is the business outcome.",
       "evidence": [
         {
-          "source": "src/components/home/HAOMTGVSection.tsx#People set intent, own outcomes, and hold final decision authority.",
+          "source": "src/components/home/HAOMTGVSection.tsx#Authority starts with a named person and stays there.",
           "status": "verified"
         },
         {
-          "source": "src/components/home/HAOMTGVSection.tsx#Deterministic routing of tasks, data, and decisions across workflows",
+          "source": "src/components/home/HAOMTGVSection.tsx#Work does not happen off-script.",
           "status": "verified"
         },
         {
-          "source": "src/components/home/HAOMTGVSection.tsx#Persistent contextual state across long-running work",
+          "source": "src/components/home/HAOMTGVSection.tsx#Two obligations share this pillar.",
           "status": "verified"
         },
         {

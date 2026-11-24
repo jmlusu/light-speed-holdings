@@ -15,7 +15,7 @@ Pharos writers, sales, the reservations desk, and the Lighthouse pilot teams.
 
 H-A-O-M-T-G-V is the seven-layer constitution of an AI-native enterprise:
 
-> **Humans authorize. Agents act. Orchestration orders the work. Memory runs sovereign. Tools stay sandboxed. Governance approves every high‑impact move. And value is measured and fed back into strategy.**
+> **Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.**
 
 Each letter is one pillar. No pillar is optional, and no pillar can be swapped
 for another. That is what makes it a framework and not a slogan.
@@ -24,13 +24,13 @@ for another. That is what makes it a framework and not a slogan.
 
 | Letter | One phrase |
 |--------|------------|
-| H | Humans Authorize |
-| A | Agents Act |
-| O | Orchestration Orders |
-| M | Memory |
-| T | Tools |
-| G | Governance |
-| V | Value |
+| H | Humans authorize |
+| A | Agents act |
+| O | Orchestration orders |
+| M | Memory persists |
+| T | Tools stay sandboxed |
+| G | Governance gates |
+| V | Value verified |
 
 ---
 
@@ -65,14 +65,11 @@ PowerPoint. Proof without design is a tool you cannot teach.
 Each pillar is elaborated as: the question, what it means, the proof, the
 failure mode if it is neglected, and what a regulator or client should check.
 
-### H — Human Purpose & Authority
+### H — Humans authorize
 
 **The question.** What should humans remain accountable for?
 
-**What it means.** The constitutional layer. Strategy, ethics, leadership,
-relationships, and final accountability stay with named humans. Agents are
-delegates, never principals; the delegation is reversible and the human is the
-one who answers for the outcome.
+**What it means.** Authority starts with a named person and stays there. Humans set intent, own outcomes, and sign off on anything irreversible; agents are delegates, never principals. Delegation is revocable by design. The human is the last line of code in the organization.
 
 **The proof.** A 5-tier approval matrix. Low-risk work proceeds; high-impact
 actions, treasury disbursements, and policy changes sit behind cryptographic
@@ -86,14 +83,11 @@ system moves faster and nothing is accountable.
 **Regulator check.** Who, by name, authorized this action? Is the authorization
 logged cryptographically? Can the principal delegate less tomorrow?
 
-### A — Agentic Workforce
+### A — Agents act
 
 **The question.** What work can AI agents perform?
 
-**What it means.** A roster of discrete, role-bounded agent personas. Each agent
-has an explicit domain scope, a declared tool permission set, and a
-deterministic escalation path. The roster is the org chart of the machine side
-of the house — readable, auditable, and reproducible.
+**What it means.** The machine side is a roster, not a single "AI." Every agent is a role-bounded persona with an explicit domain, a declared toolset, and a deterministic escalation path. When work exceeds scope, the agent escalates — it does not improvise.
 
 **The proof.** 90 personas in `company-registry.yaml`, compiled by a Jinja2
 generator into OpenCode agent cards (`.opencode/agents/*.md`) with strict
@@ -105,16 +99,12 @@ worker that no one can enumerate, scope, or audit.
 **Regulator check.** Can you produce the full roster? Is every agent's scope and
 permission boundary documented? What happens when a task exceeds that scope?
 
-### O — Orchestration & Organization
+### O — Orchestration orders
 
 **The question.** How do agents coordinate, and how is the organization
 structured?
 
-**What it means.** Agents do not improvise in parallel. Work moves through a
-message bus as JSON tasks (`.opencode/inbox.json`), with task graphs, retry and
-dead-letter handling, and observable lifecycles. Alongside the runtime, the
-organization itself is expressed as computable topology: departments, budgets,
-and data-classification matrices encoded as schemas rather than policy PDFs.
+**What it means.** Work does not happen off-script. Tasks move through a message bus with an owner, a lifecycle, and a failure path; the organization itself — departments, budgets, data classifications — is encoded as enforceable schema. "Is this allowed?" becomes a query, not a meeting.
 
 **The proof.** MessageBus task queue, executor loop, dead-letter replay for
 `platform_reliability_engineer`, policy-as-code department schemas aligned to
@@ -126,16 +116,11 @@ chart that exists in a deck but nowhere executable.
 **Regulator check.** Where is a task born? Who owns it? What happens on failure?
 Is the org structure itself enforceable, or only aspirational?
 
-### M — Model & Memory
+### M — Memory persists
 
 **The question.** How does the organization run models and learn?
 
-**What it means.** Two distinct things share this pillar and are both required.
-First, **model sovereignty**: inference runs in-country on sovereign runtimes —
-air-gapped or national cloud — with no telemetry leaking to third-party public
-clouds. Second, **enterprise memory**: the organization accumulates decisions,
-context, and lessons learned in a structured store (six memory types in this
-implementation) so it does not relearn what it already knows.
+**What it means.** Two obligations share this pillar. Inference runs on soil we control, with local fallbacks and a circuit breaker, so the company does not export its operations to a cloud it cannot govern. And the company remembers: decisions, context, and lessons are captured in structured memory so it does not relearn the same lesson on every new task. Sovereignty is a deployment property. Memory is an operating habit.
 
 **The proof.** Big Pickle primary with Gemini and DeepSeek as fallbacks, routed
 by a model router with a circuit breaker and cost tracker; on-soil deployment
@@ -148,14 +133,11 @@ building a system that forgets everything between tasks.
 jurisdiction? Can the organization answer the same question twice without
 re-work, and does it record how?
 
-### T — Tools & Actions
+### T — Tools stay sandboxed
 
 **The question.** How do agents interact with the world?
 
-**What it means.** Agents act only through a closed, canonical tool vocabulary.
-No arbitrary code execution, no hidden network calls, no gateways the governance
-layer cannot see. Every action is one of a small set of verified primitives, so
-"what can this agent do?" always has a finite, reviewable answer.
+**What it means.** An agent's world is a closed set of primitives: read, edit, grep, list, bash, webfetch, task. No arbitrary code execution, no hidden gateways. The runtime refuses anything outside the list — which is what makes "what can this agent do?" a finite, reviewable question, and governance a property of execution rather than a policy document.
 
 **The proof.** Seven canonical tools: `read`, `edit`, `grep`, `list`, `bash`,
 `webfetch`, `task`. Runtime `ToolRunner` validation rejects unapproved calls and
@@ -168,14 +150,11 @@ governance layer does not know exist.
 **Regulator check.** Enumerate the agent's tools. Who certified each one? What
 happens if the agent tries an eighth?
 
-### G — Governance & Policy
+### G — Governance gates
 
 **The question.** How do we control agents?
 
-**What it means.** Control is pre-execution, not post-mortem. Every agent
-proposal is evaluated against thresholds, spending budgets, and regulatory
-covenants before external write events fire. The rules are coded, not hoped
-for: policy-as-code, an approval matrix, circuit breakers for runaway loops.
+**What it means.** Control happens before the action, not after the incident. Every proposal is checked against thresholds, budgets, and covenants before an external write event fires, with deterministic states — pending, approved, rejected, expired — and a sweep that clears stale approvals. Post-hoc review is archaeology, not governance.
 
 **The proof.** 5-tier approval gates with deterministic state transitions
 (`PENDING` → `APPROVED` / `REJECTED` / `EXPIRED`), policy engine, rate limits,
@@ -188,15 +167,11 @@ governance; it is archaeology.
 **Regulator check.** Is control applied before execution? What thresholds trip
 which gates? Who wrote the policy, and when was it last audited?
 
-### V — Verification & Value
+### V — Value verified
 
 **The question.** What outcomes and proof are produced?
 
-**What it means.** Every prompt, tool invocation, human decision, and API
-response is logged to cryptographic hash chains. Audit is a byproduct of
-operation, not a separate exercise. On top of the trail, value is measured:
-revenue, cost, productivity, service delivery, and social impact, reported by
-KPI collectors and drift telemetry with honest status.
+**What it means.** Every prompt, tool call, human decision, and response is written to a cryptographic hash chain. Audit is a byproduct of running the company, not a quarterly exercise. Above the trail, cost, productivity, service delivery, and impact are measured against KPIs with honest status. Seven layers of control exist for one reason: value that is real, attributable, and provable to the people it serves — demonstrated, not merely promised.
 
 **The proof.** SHA-256 immutable audit chains; continuous evaluation and model
 drift telemetry; dashboard KPI collectors; the honesty-badge discipline of the
