@@ -15,6 +15,20 @@
 | Production (Docker) | `docker compose up` / `Dockerfile` | container **8420** | RBAC keys required (fail-closed without them) |
 | Frontend (Vite SPA) | Vercel (`vercel.json`, `.vercelignore`) | — | `npm run build`; see Brand Deployment Guide |
 
+### 1.1 Website Identity (canonical)
+
+| Item | Value |
+|------|-------|
+| Public URL | `https://lightspeedholdings.vercel.app` |
+| Vercel project | `light-speed-holdings` |
+| Vercel team | `jmlusu-8288s-projects` (`team_ktnrLZHZZA1CPEC8XTRYNXt1`) |
+| Dashboard | `https://vercel.com/jmlusu-8288s-projects/light-speed-holdings` |
+| Custom domain | **None.** `lightspeedholdings.com` is not owned by LightSpeed Holdings — it is a third-party Afternic listing. Do not cite it, link it, or add it to the Vercel project. |
+
+There is also an empty Vercel project named `lightspeedholdings` (no Git connection, no
+deployments). It is not the website; ignore it. The only project that serves production is
+`light-speed-holdings`.
+
 ## 2 Key Commands
 
 ```powershell
