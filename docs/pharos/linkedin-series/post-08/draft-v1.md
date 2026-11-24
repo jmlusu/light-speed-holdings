@@ -65,7 +65,7 @@ The through-line: every one of these asks who decides, on what basis, and how wo
 
 ### The Full Framework in Sequence
 
-H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Memory runs sovereign. T → Tools stay sandboxed. G → Governance approves every high-impact move. V → Verification records it all so value can be proven, not promised.
+Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.
 
 Governance in Malawi is not a compliance overlay on someone else's architecture. It is the layer that decides which actions may proceed and on what basis, and in a policy environment still taking shape, the institutions that can answer that question with artifacts will set the precedent everyone else cites.
 

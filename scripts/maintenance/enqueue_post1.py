@@ -61,7 +61,7 @@ The framework does not require believing our numbers. It requires checking our r
 
 ### The rest of the framework -- and what follows
 
-H is the first of seven layers: Humans authorize, Agents act, Orchestration orders the work, Models run sovereign, Tools stay sandboxed, Gates approve every high-impact move, and Verification records it all -- so value can be proven, not promised.
+H is the first of seven layers: Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.
 
 Over the next two posts we take the layers in order. Next: what running 90 agents actually means -- the registry, the roles, the cost curve, and why the number matters less than the boundaries around it. Then: the orchestration layer that keeps twenty departments moving as one system.
 

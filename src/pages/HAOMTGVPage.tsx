@@ -232,7 +232,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
                 'text-base sm:text-lg leading-relaxed text-ls-grey-light-text max-w-3xl mx-auto font-body'
               )}
             >
-              HAOMTGV is the operating architecture behind the LightSpeed AI-Native Company Builder. Agents perform bounded, specialized tasks; human directors retain final decision authority. Seven connected dimensions form an auditable, scalable enterprise system.
+              HAOMTGV is the operating architecture behind the LightSpeed AI-Native Company Builder. Humans authorize, agents act, orchestration orders, memory persists, tools stay sandboxed, governance gates, and value is verified. Seven connected dimensions form an auditable, scalable enterprise system.
             </p>
 
             <div className={heroReveal.getRevealClass('fade', 4, 'pt-2')}>
@@ -357,12 +357,12 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
                     Deterministic, Scalable Control
                   </h3>
                   <p className="text-sm leading-relaxed text-slate-300">
-                    Human authority applies at every phase. Governance checks each tool call. The system measures business outcomes.
+                    Humans authorize at every phase. Governance gates high-impact moves. Tools stay sandboxed, and the system measures business outcomes as verified value.
                   </p>
                   <ul className="space-y-2.5 pt-2 text-xs text-slate-300 font-body">
                     <li className="flex items-start gap-2">
                       <span className="text-ls-cyan font-bold">✓</span>
-                      <span>Human authority with a non-negotiable final veto.</span>
+                      <span>Humans authorize with a non-negotiable final veto.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-ls-cyan font-bold">✓</span>
@@ -398,7 +398,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
               theme={theme}
               eyebrow="THE SEVEN DIMENSIONS"
               title="Unified Operating Architecture"
-              lead="Explore the seven HAOMTGV dimensions. Human Authority sets direction, Governance checks every layer, deterministic components execute work, and Value measurement informs strategy."
+              lead="Explore the seven HAOMTGV dimensions. Humans authorize, governance gates, deterministic components execute work, and verified value informs strategy."
             />
           </div>
 

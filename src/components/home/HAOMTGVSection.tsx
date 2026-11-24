@@ -28,49 +28,49 @@ const PILLARS: Pillar[] = [
     id: 'human',
     letter: 'H',
     title: 'Human',
-    description: 'People set intent, own outcomes, and hold final decision authority. Agents propose; humans decide what ships.',
+    description: 'Authority starts with a named person and stays there. Humans set intent, own outcomes, and sign off on anything irreversible; agents are delegates, never principals. Delegation is revocable by design. The human is the last line of code in the organization.',
     Icon: Brain,
   },
   {
     id: 'agents',
     letter: 'A',
     title: 'Agents',
-    description: 'Specialized AI roles with explicit scopes, tools, and approval thresholds. Not a single general-purpose bot.',
+    description: 'The machine side is a roster, not a single "AI." Every agent is a role-bounded persona with an explicit domain, a declared toolset, and a deterministic escalation path. When work exceeds scope, the agent escalates — it does not improvise.',
     Icon: Bot,
   },
   {
     id: 'orchestration',
     letter: 'O',
     title: 'Orchestration',
-    description: 'Deterministic routing of tasks, data, and decisions across workflows so multi-step work stays auditable end to end.',
+    description: 'Work does not happen off-script. Tasks move through a message bus with an owner, a lifecycle, and a failure path; the organization itself — departments, budgets, data classifications — is encoded as enforceable schema. "Is this allowed?" becomes a query, not a meeting.',
     Icon: GitBranch,
   },
   {
     id: 'memory',
     letter: 'M',
     title: 'Memory',
-    description: 'Persistent contextual state across long-running work, so agents recall before they act, not from a blank slate.',
+    description: 'Two obligations share this pillar. Inference runs on soil we control, with local fallbacks and a circuit breaker, so the company does not export its operations to a cloud it cannot govern. And the company remembers: decisions, context, and lessons are captured in structured memory so it does not relearn the same lesson on every new task. Sovereignty is a deployment property. Memory is an operating habit.',
     Icon: HardDrive,
   },
   {
     id: 'tools',
     letter: 'T',
     title: 'Tools',
-    description: 'Isolated execution environments for APIs, data, and actions: the only way agents touch the outside world.',
+    description: 'An agent\'s world is a closed set of primitives: read, edit, grep, list, bash, webfetch, task. No arbitrary code execution, no hidden gateways. The runtime refuses anything outside the list — which is what makes "what can this agent do?" a finite, reviewable question, and governance a property of execution rather than a policy document.',
     Icon: Wrench,
   },
   {
     id: 'governance',
     letter: 'G',
     title: 'Governance',
-    description: 'A control layer woven through the model: five-tier human approval, append-only audit receipts, and risk-classified actions.',
+    description: 'Control happens before the action, not after the incident. Every proposal is checked against thresholds, budgets, and covenants before an external write event fires, with deterministic states — pending, approved, rejected, expired — and a sweep that clears stale approvals. Post-hoc review is archaeology, not governance.',
     Icon: ShieldCheck,
   },
   {
     id: 'value',
     letter: 'V',
     title: 'Value',
-    description: 'Measured business outcomes (cost, latency, quality, and adoption) fed back into strategy, not vanity metrics.',
+    description: 'Every prompt, tool call, human decision, and response is written to a cryptographic hash chain. Audit is a byproduct of running the company, not a quarterly exercise. Above the trail, cost, productivity, service delivery, and impact are measured against KPIs with honest status. Seven layers of control exist for one reason: value that is real, attributable, and provable to the people it serves — demonstrated, not merely promised.',
     Icon: TrendingUp,
   },
 ];
@@ -111,14 +111,14 @@ export const HAOMTGVSection: React.FC<HAOMTGVSectionProps> = ({ theme }) => {
           theme={theme}
           eyebrow="OPERATING PHILOSOPHY"
           title="H-A-O-M-T-G-V"
-          lead="How LightSpeed thinks about AI-native operations: Human authority through Agents, Orchestration, Memory, and Tools, with Governance as an integral control layer and Value as the only score that counts. Not a linear pipeline; a working model."
+          lead="How LightSpeed thinks about AI-native operations. The seven callouts are: Humans authorize, Agents act, Orchestration orders, Memory persists, Tools stay sandboxed, Governance gates, Value verified. Not a linear pipeline; a working model."
         />
         <div className="mt-12 mb-12">
           <HAOMTGVVisualization theme={theme} />
         </div>
 
         <p className={`mt-6 text-xs leading-relaxed ${isLight ? 'text-slate-600 font-medium' : 'text-[#9CA3AF]'}`}>
-          Human direction is not a checkpoint at the end. It is present at every layer. Governance (G) is how that authority stays enforceable when agents act at scale.
+          Human direction is not a checkpoint at the end. It is present at every layer. Governance gates high-impact moves and keeps that authority enforceable when agents act at scale.
         </p>
         <div className="mt-4">
           <Link

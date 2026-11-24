@@ -2130,5 +2130,40 @@
         "phase":  "validate",
         "spec_review":  "approved",
         "session_id":  "614ef677-9074-42ba-8904-3ad377641de6"
+    },
+    {
+        "id":  "2026-11-24-propagate-haomtgv-seven-callouts-and-bodies",
+        "title":  "Propagate HAOMTGV seven callouts and bodies",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "docs/pharos",
+                        "docs/pharos/linkedin-series",
+                        "src/components/home",
+                        "src/pages",
+                        "scripts/maintenance"
+                    ],
+        "files":  [
+                      "["
+                  ],
+        "tags":  [
+                     "haomtgv",
+                     "documentation",
+                     "copy-propagation"
+                 ],
+        "decisions":  [
+                          "- Callouts are two or three words, name first: Humans authorize / Agents act / Orchestration orders / Memory persists / Tools stay sandboxed / Governance gates / Value verified.",
+                          "- V stays named Value; verification is its mechanism.",
+                          "- M keeps the pillar name first; sovereign inference stays in the body.",
+                          "- Short `title:` / `name:` / `layer:` UI labels are not renamed.",
+                          "- Historical audit records, alternate-name docs, visual assets, visual generator template, and the root `haomtgv-committed.tsx` artifact are out of scope."
+                      ],
+        "validation_status":  "pass",
+        "slug":  "propagate-haomtgv-seven-callouts-and-bodies",
+        "path":  "harness/changes/archive/2026-11-24-propagate-haomtgv-seven-callouts-and-bodies",
+        "updated_at":  "2026-11-24",
+        "phase":  "validate",
+        "spec_review":  "approved",
+        "session_id":  "0fc024b7-92f4-4f96-b12a-2107761c95dd"
     }
 ]

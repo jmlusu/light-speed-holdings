@@ -56,7 +56,7 @@ For a Malawi or SADC financial institution, the gate model answers the regulator
 
 ### The Full Framework in Sequence
 
-H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Memory runs sovereign. T → Tools stay sandboxed. G → Governance approves every high-impact move. V → Verification records it all so value can be proven, not promised.
+Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.
 
 The sequence is the design discipline: install authorization and scope before you install throughput, and governance is not a parallel paperwork track but a state the workflow passes through.
 

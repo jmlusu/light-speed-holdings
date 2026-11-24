@@ -32,13 +32,11 @@ The rules that make that system safe and explainable fit into seven layers. We
 call the framework H-A-O-M-T-G-V, after the seven pillars. This is what each
 pillar does, and what we learned building it.
 
-A line to retain the seven: *Humans authorize, agents act, orchestration
-orders, memory runs sovereign, tools stay sandboxed, governance approves every
-high‑impact move, and value is measured and fed back into strategy.*
+A line to retain the seven: *Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.*
 
-## H — Humans stay accountable
+## H — Humans authorize
 
-Most AI projects start with the model. The right place to start is the human.
+Authority starts with a named person and stays there. Humans set intent, own outcomes, and sign off on anything irreversible; agents are delegates, never principals. Delegation is revocable by design. The human is the last line of code in the organization.
 
 In an agentic company, humans keep the work they are most accountable for:
 strategy, ethics, leadership, relationships, and the final answer. Agents are
@@ -54,11 +52,9 @@ last line of code in the organization.
 The failure mode is obvious in hindsight: hand authority to an agent without a
 sign-off path and the system gets fast, then ungovernable.
 
-## A — Agents are a workforce, not a chatbot
+## A — Agents act
 
-A single "AI" that can do everything is an empty promise and an audit
-nightmare. So we stopped talking about "the AI" and started talking about a
-roster.
+The machine side is a roster, not a single "AI." Every agent is a role-bounded persona with an explicit domain, a declared toolset, and a deterministic escalation path. When work exceeds scope, the agent escalates — it does not improvise.
 
 Each of our 90 agents is a discrete persona with an explicit domain scope, a
 declared set of tools, and a deterministic escalation path. The roster is
@@ -67,19 +63,17 @@ and treated like an org chart: readable, countable, auditable.
 
 When a task exceeds an agent's scope, it escalates. It does not improvise.
 
-## O — Orchestration orders the work
+## O — Orchestration orders
 
-Agents do not improvise in parallel. Work flows through a message bus as tasks,
-each with an owner, a lifecycle, and a dead-letter path when something fails.
-Nothing important happens that is not on the bus.
+Work does not happen off-script. Tasks move through a message bus with an owner, a lifecycle, and a failure path; the organization itself — departments, budgets, data classifications — is encoded as enforceable schema. "Is this allowed?" becomes a query, not a meeting.
 
 The same discipline applies to the organization itself. Departments, budgets,
 and data-classification rules are encoded as schemas, not policy PDFs. "Is this
 allowed?" becomes a query, not a meeting.
 
-## M — Memory
+## M — Memory persists
 
-Two things share this pillar, and both matter.
+Two obligations share this pillar. Inference runs on soil we control, with local fallbacks and a circuit breaker, so the company does not export its operations to a cloud it cannot govern. And the company remembers: decisions, context, and lessons are captured in structured memory so it does not relearn the same lesson on every new task. Sovereignty is a deployment property. Memory is an operating habit.
 
 First, inference runs in-country. Our models run on sovereign infrastructure,
 with local fallbacks and a circuit breaker, so the organization is not exporting
@@ -92,30 +86,21 @@ knows on every new task.
 
 ## T — Tools stay sandboxed
 
-An agent's world is a closed set of tools. Ours compile to seven primitives:
-reading, editing, searching, listing, running controlled commands, fetching web
-content, and launching sub-agents. No arbitrary code execution. No hidden
-gateways. The runtime rejects anything outside that list.
+An agent's world is a closed set of primitives: read, edit, grep, list, bash, webfetch, task. No arbitrary code execution, no hidden gateways. The runtime refuses anything outside the list — which is what makes "what can this agent do?" a finite, reviewable question, and governance a property of execution rather than a policy document.
 
 This is what gives "what can this agent do?" a finite answer. Governance
 requires that question always be answerable.
 
-## G — Governance & Policy
+## G — Governance gates
 
-Control happens before the action, not after the incident. Every agent proposal
-is checked against thresholds, budgets, and regulatory covenants before an
-external write event fires. State transitions are deterministic: pending,
-approved, rejected, expired. A sweep regularly clears stale approvals so a
-forgotten request never blocks the queue or slips through.
+Control happens before the action, not after the incident. Every proposal is checked against thresholds, budgets, and covenants before an external write event fires, with deterministic states — pending, approved, rejected, expired — and a sweep that clears stale approvals. Post-hoc review is archaeology, not governance.
 
 We treat post-hoc review as archaeology, not governance. By the time you are
 reading logs, the damage is already on the bus.
 
-## V — Value
+## V — Value verified
 
-Every prompt, tool call, human decision, and API response is written to a
-cryptographic hash chain. Auditing is a byproduct of running the company, not a
-separate exercise that happens in the last quarter before an inspection.
+Every prompt, tool call, human decision, and response is written to a cryptographic hash chain. Audit is a byproduct of running the company, not a quarterly exercise. Above the trail, cost, productivity, service delivery, and impact are measured against KPIs with honest status. Seven layers of control exist for one reason: value that is real, attributable, and provable to the people it serves — demonstrated, not merely promised.
 
 Above the trail, outcomes are measured: cost, productivity, service delivery,
 and impact, tracked against KPIs with honest status. In a system where a human

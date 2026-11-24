@@ -79,11 +79,11 @@ Sovereign data defaults (DPA 2017/2024, GDPR-grade handling), offline-capable op
 
 ### What comes next
 
-We have now covered the first three letters: purpose, workforce, orchestration. The next post walks the full H-A-O-M-T-G-V stack in one pass: models run sovereign, tools stay sandboxed, gates govern, and verification vouches, the four layers that turn a working structure into a provable one.
+We have now covered the first three letters: purpose, workforce, orchestration. The next post walks the full H-A-O-M-T-G-V stack in one pass: memory persists, tools stay sandboxed, governance gates, and value verified, the four layers that turn a working structure into a provable one.
 
 **Follow along** if you are designing, governing, or procuring AI systems in Malawi and SADC; we publish the architecture, the metrics, and the failure paths, not just the outcomes.
 
-The full framework sequence is: **H → Humans authorize. A → Agents act. O → Orchestration orders the work. M → Memory runs sovereign. T → Tools stay sandboxed. G → Gates approve every high‑impact move. V → Verification records it all so value can be proven, not promised.**
+The full framework sequence is: **Humans authorize. Agents act. Orchestration orders. Memory persists. Tools stay sandboxed. Governance gates. Value verified — demonstrated, not merely promised.**
 
 ---
 
