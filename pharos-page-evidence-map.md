@@ -358,7 +358,7 @@ SKEPTICISM → 5-tier HITL + audit trails + risk tiers + circuit breakers + hone
 
 **Citation Format for Page:**
 ```
-Primary sources: Pharos Thought Leadership Department (lightspeedholdings.com/pharos).
+Primary sources: Pharos Thought Leadership Department (lightspeedholdings.vercel.app/pharos).
 Quantitative claims traced to: company-registry.yaml, Pharos pillar documents, Pharos whitepaper.
 Framework: H-A-O-M-T-G-V (canonical seven-layer constitution of AI-native enterprise).
 Four Reservations: Trust-by-Engineering (engineered answers, not slides).
