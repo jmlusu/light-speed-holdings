@@ -495,7 +495,7 @@
         {
           "source": "src/data/registries/solution-registry.json#AI Readiness Assessment",
           "status": "unknown",
-          "note": "No source states that an assessment can begin within one week of agreement, or that pilots start within 2-3 weeks after gates clear. Only the E1 setup window and the response SLA are sourced."
+          "note": "No published basis exists for a response-time promise, an assessment beginning within one week of agreement, or pilots starting within 2-3 weeks after governance gates clear. Only the E1 setup window is sourced."
         }
       ]
     }
