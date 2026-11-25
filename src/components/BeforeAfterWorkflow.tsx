@@ -852,8 +852,8 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
                 <p className="text-slate-300 mt-0.5">{inspectorPair.deepDive.solutionMechanism}</p>
               </div>
               <div className="pt-2 border-t border-white/10">
-                <span className="font-bold text-emerald-400 font-mono">Quantified Enterprise Impact:</span>
-                <p className="text-emerald-300 font-semibold mt-0.5">{inspectorPair.deepDive.quantifiedImpact}</p>
+                <span className="font-bold text-ls-cyan font-body">Quantified Enterprise Impact:</span>
+                <p className="text-ls-cyan-ink dark:text-ls-cyan font-semibold mt-0.5">{inspectorPair.deepDive.quantifiedImpact}</p>
               </div>
             </div>
 

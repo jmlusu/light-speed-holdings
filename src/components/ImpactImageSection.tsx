@@ -49,7 +49,7 @@ export const ImpactImageSection: React.FC<ImpactImageSectionProps> = ({
             {title}
           </h2>
 
-          <div className="w-20 h-[2px] bg-[#DC3641]" />
+          <div className="w-20 h-[2px] bg-[#E63946]" />
 
           <p className="text-[#9CA3AF] text-lg leading-relaxed max-w-xl font-body">
             LightSpeed Holdings moves beyond conventional consulting into disciplined AI company building. By uniting rigorous human oversight, deterministic orchestration, and autonomous agent execution, we create enduring operational value.
@@ -73,7 +73,7 @@ export const ImpactImageSection: React.FC<ImpactImageSectionProps> = ({
             </div>
 
             <div className="flex flex-col">
-              <span className="text-2xl font-black text-[#DC3641] font-display">ACT.</span>
+              <span className="text-2xl font-black text-[#E63946] font-display">ACT.</span>
               <span className="text-[10px] text-[#9CA3AF] font-bold tracking-widest uppercase">Agentic Execution</span>
             </div>
 

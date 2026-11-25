@@ -70,14 +70,16 @@ export const ContentCarousel: React.FC<ContentCarouselProps> = ({
                     {item.category}
                   </span>
                   {item.badge && (
-                    <span className="px-2.5 py-1 rounded font-medium text-[11px] bg-[#DC3641]/10 text-[#DC3641] border-none">
+                    <span className={`px-2.5 py-1 rounded font-medium text-[11px] border-none ${
+                      isLight ? 'bg-ls-red/10 text-ls-red-ink' : 'bg-ls-red/10 text-ls-red-bright'
+                    }`}>
                       {item.badge}
                     </span>
                   )}
                   {item.readTime && <span className={`${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'} text-xs`}>{item.readTime}</span>}
                 </div>
 
-                <h3 className={`text-xl font-bold transition-colors mb-2 ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-white group-hover:text-[#00BFFF]'}`}>
+                <h3 className={`text-xl font-bold transition-colors mb-2 ${isLight ? 'text-ls-navy group-hover:text-ls-red-ink' : 'text-white group-hover:text-[#00BFFF]'}`}>
                   {item.title}
                 </h3>
 

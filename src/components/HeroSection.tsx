@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { homeImmersiveCopy } from '../data/homeImmersiveCopy';
+import { humanAuthorityStatement } from '../data/shipped/company';
 
 interface HeroSectionProps {
   theme: 'light' | 'dark';
@@ -111,6 +112,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
             Strategy. AI. Execution. Built for Africa and beyond.
             <br />
             LightSpeed Holdings builds and scales AI-native companies that turn bold ideas into real-world impact, starting in Malawi and expanding across the SADC region and Africa.
+          </p>
+
+          {/* Human authority — canonical statement */}
+          <p className={`font-body text-sm sm:text-base font-bold tracking-wide border-l-4 pl-4 py-1 ${
+            isLight ? 'border-ls-cyan-ink text-ls-navy' : 'border-ls-cyan text-white'
+          }`}>
+            {humanAuthorityStatement}
           </p>
 
           <div className="flex flex-wrap items-center gap-3.5 pt-2 animate-fade-in-up delay-500">

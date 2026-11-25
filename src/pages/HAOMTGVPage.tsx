@@ -140,7 +140,7 @@ const WORKFLOW_STEPS = [
   },
 ];
 
-const BRAND_BAR = ['#070A40', '#DC3641', '#00BFFF'];
+const BRAND_BAR = ['#070A40', '#E63946', '#00BFFF'];
 
 export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
@@ -566,7 +566,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
                       </span>
                     </div>
                   </div>
-                  <span className="text-xs font-mono px-2.5 py-1 bg-emerald-950 text-emerald-300 rounded">
+                  <span className={`text-xs font-body px-2.5 py-1 bg-ls-cyan/10 rounded ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
                     SHA-256 Ledger Verified
                   </span>
                 </div>

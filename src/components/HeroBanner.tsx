@@ -24,7 +24,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ theme, onOpenContactModa
 
       <div className="relative z-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-body font-bold uppercase tracking-wider mb-4 select-none">
-          <span className="w-2 h-2 rounded-full bg-ls-emerald" />
+          <span className="w-2 h-2 rounded-full bg-ls-cyan" />
           <span className={isLight ? 'text-[10px] font-body tracking-widest text-ls-navy' : 'text-[10px] font-body tracking-widest text-ls-grey-light-text'}>
             INSTITUTIONAL CHARTER // SOVEREIGN MISSION
           </span>

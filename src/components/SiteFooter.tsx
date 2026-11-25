@@ -89,7 +89,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
                 }`}>
                   LightSpeed Holdings Limited
                 </span>
-                <span className={`text-[10px] tracking-[0.2em] font-bold font-mono ${
+                <span className={`text-[10px] tracking-[0.2em] font-bold font-body ${
                   isLight ? 'text-ls-red' : 'text-ls-cyan'
                 }`}>
                   Lilongwe, Malawi // Aspire. Act. Achieve.
@@ -123,7 +123,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
             }`}>
               We build AI-native companies.
             </p>
-            <div className={`text-[10px] font-mono tabular-nums pt-1 border-t ${
+            <div className={`text-[10px] font-body tabular-nums pt-1 border-t ${
               isLight ? 'border-slate-200 text-slate-500' : 'border-white/10 text-[#9CA3AF]'
             }`}>
               FRAMEWORK: HAOMTGV // HUMAN ACCOUNTABILITY
@@ -190,7 +190,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
             <span className={isLight ? 'text-slate-700' : 'text-slate-300'}>© {new Date().getFullYear()} LightSpeed Holdings Limited. All rights reserved.</span>
             <span className={isLight ? 'text-slate-500' : 'text-slate-500'}>Illustrations and architectural diagrams are original artwork created in-house.</span>
           </div>
-          <div className={`flex items-center gap-4 font-mono text-[10px] tracking-wider uppercase ${
+          <div className={`flex items-center gap-4 font-body text-[10px] tracking-wider uppercase ${
             isLight ? 'text-ls-red' : 'text-ls-cyan'
           }`}>
             <span className="inline-flex items-center gap-1.5">

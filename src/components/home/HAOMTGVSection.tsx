@@ -123,7 +123,7 @@ export const HAOMTGVSection: React.FC<HAOMTGVSectionProps> = ({ theme }) => {
         <div className="mt-4">
           <Link
             to="/haomtgv"
-            className="inline-flex items-center gap-1.5 font-body text-[11px] font-bold tracking-widest uppercase text-[#00BFFF] transition-colors hover:text-[#DC3641]"
+            className="inline-flex items-center gap-1.5 font-body text-[11px] font-bold tracking-widest uppercase text-[#00BFFF] transition-colors hover:text-[#E63946]"
           >
             Explore the full framework →
           </Link>

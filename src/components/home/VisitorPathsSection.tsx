@@ -159,7 +159,7 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
                 <a
                   key={link.label}
                   href={link.to}
-                  className={`font-body text-[11px] font-bold tracking-wide hover:text-[#DC3641] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
+                  className={`font-body text-[11px] font-bold tracking-wide hover:text-[#E63946] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
                 >
                   {link.label} ↓
                 </a>
@@ -167,7 +167,7 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
                 <Link
                   key={link.label}
                   to={link.to}
-                  className={`font-body text-[11px] font-bold tracking-wide hover:text-[#DC3641] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
+                  className={`font-body text-[11px] font-bold tracking-wide hover:text-[#E63946] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
                 >
                   {link.label} →
                 </Link>
@@ -175,7 +175,7 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
             ),
           )}
           <div className="sm:col-span-2 flex flex-wrap items-center justify-center gap-2 rounded-2xl px-4 py-3 font-body text-xs bg-transparent border-none shadow-none">
-            <MessageCircleQuestion className="w-4 h-4 text-[#DC3641]" aria-hidden="true" />
+            <MessageCircleQuestion className="w-4 h-4 text-[#E63946]" aria-hidden="true" />
             <span className={isLight ? 'text-ls-navy' : 'text-white'}>Not sure which path fits?</span>
             <Link to="/ask" className={`font-bold tracking-wide hover:underline ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
               Ask LightSpeed →

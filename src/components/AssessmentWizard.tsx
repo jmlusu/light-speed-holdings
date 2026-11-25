@@ -261,8 +261,8 @@ export const LEVEL_BADGE_STYLES: Record<ReadinessLevel, { badge: string; text: s
     text: 'text-ls-red',
   },
   Optimized: {
-    badge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-    text: 'text-emerald-600 dark:text-emerald-400',
+    badge: 'bg-ls-cyan/10 text-ls-cyan-ink dark:text-ls-cyan',
+    text: 'text-ls-cyan-ink dark:text-ls-cyan',
   },
 };
 

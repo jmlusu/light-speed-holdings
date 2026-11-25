@@ -65,11 +65,11 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ theme, id }) => {
                 }`}
               >
                 <summary className={`flex items-center justify-between gap-4 px-6 py-4 cursor-pointer list-none text-sm font-bold font-display transition-colors ${
-                  isLight ? 'text-ls-navy hover:text-[#DC3641]' : 'text-white hover:text-[#00BFFF]'
+                  isLight ? 'text-ls-navy hover:text-[#E63946]' : 'text-white hover:text-[#00BFFF]'
                 }`}>
                   {faq.question}
                   <Plus
-                    className="w-4 h-4 shrink-0 text-[#DC3641] transition-transform group-open:rotate-45"
+                    className="w-4 h-4 shrink-0 text-[#E63946] transition-transform group-open:rotate-45"
                     aria-hidden="true"
                   />
                 </summary>

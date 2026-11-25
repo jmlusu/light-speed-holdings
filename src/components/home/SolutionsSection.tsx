@@ -52,10 +52,10 @@ export const SolutionsSection: React.FC<SolutionsSectionProps> = ({ theme }) => 
               <div className="p-6 flex flex-col flex-1 justify-between">
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
-                    <span className="font-body text-[10px] font-bold tracking-widest text-[#DC3641]">{sol.eyebrow}</span>
+                    <span className="font-body text-[10px] font-bold tracking-widest text-[#E63946]">{sol.eyebrow}</span>
                     <HonestyBadge label={sol.proof} />
                   </div>
-                  <h3 className={`font-display font-bold text-base tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-white group-hover:text-[#00BFFF]'}`}>
+                  <h3 className={`font-display font-bold text-base tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#E63946]' : 'text-white group-hover:text-[#00BFFF]'}`}>
                     {sol.title}
                   </h3>
                   <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
@@ -63,8 +63,8 @@ export const SolutionsSection: React.FC<SolutionsSectionProps> = ({ theme }) => 
                   </p>
                 </div>
                 <div className="pt-4 mt-4 flex items-center justify-between">
-                  <span className={`text-[10px] font-body font-bold tracking-widest transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-[#00BFFF] group-hover:text-[#DC3641]'}`}>EXPLORE</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#DC3641] transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  <span className={`text-[10px] font-body font-bold tracking-widest transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#E63946]' : 'text-[#00BFFF] group-hover:text-[#E63946]'}`}>EXPLORE</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#E63946] transition-transform group-hover:translate-x-1" aria-hidden="true" />
                 </div>
               </div>
             </Link>

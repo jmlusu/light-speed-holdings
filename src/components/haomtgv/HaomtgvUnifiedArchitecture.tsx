@@ -409,7 +409,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                 G
               </span>
               <div>
-                <span className="text-xs font-mono font-bold tracking-widest text-ls-red uppercase block">
+                <span className="text-xs font-body font-bold tracking-widest text-ls-red uppercase block">
                   TRANSVERSE GOVERNANCE LAYER (SPANS & CONSTRAINS ALL DIMENSIONS)
                 </span>
                 <span className="text-[11px] text-slate-400 group-hover:text-ls-white transition-colors">
@@ -418,7 +418,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
               </div>
             </button>
 
-            <span className="text-[10px] font-mono px-3 py-1 rounded bg-ls-red/10 text-ls-red font-bold uppercase tracking-wider">
+            <span className="text-[10px] font-body px-3 py-1 rounded bg-ls-red/10 text-ls-red font-bold uppercase tracking-wider">
               CONTINUOUS SECURITY PERIMETER
             </span>
           </div>
@@ -457,10 +457,10 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                     </span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-bold tracking-widest text-ls-cyan uppercase">
+                        <span className="text-xs font-body font-bold tracking-widest text-ls-cyan uppercase">
                           ARCHITECTURAL PINNACLE
                         </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-ls-cyan/15 text-ls-cyan font-bold uppercase">
+                        <span className="text-[10px] font-body px-2 py-0.5 rounded bg-ls-cyan/15 text-ls-cyan font-bold uppercase">
                           Sovereign Apex
                         </span>
                       </div>
@@ -478,7 +478,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                   ethical guardrails are established here.
                 </p>
 
-                <div className="mt-4 pt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-slate-400">
+                <div className="mt-4 pt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] font-body text-slate-400">
                   <span>Downlink: Strategic Intent to Orchestration</span>
                   <span className="text-ls-cyan font-bold">Uplink: Empirical Value & Approval Requests</span>
                 </div>
@@ -538,7 +538,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                     </span>
                     <Icon3D name="intelligence" size="xs" />
                   </div>
-                  <span className="text-[10px] font-mono font-bold tracking-widest text-ls-cyan uppercase block">
+                  <span className="text-[10px] font-body font-bold tracking-widest text-ls-cyan uppercase block">
                     COGNITIVE EXECUTION
                   </span>
                   <h4 className="text-base sm:text-lg font-bold font-display tracking-tight text-white mt-1">
@@ -550,7 +550,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-body text-slate-400">
                   <span>Scope: Role Bounded</span>
                   <span className="text-ls-cyan">Zero Self-Elevation</span>
                 </div>
@@ -587,7 +587,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                     </span>
                     <Icon3D name="orchestration" size="xs" />
                   </div>
-                  <span className="text-[10px] font-mono font-bold tracking-widest text-ls-cyan uppercase block">
+                  <span className="text-[10px] font-body font-bold tracking-widest text-ls-cyan uppercase block">
                     CENTRAL NERVOUS SYSTEM
                   </span>
                   <h4 className="text-base sm:text-lg font-bold font-display tracking-tight text-white mt-1">
@@ -599,7 +599,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-body text-slate-400">
                   <span>Routing: In-House Bus / Target DAG</span>
                   <span className="text-ls-cyan">100% Traceable</span>
                 </div>
@@ -636,7 +636,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                     </span>
                     <Icon3D name="memory" size="xs" />
                   </div>
-                  <span className="text-[10px] font-mono font-bold tracking-widest text-ls-cyan uppercase block">
+                  <span className="text-[10px] font-body font-bold tracking-widest text-ls-cyan uppercase block">
                     CONTEXTUAL CONTINUITY
                   </span>
                   <h4 className="text-base sm:text-lg font-bold font-display tracking-tight text-white mt-1">
@@ -648,7 +648,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-body text-slate-400">
                   <span>State: Multi-Tier Memory</span>
                   <span className="text-ls-cyan">Enterprise Isolation</span>
                 </div>
@@ -706,7 +706,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                       T
                     </span>
                     <div>
-                      <span className="text-[10px] font-mono font-bold tracking-widest text-ls-cyan uppercase block">
+                      <span className="text-[10px] font-body font-bold tracking-widest text-ls-cyan uppercase block">
                         EXTERNAL EXECUTION INTERFACE
                       </span>
                       <h4 className="text-base sm:text-lg font-bold font-display tracking-tight text-white">
@@ -722,7 +722,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                   containers, payment rails, and least-privilege APIs.
                 </p>
 
-                <div className="mt-3 pt-3 flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400">
+                <div className="mt-3 pt-3 flex flex-wrap items-center justify-between text-[11px] font-body text-slate-400">
                   <span>Enclosure: Isolated Boundaries & Scoped APIs</span>
                   <span className="text-ls-cyan font-semibold">Zero Raw Secrets Exposure</span>
                 </div>
@@ -784,10 +784,10 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                     </span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-bold tracking-widest text-ls-cyan uppercase">
+                        <span className="text-xs font-body font-bold tracking-widest text-ls-cyan uppercase">
                           ARCHITECTURAL OUTCOME & AUDIT
                         </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 font-bold uppercase">
+                        <span className="text-[10px] font-body px-2 py-0.5 rounded bg-ls-cyan/10 text-ls-cyan font-bold uppercase">
                           Empirical Criteria
                         </span>
                       </div>
@@ -805,8 +805,8 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                   time, and defect avoidance loop directly back to Human Authority.
                 </p>
 
-                <div className="mt-4 pt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-slate-400">
-                  <span className="text-emerald-400 font-bold">Feedback Loop: Feeds empirical outcome data back to Human Authority</span>
+                <div className="mt-4 pt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] font-body text-slate-400">
+                  <span className="text-ls-cyan font-bold">Feedback Loop: Feeds empirical outcome data back to Human Authority</span>
                   <span>Evaluation: Cycle Time • Cost • Quality</span>
                 </div>
               </button>
@@ -815,7 +815,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
         </div>
 
         {/* Legend / Quick Instruction */}
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-400 px-2">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs font-body text-slate-400 px-2">
           <div className="flex items-center gap-3">
             <span className="inline-block w-2.5 h-2.5 rounded-full bg-ls-cyan animate-pulse" />
             <span>Click or hover any dimension to inspect data flows and governance rules</span>
@@ -848,16 +848,16 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold tracking-widest text-ls-cyan uppercase">
+                  <span className="text-xs font-body font-bold tracking-widest text-ls-cyan uppercase">
                     DIMENSION SPECIFICATION
                   </span>
                   {activeDim.letter === 'G' && (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-ls-red/20 text-ls-red font-bold uppercase">
+                    <span className="text-[10px] font-body px-2 py-0.5 rounded bg-ls-red/20 text-ls-red font-bold uppercase">
                       Transverse Fabric
                     </span>
                   )}
                   {activeDim.letter === 'H' && (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-ls-cyan/20 text-ls-cyan font-bold uppercase">
+                    <span className="text-[10px] font-body px-2 py-0.5 rounded bg-ls-cyan/20 text-ls-cyan font-bold uppercase">
                       Pinnacle Anchor
                     </span>
                   )}
@@ -865,7 +865,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                 <h3 className="text-2xl sm:text-3xl font-black font-display tracking-tight mt-0.5">
                   {activeDim.title}
                 </h3>
-                <p className="text-xs font-mono text-slate-400">{activeDim.role}</p>
+                <p className="text-xs font-body text-slate-400">{activeDim.role}</p>
               </div>
             </div>
 
@@ -880,7 +880,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                   : 'bg-[#050B1A]/80 text-slate-300'
               }`}
             >
-              <strong className="block font-bold text-ls-red mb-1 font-mono uppercase tracking-wider text-[11px]">
+              <strong className="block font-bold text-ls-red mb-1 font-body uppercase tracking-wider text-[11px]">
                 Architectural Principle
               </strong>
               {activeDim.corePrinciple}
@@ -905,7 +905,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                       : 'bg-[#050B1A]/50'
                   }`}
                 >
-                  <span className="text-[10px] font-mono text-slate-400 block uppercase truncate">
+                  <span className="text-[10px] font-body text-slate-400 block uppercase truncate">
                     {m.label}
                   </span>
                   <span className="text-xs font-bold text-ls-cyan block mt-1">
@@ -928,7 +928,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
               >
                 <div className="flex items-center gap-2 mb-3">
                   <ArrowDown className="w-3.5 h-3.5 text-ls-cyan" />
-                  <span className="text-xs font-mono font-bold text-ls-cyan uppercase tracking-wider">
+                  <span className="text-xs font-body font-bold text-ls-cyan uppercase tracking-wider">
                     Inbound Signals & Inputs
                   </span>
                 </div>
@@ -952,7 +952,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
               >
                 <div className="flex items-center gap-2 mb-3">
                   <ArrowRight className="w-3.5 h-3.5 text-ls-red" />
-                  <span className="text-xs font-mono font-bold text-ls-red uppercase tracking-wider">
+                  <span className="text-xs font-body font-bold text-ls-red uppercase tracking-wider">
                     Outbound Deliverables
                   </span>
                 </div>
@@ -975,7 +975,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
                 isLight ? 'bg-slate-50' : 'bg-[#050B1A]/70'
               }`}
             >
-              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-ls-cyan mb-3 flex items-center gap-2">
+              <h4 className="text-xs font-body font-bold uppercase tracking-wider text-ls-cyan mb-3 flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-ls-cyan" />
                 Operational Scope & Bounded Responsibilities
               </h4>
@@ -1003,7 +1003,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <Shield className="w-4 h-4 text-ls-red" />
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-ls-red">
+                <span className="text-xs font-body font-bold uppercase tracking-wider text-ls-red">
                   Governance Interlock & Constraint Protocol
                 </span>
               </div>
@@ -1026,7 +1026,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
             >
               <Compass className="w-5 h-5 text-ls-cyan shrink-0 mt-0.5" />
               <div>
-                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-ls-cyan block">
+                <span className="text-[11px] font-body font-bold uppercase tracking-wider text-ls-cyan block">
                   Governed Implementation Verification
                 </span>
                 <p className="text-xs mt-1 leading-relaxed">

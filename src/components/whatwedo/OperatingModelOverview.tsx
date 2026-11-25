@@ -95,8 +95,8 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       desc: 'Tracks operating cost, turnaround against SLAs, and quality.',
       icon: TrendingUp,
       icon3d: 'chart',
-      color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30',
-      activeRing: 'ring-2 ring-emerald-500 shadow-lg shadow-emerald-500/20',
+      color: 'text-ls-cyan-ink bg-ls-cyan/10 border-ls-cyan/30',
+      activeRing: 'ring-2 ring-ls-cyan shadow-lg shadow-ls-cyan/20',
       tier: 'Economic Outcome Tier',
     },
   ];

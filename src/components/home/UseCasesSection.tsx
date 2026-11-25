@@ -55,7 +55,7 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
                 className="ripple-on h-full rounded-3xl p-5 flex flex-col gap-3 transition-all hover:-translate-y-0.5 group shadow-none bg-transparent border-none"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <h4 className={`font-display font-bold text-sm tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-white group-hover:text-[#00BFFF]'}`}>
+                  <h4 className={`font-display font-bold text-sm tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#E63946]' : 'text-white group-hover:text-[#00BFFF]'}`}>
                     {uc.title}
                   </h4>
                   <HonestyBadge label={statusToHonesty(uc.status)} className="shrink-0" />
@@ -63,7 +63,7 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
                 <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
                   {uc.problem}
                 </p>
-                <span className={`mt-auto inline-flex items-center gap-1.5 text-[11px] font-body font-bold tracking-widest transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-[#00BFFF] group-hover:text-[#DC3641]'}`}>
+                <span className={`mt-auto inline-flex items-center gap-1.5 text-[11px] font-body font-bold tracking-widest transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#E63946]' : 'text-[#00BFFF] group-hover:text-[#E63946]'}`}>
                   VIEW USE CASE →
                 </span>
               </Link>
@@ -93,12 +93,12 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
                 className="ripple-on h-full rounded-3xl p-5 flex flex-col gap-3 transition-all hover:-translate-y-0.5 group shadow-none bg-transparent border-none"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <span className="font-body text-[10px] font-bold tracking-widest text-[#DC3641] uppercase">
+                  <span className="font-body text-[10px] font-bold tracking-widest text-[#E63946] uppercase">
                     {sector.region?.join(' · ') ?? 'SECTOR'}
                   </span>
                   <HonestyBadge label={sector.status} />
                 </div>
-                <h4 className={`font-display font-bold text-sm tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#DC3641]' : 'text-white group-hover:text-[#00BFFF]'}`}>
+                <h4 className={`font-display font-bold text-sm tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#E63946]' : 'text-white group-hover:text-[#00BFFF]'}`}>
                   {sector.title}
                 </h4>
                 <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
