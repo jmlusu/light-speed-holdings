@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { HonestyBadge } from '../components/site/HonestyBadge';
+import { FaqCardList } from '../components/FaqCardList';
 import { StatusBadge } from '../site/StatusBadge';
 import { CategoryChip } from '../site/CategoryChip';
 import { BADGE_BASE_CLASSES, EVIDENCE_STATUS_CLASSES, TONE_STYLES, honestyLabel } from '../data/siteContent';
-import { faqs } from '../data/faqs';
 
 const root = resolve(__dirname, '..', '..');
 const css = readFileSync(resolve(root, 'src/brand/tokens/brand-tokens.css'), 'utf8');
@@ -41,13 +41,16 @@ describe('honesty badge tone map', () => {
   });
 
   it('preserves label-to-tone mapping for every published badge string', () => {
+    // Verbatim SIX_CAPABILITIES[].status strings. Production renders
+    // "In development", never "In active development".
     expect(honestyLabel('Proven in-house').tone).toBe('proven');
+    expect(honestyLabel('Fieldable in 2026').tone).toBe('fieldable');
+    expect(honestyLabel('In pilot').tone).toBe('pilot');
+    expect(honestyLabel('In development').tone).toBe('development');
+    // Other published badge strings keep their canonical tones.
     expect(honestyLabel('Live proof').tone).toBe('proven');
     expect(honestyLabel('Published').tone).toBe('proven');
-    expect(honestyLabel('In pilot').tone).toBe('pilot');
     expect(honestyLabel('In pilot (composing evidence)').tone).toBe('pilot');
-    expect(honestyLabel('Fieldable in 2026').tone).toBe('fieldable');
-    expect(honestyLabel('In active development').tone).toBe('development');
     expect(honestyLabel('Proven in-house').label).toBe('Proven in-house');
   });
 });
@@ -67,7 +70,7 @@ describe('honesty badge rendering', () => {
       ['Proven in-house', 'text-ls-cyan-ink'],
       ['In pilot', 'text-ls-red-ink'],
       ['Fieldable in 2026', 'text-ls-grey-ink'],
-      ['In active development', 'text-ls-grey-deep'],
+      ['In development', 'text-ls-grey-deep'],
     ] as const;
     for (const [label, ink] of cases) {
       const { container, unmount } = render(<HonestyBadge label={honestyLabel(label)} />);
@@ -90,19 +93,10 @@ describe('honesty badge rendering', () => {
 });
 
 describe('FAQ evidence chips', () => {
-  // vitest.config.ts does not carry vite.config.ts's @lightspeed/design-system
-  // alias, so FaqCardList cannot be imported here. Render the exact chip markup
-  // from real registry data, and pin the component source separately below.
+  // Exercise the real FaqCardList component, not a re-creation of its JSX.
   it('renders verified evidence in brand cyan and unknown in brand grey', () => {
-    const { container } = render(
-      <>
-        {faqs[0].evidence.map((ev, i) => (
-          <span key={i} className={`px-2 py-0.5 rounded border text-xs font-mono ${EVIDENCE_STATUS_CLASSES[ev.status]}`}>
-            {ev.source} ({ev.status})
-          </span>
-        ))}
-      </>,
-    );
+    const { container } = render(<FaqCardList theme="light" />);
+    fireEvent.click(screen.getByText('What is the AI Company Builder?'));
     const verified = screen.getByText(/claim\.agent-count \(verified\)/);
     expect(verified).toHaveClass('text-ls-cyan-ink');
     expect(verified).not.toHaveClass('text-emerald-700');
@@ -110,6 +104,7 @@ describe('FAQ evidence chips', () => {
     expect(EVIDENCE_STATUS_CLASSES.unknown).toContain('text-ls-grey-deep');
     expect(container.querySelector('.bg-amber-50')).toBeNull();
 
+    // Source pins supplement the rendered-component assertions above.
     const faqCardSource = readFileSync(resolve(root, 'src/components/FaqCardList.tsx'), 'utf8');
     expect(faqCardSource).toContain('EVIDENCE_STATUS_CLASSES[ev.status]');
     expect(faqCardSource).toContain('{ev.source} ({ev.status})');
