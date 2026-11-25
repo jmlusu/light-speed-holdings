@@ -36,7 +36,7 @@ const FALLBACK_CLASSES: Record<'light' | 'dark', string> = {
 };
 
 const BASE_CLASSES =
-  'inline-flex items-center rounded-full border px-2.5 py-1 font-body text-[10px] font-bold tracking-widest uppercase';
+  'inline-flex items-center rounded-full border px-2.5 py-1 font-body text-xs font-bold tracking-widest uppercase';
 
 const isCategoryName = (value: string): value is CategoryName =>
   Object.prototype.hasOwnProperty.call(CATEGORY_CLASSES, value);

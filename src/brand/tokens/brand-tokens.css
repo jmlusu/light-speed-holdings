@@ -35,6 +35,8 @@
   --ls-white: #FFFFFF;
   --ls-grey-dark: #6B7280;
   --ls-grey-light-text: #9CA3AF;
+  --ls-grey-deep: #374151;
+  --ls-grey-soft: #D1D5DB;
 
   /* On-surface text pairing rules */
   --ls-on-navy: #FFFFFF;
@@ -126,6 +128,9 @@
   --color-ls-red-bright: #FF7B84;
   --color-ls-cyan-ink: #00688F;
   --color-ls-grey-ink: #5F6673;
+  /* AA-safe ink variants for small badge text (same hues, darker/lighter values) */
+  --color-ls-grey-deep: #374151;   /* 10.4:1 on #FFFFFF — development, light */
+  --color-ls-grey-soft: #D1D5DB;   /* 12.0:1 on #070A40 — fieldable, dark */
 
   /* Theme Canvas Tokens */
   --color-ls-canvas-light: #F2F2F2;

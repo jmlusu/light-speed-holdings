@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { SectionHeading } from '../site/SectionHeading';
 import { Building2, Zap, GitFork, Network, HardDrive, ShieldCheck, CheckCircle2, Lock, ArrowUpRight } from 'lucide-react';
 import { Icon3D, Icon3DName } from '../common';
+import { honestyLabel, TONE_STYLES } from '../../data/siteContent';
 
 interface CapabilityDetail {
   id: string;
   num: string;
   title: string;
   status: 'Proven in-house' | 'Fieldable in 2026' | 'In pilot' | 'In development';
-  statusColor: string;
   icon: any;
   icon3d: Icon3DName;
   image: string;
@@ -28,7 +28,6 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     num: '01',
     title: 'AI-Native Company Building',
     status: 'Proven in-house',
-    statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: Building2,
     icon3d: 'home',
     image: '/assets/images/cap1_company_building_1793817051020.avif',
@@ -49,7 +48,6 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     num: '02',
     title: 'Intelligent Workflow Automation',
     status: 'Fieldable in 2026',
-    statusColor: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/20',
     icon: Zap,
     icon3d: 'lightning',
     image: '/assets/images/cap2_workflow_automation_1793817065625.avif',
@@ -69,7 +67,6 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     num: '03',
     title: 'Agentic Systems & Orchestration',
     status: 'Proven in-house',
-    statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: GitFork,
     icon3d: 'orchestration',
     image: '/assets/images/cap3_agentic_orchestration_1793817079580.avif',
@@ -90,7 +87,6 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     num: '04',
     title: 'Enterprise AI Integration',
     status: 'In development',
-    statusColor: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
     icon: Network,
     icon3d: 'network',
     image: '/assets/images/cap4_integration_pure_1793817124475.avif',
@@ -110,7 +106,6 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     num: '05',
     title: 'Organizational Memory & Knowledge Systems',
     status: 'Fieldable in 2026',
-    statusColor: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/20',
     icon: HardDrive,
     icon3d: 'memory',
     image: '/assets/images/cap5_organizational_memory_1793817139478.avif',
@@ -130,7 +125,6 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     num: '06',
     title: 'AI Governance & Decision Infrastructure',
     status: 'Proven in-house',
-    statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     icon: ShieldCheck,
     icon3d: 'governance',
     image: '/assets/images/cap6_governance_infrastructure_1793817153646.avif',
@@ -256,8 +250,8 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
               </div>
             </div>
 
-            <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full border ${selectedCap.statusColor}`}>
-              Status: {selectedCap.status}
+            <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full border ${TONE_STYLES[honestyLabel(selectedCap.status).tone]}`}>
+              {selectedCap.status}
             </span>
           </div>
 

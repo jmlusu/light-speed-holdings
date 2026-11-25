@@ -43,7 +43,7 @@ const STATUS_CLASSES: Record<SolutionStatus, Record<'light' | 'dark', string>> =
 };
 
 const BASE_CLASSES =
-  'inline-flex items-center rounded-full border px-2.5 py-1 font-body text-[10px] font-bold tracking-widest uppercase';
+  'inline-flex items-center rounded-full border px-2.5 py-1 font-body text-xs font-bold tracking-widest uppercase';
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, theme }) => {
   const classes = STATUS_CLASSES[status][theme];

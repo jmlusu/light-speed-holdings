@@ -1,5 +1,5 @@
 import React from 'react';
-import { HonestyLabel, TONE_STYLES } from '../../data/siteContent';
+import { BADGE_BASE_CLASSES, HonestyLabel, TONE_STYLES } from '../../data/siteContent';
 
 interface HonestyBadgeProps {
   label: HonestyLabel;
@@ -7,14 +7,11 @@ interface HonestyBadgeProps {
 }
 
 /**
- * Honesty badge: labels every claim with its evidence status. Colors map to
- * PROVEN IN-HOUSE (cyan) / IN PILOT (red) / Fieldable (amber) / In development
- * (slate). We never blur statuses.
+ * Honesty badge: labels every claim with its evidence status. Proven (cyan) /
+ * pilot (red) / fieldable (grey) / development (graphite). We never blur statuses.
  */
 export const HonestyBadge: React.FC<HonestyBadgeProps> = ({ label, className }) => (
-  <span
-    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-body text-[9px] font-bold tracking-widest ${TONE_STYLES[label.tone]} ${className ?? ''}`}
-  >
+  <span className={`${BADGE_BASE_CLASSES} ${TONE_STYLES[label.tone]} ${className ?? ''}`}>
     <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
     {label.label}
   </span>
