@@ -177,7 +177,7 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
           <div className="sm:col-span-2 flex flex-wrap items-center justify-center gap-2 rounded-2xl px-4 py-3 font-body text-xs bg-transparent border-none shadow-none">
             <MessageCircleQuestion className="w-4 h-4 text-[#E63946]" aria-hidden="true" />
             <span className={isLight ? 'text-ls-navy' : 'text-white'}>Not sure which path fits?</span>
-            <Link to="/ask" className={`font-bold tracking-wide hover:underline ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
+            <Link to="/contact" className={`font-bold tracking-wide hover:underline ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
               Ask LightSpeed →
             </Link>
             <span className={isLight ? 'text-ls-grey-ink' : 'text-[#9CA3AF]'}>

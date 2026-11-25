@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { FloatingNav } from './FloatingNav';
+import { LegacyRedirectNotice } from './site/LegacyRedirect';
 import { SiteFooter } from './SiteFooter';
 import { ExecutiveBriefingModal } from './ExecutiveBriefingModal';
 import { BackToTop } from './BackToTop';
@@ -67,7 +68,9 @@ const NOT_FOUND_META = {
 };
 
 export const SiteLayout: React.FC = () => {
-  const { pathname, hash } = useLocation();
+  const location = useLocation();
+  const { pathname, hash } = location;
+  const legacyState = location.state as { legacyFrom?: string; legacyLabel?: string } | null;
   const { theme, onToggleTheme, onRequestBriefing, isBriefingOpen, briefingSummary, closeBriefing } = useSite();
 
   const lastPathnameRef = useRef(pathname);
@@ -142,6 +145,9 @@ export const SiteLayout: React.FC = () => {
         />
 
         <main id="main-content" tabIndex={-1} className="focus:outline-none flex-1">
+          {legacyState?.legacyFrom && (
+            <LegacyRedirectNotice from={legacyState.legacyFrom} label={legacyState.legacyLabel} to={pathname} />
+          )}
           <Outlet />
         </main>
 

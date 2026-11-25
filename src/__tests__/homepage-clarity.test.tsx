@@ -44,7 +44,7 @@ describe('homepage clarity - one decision per section', () => {
       expect(within(details).getByText(new RegExp(label))).toBeInTheDocument();
     }
     expect(within(details).getByText(/Not sure which path fits\?/)).toBeInTheDocument();
-    expect(within(details).getByRole('link', { name: /Ask LightSpeed/ })).toHaveAttribute('href', '/ask');
+    expect(within(details).getByRole('link', { name: /Ask LightSpeed/ })).toHaveAttribute('href', '/contact');
     expect(within(details).getByText(/answers from our published knowledge only/)).toBeInTheDocument();
   });
 

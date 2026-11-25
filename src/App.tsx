@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { SiteContext } from './site-context';
 import type { Theme } from './site-context';
 import { SiteLayout } from './components/SiteLayout';
+import { LegacyRedirect } from './components/site/LegacyRedirect';
 import { withSite } from './site-context';
+import { LEGACY_REDIRECTS } from './lib/legacyRedirects';
 import { HomePage } from './pages/HomePage';
 import { WhatWeDoPage } from './pages/WhatWeDoPage';
 import { AiAssessmentPage } from './pages/AiAssessmentPage';
@@ -92,35 +94,19 @@ export const App: React.FC = () => {
         children: [
           { index: true, element: <HomePageRoute /> },
           { path: 'what-we-do', element: <WhatWeDoPageRoute /> },
-          { path: 'ai-company-builder', element: <Navigate to="/what-we-do" replace /> },
+          ...LEGACY_REDIRECTS.map(({ from, to, label }) => ({
+            path: from,
+            element: <LegacyRedirect to={to} label={label} />,
+          })),
           { path: 'haomtgv', element: <HaomtgvPageRoute /> },
-          { path: 'solutions', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'sectors', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'sectors/:slug', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'use-cases', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'use-cases/:slug', element: <Navigate to="/what-we-do" replace /> },
           { path: 'ai-assessment', element: <AiAssessmentPageRoute /> },
           { path: 'faq', element: <FaqPageRoute /> },
-          { path: 'faqs', element: <Navigate to="/faq" replace /> },
           { path: 'insights', element: <InsightsPageRoute /> },
           { path: 'insights/:slug', element: <InsightArticlePageRoute /> },
-
           { path: 'about', element: <AboutPageRoute /> },
-          { path: 'who-we-are', element: <Navigate to="/about" replace /> },
           { path: 'contact', element: <ContactPageRoute /> },
           { path: 'legal/privacy', element: <PrivacyPageRoute /> },
           { path: 'legal/terms', element: <TermsPageRoute /> },
-          { path: 'privacy', element: <Navigate to="/legal/privacy" replace /> },
-          { path: 'terms', element: <Navigate to="/legal/terms" replace /> },
-          { path: 'architecture', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'build', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'offer-a', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'offer-b', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'offer-c', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'offer-d', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'offer-e', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'proof', element: <Navigate to="/what-we-do" replace /> },
-          { path: 'ask', element: <Navigate to="/contact" replace /> },
           { path: '*', element: <NotFoundPage /> },
         ],
       },
