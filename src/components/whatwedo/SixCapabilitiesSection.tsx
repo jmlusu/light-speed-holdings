@@ -297,10 +297,10 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
               </div>
 
               <div className={`p-4 rounded-xl border text-xs ${isLight ? 'bg-slate-50 border-slate-200 text-slate-600' : 'bg-white/5 border-white/10 text-slate-300'}`}>
-                <strong className="text-ls-cyan">Architecture Link:</strong> {selectedCap.architectureConnection}
+                <strong className={isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}>Architecture Link:</strong> {selectedCap.architectureConnection}
                 {selectedCap.relatedResearch && (
                   <div className="mt-2 pt-2 border-t border-slate-200/20">
-                    <strong className="text-ls-cyan">Related Research:</strong>
+                    <strong className={isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}>Related Research:</strong>
                     {selectedCap.relatedResearch.map(link => (
                       <Link key={link.slug} to={`/insights/${link.slug}`} className="block mt-1 hover:text-white transition-colors underline">
                         {link.title} →

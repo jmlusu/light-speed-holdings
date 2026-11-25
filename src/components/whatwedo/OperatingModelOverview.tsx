@@ -108,6 +108,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionHeading
           theme={theme}
+          level="h1"
           eyebrow="THE AI-NATIVE COMPANY BUILDER"
           title="An Operating Model Built on Seven HAOMTGV Pillars"
           lead="LightSpeed Holdings builds complete operating models, with human authority directing coordinated agents inside defined, auditable boundaries."
@@ -192,7 +193,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
                       </div>
                     </div>
                     <div className="shrink-0 text-right">
-                      <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-ls-red/10 text-ls-red border border-ls-red/20 font-bold">
+                      <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-ls-red/10 text-ls-red-ink border border-ls-red/20 font-bold">
                         {selected.tier}
                       </span>
                     </div>

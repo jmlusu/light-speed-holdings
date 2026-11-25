@@ -593,8 +593,8 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
                     <img
                       src="/brand/logo/logo-favicon-transparent.png"
                       alt="LightSpeed"
-                      className={`w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(0,191,255,0.8)] ${
-                        isSimulating ? 'animate-bounce' : 'animate-pulse'
+                      className={`w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(0,191,255,0.8)] transition-transform duration-300 ${
+                        isSimulating ? 'scale-110' : 'scale-100'
                       }`}
                     />
                   </div>

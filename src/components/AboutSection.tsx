@@ -41,7 +41,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           </div>
 
           <h1 className={`text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight font-display max-w-4xl mx-auto leading-tight ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-            ASPIRE. <span className="text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-red/80 to-ls-cyan">ACT.</span> ACHIEVE.
+            ASPIRE. <span className="font-black text-ls-red">ACT.</span> ACHIEVE.
           </h1>
 
           <p className={`text-base sm:text-xl max-w-3xl mx-auto leading-relaxed font-sans ${secondaryText}`}>

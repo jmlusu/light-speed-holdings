@@ -21,7 +21,7 @@ export interface StatusBadgeProps {
  */
 const STATUS_CLASSES: Record<SolutionStatus, Record<'light' | 'dark', string>> = {
   'IN DEVELOPMENT': {
-    light: 'bg-ls-grey-dark/10 text-ls-grey-dark border-ls-grey-dark/30',
+    light: 'bg-ls-grey-dark/10 text-ls-grey-ink border-ls-grey-dark/30',
     dark: 'bg-ls-grey-light-text/10 text-ls-grey-light-text border-ls-grey-light-text/30',
   },
   PILOT: {
@@ -29,15 +29,15 @@ const STATUS_CLASSES: Record<SolutionStatus, Record<'light' | 'dark', string>> =
     dark: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/40',
   },
   PROTOTYPE: {
-    light: 'bg-ls-red/10 text-ls-red border-ls-red/40',
-    dark: 'bg-ls-red/10 text-ls-red border-ls-red/40',
+    light: 'bg-ls-red/10 text-ls-red-ink border-ls-red/40',
+    dark: 'bg-ls-red/10 text-ls-red-bright border-ls-red/40',
   },
   'IN-HOUSE': {
     light: 'bg-ls-navy/10 text-ls-navy border-ls-navy/30',
     dark: 'bg-ls-white/10 text-ls-white border-ls-white/30',
   },
   EXPLORATION: {
-    light: 'bg-ls-grey-light-text/15 text-ls-grey-dark border-ls-grey-dark/25',
+    light: 'bg-ls-grey-light-text/15 text-ls-grey-ink border-ls-grey-dark/25',
     dark: 'bg-ls-white/5 text-ls-grey-light-text border-ls-white/20',
   },
 };

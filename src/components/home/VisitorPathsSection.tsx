@@ -121,7 +121,7 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
 
               <div className="p-6 flex flex-col flex-1">
                 <div className="flex items-center justify-between gap-3 mb-3">
-                  <span className={`font-body text-[10px] font-bold tracking-widest ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
+                  <span className={`font-body text-[10px] font-bold tracking-widest ${isLight ? 'text-ls-grey-ink' : 'text-[#9CA3AF]'}`}>
                     PATH {idx + 1}
                   </span>
                 </div>
@@ -130,7 +130,7 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
                 <h3 className={`font-display font-bold text-base sm:text-lg tracking-tight ${isLight ? 'text-ls-navy' : 'text-white'}`}>
                   {path.intent}
                 </h3>
-                <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
+                <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-ink' : 'text-[#9CA3AF]'}`}>
                   {path.body}
                 </p>
               </div>
@@ -138,7 +138,7 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
               <div className="mt-auto space-y-3 pt-6">
                 <Link
                   to={path.primary.to}
-                  className="ripple-on group inline-flex w-full items-center justify-between gap-2 rounded-2xl px-4 py-3 font-body text-xs font-bold tracking-widest transition-all bg-[#DC3641] text-white hover:bg-[#DC3641]/90"
+                  className="ripple-on group inline-flex w-full items-center justify-between gap-2 rounded-2xl px-4 py-3 font-body text-xs font-bold tracking-widest transition-all bg-ls-red-cta text-white hover:bg-ls-red-ink"
                 >
                   <span>{path.primary.label}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
@@ -174,10 +174,10 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-2 rounded-2xl px-4 py-3 font-body text-xs bg-transparent border-none shadow-none">
         <MessageCircleQuestion className="w-4 h-4 text-[#DC3641]" aria-hidden="true" />
         <span className={isLight ? 'text-ls-navy' : 'text-white'}>Not sure which path fits?</span>
-        <Link to="/ask" className="font-bold tracking-wide text-[#00BFFF] hover:underline">
+        <Link to="/ask" className={`font-bold tracking-wide hover:underline ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
           Ask LightSpeed →
         </Link>
-        <span className={isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}>
+        <span className={isLight ? 'text-ls-grey-ink' : 'text-[#9CA3AF]'}>
           (answers from our published knowledge only)
         </span>
       </div>

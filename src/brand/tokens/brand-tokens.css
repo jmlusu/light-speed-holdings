@@ -120,6 +120,12 @@
   --color-ls-white: #FFFFFF;
   --color-ls-grey-dark: #6B7280;
   --color-ls-grey-light-text: #9CA3AF;
+  /* AA-safe ink variants for small text on light surfaces (same hue, darker value) */
+  --color-ls-red-ink: #C42E3A;
+  --color-ls-red-cta: #D62E3B;
+  --color-ls-red-bright: #FF7B84;
+  --color-ls-cyan-ink: #00688F;
+  --color-ls-grey-ink: #5F6673;
 
   /* Theme Canvas Tokens */
   --color-ls-canvas-light: #F2F2F2;

@@ -10,6 +10,62 @@ import { scrollToHash } from '../hooks/useSmoothScroll';
 import { getInsightArticle } from '../data/insights';
 import { applyPageMeta } from '../lib/seo';
 
+const ROUTE_META: Record<string, { title: string; description: string }> = {
+  '/': {
+    title: 'LightSpeed Holdings Limited™ | AI-Native Company Builder',
+    description:
+      'We build AI-native companies. LightSpeed Holdings designs and operates governed agentic operating models in Malawi, across SADC, and beyond.',
+  },
+  '/what-we-do': {
+    title: 'What We Do | LightSpeed Holdings Limited™',
+    description:
+      'Strategy, AI, and execution: how LightSpeed designs and operates governed AI-native operating models for organisations in Southern Africa.',
+  },
+  '/haomtgv': {
+    title: 'H-A-O-M-T-G-V | LightSpeed Holdings Limited™',
+    description:
+      'The seven dimensions of LightSpeed’s governed agentic operating architecture: human authority, agents, orchestration, memory, tools, governance, and value.',
+  },
+  '/ai-assessment': {
+    title: 'AI Readiness Assessment | LightSpeed Holdings Limited™',
+    description:
+      'A qualitative diagnostic across data maturity, infrastructure, governance, talent, and agentic workflow potential.',
+  },
+  '/faq': {
+    title: 'Frequently Asked Questions | LightSpeed Holdings Limited™',
+    description:
+      'Honest answers about the AI company builder, evidence, data protection, and how to start — with registry citations.',
+  },
+  '/insights': {
+    title: 'Pharos Insights | LightSpeed Holdings Limited™',
+    description:
+      'Research, policy analysis, and field notes on governed agentic operations from LightSpeed’s Pharos practice.',
+  },
+  '/about': {
+    title: 'About | LightSpeed Holdings Limited™',
+    description:
+      'ASPIRE. ACT. ACHIEVE. Meet the company building AI-native enterprises from Lilongwe, Malawi for the SADC region.',
+  },
+  '/contact': {
+    title: 'Contact | LightSpeed Holdings Limited™',
+    description:
+      'Start a qualifying conversation with LightSpeed Holdings about AI-native company building and governance.',
+  },
+  '/legal/privacy': {
+    title: 'Privacy Policy | LightSpeed Holdings Limited™',
+    description: 'How LightSpeed Holdings collects, uses, and safeguards data.',
+  },
+  '/legal/terms': {
+    title: 'Terms of Service | LightSpeed Holdings Limited™',
+    description: 'Terms governing use of the LightSpeed Holdings website and services.',
+  },
+};
+
+const NOT_FOUND_META = {
+  title: 'Page Not Found | LightSpeed Holdings Limited™',
+  description: 'The page you requested does not exist or has moved.',
+};
+
 export const SiteLayout: React.FC = () => {
   const { pathname, hash } = useLocation();
   const { theme, onToggleTheme, onRequestBriefing, isBriefingOpen, briefingSummary, closeBriefing } = useSite();
@@ -36,7 +92,13 @@ export const SiteLayout: React.FC = () => {
         url: window.location.origin + pathname,
       });
     } else {
-      document.title = `LIGHTSPEED HOLDINGS LIMITED™ | ASPIRE. ACT. ACHIEVE.`;
+      const meta = ROUTE_META[pathname] ?? NOT_FOUND_META;
+      applyPageMeta({
+        title: meta.title,
+        description: meta.description,
+        type: 'website',
+        url: window.location.origin + pathname,
+      });
     }
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

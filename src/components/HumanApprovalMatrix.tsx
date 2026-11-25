@@ -113,21 +113,21 @@ export const HumanApprovalMatrix: React.FC<HumanApprovalMatrixProps> = ({ theme 
                     <Icon3D name={tier.icon3d} size="xs" />
                     <span className={`w-7 h-7 flex items-center justify-center font-mono text-xs font-bold tabular-nums border shrink-0 ${
                       isSelected 
-                        ? isLight ? 'bg-ls-red border-ls-red text-white' : 'bg-ls-cyan border-ls-cyan text-ls-navy' 
+                        ? isLight ? 'bg-ls-red-cta border-ls-red-cta text-white' : 'bg-ls-cyan border-ls-cyan text-ls-navy' 
                         : isLight ? 'bg-slate-100 border-slate-300 text-ls-navy' : 'bg-white/5 border-white/10 text-slate-400'
                     }`}>
                       0{tier.tier}
                     </span>
                     <div>
-                      <h4 className={`text-sm font-bold font-sans ${isSelected ? 'text-white' : (isLight ? 'text-ls-navy' : 'text-white')}`}>
+                      <h3 className={`text-sm font-bold font-sans ${isSelected ? 'text-white' : (isLight ? 'text-ls-navy' : 'text-white')}`}>
                         {tier.name}
-                      </h4>
+                      </h3>
                       <p className={`text-xs font-mono ${isSelected ? (isLight ? 'text-white/80' : 'text-slate-300') : (isLight ? 'text-slate-500' : 'text-slate-400')}`}>
                         {tier.code} - {tier.authority}
                       </p>
                     </div>
                   </div>
-                  <span className={`text-xs font-mono font-bold uppercase tracking-wider ${isSelected ? (isLight ? 'text-white' : 'text-ls-cyan') : (isLight ? 'text-slate-400' : 'text-slate-500')}`}>
+                  <span className={`text-xs font-mono font-bold uppercase tracking-wider ${isSelected ? (isLight ? 'text-white' : 'text-ls-cyan') : (isLight ? 'text-slate-600' : 'text-slate-300')}`}>
                     {isSelected ? 'SELECTED' : 'VIEW'}
                   </span>
                 </button>
@@ -145,7 +145,7 @@ export const HumanApprovalMatrix: React.FC<HumanApprovalMatrixProps> = ({ theme 
                 <div className="flex items-center gap-3">
                   <Icon3D name={current.icon3d} size="sm" />
                   <span className={`text-xs font-mono font-bold uppercase tracking-widest px-3 py-1 border ${
-                    isLight ? 'bg-ls-red/10 border-ls-red text-ls-red' : 'bg-ls-cyan/20 border-ls-cyan text-ls-cyan'
+                    isLight ? 'bg-ls-red/10 border-ls-red text-ls-red-ink' : 'bg-ls-cyan/20 border-ls-cyan text-ls-cyan'
                   }`}>
                     Tier 0{current.tier} Protocol [{current.code}]
                   </span>
@@ -175,7 +175,7 @@ export const HumanApprovalMatrix: React.FC<HumanApprovalMatrixProps> = ({ theme 
                   <span className={`text-[10px] font-mono uppercase tracking-wider block mb-1 font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                     Decision Authority
                   </span>
-                  <p className="text-xs font-bold text-ls-red font-mono">
+                  <p className={`text-xs font-bold font-mono ${isLight ? 'text-ls-red-ink' : 'text-ls-red'}`}>
                     {current.authority}
                   </p>
                 </div>

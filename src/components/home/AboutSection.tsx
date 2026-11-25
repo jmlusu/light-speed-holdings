@@ -91,7 +91,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ theme }) => {
             </div>
             <Link
               to="/about"
-              className="ripple-on inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-white transition-all cursor-pointer hover:bg-ls-red/90 shrink-0 shadow-md"
+              className="ripple-on inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red-cta text-white transition-all cursor-pointer hover:bg-ls-red-ink shrink-0 shadow-md"
             >
               <span>LEARN ABOUT LIGHTSPEED</span>
               <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />

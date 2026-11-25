@@ -37,7 +37,7 @@ export const DistinctCTA: React.FC<DistinctCTAProps> = ({
 
       <div className="max-w-7xl mx-auto text-center relative z-20 space-y-8 sm:space-y-10 w-full">
         {/* Sharp Tag Badge */}
-        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-[#070A40] border-2 border-ls-red text-[11px] font-black text-ls-red uppercase tracking-[0.2em] font-sans shadow-[2px_2px_0px_#E63946]">
+        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-[#070A40] border-2 border-ls-red text-[11px] font-black text-ls-white uppercase tracking-[0.2em] font-sans shadow-[2px_2px_0px_#E63946]">
           <Icon3D name="lightning" size="xs" /> ASPIRE. ACT. ACHIEVE.
         </div>
 
@@ -53,7 +53,7 @@ export const DistinctCTA: React.FC<DistinctCTAProps> = ({
         <div className="flex flex-wrap items-center justify-center gap-5 pt-4">
           <Link
             to={primaryActionHref}
-            className="inline-flex items-center gap-3 px-10 py-4 font-black text-xs tracking-widest bg-ls-red hover:bg-white hover:text-ls-navy text-white border-2 border-ls-red hover:border-white shadow-[4px_4px_0px_#070A40] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px] uppercase font-sans"
+            className="inline-flex items-center gap-3 px-10 py-4 font-black text-xs tracking-widest bg-ls-red-cta hover:bg-white hover:text-ls-navy text-white border-2 border-ls-red-cta hover:border-white shadow-[4px_4px_0px_#070A40] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px] uppercase font-sans"
           >
             <span>{primaryActionText}</span>
             <ArrowRight className="w-4 h-4" />

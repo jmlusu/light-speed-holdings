@@ -72,18 +72,20 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--white);
 }
 
-a {
-  color: var(--navy);
-  text-decoration: none;
-  transition: color 150ms ease, border-color 150ms ease;
-}
+@layer base {
+  a {
+    color: var(--navy);
+    text-decoration: none;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
 
-.dark a {
-  color: var(--cyan);
-}
+  .dark a {
+    color: var(--cyan);
+  }
 
-a:hover {
-  color: var(--red);
+  a:hover {
+    color: var(--red);
+  }
 }
 
 img {

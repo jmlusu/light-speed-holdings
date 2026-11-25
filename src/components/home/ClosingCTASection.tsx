@@ -29,7 +29,7 @@ export const ClosingCTASection: React.FC<{ theme: 'light' | 'dark' }> = ({ theme
           <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to={CTAS.primary.to}
-              className={`ripple-on inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-ls-red hover:bg-[#d62837] text-ls-white shadow-lg shadow-ls-red/30 hover:shadow-ls-red/50 transition-all cursor-pointer active:scale-[0.98]`}
+              className={`ripple-on inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-ls-red-cta hover:bg-ls-red-ink text-ls-white shadow-lg shadow-ls-red/30 hover:shadow-ls-red/50 transition-all cursor-pointer active:scale-[0.98]`}
             >
               <span>{ctaLabel}</span>
               <span aria-hidden="true">→</span>
