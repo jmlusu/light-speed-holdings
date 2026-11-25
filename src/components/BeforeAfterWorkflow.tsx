@@ -85,7 +85,7 @@ const WORKFLOW_PAIRS: WorkflowPair[] = [
     deepDive: {
       problemAnalysis: 'Copying data between incompatible applications, spreadsheets, and email threads increases compliance risk.',
       solutionMechanism: 'A HAOMTGV tool router validates permissions before changing any connected system.',
-      quantifiedImpact: '94% less manual setup time; 100% encrypted trace logging.',
+      quantifiedImpact: 'Append-only SHA-256 audit records; no quantified impact claim.',
     },
   },
   {
@@ -128,7 +128,7 @@ const WORKFLOW_PAIRS: WorkflowPair[] = [
       title: 'Orchestrated Workflows',
       desc: 'Persistent memory and orchestration keep context with the work.',
       icon: Lock,
-      metric: '100% Context Synthesis',
+      metric: 'Context synthesis',
       haomtgvPillar: 'Orchestration',
       governanceTier: 'Level 5 Zero-Trust',
     },
@@ -160,7 +160,7 @@ const WORKFLOW_PAIRS: WorkflowPair[] = [
     deepDive: {
       problemAnalysis: 'Failures are often discovered after damage occurs.',
       solutionMechanism: 'Policy gates check high-risk actions before execution and log decisions.',
-      quantifiedImpact: '100% pre-execution policy enforcement; zero compliance surprises.',
+      quantifiedImpact: 'Policy gates check high-risk actions before execution; no quantified compliance outcome claimed.',
     },
   },
   {
@@ -739,7 +739,7 @@ export const BeforeAfterWorkflow: React.FC<BeforeAfterWorkflowProps> = ({ theme 
                   <CheckCircle2 className="w-4 h-4 shrink-0 text-[#00BFFF]" />
                   <span>Greater Control. Higher Productivity.</span>
                 </div>
-                <span className="text-[10px] opacity-75">100% Governed</span>
+                <span className="text-[10px] opacity-75">Governed</span>
               </div>
             </div>
           </div>

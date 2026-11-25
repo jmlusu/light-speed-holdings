@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { X, Shield, Send, CheckCircle2, ArrowRight, Building2, User, Mail, Phone, Calendar, MessageCircle } from 'lucide-react';
 import { useTurnstile } from '../hooks/useTurnstile';
-import { ENQUIRY_SLA_COPY, ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
+import { ENQUIRY_RESPONSE_COPY, ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
 import { Icon3D } from './common';
 
 interface ExecutiveBriefingModalProps {
@@ -153,7 +153,7 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
               <p className={`text-justify text-sm max-w-md mx-auto leading-relaxed ${
                 isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'
               }`}>
-                Our Senior Managing Partners have received your confidential inquiry. We will contact you within two business days to schedule an executive diagnostic session.
+                Our Senior Managing Partners have received your confidential inquiry. A person will review it before we schedule an executive diagnostic session.
               </p>
               <div className="pt-4">
                 <button
@@ -340,7 +340,7 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
                     Guaranteed confidentiality • Fiduciary NDA standard
                   </div>
                   <div className={`text-[10px] font-medium ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                    {ENQUIRY_SLA_COPY}
+                    {ENQUIRY_RESPONSE_COPY}
                   </div>
                   {whatsappNumber ? (
                     <a

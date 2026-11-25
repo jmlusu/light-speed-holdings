@@ -80,7 +80,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
     systemExample:
       'The Chief Executive Officer and Lead Architect authorize the production deployment manifest and budget before agents start live transactions.',
     metrics: [
-      { label: 'Decision Authority', value: '100% Human' },
+      { label: 'Decision Authority', value: 'Human' },
       { label: 'Sovereign Veto', value: 'Absolute' },
       { label: 'Governance Tiers', value: 'Tiers 4 & 5' },
     ],
@@ -165,7 +165,7 @@ export const ARCHITECTURE_DIMENSIONS: ArchitectureDimension[] = [
       'The orchestration broker coordinates identity and credential verification, then queues human approval before account activation.',
     metrics: [
       { label: 'Routing Model', value: 'In-House Bus / Target DAG' },
-      { label: 'Traceability', value: '100% Auditable' },
+      { label: 'Traceability', value: 'Auditable' },
       { label: 'Failure Recovery', value: 'Idempotent Retries' },
     ],
     connections: ['human', 'agents', 'memory', 'tools', 'governance', 'value'],
@@ -601,7 +601,7 @@ export const HaomtgvUnifiedArchitecture: React.FC<HaomtgvUnifiedArchitectureProp
 
                 <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-body text-slate-400">
                   <span>Routing: In-House Bus / Target DAG</span>
-                  <span className="text-ls-cyan">100% Traceable</span>
+                  <span className="text-ls-cyan">Traceable</span>
                 </div>
               </button>
             </div>

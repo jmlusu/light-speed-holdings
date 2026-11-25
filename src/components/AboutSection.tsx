@@ -4,6 +4,8 @@ import { ArrowRight, Shield, Cpu, Layers, Target, Compass, ShieldCheck, UserChec
 import { leadership } from '../data/leadership';
 import { CTAS } from '../data/ctas';
 import { humanAuthorityStatement } from '../data/shipped/company';
+import { aboutMetrics } from '../data/publicMetrics';
+import { HonestyBadge } from './site/HonestyBadge';
 
 interface AboutSectionProps {
   onOpenContactModal: (intent?: string) => void;
@@ -60,15 +62,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-8 max-w-5xl mx-auto text-left">
-            {[
-              { value: '90', label: 'Operating Roles (89 Agents + 1 Human CEO)' },
-              { value: '7', label: 'HAOMTGV Operating Layers' },
-              { value: '5', label: 'Human Approval Tiers' },
-              { value: '100%', label: 'Audit Trail Coverage' },
-            ].map((metric) => (
-              <div key={metric.label} className={`p-4 rounded-2xl ${isLight ? 'bg-ls-white border border-slate-200/80' : 'bg-white/5 border border-white/10'}`}>
+            {aboutMetrics.map((metric) => (
+              <div key={metric.id} className={`p-4 rounded-2xl ${isLight ? 'bg-ls-white border border-slate-200/80' : 'bg-white/5 border border-white/10'}`}>
                 <div className={`text-2xl sm:text-3xl font-extrabold font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>{metric.value}</div>
                 <div className={`text-[11px] sm:text-xs font-body uppercase tracking-wider mt-1 ${mutedText}`}>{metric.label}</div>
+                <HonestyBadge label={metric.badge} className="mt-2" />
               </div>
             ))}
           </div>

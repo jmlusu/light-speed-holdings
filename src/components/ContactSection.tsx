@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { ShieldCheck, Clock, Globe2, Send, CheckCircle2, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTurnstile } from '../hooks/useTurnstile';
-import { ENQUIRY_SLA_COPY, ENQUIRY_GENERIC_ERROR, enquiryErrorMessage, enquiryPayload } from '../lib/enquiry';
+import { ENQUIRY_RESPONSE_COPY, ENQUIRY_GENERIC_ERROR, enquiryErrorMessage, enquiryPayload } from '../lib/enquiry';
 import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
 interface ContactSectionProps {
@@ -157,7 +157,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
           <div className="space-y-4 pt-4">
             <div className={`inline-flex items-center gap-3 text-xs font-medium ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
               <Clock className="w-4 h-4 text-ls-red shrink-0" />
-              <span>{ENQUIRY_SLA_COPY}</span>
+              <span>{ENQUIRY_RESPONSE_COPY}</span>
             </div>
           </div>
         </div>
@@ -191,7 +191,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                   Inquiry Received
                 </h3>
                 <p className={`text-left text-sm max-w-md mx-auto leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  We have securely routed your message to the LightSpeed Holdings executive team. A person will review it and respond within two business days to arrange a confidential briefing.
+                  We have securely routed your message to the LightSpeed Holdings executive team. A person will review it and get in touch to arrange a confidential briefing.
                 </p>
                 {referenceId ? (
                   <p className={`text-xs font-mono ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
@@ -462,7 +462,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                       </button>
                     </div>
                     <p className={`text-xs font-medium ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                      {ENQUIRY_SLA_COPY}
+                      {ENQUIRY_RESPONSE_COPY}
                     </p>
                     {whatsappNumber ? (
                       <a

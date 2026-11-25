@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "description": "Canonical FAQ registry per Directive 18. 28 evidence-controlled questions and answers: all 28 entries carry evidence entries (65 verified, 7 unknown).",
-  "lastUpdated": "2026-10-25",
+  "description": "Canonical FAQ registry per Directive 18. 28 evidence-controlled questions and answers: all 28 entries carry evidence entries (64 verified, 8 unknown).",
+  "lastUpdated": "2026-11-25",
   "faqs": [
     {
       "id": "faq-01",
@@ -421,10 +421,10 @@
     {
       "id": "faq-25",
       "question": "How do we engage LightSpeed?",
-      "answer": "Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help, and exactly what it takes to start. Qualified enquiries get a response within two business days. The engagement path: Brief â†’ AI Readiness Assessment â†’ Governance Gates (G1-G4) â†’ Scoped Proposal â†’ Deployment. No hidden steps, no surprise costs.",
+      "answer": "Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help, and exactly what it takes to start. The engagement path: Brief â†’ AI Readiness Assessment â†’ Governance Gates (G1-G4) â†’ Scoped Proposal â†’ Deployment. No hidden steps, no surprise costs.",
       "evidence": [
         {
-          "source": "src/lib/enquiry.ts#We reply to qualified enquiries within two business days.",
+          "source": "claim.no-paying-clients",
           "status": "verified"
         },
         {
@@ -481,11 +481,12 @@
     {
       "id": "faq-28",
       "question": "How quickly can an engagement begin?",
-      "answer": "Qualified enquiries receive a response within two business days. AI Readiness Assessments can begin within one week of agreement. Platform licensing (E1) setup takes 1-2 weeks. Pilot engagements typically start within 2-3 weeks after governance gates clear. The bottleneck is governance (G1-G4), not capacity: we prioritize doing it right over doing it fast.",
+      "answer": "AI Readiness Assessments can begin within one week of agreement. Platform licensing (E1) setup takes 1-2 weeks. Pilot engagements typically start within 2-3 weeks after governance gates clear. The bottleneck is governance (G1-G4), not capacity: we prioritize doing it right over doing it fast.",
       "evidence": [
         {
-          "source": "src/lib/enquiry.ts#We reply to qualified enquiries within two business days.",
-          "status": "verified"
+          "source": "",
+          "status": "unknown",
+          "note": "No published basis exists for a response-time promise; the SLA sentence was removed. Only the E1 setup window below is sourced."
         },
         {
           "source": "docs/pharos/whitepaper/resource-constrained-deployment-playbook.md#One-off; setup 1-2 weeks",

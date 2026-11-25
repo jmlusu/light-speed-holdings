@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Reveal } from '../Reveal';
 import { CTAS } from '../../data/ctas';
+import { ENQUIRY_RESPONSE_COPY } from '../../lib/enquiry';
 import { trackJourneyEvent } from '../../hooks/useJourneyEvents';
 
 interface CtaBandProps {
@@ -115,7 +116,7 @@ export const CtaBand: React.FC<CtaBandProps> = ({
               <p className={`text-[11px] font-body mt-3 font-medium ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>
-                We reply to qualified enquiries within two business days.
+                {ENQUIRY_RESPONSE_COPY}
               </p>
             </div>
           </div>

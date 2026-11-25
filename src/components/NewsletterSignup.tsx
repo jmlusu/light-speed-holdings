@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Send, CheckCircle2, Mail } from 'lucide-react';
 import { useTurnstile } from '../hooks/useTurnstile';
-import { ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
+import { ENQUIRY_RESPONSE_COPY, ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
 import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
 interface NewsletterSignupProps {
@@ -189,7 +189,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
               <Send className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
             <p className="text-center text-[11px] text-ls-grey-light-text">
-              We reply to qualified enquiries within two business days. Unsubscribe anytime.
+              {ENQUIRY_RESPONSE_COPY} Unsubscribe anytime.
             </p>
           </form>
         </div>

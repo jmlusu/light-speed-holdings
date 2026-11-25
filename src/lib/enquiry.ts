@@ -1,5 +1,10 @@
-export const ENQUIRY_SLA_COPY =
-  'We reply to qualified enquiries within two business days.';
+/**
+ * Response posture — deliberately not a response-time SLA. No published
+ * measurement backs a timed response promise (AGENTS.md §7; PRODUCT.md
+ * "Evidence on Hand"). Every public surface imports this one string.
+ */
+export const ENQUIRY_RESPONSE_COPY =
+  'A person reviews every enquiry before we respond.';
 
 export interface EnquiryFields {
   form: 'contact' | 'briefing';
