@@ -135,7 +135,7 @@ export const HAOMTGVVisualization: React.FC<HAOMTGVVisualizationProps> = ({ them
           <span className={`mt-2 text-xs font-mono px-3 py-1 rounded-full ${
             activePillar.isSovereign
               ? 'bg-white/60 text-ls-red-ink font-bold'
-              : 'bg-ls-cyan/10 text-ls-cyan-ink font-semibold'
+              : `bg-ls-cyan/10 ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'} font-semibold`
           }`}>
             {activePillar.authority}
           </span>

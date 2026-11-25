@@ -105,4 +105,17 @@ describe('homepage clarity - one decision per section', () => {
     expect(within(details).getByText('Our Eight Publication Formats')).toBeInTheDocument();
     expect(within(details).getByText('8 Publication Channels')).toBeInTheDocument();
   });
+
+  it('InsightsSection: research library link cyan text follows the active theme', () => {
+    const dark = renderInRouter(<InsightsSection theme="dark" />);
+    const darkLink = within(dark.container).getByRole('link', { name: /read the research library/i });
+    expect(darkLink).toHaveClass('text-ls-cyan');
+    expect(darkLink).not.toHaveClass('text-ls-cyan-ink');
+    dark.unmount();
+
+    const light = renderInRouter(<InsightsSection theme="light" />);
+    const lightLink = within(light.container).getByRole('link', { name: /read the research library/i });
+    expect(lightLink).toHaveClass('text-ls-cyan-ink');
+    expect(lightLink).not.toHaveClass('text-ls-cyan');
+  });
 });

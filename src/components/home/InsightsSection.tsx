@@ -116,7 +116,9 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
 
         <Link
           to="/insights"
-          className="inline-flex items-center gap-2 text-xs font-bold font-body text-ls-cyan hover:text-ls-cyan-ink transition-colors"
+          className={`inline-flex items-center gap-2 text-xs font-bold font-body ${
+            isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'
+          } hover:text-ls-cyan-ink transition-colors`}
         >
           Read the research library →
         </Link>
