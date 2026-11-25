@@ -84,7 +84,7 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
       id="insights"
       aria-label="Pharos Thought-Leadership Engine"
       tabIndex={-1}
-      className={`relative w-full py-[100px] px-6 lg:px-12 scroll-mt-28 overflow-hidden transition-colors duration-300 ${
+      className={`relative w-full py-12 lg:py-16 px-6 lg:px-12 scroll-mt-28 overflow-hidden transition-colors duration-300 ${
         isLight ? 'bg-[#F2F2F2] text-ls-navy' : 'bg-[#1A1D21] text-white'
       }`}
     >
@@ -114,6 +114,15 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
           lead="Pharos turns LightSpeed’s agentic AI research, field observations, and operating experience into evidence-led publications. We publish briefs, white papers, system maps, data stories, AI-economics analyses, and Africa Watch monitors that connect findings to real use cases across Malawi, SADC, and Africa."
         />
 
+        <Link
+          to="/insights"
+          className="inline-flex items-center gap-2 text-xs font-bold font-body text-ls-cyan hover:text-ls-cyan-ink transition-colors"
+        >
+          Read the research library →
+        </Link>
+
+      <details className="mt-8">
+        <summary className="cursor-pointer text-xs font-bold font-body tracking-wide">Browse all eight formats</summary>
       {/* Our Eight Publication Formats SECTION */}
       <div className="mt-12">
         <div className="flex items-center justify-between border-b pb-4 mb-8 border-white/10 dark:border-white/10 border-slate-300">
@@ -174,6 +183,7 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
           ))}
         </div>
       </div>
+      </details>
 
     </div>
   </section>

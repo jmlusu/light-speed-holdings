@@ -99,7 +99,7 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
         title="Where Do You Want to Begin?"
         lead="Four ways in. Pick the one that matches why you are here. Each path branches into deeper content; none of them dead-end."
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <nav aria-label="Choose one starting point" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {VISITOR_PATHS.map((path, idx) => (
           <Reveal key={path.id} delay={idx * 0.06}>
             <article
@@ -143,44 +143,49 @@ export const VisitorPathsSection: React.FC<VisitorPathsSectionProps> = ({ theme 
                   <span>{path.primary.label}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                 </Link>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1">
-                  {path.secondary.map((link) =>
-                    link.to.startsWith('#') ? (
-                      <a
-                        key={link.label}
-                        href={link.to}
-                        className={`font-body text-[11px] font-bold tracking-wide hover:text-[#DC3641] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
-                      >
-                        {link.label} ↓
-                      </a>
-                    ) : (
-                      <Link
-                        key={link.label}
-                        to={link.to}
-                        className={`font-body text-[11px] font-bold tracking-wide hover:text-[#DC3641] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
-                      >
-                        {link.label} →
-                      </Link>
-                    ),
-                  )}
-                </div>
                 </div>
               </div>
             </article>
           </Reveal>
         ))}
-      </div>
+      </nav>
 
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-2 rounded-2xl px-4 py-3 font-body text-xs bg-transparent border-none shadow-none">
-        <MessageCircleQuestion className="w-4 h-4 text-[#DC3641]" aria-hidden="true" />
-        <span className={isLight ? 'text-ls-navy' : 'text-white'}>Not sure which path fits?</span>
-        <Link to="/ask" className={`font-bold tracking-wide hover:underline ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
-          Ask LightSpeed →
-        </Link>
-        <span className={isLight ? 'text-ls-grey-ink' : 'text-[#9CA3AF]'}>
-          (answers from our published knowledge only)
-        </span>
-      </div>
+      <details className="mt-6 rounded-2xl px-4 py-3 font-body text-xs bg-transparent border-none shadow-none">
+        <summary className="cursor-pointer font-bold tracking-wide">More ways in</summary>
+        <nav aria-label="More ways in" className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+          {VISITOR_PATHS.flatMap((path) =>
+            path.secondary.map((link) =>
+              link.to.startsWith('#') ? (
+                <a
+                  key={link.label}
+                  href={link.to}
+                  className={`font-body text-[11px] font-bold tracking-wide hover:text-[#DC3641] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
+                >
+                  {link.label} ↓
+                </a>
+              ) : (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className={`font-body text-[11px] font-bold tracking-wide hover:text-[#DC3641] transition-colors ${isLight ? 'text-ls-navy' : 'text-[#00BFFF]'}`}
+                >
+                  {link.label} →
+                </Link>
+              ),
+            ),
+          )}
+          <div className="sm:col-span-2 flex flex-wrap items-center justify-center gap-2 rounded-2xl px-4 py-3 font-body text-xs bg-transparent border-none shadow-none">
+            <MessageCircleQuestion className="w-4 h-4 text-[#DC3641]" aria-hidden="true" />
+            <span className={isLight ? 'text-ls-navy' : 'text-white'}>Not sure which path fits?</span>
+            <Link to="/ask" className={`font-bold tracking-wide hover:underline ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
+              Ask LightSpeed →
+            </Link>
+            <span className={isLight ? 'text-ls-grey-ink' : 'text-[#9CA3AF]'}>
+              (answers from our published knowledge only)
+            </span>
+          </div>
+        </nav>
+      </details>
     </HomeSection>
   );
 };

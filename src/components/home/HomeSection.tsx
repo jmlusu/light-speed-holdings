@@ -32,7 +32,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
       id={id}
       aria-label={label}
       tabIndex={-1}
-      className={`relative w-full py-[100px] px-6 lg:px-12 scroll-mt-28 overflow-hidden transition-colors ${bgClass} ${className}`}
+      className={`relative w-full py-12 lg:py-16 px-6 lg:px-12 scroll-mt-28 overflow-hidden transition-colors ${bgClass} ${className}`}
     >
       {bgImage && (
         <div
