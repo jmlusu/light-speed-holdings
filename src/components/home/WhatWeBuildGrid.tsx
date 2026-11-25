@@ -140,7 +140,7 @@ export const WhatWeBuildGrid: React.FC<WhatWeBuildGridProps> = ({ theme = 'dark'
                 <div className="mt-8 pt-4 border-t border-slate-200/20">
                   <Link
                     to="/what-we-do"
-                    aria-label={`Explore ${cap.title}`}
+                    aria-label={`EXPLORE CAPABILITY — Explore ${cap.title}`}
                     className="inline-flex items-center gap-2 text-xs font-bold font-mono text-ls-red hover:text-ls-cyan transition-colors"
                   >
                     <span>EXPLORE CAPABILITY</span>

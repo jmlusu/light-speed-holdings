@@ -55,12 +55,12 @@ describe('homepage clarity - one decision per section', () => {
     const names = links.map((link) => link.getAttribute('aria-label'));
     expect(new Set(names).size).toBe(6);
     expect(names).toEqual([
-      'Explore AI-Native Company Building',
-      'Explore Intelligent Workflow Automation',
-      'Explore Agentic Systems & Orchestration',
-      'Explore Enterprise AI Integration',
-      'Explore Organizational Memory Systems',
-      'Explore AI Governance Infrastructure',
+      'EXPLORE CAPABILITY — Explore AI-Native Company Building',
+      'EXPLORE CAPABILITY — Explore Intelligent Workflow Automation',
+      'EXPLORE CAPABILITY — Explore Agentic Systems & Orchestration',
+      'EXPLORE CAPABILITY — Explore Enterprise AI Integration',
+      'EXPLORE CAPABILITY — Explore Organizational Memory Systems',
+      'EXPLORE CAPABILITY — Explore AI Governance Infrastructure',
     ]);
     links.forEach((link) => expect(link).toHaveAttribute('href', '/what-we-do'));
   });
