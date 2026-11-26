@@ -103,7 +103,7 @@ export const HAOMTGVVisualization: React.FC<HAOMTGVVisualizationProps> = ({ them
               className={`flex-1 min-w-[70px] sm:min-w-[90px] p-3 rounded-xl flex flex-col items-center justify-center transition-all cursor-pointer ${
                 isSelected
                   ? p.isSovereign
-                    ? 'bg-ls-red text-white shadow-lg ring-2 ring-ls-red/50'
+                    ? 'bg-ls-red-cta text-white shadow-lg ring-2 ring-ls-red/50'
                     : 'bg-ls-cyan text-ls-navy font-bold shadow-lg ring-2 ring-ls-cyan/50'
                   : isLight
                     ? 'bg-slate-100 text-ls-navy hover:bg-slate-200'
@@ -126,7 +126,7 @@ export const HAOMTGVVisualization: React.FC<HAOMTGVVisualizationProps> = ({ them
           <div className="mb-4 flex items-center justify-center">
             <Icon3D name={activePillar.icon3d} size="hero" isInteractive />
           </div>
-          <span className="text-xs font-mono font-bold tracking-widest uppercase text-ls-cyan mb-1">
+          <span className={`text-xs font-mono font-bold tracking-widest uppercase mb-1 ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
             HAOMTGV Pillar [{activePillar.letter}]
           </span>
           <h3 className={`text-2xl font-black font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>
@@ -134,8 +134,8 @@ export const HAOMTGVVisualization: React.FC<HAOMTGVVisualizationProps> = ({ them
           </h3>
           <span className={`mt-2 text-xs font-mono px-3 py-1 rounded-full ${
             activePillar.isSovereign
-              ? 'bg-ls-red/20 text-ls-red font-bold'
-              : 'bg-ls-cyan/20 text-ls-cyan font-semibold'
+              ? 'bg-white/60 text-ls-red-ink font-bold'
+              : `bg-ls-cyan/10 ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'} font-semibold`
           }`}>
             {activePillar.authority}
           </span>
@@ -161,7 +161,7 @@ export const HAOMTGVVisualization: React.FC<HAOMTGVVisualizationProps> = ({ them
           <div className={`p-4 rounded-xl border text-xs leading-relaxed ${
             isLight ? 'bg-slate-50 border-slate-200 text-slate-600' : 'bg-white/5 border-white/10 text-slate-300'
           }`}>
-            <strong className="text-ls-cyan">Human Authority Note:</strong> Human intent (H) provides sovereign direction at the apex, while Governance (G) acts as the continuous enforcement loop securing all agent actions (A) and tools (T).
+            <strong className={isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}>Human Authority Note:</strong> Human intent (H) provides sovereign direction at the apex, while Governance (G) acts as the continuous enforcement loop securing all agent actions (A) and tools (T).
           </div>
         </div>
       </div>

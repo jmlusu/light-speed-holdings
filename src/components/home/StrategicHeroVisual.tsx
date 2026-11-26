@@ -20,9 +20,9 @@ export const StrategicHeroVisual: React.FC<StrategicHeroVisualProps> = ({ theme 
       <div className="absolute inset-0 opacity-15 pointer-events-none" aria-hidden="true">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
           <path d="M-100 100C100 50 300 200 500 100C700 0 900 150 1100 50" stroke={isLight ? '#070A40' : '#00BFFF'} strokeWidth="1.5" />
-          <path d="M-100 220C120 170 320 320 520 220C720 120 920 270 1120 170" stroke={isLight ? '#DC3641' : '#DC3641'} strokeWidth="1" strokeDasharray="4 4" />
+          <path d="M-100 220C120 170 320 320 520 220C720 120 920 270 1120 170" stroke={isLight ? '#E63946' : '#E63946'} strokeWidth="1" strokeDasharray="4 4" />
           <path d="M-100 340C80 290 280 440 480 340C680 240 880 390 1080 290" stroke={isLight ? '#070A40' : '#00BFFF'} strokeWidth="1.5" />
-          <path d="M-100 460C140 410 340 560 540 460C740 360 940 510 1140 410" stroke={isLight ? '#DC3641' : '#DC3641'} strokeWidth="1.5" />
+          <path d="M-100 460C140 410 340 560 540 460C740 360 940 510 1140 410" stroke={isLight ? '#E63946' : '#E63946'} strokeWidth="1.5" />
         </svg>
       </div>
 

@@ -95,8 +95,10 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       desc: 'Tracks operating cost, turnaround against SLAs, and quality.',
       icon: TrendingUp,
       icon3d: 'chart',
-      color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30',
-      activeRing: 'ring-2 ring-emerald-500 shadow-lg shadow-emerald-500/20',
+      color: isLight
+        ? 'text-ls-cyan-ink bg-ls-cyan/10 border-ls-cyan/30'
+        : 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
+      activeRing: 'ring-2 ring-ls-cyan shadow-lg shadow-ls-cyan/20',
       tier: 'Economic Outcome Tier',
     },
   ];
@@ -108,6 +110,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionHeading
           theme={theme}
+          level="h1"
           eyebrow="THE AI-NATIVE COMPANY BUILDER"
           title="An Operating Model Built on Seven HAOMTGV Pillars"
           lead="LightSpeed Holdings builds complete operating models, with human authority directing coordinated agents inside defined, auditable boundaries."
@@ -192,7 +195,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
                       </div>
                     </div>
                     <div className="shrink-0 text-right">
-                      <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-ls-red/10 text-ls-red border border-ls-red/20 font-bold">
+                      <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-ls-red/10 text-ls-red-ink border border-ls-red/20 font-bold">
                         {selected.tier}
                       </span>
                     </div>

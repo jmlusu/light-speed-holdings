@@ -21,8 +21,8 @@ const CATEGORY_CLASSES: Record<CategoryName, Record<'light' | 'dark', string>> =
     dark: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/40',
   },
   GOVERNANCE: {
-    light: 'bg-ls-red/10 text-ls-red border-ls-red/40',
-    dark: 'bg-ls-red/10 text-ls-red border-ls-red/40',
+    light: 'bg-ls-red/10 text-ls-red-ink border-ls-red/40',
+    dark: 'bg-ls-red/10 text-ls-red-bright border-ls-red/40',
   },
   WAVEFORM: {
     light: 'bg-ls-navy/10 text-ls-navy border-ls-navy/30',
@@ -31,12 +31,12 @@ const CATEGORY_CLASSES: Record<CategoryName, Record<'light' | 'dark', string>> =
 };
 
 const FALLBACK_CLASSES: Record<'light' | 'dark', string> = {
-  light: 'bg-ls-grey-dark/10 text-ls-grey-dark border-ls-grey-dark/30',
+  light: 'bg-ls-grey-dark/10 text-ls-grey-ink border-ls-grey-dark/30',
   dark: 'bg-ls-grey-light-text/10 text-ls-grey-light-text border-ls-grey-light-text/30',
 };
 
 const BASE_CLASSES =
-  'inline-flex items-center rounded-full border px-2.5 py-1 font-body text-[10px] font-bold tracking-widest uppercase';
+  'inline-flex items-center rounded-full border px-2.5 py-1 font-body text-xs font-bold tracking-widest uppercase';
 
 const isCategoryName = (value: string): value is CategoryName =>
   Object.prototype.hasOwnProperty.call(CATEGORY_CLASSES, value);

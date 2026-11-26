@@ -106,12 +106,9 @@ export const faqs: readonly Faq[] = [
     registryId: 'faq-25',
     question: 'How do we start?',
     answer:
-      'Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help and what it takes to begin. Qualified enquiries receive a response within two business days.',
+      'Start a conversation or request an AI Readiness Assessment. We will tell you honestly whether we can help and what it takes to begin.',
     evidence: [
-      {
-        source: 'src/lib/enquiry.ts#We reply to qualified enquiries within two business days.',
-        status: 'verified',
-      },
+      { source: 'claim.no-paying-clients', status: 'verified' },
       {
         source: 'src/data/registries/cta-registry.json#REQUEST AN AI READINESS ASSESSMENT',
         status: 'verified',

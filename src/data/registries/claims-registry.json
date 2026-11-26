@@ -228,6 +228,15 @@
       "owner": "cto",
       "lastVerified": "2026-09-28",
       "expiryDate": "2026-12-28"
+    },
+    {
+      "id": "claim.haomtgv-seven-layers",
+      "text": "HAOMTGV names seven operating layers: Human, Agents, Orchestration, Memory, Tools, Governance, Value.",
+      "classification": "PROVEN_IN_HOUSE",
+      "evidenceRef": "src/components/home/HAOMTGVSection.tsx (seven pillars: Human, Agents, Orchestration, Memory, Tools, Governance, Value); src/data/homeImmersiveCopy.ts (haomtgv layer)",
+      "owner": "cto",
+      "lastVerified": "2026-11-25",
+      "expiryDate": "2027-02-25"
     }
   ]
 }

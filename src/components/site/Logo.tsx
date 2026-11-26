@@ -34,7 +34,7 @@ const Logo: React.FC<LogoProps> = ({
       />
       {showText && (
         <span className={`font-display font-black tracking-tight text-sm uppercase ${theme === 'light' ? 'text-[#070A40]' : 'text-white'}`}>
-          LIGHTSPEED<span className="text-[#DC3641]"> HOLDINGS</span>
+          LIGHTSPEED<span className="text-[#E63946]"> HOLDINGS</span>
         </span>
       )}
     </div>

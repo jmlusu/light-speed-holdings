@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Cpu, Layers, Target, Compass, ShieldCheck, UserCheck, Lock, FileCode, Sparkles, CheckCircle2 } from 'lucide-react';
 import { leadership } from '../data/leadership';
 import { CTAS } from '../data/ctas';
+import { humanAuthorityStatement } from '../data/shipped/company';
+import { aboutMetrics } from '../data/publicMetrics';
+import { HonestyBadge } from './site/HonestyBadge';
 
 interface AboutSectionProps {
   onOpenContactModal: (intent?: string) => void;
@@ -35,13 +38,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         </div>
 
         <div className="max-w-7xl mx-auto space-y-6 relative z-10">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-cyan-950/40 text-cyan-400 font-mono text-xs tracking-widest uppercase border border-cyan-800/40">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-cyan-950/40 text-cyan-400 font-body text-xs tracking-widest uppercase border border-cyan-800/40">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             <span>WHO WE ARE // LIGHTSPEED HOLDINGS LIMITED™</span>
           </div>
 
           <h1 className={`text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight font-display max-w-4xl mx-auto leading-tight ${isLight ? 'text-ls-navy' : 'text-white'}`}>
-            ASPIRE. <span className="text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-red/80 to-ls-cyan">ACT.</span> ACHIEVE.
+            ASPIRE. <span className="font-black text-ls-red">ACT.</span> ACHIEVE.
           </h1>
 
           <p className={`text-base sm:text-xl max-w-3xl mx-auto leading-relaxed font-sans ${secondaryText}`}>
@@ -59,15 +62,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-8 max-w-5xl mx-auto text-left">
-            {[
-              { value: '90', label: 'Operating Roles (89 Agents + 1 Human CEO)' },
-              { value: '7', label: 'HAOMTGV Operating Layers' },
-              { value: '5', label: 'Human Approval Tiers' },
-              { value: '100%', label: 'Audit Trail Coverage' },
-            ].map((metric) => (
-              <div key={metric.label} className={`p-4 rounded-2xl ${isLight ? 'bg-ls-white border border-slate-200/80' : 'bg-white/5 border border-white/10'}`}>
+            {aboutMetrics.map((metric) => (
+              <div key={metric.id} className={`p-4 rounded-2xl ${isLight ? 'bg-ls-white border border-slate-200/80' : 'bg-white/5 border border-white/10'}`}>
                 <div className={`text-2xl sm:text-3xl font-extrabold font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>{metric.value}</div>
-                <div className={`text-[11px] sm:text-xs font-mono uppercase tracking-wider mt-1 ${mutedText}`}>{metric.label}</div>
+                <div className={`text-[11px] sm:text-xs font-body uppercase tracking-wider mt-1 ${mutedText}`}>{metric.label}</div>
+                <HonestyBadge label={metric.badge} className="mt-2" />
               </div>
             ))}
           </div>
@@ -79,7 +78,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className={`p-8 sm:p-12 rounded-3xl transition-all ${cardBg}`}>
           <div className="flex items-center gap-2 mb-4">
             <span className="w-2.5 h-2.5 rounded-full bg-ls-red" />
-            <span className="font-mono text-xs font-bold tracking-widest text-ls-red uppercase">
+            <span className="font-body text-xs font-bold tracking-widest text-ls-red uppercase">
               COMPANY INTRODUCTION
             </span>
           </div>
@@ -91,6 +90,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           <p className={`text-sm sm:text-base leading-relaxed max-w-4xl ${secondaryText}`}>
             LightSpeed Holdings Limited™ is an African-headquartered AI venture studio and strategic partner. We combine AI-native company building, workflow automation, and governance controls in one operating model. From Lilongwe, Malawi, we design, launch, and scale enterprises where configurable AI agent teams execute work and human leaders retain final decision authority.
           </p>
+
+          {/* Human authority — canonical statement */}
+          <p className={`mt-4 font-body text-sm sm:text-base font-bold tracking-wide border-l-4 pl-4 py-1 ${
+            isLight ? 'border-ls-cyan-ink text-ls-navy' : 'border-ls-cyan text-white'
+          }`}>
+            {humanAuthorityStatement}
+          </p>
         </div>
       </section>
 
@@ -99,7 +105,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className={`p-8 sm:p-12 rounded-3xl transition-all ${cardBg}`}>
           <div className="flex items-center gap-2 mb-4">
             <span className="w-2.5 h-2.5 rounded-full bg-ls-cyan" />
-            <span className="font-mono text-xs font-bold tracking-widest text-ls-cyan uppercase">
+            <span className="font-body text-xs font-bold tracking-widest text-ls-cyan uppercase">
               OUR STORY // FROM INTENT TO EXECUTION
             </span>
           </div>
@@ -157,7 +163,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       {/* 5. CORE VALUES */}
       <section className="px-6 lg:px-12 max-w-7xl mx-auto my-12" aria-label="Core Values">
         <div className="mb-6">
-          <span className="text-xs font-mono font-bold tracking-widest text-ls-red uppercase">
+          <span className="text-xs font-body font-bold tracking-widest text-ls-red uppercase">
             OUR VALUES // THE PRINCIPLES THAT GOVERN US
           </span>
           <h2 className={`text-2xl sm:text-3xl font-bold font-display mt-1 ${isLight ? 'text-ls-navy' : 'text-white'}`}>
@@ -169,10 +175,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           {[
             { title: 'AI-Native First', body: 'We design AI into the execution model from the start.', Icon: Cpu, color: 'text-ls-red bg-ls-red/10' },
             { title: 'Human Authority & Accountability', body: 'Agents execute; people decide. Human accountability remains explicit.', Icon: UserCheck, color: 'text-ls-cyan bg-ls-cyan/10' },
-            { title: 'Evidence Over Claims', body: 'We prioritize measurable results, empirical validation, and transparent reporting.', Icon: CheckCircle2, color: 'text-emerald-500 bg-emerald-500/10' },
+            { title: 'Evidence Over Claims', body: 'We prioritize measurable results, empirical validation, and transparent reporting.', Icon: CheckCircle2, color: isLight ? 'text-ls-cyan-ink bg-ls-cyan/10' : 'text-ls-cyan bg-ls-cyan/10' },
             { title: 'Governance by Design', body: 'Compliance checks, audit records, and approval gates form part of the architecture.', Icon: Shield, color: 'text-ls-red bg-ls-red/10' },
             { title: 'Security & Trust', body: 'We use enterprise security controls, data residency options, and tenant isolation by default.', Icon: Lock, color: 'text-ls-cyan bg-ls-cyan/10' },
-            { title: 'Continuous Learning', body: 'We design systems and agents to improve from operational feedback.', Icon: Sparkles, color: 'text-emerald-500 bg-emerald-500/10' },
+            { title: 'Continuous Learning', body: 'We design systems and agents to improve from operational feedback.', Icon: Sparkles, color: isLight ? 'text-ls-cyan-ink bg-ls-cyan/10' : 'text-ls-cyan bg-ls-cyan/10' },
           ].map((value) => (
             <div key={value.title} className={`p-6 sm:p-8 rounded-2xl space-y-3 ${cardBg}`}>
               <div className={`p-3 rounded-xl w-fit ${value.color}`}>
@@ -229,7 +235,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         }`}>
           <div className="flex items-center gap-2 mb-3">
             <span className="w-2 h-2 rounded-full bg-cyan-400" />
-            <span className="font-mono text-xs font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
+            <span className="font-body text-xs font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
               FOUNDING LEAPFROG THESIS
             </span>
           </div>
@@ -249,7 +255,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-ls-red" />
-                <span className="font-mono text-xs font-bold tracking-widest text-ls-red uppercase">
+                <span className="font-body text-xs font-bold tracking-widest text-ls-red uppercase">
                   LEADERSHIP // SOVEREIGN HUMAN DIRECTION
                 </span>
               </div>
@@ -278,7 +284,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                         {leader.name}
                       </h3>
                     </div>
-                    <span className="text-xs font-mono font-bold text-ls-red uppercase tracking-wider">
+                    <span className="text-xs font-body font-bold text-ls-red uppercase tracking-wider">
                       {leader.title}
                     </span>
                   </div>
@@ -296,7 +302,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       {/* 7. DIFFERENTIATION */}
       <section className="px-6 lg:px-12 max-w-7xl mx-auto my-12" aria-label="What Makes LightSpeed Different">
         <div className="mb-6">
-          <span className="text-xs font-mono font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
+          <span className="text-xs font-body font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
             DIFFERENTIATION // THE LIGHTSPEED ADVANTAGE
           </span>
           <h2 className={`text-2xl sm:text-3xl font-bold font-display mt-1 ${isLight ? 'text-ls-navy' : 'text-white'}`}>
@@ -308,7 +314,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           {[
             { title: 'AI-Native Company Builder', body: 'We redesign workflows around governed agent execution rather than adding chatbots to existing processes.', Icon: Cpu, color: 'text-ls-red' },
             { title: 'HAOMTGV Architecture', body: 'Our seven-layer framework defines how orchestration, memory, tools, and governance work together under deterministic controls.', Icon: Layers, color: 'text-ls-cyan' },
-            { title: 'Governed Autonomous Workforces', body: 'Configurable teams, from one agent upward, execute complex tasks without autonomous privilege escalation.', Icon: UserCheck, color: 'text-emerald-500' },
+            { title: 'Governed Autonomous Workforces', body: 'Configurable teams, from one agent upward, execute complex tasks without autonomous privilege escalation.', Icon: UserCheck, color: 'text-ls-cyan' },
             { title: 'Cryptographic Accountability', body: 'The system records agent actions, tool calls, and human approvals in a tamper-evident SHA-256 audit ledger.', Icon: FileCode, color: 'text-ls-red' },
             { title: 'African Context, Global Standards', body: 'We design for mobile money, data residency, and connectivity constraints in African markets while applying enterprise security controls.', Icon: Compass, color: 'text-ls-cyan' },
           ].map((item) => (
@@ -332,7 +338,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className={`p-8 sm:p-10 rounded-3xl transition-all ${cardBg}`}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2.5 h-2.5 rounded-full bg-ls-cyan" />
-            <span className="font-mono text-xs font-bold tracking-widest text-ls-cyan uppercase">
+            <span className="font-body text-xs font-bold tracking-widest text-ls-cyan uppercase">
               GOVERNANCE &amp; TRUST // AUDITABLE BY DESIGN
             </span>
           </div>
@@ -371,7 +377,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
 
             <div className={`p-5 rounded-2xl space-y-2 ${isLight ? 'bg-ls-grey-light/50' : 'bg-slate-900/80'}`}>
               <div className="flex items-center gap-2">
-                <UserCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                <UserCheck className="w-4 h-4 text-ls-cyan shrink-0" />
                 <h3 className={`text-sm font-bold font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>
                   5-Tier Human Approval Matrix
                 </h3>
@@ -403,7 +409,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         }`}>
           <div className="flex items-center gap-2 mb-3">
             <span className="w-2 h-2 rounded-full bg-cyan-400" />
-            <span className="font-mono text-xs font-bold tracking-widest text-cyan-400 uppercase">
+            <span className="font-body text-xs font-bold tracking-widest text-cyan-400 uppercase">
               FUTURE-FACING APPROACH // EVOLVING OPERATING CAPABILITY
             </span>
           </div>
@@ -422,10 +428,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-4">
-              <span className="text-[10px] font-mono font-bold text-cyan-300 uppercase tracking-widest bg-black/60 px-3 py-1 rounded backdrop-blur-sm border border-cyan-800/40">
+              <span className="text-[10px] font-body font-bold text-cyan-300 uppercase tracking-widest bg-black/60 px-3 py-1 rounded backdrop-blur-sm border border-cyan-800/40">
                 Configurable Client Implementations (1 to N+ Agents)
               </span>
-              <span className="text-[10px] font-mono text-slate-400 hidden sm:inline-block">
+              <span className="text-[10px] font-body text-slate-400 hidden sm:inline-block">
                 Sovereign Human Direction Enforced
               </span>
             </div>
@@ -438,7 +444,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className={`rounded-3xl p-10 sm:p-14 space-y-6 transition-all ${
           isLight ? 'bg-ls-white text-ls-navy shadow-md border border-slate-200' : 'bg-ls-navy/90 text-white shadow-2xl border border-slate-800'
         }`}>
-          <span className="text-xs font-mono font-bold tracking-widest text-ls-red uppercase">
+          <span className="text-xs font-body font-bold tracking-widest text-ls-red uppercase">
             PARTNER WITH LIGHTSPEED
           </span>
           <h2 className={`text-3xl sm:text-4xl font-extrabold font-display tracking-tight ${isLight ? 'text-ls-navy' : 'text-white'}`}>

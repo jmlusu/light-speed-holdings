@@ -63,7 +63,7 @@ describe('FAQ registry shape', () => {
     expect(faqRegistry.faqs).toHaveLength(28);
     expect(faqRegistry.description).toContain('28');
     expect(faqRegistry.description).toContain('all 28 entries carry evidence entries');
-    expect(faqRegistry.lastUpdated).toBe('2026-10-25');
+    expect(faqRegistry.lastUpdated).toBe('2026-11-25');
   });
 
   it('states the real verified/unknown counts in the description', () => {

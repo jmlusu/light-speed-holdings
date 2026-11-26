@@ -338,7 +338,7 @@ function Connectors({ activeIndex }: { activeIndex: number | null }) {
                 height: isActive ? 8 : 6,
                 backgroundColor: isGov ? RED : CYAN,
                 boxShadow: `0 0 ${isActive ? 12 : 8}px ${isGov ? 'rgba(255,45,85,0.8)' : 'rgba(34,211,238,0.8)'}`,
-                transition: 'width 200ms ease-out, height 200ms ease-out, box-shadow 200ms ease-out',
+                transition: 'box-shadow 200ms ease-out',
               }}
             />
           </span>

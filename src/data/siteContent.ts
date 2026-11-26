@@ -12,11 +12,23 @@ export interface HonestyLabel {
   tone: HonestyTone;
 }
 
+export const BADGE_BASE_CLASSES =
+  'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-body text-xs font-bold tracking-widest uppercase';
+
+/* One canonical tone → AA-safe brand-token class map. Hue and rank are unchanged:
+   proven cyan / pilot red / fieldable grey / development graphite. */
 export const TONE_STYLES: Record<HonestyTone, string> = {
-  proven: 'bg-ls-cyan/10 text-ls-cyan',
-  pilot: 'bg-ls-red/10 text-ls-red',
-  fieldable: 'bg-ls-grey-light-text/10 text-ls-grey-light-text',
-  development: 'bg-ls-grey-dark/10 text-ls-grey-dark',
+  proven: 'bg-ls-cyan/10 text-ls-cyan-ink border-ls-cyan/40 dark:text-ls-cyan',
+  pilot: 'bg-ls-red/10 text-ls-red-ink border-ls-red/40 dark:text-ls-red-bright',
+  fieldable: 'bg-ls-grey-light-text/10 text-ls-grey-ink border-ls-grey-dark/40 dark:text-ls-grey-soft',
+  development: 'bg-ls-grey-dark/10 text-ls-grey-deep border-ls-grey-dark/40 dark:text-ls-grey-light-text',
+};
+
+/* Evidence provenance is a different axis from capability maturity. Labels stay
+   `verified`/`unknown` verbatim — no capability tier is implied or invented. */
+export const EVIDENCE_STATUS_CLASSES: Record<'verified' | 'unknown', string> = {
+  verified: 'bg-ls-cyan/10 text-ls-cyan-ink border-ls-cyan/40 dark:text-ls-cyan',
+  unknown: 'bg-ls-grey-dark/10 text-ls-grey-deep border-ls-grey-dark/40 dark:text-ls-grey-light-text',
 };
 
 /* Canonical badge-label → tone mapper for string honestyBadge fields
@@ -451,5 +463,7 @@ export default {
   proofPolicy,
   outcomeCategories,
   trustEvidence,
+  BADGE_BASE_CLASSES,
   TONE_STYLES,
+  EVIDENCE_STATUS_CLASSES,
 };

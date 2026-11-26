@@ -71,7 +71,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ theme }) => {
                   ? 'bg-white/85 border-slate-200/90 shadow-md hover:border-slate-300 hover:shadow-lg'
                   : 'bg-[#070A40]/75 border-white/10 shadow-xl hover:border-white/20'
               }`}>
-                <span className="font-mono text-xs font-bold tracking-widest text-ls-red uppercase block mb-2">{val.title}</span>
+                <span className="font-body text-xs font-bold tracking-widest text-ls-red uppercase block mb-2">{val.title}</span>
                 <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                   {val.description}
                 </p>
@@ -91,7 +91,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ theme }) => {
             </div>
             <Link
               to="/about"
-              className="ripple-on inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-white transition-all cursor-pointer hover:bg-ls-red/90 shrink-0 shadow-md"
+              className="ripple-on inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red-cta text-white transition-all cursor-pointer hover:bg-ls-red-ink shrink-0 shadow-md"
             >
               <span>LEARN ABOUT LIGHTSPEED</span>
               <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '@lightspeed/design-system';
 import { faqs } from '../data/faqs';
+import { EVIDENCE_STATUS_CLASSES } from '../data/siteContent';
 import { ChevronDown, Search, ShieldCheck } from 'lucide-react';
 
 interface FaqCardListProps {
@@ -60,13 +61,13 @@ export const FaqCardList: React.FC<FaqCardListProps> = ({ theme }) => {
             >
               <div>
                 <div className="flex items-center justify-between gap-3 mb-4">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider ${
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-body font-bold uppercase tracking-wider ${
                     isLight ? 'bg-cyan-50 text-cyan-700 border border-cyan-200' : 'bg-cyan-950/60 text-cyan-300 border border-cyan-800/40'
                   }`}>
                     <ShieldCheck className="w-3.5 h-3.5" />
                     Registry: {faq.registryId.toUpperCase()}
                   </span>
-                  <span className={`text-[11px] font-mono ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <span className={`text-[11px] font-body ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                     {faq.evidence.length} Evidence Source{faq.evidence.length === 1 ? '' : 's'}
                   </span>
                 </div>
@@ -88,14 +89,13 @@ export const FaqCardList: React.FC<FaqCardListProps> = ({ theme }) => {
                     </p>
 
                     {/* Evidence Sources footer */}
-                    <div className="pt-2 flex flex-wrap items-center gap-1.5 text-[11px] font-mono">
+                    <div className="pt-2 flex flex-wrap items-center gap-1.5 text-[11px] font-body">
                       <span className={isLight ? 'text-slate-400 font-bold' : 'text-slate-500 font-bold'}>Evidence:</span>
                       {faq.evidence.map((ev, i) => (
-                        <span key={i} className={`px-2 py-0.5 rounded text-[10px] ${
-                          ev.status === 'verified'
-                            ? isLight ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/40'
-                            : 'bg-amber-50 text-amber-700 border border-amber-200'
-                        }`}>
+                        <span
+                          key={i}
+                          className={`px-2 py-0.5 rounded border text-xs font-body ${EVIDENCE_STATUS_CLASSES[ev.status]}`}
+                        >
                           {ev.source} ({ev.status})
                         </span>
                       ))}

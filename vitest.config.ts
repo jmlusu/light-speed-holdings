@@ -5,7 +5,11 @@ import { fileURLToPath } from 'node:url';
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+    alias: [
+      { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
+      { find: '@lightspeed/design-system/tokens', replacement: fileURLToPath(new URL('./packages/design-system/src/tokens', import.meta.url)) },
+      { find: '@lightspeed/design-system', replacement: fileURLToPath(new URL('./packages/design-system/src/index.ts', import.meta.url)) },
+    ],
   },
   test: {
     globals: true,

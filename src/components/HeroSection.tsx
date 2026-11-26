@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { homeImmersiveCopy } from '../data/homeImmersiveCopy';
+import { humanAuthorityStatement } from '../data/shipped/company';
 
 interface HeroSectionProps {
   theme: 'light' | 'dark';
@@ -113,10 +114,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
             LightSpeed Holdings builds and scales AI-native companies that turn bold ideas into real-world impact, starting in Malawi and expanding across the SADC region and Africa.
           </p>
 
+          {/* Human authority — canonical statement */}
+          <p className={`font-body text-sm sm:text-base font-bold tracking-wide border-l-4 pl-4 py-1 ${
+            isLight ? 'border-ls-cyan-ink text-ls-navy' : 'border-ls-cyan text-white'
+          }`}>
+            {humanAuthorityStatement}
+          </p>
+
           <div className="flex flex-wrap items-center gap-3.5 pt-2 animate-fade-in-up delay-500">
             <Link
               to="/contact"
-              className="ripple-on group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-ls-red hover:bg-[#d62837] text-ls-white shadow-lg shadow-ls-red/30 hover:shadow-ls-red/50 transition-all cursor-pointer active:scale-[0.98]"
+              className="ripple-on group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-ls-red-cta hover:bg-ls-red-ink text-ls-white shadow-lg shadow-ls-red/30 hover:shadow-ls-red/50 transition-all cursor-pointer active:scale-[0.98]"
             >
               <div className="w-5 h-5 rounded-full bg-ls-white/20 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
                 <ArrowRight className="w-3 h-3" aria-hidden="true" />
