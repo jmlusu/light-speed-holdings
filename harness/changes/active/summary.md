@@ -106,3 +106,5 @@ Not verified: CI, remote branch state, production. Evidence sources: `.superpowe
 ## CEO exception — honesty badges removed (2026-11-26)
 
 The CEO instructed full removal of the honesty badge system on a separate branch (`fix/remove-honesty-badges`). This overrides the earlier Task 2 work in this change record and the `PRODUCT.md` / `DESIGN.md` / `CLAIMS_GOVERNANCE.md` requirements that badges be displayed. Claim classifications remain in `claims-registry.json`; no badge is rendered. Do not restore badges without a new CEO decision. This change record is kept to preserve the history of the trust-and-clarity work.
+
+The CEO then asked to remove `ProofPosturePanel` ("What we have not proven yet") from the marketing site as well (T006, branch `fix/remove-proof-posture-panel`). The panel, its mounts on `/` and `/what-we-do`, and its dedicated tests were deleted; a regression test now asserts neither page mounts it.

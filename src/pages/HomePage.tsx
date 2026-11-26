@@ -1,7 +1,6 @@
 import React from 'react';
 import { HeroSection } from '../components/HeroSection';
 import { IntroductionSection } from '../components/home/IntroductionSection';
-import { ProofPosturePanel } from '../components/home/ProofPosturePanel';
 import { VisitorPathsSection } from '../components/home/VisitorPathsSection';
 import { WhatWeBuildGrid } from '../components/home/WhatWeBuildGrid';
 import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
@@ -30,9 +29,6 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
 
         {/* Sequence 2 - INTRODUCTION */}
         <IntroductionSection theme={theme} />
-
-        {/* Honest posture, visible early without adding a primary choice */}
-        <ProofPosturePanel theme={theme} />
 
         {/* Sequence 4 - VISITOR PATHS */}
         <VisitorPathsSection theme={theme} />
