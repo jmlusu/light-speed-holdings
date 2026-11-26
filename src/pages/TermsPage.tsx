@@ -24,7 +24,7 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
   {
     heading: '3. Honesty & Claims',
     paragraphs: [
-      'We label claims as Proven in-house, In pilot, Fieldable in 2026, or In development. We do not invent client logos, testimonials, headcount figures, or ROI numbers. Published numbers must come from our verified operational record.',
+      'We do not invent client logos, testimonials, headcount figures, or ROI numbers. Published numbers must come from our verified operational record.',
     ],
   },
   {

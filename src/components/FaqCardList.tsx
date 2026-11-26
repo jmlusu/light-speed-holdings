@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Card } from '@lightspeed/design-system';
 import { faqs } from '../data/faqs';
-import { EVIDENCE_STATUS_CLASSES } from '../data/siteContent';
 import { ChevronDown, Search, ShieldCheck } from 'lucide-react';
 
 interface FaqCardListProps {
@@ -94,7 +93,7 @@ export const FaqCardList: React.FC<FaqCardListProps> = ({ theme }) => {
                       {faq.evidence.map((ev, i) => (
                         <span
                           key={i}
-                          className={`px-2 py-0.5 rounded border text-xs font-body ${EVIDENCE_STATUS_CLASSES[ev.status]}`}
+                          className="px-2 py-0.5 rounded border text-xs font-body border-slate-300 text-slate-600 dark:border-white/20 dark:text-slate-300"
                         >
                           {ev.source} ({ev.status})
                         </span>

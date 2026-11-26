@@ -58,30 +58,6 @@ export const colors = {
     focusRing: '#00BFFF',      // cyan
   },
 
-  // Honesty Badge Colors (from siteContent.ts TONE_STYLES)
-  honesty: {
-    proven: {
-      border: 'rgba(0, 191, 255, 0.4)',
-      background: 'rgba(0, 191, 255, 0.1)',
-      text: '#00BFFF',
-    },
-    pilot: {
-      border: 'rgba(220, 54, 65, 0.4)',
-      background: 'rgba(220, 54, 65, 0.1)',
-      text: '#DC3641',
-    },
-    fieldable: {
-      border: 'rgba(156, 163, 175, 0.4)',
-      background: 'rgba(156, 163, 175, 0.1)',
-      text: '#9CA3AF',
-    },
-    development: {
-      border: 'rgba(107, 114, 128, 0.4)',
-      background: 'rgba(107, 114, 128, 0.1)',
-      text: '#6B7280',
-    },
-  },
-
   // Status Colors
   status: {
     success: '#00BFFF',   // cyan (not green - cyan is our trust signal)

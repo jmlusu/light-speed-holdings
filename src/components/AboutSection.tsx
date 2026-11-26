@@ -5,7 +5,6 @@ import { leadership } from '../data/leadership';
 import { CTAS } from '../data/ctas';
 import { humanAuthorityStatement } from '../data/shipped/company';
 import { aboutMetrics } from '../data/publicMetrics';
-import { HonestyBadge } from './site/HonestyBadge';
 
 interface AboutSectionProps {
   onOpenContactModal: (intent?: string) => void;
@@ -66,7 +65,6 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
               <div key={metric.id} className={`p-4 rounded-2xl ${isLight ? 'bg-ls-white border border-slate-200/80' : 'bg-white/5 border border-white/10'}`}>
                 <div className={`text-2xl sm:text-3xl font-extrabold font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>{metric.value}</div>
                 <div className={`text-[11px] sm:text-xs font-body uppercase tracking-wider mt-1 ${mutedText}`}>{metric.label}</div>
-                <HonestyBadge label={metric.badge} className="mt-2" />
               </div>
             ))}
           </div>

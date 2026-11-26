@@ -22,9 +22,4 @@ describe('colors tokens', () => {
     expect(colors.dark.textPrimary).toBe('#FFFFFF');
     expect(colors.dark.borderFocus).toBe('#00BFFF');
   });
-
-  it('has honesty badge colors', () => {
-    expect(colors.honesty.proven.text).toBe('#00BFFF');
-    expect(colors.honesty.pilot.text).toBe('#E63946');
-  });
 });

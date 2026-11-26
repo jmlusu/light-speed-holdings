@@ -4,16 +4,20 @@
    where evidence exists - every sector carries an evidence tier.
    Source: MASTER_SPEC §11 + verified engagements (siteContent case studies). */
 
-import type { HonestyLabel, HonestyTone } from './siteContent';
 import { liveTestCount } from './metrics';
 
-export type SectorStatusTone = HonestyTone;
+export type SectorStatusTone = 'proven' | 'pilot' | 'fieldable' | 'development';
+
+export interface SectorStatus {
+  label: string;
+  tone: SectorStatusTone;
+}
 
 export interface Sector {
   id: string;
   title: string;
   description: string;
-  status: HonestyLabel;
+  status: SectorStatus;
   evidence?: string;
   region?: string[];
 }
@@ -21,7 +25,7 @@ export interface Sector {
 /* MASTER_SPEC §11 four evidence tiers */
 export const SECTOR_TIERS: Record<
   'proven' | 'current' | 'demonstration' | 'future',
-  HonestyLabel
+  SectorStatus
 > = {
   proven: { label: 'PROVEN EXPERIENCE', tone: 'proven' },
   current: { label: 'CURRENT CAPABILITY', tone: 'pilot' },
@@ -29,7 +33,7 @@ export const SECTOR_TIERS: Record<
   future: { label: 'FUTURE OPPORTUNITY', tone: 'development' },
 };
 
-export const sectorTierLegend: { tier: HonestyLabel; desc: string }[] = [
+export const sectorTierLegend: { tier: SectorStatus; desc: string }[] = [
   { tier: SECTOR_TIERS.proven, desc: 'Delivered engagements with named, measurable outcomes.' },
   { tier: SECTOR_TIERS.current, desc: 'Running pilots or capability we can deploy now.' },
   { tier: SECTOR_TIERS.demonstration, desc: 'Working demonstration without a live client engagement.' },

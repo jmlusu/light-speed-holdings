@@ -31,7 +31,7 @@ Geographic progression is explicit and directional: **Malawi → SADC → Africa
 ## Operating Context
 
 - Visitors arrive from the CEO's public thought-leadership footprint (Pharos), from regional policy forums, and from direct commercial outreach. The site is frequently the second or third touch, not the first.
-- Governance vocabulary is load-bearing: HAOMTGV (the operating model), the 5-tier human approval matrix, the intent-to-execution lifecycle, and the honesty badge system are reference concepts visitors are expected to engage with, not decoration.
+- Governance vocabulary is load-bearing: HAOMTGV (the operating model), the 5-tier human approval matrix, and the intent-to-execution lifecycle are reference concepts visitors are expected to engage with, not decoration. The honesty badge system was removed by CEO decision on 2026-11-26; evidence levels remain in the claim registries but are not displayed as badges.
 - Enquiries are qualifying conversations, not transactions. The contact and briefing flows collect context that feeds a human-led response.
 - The site is read in both light and dark themes, on desktop and mobile, and is treated as a credibility document that may be shared internally at a target organisation.
 
@@ -41,7 +41,7 @@ Geographic progression is explicit and directional: **Malawi → SADC → Africa
 - The **AI Readiness Assessment** is a five-step qualitative diagnostic (data maturity, core infrastructure, governance alignment, talent readiness, agentic workflow potential) that ends in a summary the visitor can act on or submit.
 - The enquiry flow is protected by Cloudflare Turnstile and writes to a serverless endpoint; it never sends real email from a local dev submission.
 - **All public copy is registry-driven.** Company identity, metrics, capabilities, solutions, sectors, insights, FAQs, governance, CTAs, use cases, and claims live under `data/` and are imported rather than hardcoded. Canonical counts (90 roles = 89 agents + 1 human CEO, 20 departments, 5 governance tiers) are enforced by tests.
-- **Honesty badges are a product constraint, not a style choice.** Every capability claim carries one of four levels — `proven`, `pilot`, `fieldable`, `development` — and the badge must match the real evidence level.
+- **CEO exception (2026-11-26): honesty badges were removed entirely.** The prior constraint requiring a visible four-level badge on every claim is withdrawn. Every capability claim still carries one of four levels — `proven`, `pilot`, `fieldable`, `development` — in the claim registry, but no badge is rendered on the site. Do not restore badges without a new CEO decision.
 - Two design-token sources exist and are aliased to one another (`packages/design-system/src/tokens` via `@lightspeed/design-system`, plus `src/design-system/tokens`).
 - Deployment is static output on Vercel at `lightspeedholdings.vercel.app`, with serverless functions under `api/`.
 - This app is entirely separate from the CEO Dashboard (FastAPI on 8420/8421). Marketing-site ports are 1441 (dev) and 1440 (preview), and Vite refuses to bind the dashboard ports.
@@ -66,7 +66,7 @@ Geographic progression is explicit and directional: **Malawi → SADC → Africa
 ## Product Principles
 
 1. **Credibility precedes conversion.** Protect the reading experience; every conversion element must earn its interruption.
-2. **Claim only what survives scrutiny.** Honesty badges, registry-sourced numbers, and governed vocabulary exist so the site cannot overstate.
+2. **Claim only what survives scrutiny.** Registry-sourced numbers, governed vocabulary, and evidence records exist so the site cannot overstate; badges are no longer rendered (CEO exception 2026-11-26).
 3. **Governance is the product, visibly.** The approval matrix, the lifecycle, and the human authority statement are the differentiation, not supporting material.
 4. **One company, three audiences, no diluted middle.** Route each audience explicitly rather than writing copy that tries to address everyone at once.
 5. **Southern African specificity is a feature.** Malawi → SADC → Africa is the stated path; local institutional literacy is part of what makes the position defensible.

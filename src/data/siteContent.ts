@@ -5,44 +5,8 @@
 
 import { capabilityTitles } from './capabilities';
 
-export type HonestyTone = 'proven' | 'pilot' | 'fieldable' | 'development';
-
-export interface HonestyLabel {
-  label: string;
-  tone: HonestyTone;
-}
-
-export const BADGE_BASE_CLASSES =
-  'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-body text-xs font-bold tracking-widest uppercase';
-
-/* One canonical tone → AA-safe brand-token class map. Hue and rank are unchanged:
-   proven cyan / pilot red / fieldable grey / development graphite. */
-export const TONE_STYLES: Record<HonestyTone, string> = {
-  proven: 'bg-ls-cyan/10 text-ls-cyan-ink border-ls-cyan/40 dark:text-ls-cyan',
-  pilot: 'bg-ls-red/10 text-ls-red-ink border-ls-red/40 dark:text-ls-red-bright',
-  fieldable: 'bg-ls-grey-light-text/10 text-ls-grey-ink border-ls-grey-dark/40 dark:text-ls-grey-soft',
-  development: 'bg-ls-grey-dark/10 text-ls-grey-deep border-ls-grey-dark/40 dark:text-ls-grey-light-text',
-};
-
-/* Evidence provenance is a different axis from capability maturity. Labels stay
-   `verified`/`unknown` verbatim — no capability tier is implied or invented. */
-export const EVIDENCE_STATUS_CLASSES: Record<'verified' | 'unknown', string> = {
-  verified: 'bg-ls-cyan/10 text-ls-cyan-ink border-ls-cyan/40 dark:text-ls-cyan',
-  unknown: 'bg-ls-grey-dark/10 text-ls-grey-deep border-ls-grey-dark/40 dark:text-ls-grey-light-text',
-};
-
-/* Canonical badge-label → tone mapper for string honestyBadge fields
-   (types.ts HonestyBadge union). Keeps every badge render honest instead of
-   hard-coding a tone at the call site. */
-export function honestyLabel(label: string): HonestyLabel {
-  const l = label.toLowerCase();
-  if (l.includes('proven') || l.includes('live proof') || l.includes('published')) {
-    return { label, tone: 'proven' };
-  }
-  if (l.includes('pilot')) return { label, tone: 'pilot' };
-  if (l.includes('fieldable')) return { label, tone: 'fieldable' };
-  return { label, tone: 'development' };
-}
+/* Honesty badge system removed by CEO decision (2026-11-26). Claim evidence is
+   still recorded in the registries; no tone/style/label mapping is rendered. */
 
 /* ── Company identity ─────────────────────────────────── */
 export const company = {
@@ -380,7 +344,7 @@ export const proofPolicy = [
 
 /* ── Proof: outcomes + trust (spec §11 Evidence Tiers, §15 Proof Throughout) ──
    Every claim reuses wording already published on the site or in the claims
-   ledger - nothing invented here. `proof` drives the honesty badge at render. */
+   ledger - nothing invented here. `proof` records evidence status as data; no badge is rendered. */
 export const outcomeCategories = [
   {
     id: 'oc-01',
@@ -463,7 +427,4 @@ export default {
   proofPolicy,
   outcomeCategories,
   trustEvidence,
-  BADGE_BASE_CLASSES,
-  TONE_STYLES,
-  EVIDENCE_STATUS_CLASSES,
 };

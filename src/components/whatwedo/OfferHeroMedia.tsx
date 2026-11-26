@@ -1,21 +1,11 @@
 import React from 'react';
-import { HonestyBadge } from '../../components/site/HonestyBadge';
 import { Reveal } from '../../components/Reveal';
 import type { ContentMedia, ContentMediaSet, ScreenshotMedia, DiagramMedia, MetricMedia, BrandMedia, IllustrationMedia } from '../../types';
-import { honestyLabel } from '../../data/siteContent';
 
 /** Check if media feature is enabled (behind feature flag for phased rollout) */
 const isMediaEnabled = (): boolean => {
   if (typeof window === 'undefined') return false;
   return import.meta.env.VITE_CONTENT_MEDIA_ENABLED === 'true';
-};
-
-/** Convert media kind to HonestyLabel if available */
-const getBadgeLabel = (media: ContentMedia) => {
-  if (media.kind === 'screenshot' || media.kind === 'illustration') {
-    return undefined;
-  }
-  return undefined;
 };
 
 /** Render a single ContentMedia item */
@@ -74,15 +64,10 @@ const MediaRenderer: React.FC<{
     }
   };
 
-  const badgeLabel = getBadgeLabel(media);
-
   return (
     <div className={containerClass}>
       <div className={`relative ${size === 'hero' ? 'aspect-video' : size === 'gallery' ? 'aspect-square' : 'aspect-square'}`}>
         {renderMedia()}
-        {badgeLabel && (
-          <HonestyBadge label={badgeLabel} className="absolute top-2 right-2 z-10" />
-        )}
       </div>
     </div>
   );

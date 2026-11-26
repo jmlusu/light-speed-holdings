@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HonestyBadge } from '../site/HonestyBadge';
-import { honestyLabel } from '../../data/siteContent';
 
 interface ProofPosturePanelProps {
   theme: 'light' | 'dark';
@@ -10,13 +8,11 @@ interface ProofPosturePanelProps {
 /**
  * Small, closed disclosure that makes the already-published honest posture
  * visible earlier on / and /what-we-do. Every answer string below is copied
- * verbatim from src/data/faqs.ts; the badge label is the existing
- * "Proven in-house" honesty label. No new claim, no new number, no new CTA.
+ * verbatim from src/data/faqs.ts. No new claim, no new number, no new CTA.
  */
 const ANSWER_SNIPPETS = [
   'Not yet. Nothing has been delivered to paying clients.',
   'There is no public rate card yet.',
-  'Every proof point on this site carries an explicit honesty badge.',
 ] as const;
 
 export const ProofPosturePanel: React.FC<ProofPosturePanelProps> = ({ theme }) => {
@@ -44,7 +40,6 @@ export const ProofPosturePanel: React.FC<ProofPosturePanelProps> = ({ theme }) =
             </p>
           ))}
           <div className="flex flex-wrap items-center gap-3">
-            <HonestyBadge label={honestyLabel('Proven in-house')} />
             <Link
               to="/faq"
               className={`font-bold tracking-wide underline underline-offset-2 ${

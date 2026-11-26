@@ -36,7 +36,6 @@ describe('five-tier approval worked example', () => {
       within(region).getByText(claimText('claim.append-only-audit-trails').text),
     ).toBeInTheDocument();
 
-    expect(within(region).getByText('Proven in-house')).toBeInTheDocument();
     expect(within(region).getByText(/claim\.five-tier-approval/)).toBeInTheDocument();
     expect(within(region).getByText(/claim\.four-governance-gates/)).toBeInTheDocument();
     expect(within(region).getByText(/claim\.append-only-audit-trails/)).toBeInTheDocument();
@@ -72,16 +71,13 @@ describe('proof posture disclosure', () => {
     const provenClients = faqs.find((f) => f.id === 'proven-clients');
     const pricing = faqs.find((f) => f.id === 'pricing');
     expect(provenClients?.answer).toContain('Not yet. Nothing has been delivered to paying clients.');
-    expect(provenClients?.answer).toContain('Every proof point on this site carries an explicit honesty badge.');
     expect(pricing?.answer).toContain('There is no public rate card yet.');
 
     for (const snippet of [
       'Not yet. Nothing has been delivered to paying clients.',
       'There is no public rate card yet.',
-      'Every proof point on this site carries an explicit honesty badge.',
     ]) expect(within(details).getByText(snippet)).toBeInTheDocument();
 
-    expect(within(details).getByText('Proven in-house')).toBeInTheDocument();
     const link = within(details).getByRole('link', { name: 'Read the published answers' });
     expect(link).toHaveAttribute('href', '/faq');
     expect(within(details).queryAllByRole('link')).toHaveLength(1);

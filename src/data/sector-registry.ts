@@ -3,16 +3,20 @@
    Evidence tiers: PROVEN / CURRENT / DEMO / FUTURE (mapped from SECTOR_TIERS).
    One canonical source per sector fact. Only claim sector experience where evidence exists. */
 
-import type { HonestyLabel, HonestyTone } from './siteContent';
 import rawSectors from './registries/sector-registry.json';
 
-export type SectorStatusTone = HonestyTone;
+export type SectorStatusTone = 'proven' | 'pilot' | 'fieldable' | 'development';
+
+export interface SectorStatus {
+  label: string;
+  tone: SectorStatusTone;
+}
 
 export interface Sector {
   id: string;           // Canonical slug
   title: string;
   description: string;
-  status: HonestyLabel;
+  status: SectorStatus;
   evidence?: string;
   region?: string[];
   relevantSolutions?: string[]; // Solution slugs that apply to this sector
@@ -21,7 +25,7 @@ export interface Sector {
 /* MASTER_SPEC §11 four evidence tiers - mapped from SECTOR_TIERS */
 export const SECTOR_TIERS_CANONICAL: Record<
   'proven' | 'current' | 'demonstration' | 'future',
-  HonestyLabel
+  SectorStatus
 > = {
   proven: { label: 'PROVEN EXPERIENCE', tone: 'proven' },
   current: { label: 'CURRENT CAPABILITY', tone: 'pilot' },
@@ -29,15 +33,15 @@ export const SECTOR_TIERS_CANONICAL: Record<
   future: { label: 'FUTURE OPPORTUNITY', tone: 'development' },
 };
 
-export const sectorTierLegend: { tier: HonestyLabel; desc: string }[] = [
+export const sectorTierLegend: { tier: SectorStatus; desc: string }[] = [
   { tier: SECTOR_TIERS_CANONICAL.proven, desc: 'Delivered engagements with named, measurable outcomes.' },
   { tier: SECTOR_TIERS_CANONICAL.current, desc: 'Running pilots or capability we can deploy now.' },
   { tier: SECTOR_TIERS_CANONICAL.demonstration, desc: 'Working demonstration without a live client engagement.' },
   { tier: SECTOR_TIERS_CANONICAL.future, desc: 'Roadmap target: no evidence yet, and we say so.' },
 ];
 
-/** Parse badge string into HonestyLabel with appropriate visual tone */
-export function parseHonestyBadge(badge: string): HonestyLabel {
+/** Parse a sector registry tier string into its evidence label and tier. */
+export function parseSectorStatus(badge: string): SectorStatus {
   const b = badge.toUpperCase();
   if (b.includes('PROVEN')) return { label: 'PROVEN EXPERIENCE', tone: 'proven' };
   if (b.includes('CURRENT')) return { label: 'CURRENT CAPABILITY', tone: 'pilot' };
@@ -53,7 +57,7 @@ export const sectors: Sector[] = rawSectors.sectors.map((item) => ({
   id: item.id,
   title: item.title,
   description: item.description,
-  status: parseHonestyBadge(item.honestyBadge),
+  status: parseSectorStatus(item.honestyBadge),
   evidence: item.honestyNote,
   region: item.region,
   relevantSolutions: item.relevantSolutions,

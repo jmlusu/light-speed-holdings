@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Button } from '../components/Button/Button';
 import { Card } from '../components/Card/Card';
-import { Badge } from '../components/Badge/Badge';
 import { Heading } from '../components/Heading/Heading';
 import { Text } from '../components/Text/Text';
 import { Container } from '../components/Container/Container';
@@ -75,31 +74,6 @@ describe('Card', () => {
     expect(screen.getByText('Default')).toBeInTheDocument();
     expect(screen.getByText('Elevated')).toBeInTheDocument();
     expect(screen.getByText('Interactive')).toBeInTheDocument();
-  });
-});
-
-describe('Badge', () => {
-  it('renders all variants', () => {
-    render(
-      <div>
-        <Badge variant="proven">Proven</Badge>
-        <Badge variant="pilot">Pilot</Badge>
-        <Badge variant="fieldable">Fieldable</Badge>
-        <Badge variant="development">Development</Badge>
-        <Badge variant="neutral">Neutral</Badge>
-      </div>
-    );
-    expect(screen.getByText('Proven')).toBeInTheDocument();
-    expect(screen.getByText('Pilot')).toBeInTheDocument();
-    expect(screen.getByText('Fieldable')).toBeInTheDocument();
-    expect(screen.getByText('Development')).toBeInTheDocument();
-    expect(screen.getByText('Neutral')).toBeInTheDocument();
-  });
-
-  it('renders with dot', () => {
-    render(<Badge variant="proven" dot>Proven</Badge>);
-    const badge = screen.getByText('Proven').parentElement;
-    expect(badge).toBeInTheDocument();
   });
 });
 

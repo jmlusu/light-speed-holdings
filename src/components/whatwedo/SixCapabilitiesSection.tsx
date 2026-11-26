@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { SectionHeading } from '../site/SectionHeading';
 import { Building2, Zap, GitFork, Network, HardDrive, ShieldCheck, CheckCircle2, Lock, ArrowUpRight } from 'lucide-react';
 import { Icon3D, Icon3DName } from '../common';
-import { honestyLabel, TONE_STYLES } from '../../data/siteContent';
 
 interface CapabilityDetail {
   id: string;
@@ -250,7 +249,7 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
               </div>
             </div>
 
-            <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full border ${TONE_STYLES[honestyLabel(selectedCap.status).tone]}`}>
+            <span className="text-xs font-body font-bold uppercase tracking-wider">
               {selectedCap.status}
             </span>
           </div>

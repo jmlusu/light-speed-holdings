@@ -2,26 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { SectionHeading } from '../site/SectionHeading';
-import { HonestyBadge } from '../site/HonestyBadge';
 import { Reveal } from '../Reveal';
 import { HomeSection } from './HomeSection';
 import { sectors } from '../../data/sector-registry';
 import { useCasesRegistry } from '../../data/use-cases/registry';
-import type { HonestyLabel } from '../../data/siteContent';
 
 interface UseCasesSectionProps {
   theme: 'light' | 'dark';
-}
-
-/** Registry status → canonical honesty badge vocabulary. */
-function statusToHonesty(status: string): HonestyLabel {
-  const s = status.toLowerCase();
-  if (s === 'live') return { label: 'LIVE', tone: 'proven' };
-  if (s.includes('proven')) return { label: 'PROVEN IN-HOUSE', tone: 'proven' };
-  if (s.includes('pilot')) return { label: 'IN PILOT', tone: 'pilot' };
-  if (s.includes('fieldable')) return { label: 'FIELDABLE', tone: 'fieldable' };
-  if (s.includes('demonstration')) return { label: 'DEMONSTRATION', tone: 'fieldable' };
-  return { label: 'IN DEVELOPMENT', tone: 'development' };
 }
 
 const FEATURED_USE_CASE_IDS = ['uc-js-bar', 'uc-meta', 'ws-01', 'ws-02'];
@@ -58,7 +45,6 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
                   <h4 className={`font-display font-bold text-sm tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#E63946]' : 'text-white group-hover:text-[#00BFFF]'}`}>
                     {uc.title}
                   </h4>
-                  <HonestyBadge label={statusToHonesty(uc.status)} className="shrink-0" />
                 </div>
                 <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-[#9CA3AF]'}`}>
                   {uc.problem}
@@ -96,7 +82,6 @@ export const UseCasesSection: React.FC<UseCasesSectionProps> = ({ theme }) => {
                   <span className="font-body text-[10px] font-bold tracking-widest text-[#E63946] uppercase">
                     {sector.region?.join(' · ') ?? 'SECTOR'}
                   </span>
-                  <HonestyBadge label={sector.status} />
                 </div>
                 <h4 className={`font-display font-bold text-sm tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#E63946]' : 'text-white group-hover:text-[#00BFFF]'}`}>
                   {sector.title}

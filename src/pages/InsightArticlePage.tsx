@@ -3,7 +3,6 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Reveal } from '../components/Reveal';
 import { PageIntro } from '../components/site/PageIntro';
-import { HonestyBadge } from '../components/site/HonestyBadge';
 import { RelatedLinks } from '../components/site/RelatedLinks';
 import { NewsletterSignup } from '../components/NewsletterSignup';
 import { getInsightArticle, formatInsightDate, type InsightBlock } from '../data/insights';
@@ -306,7 +305,6 @@ export const InsightArticlePage: React.FC<InsightArticlePageProps> = ({ theme })
                   <div className={cardShell}>
                     <div className="flex items-start justify-between gap-3">
                       <h3 className={`text-base font-black font-display ${headingText}`}>{sec.title}</h3>
-                      <HonestyBadge label={sec.status} className="shrink-0" />
                     </div>
                     <p className={`text-sm leading-relaxed ${bodyText}`}>{sec.description}</p>
                   </div>
