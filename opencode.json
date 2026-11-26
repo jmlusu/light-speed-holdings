@@ -39,12 +39,6 @@
     }
   },
   "mcp": {
-    "gbrain-lightspeed": {
-      "type": "local",
-      "command": ["C:/Users/jmlus/.bun/bin/gbrain.exe", "serve", "--surface", "verbs"],
-      "environment": { "GBRAIN_HOME": "C:/Users/jmlus/brains/lightspeed" },
-      "enabled": true
-    },
     "browser": {
       "type": "local",
       "command": ["npx", "opencode-browser", "start"],
