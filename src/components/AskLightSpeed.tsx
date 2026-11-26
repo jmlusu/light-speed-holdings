@@ -7,7 +7,6 @@ import { Reveal } from './Reveal';
 import { useSite } from '../site-context';
 import { solutions, honestyLabel } from '../data/siteContent';
 import { CTAS } from '@/data/ctas';
-import { ENQUIRY_RESPONSE_COPY } from '../lib/enquiry';
 import { Link } from 'react-router-dom';
 import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
@@ -497,7 +496,7 @@ export const AskLightSpeed: React.FC = () => {
         <CtaBand
           theme={theme}
           title="Or Skip the Chat. Contact Us"
-          text={`If you prefer a human conversation: ${ENQUIRY_RESPONSE_COPY}`}
+          text="If you prefer a human conversation:"
         />
       </div>
     </section>

@@ -21,6 +21,7 @@ import { HaomtgvInfographic } from '../components/haomtgv/HaomtgvInfographic';
 import { HaomtgvGlyphGallery } from '../components/haomtgv/HaomtgvGlyphGallery';
 import { HaomtgvUnifiedArchitecture } from '../components/haomtgv/HaomtgvUnifiedArchitecture';
 import { HaomtgvPipelineDiagram } from '../components/haomtgv/HaomtgvPipelineDiagram';
+import { ApprovalMatrixWalkthrough } from '../components/haomtgv/ApprovalMatrixWalkthrough';
 import { CTAS } from '../data/ctas';
 
 interface HaomtgvPageProps {
@@ -372,10 +373,6 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
                       <span className="text-ls-cyan font-bold">✓</span>
                       <span>Deterministic DAG orchestration with persistent tenant memory.</span>
                     </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-ls-cyan font-bold">✓</span>
-                      <span>A five-tier human approval matrix across the system, with SHA-256 state receipts.</span>
-                    </li>
                   </ul>
                 </div>
               </div>
@@ -425,6 +422,9 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
               lead="Governance checks run across every HAOMTGV dimension. Named human authorities approve high-risk decisions through cryptographic gates."
             />
           </div>
+
+          {/* One registry-backed worked example, shown in place of a text label */}
+          <ApprovalMatrixWalkthrough theme={theme} />
 
           {/* Interactive Tier Matrix */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-12 items-start">
