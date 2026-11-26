@@ -29,6 +29,9 @@ Sweep note (2026-09-23): Full Guiding Principles prose is not in-repo; ACK is ag
 | 13 | ls-design-system (skill) | Brand tokens, design system enforcement | LDS | 2026-09-23 | ACKNOWLEDGED |
 | 14 | ls-documentation-engineering (skill) | Website documentation | LDE | 2026-09-23 | ACKNOWLEDGED |
 | 15 | ls-artifact-qa (skill) | Final QA gate on all artifacts | LAQ | 2026-09-23 | ACKNOWLEDGED |
+| 16 | cmo | CMO — client-facing website principles reviewer | CMO | 2026-11-26 | ACKNOWLEDGED |
+
+CMO sign-off (2026-11-26) covers PR #612 ("Marketing site trust and clarity", merged 2026-11-26).
 
 ## Acknowledgement process
 

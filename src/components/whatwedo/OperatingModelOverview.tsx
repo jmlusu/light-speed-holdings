@@ -40,7 +40,9 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       desc: 'AI roles perform discrete subtasks within defined permissions.',
       icon: Bot,
       icon3d: 'intelligence',
-      color: 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
+      color: isLight
+        ? 'text-ls-cyan-ink bg-ls-cyan/10 border-ls-cyan/30'
+        : 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
       activeRing: 'ring-2 ring-ls-cyan shadow-lg shadow-ls-cyan/20',
       tier: 'Execution Layer',
     },
@@ -51,7 +53,9 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       desc: 'Breaks work into task graphs and manages dependencies.',
       icon: GitBranch,
       icon3d: 'orchestration',
-      color: 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
+      color: isLight
+        ? 'text-ls-cyan-ink bg-ls-cyan/10 border-ls-cyan/30'
+        : 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
       activeRing: 'ring-2 ring-ls-cyan shadow-lg shadow-ls-cyan/20',
       tier: 'Coordination Layer',
     },
@@ -62,7 +66,9 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       desc: 'A persistent vector database supplies long-term enterprise context.',
       icon: HardDrive,
       icon3d: 'memory',
-      color: 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
+      color: isLight
+        ? 'text-ls-cyan-ink bg-ls-cyan/10 border-ls-cyan/30'
+        : 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
       activeRing: 'ring-2 ring-ls-cyan shadow-lg shadow-ls-cyan/20',
       tier: 'Persistent Context Store',
     },
@@ -73,7 +79,9 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
       desc: 'Isolated APIs and secure connectors perform external actions.',
       icon: Wrench,
       icon3d: 'tools',
-      color: 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
+      color: isLight
+        ? 'text-ls-cyan-ink bg-ls-cyan/10 border-ls-cyan/30'
+        : 'text-ls-cyan bg-ls-cyan/10 border-ls-cyan/30',
       activeRing: 'ring-2 ring-ls-cyan shadow-lg shadow-ls-cyan/20',
       tier: 'Execution Sandboxes',
     },
@@ -121,7 +129,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
           isLight ? 'bg-slate-50/80 border-slate-200' : 'bg-black/30 border-white/10'
         }">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200/20">
-            <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-ls-cyan">
+            <div className={`flex items-center gap-2 text-xs font-mono font-bold tracking-wider ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
               <Layers className="w-4 h-4" />
               <span>INTERACTIVE SEVEN-PILLAR STACK</span>
             </div>
@@ -182,7 +190,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
                       <Icon3D name={selected.icon3d} size="sm" />
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-ls-cyan px-2 py-0.5 rounded bg-ls-cyan/10">
+                          <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded bg-ls-cyan/10 ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>
                             PILLAR {selected.letter}
                           </span>
                           <h4 className={`text-sm font-bold font-display ${isLight ? 'text-ls-navy' : 'text-white'}`}>
@@ -249,7 +257,7 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
                   isLight ? 'border-slate-200 text-slate-400' : 'border-white/10 text-slate-500'
                 }`}>
                   <span>{p.tier}</span>
-                  <span className="text-ls-cyan font-bold">HAOMTGV</span>
+                  <span className={`font-bold ${isLight ? 'text-ls-cyan-ink' : 'text-ls-cyan'}`}>HAOMTGV</span>
                 </div>
               </div>
             );

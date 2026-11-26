@@ -481,7 +481,7 @@
     {
       "id": "faq-28",
       "question": "How quickly can an engagement begin?",
-      "answer": "AI Readiness Assessments can begin within one week of agreement. Platform licensing (E1) setup takes 1-2 weeks. Pilot engagements typically start within 2-3 weeks after governance gates clear. The bottleneck is governance (G1-G4), not capacity: we prioritize doing it right over doing it fast.",
+      "answer": "Platform licensing (E1) setup takes 1-2 weeks. The bottleneck is governance (G1-G4), not capacity: we prioritize doing it right over doing it fast.",
       "evidence": [
         {
           "source": "",

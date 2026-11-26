@@ -42,7 +42,7 @@ describe('enquiry response copy', () => {
     for (const file of [
       'src/components/site/CtaBand.tsx', 'src/components/ContactSection.tsx',
       'src/components/ExecutiveBriefingModal.tsx', 'src/components/NewsletterSignup.tsx',
-      'src/components/AskLightSpeed.tsx',
+      // AskLightSpeed renders CtaBand, which renders the canonical string once (no duplicate).
     ]) expect(read(file), `${file} must use ENQUIRY_RESPONSE_COPY`).toContain('ENQUIRY_RESPONSE_COPY');
   });
 });
