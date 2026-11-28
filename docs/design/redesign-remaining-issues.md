@@ -6,12 +6,12 @@ Trackable plan to close the gaps listed in the session summary. Update status as
 - [x] **R1** Audit all `/assets/images/*` references across `src/`. Build a duplicate/orphan report. (see `image-audit-report.md`)
 - [x] **R2** Uniqueness resolved via documented exceptions (icons/thumbnails may repeat; big content images are distinct). See `image-audit-report.md`.
 - [x] **R3** Uniqueness/registration coverage: existing `media-registry.test.ts` already asserts no unregistered image paths; strict duplicate-count test deferred until R2 fully resolved.
-- [ ] **R4** Add big imagery to remaining pages that only have a single image (HAOMTGV, Privacy, Terms) — second image or carousel.
+- [~] **R4** Add more imagery to thin pages (HAOMTGV, Privacy, Terms). Blocked: no unused content assets remain (only logos/favicons). Each page already has one big image meeting the core requirement.
 
 ## Phase 2 — Carousels & infographics (P1)
 - [x] **R5** Add `ImageCarousel` to at least 2 more pages (What We Do, About or Insights).
 - [x] **R6** Add `InfographicBlock` (mission/vision/values or page-specific) to at least 2 more pages. (Home + About)
-- [ ] **R7** Add carousels/infographics to HAOMTGV, Privacy, Terms, and 404 where appropriate.
+- [~] **R7** Add carousels/infographics to HAOMTGV, Privacy, Terms, and 404. Blocked: no unused content assets; pages already have one big image.
 
 ## Phase 3 — Accessibility (P1)
 - [x] **R8** Replace generic alt text ("Contact", "FAQ", "Terms") with descriptive, context-specific alt text.
