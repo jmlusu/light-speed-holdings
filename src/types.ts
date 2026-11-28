@@ -136,16 +136,6 @@ export interface AuditEntry {
   category: 'orchestrator' | 'executor' | 'approval' | 'escalation' | 'security';
 }
 
-export type HonestyBadge =
-  | 'Fieldable in 2026'
-  | 'In active development'
-  | 'In pilot'
-  | 'In pilot (composing evidence)'
-  | 'In pilot (proposed)'
-  | 'Proven in-house'
-  | 'Live proof'
-  | 'Published';
-
 export interface CatalogOfferDeliverable {
   id: string;
   name: string;
@@ -164,7 +154,6 @@ export interface CatalogOfferFamily {
   title: string;
   tagline: string;
   description: string;
-  honestyBadge: HonestyBadge;
   targetClients: string[];
   governanceNote: string;
   pricingNote: string;

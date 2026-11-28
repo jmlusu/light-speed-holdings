@@ -111,7 +111,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     source: 'src/data/siteContent.ts (proofCaseStudies, proofPolicy)',
     category: 'outcome',
     evidence:
-      'Honesty classification (CATALOG_POSITIONING, retired 2026-10-13): case studies are fieldable/pilot work, not delivered client outcomes - see siteContent.ts proofCaseStudies honesty badges.',
+      'Honesty classification (CATALOG_POSITIONING, retired 2026-10-13): case studies are fieldable/pilot work, not delivered client outcomes - see siteContent.ts proofCaseStudies.',
     lastReviewed: '2026-09-28',
   },
   {

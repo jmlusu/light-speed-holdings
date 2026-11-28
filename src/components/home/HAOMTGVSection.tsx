@@ -112,6 +112,7 @@ export const HAOMTGVSection: React.FC<HAOMTGVSectionProps> = ({ theme }) => {
           eyebrow="OPERATING PHILOSOPHY"
           title="H-A-O-M-T-G-V"
           lead="How LightSpeed thinks about AI-native operations. The seven callouts are: Humans authorize, Agents act, Orchestration orders, Memory persists, Tools stay sandboxed, Governance gates, Value verified. Not a linear pipeline; a working model."
+          leadClassName={isLight ? 'text-[#070A40] font-medium' : 'text-[#9CA3AF]'}
         />
         <div className="mt-12 mb-12">
           <HAOMTGVVisualization theme={theme} />

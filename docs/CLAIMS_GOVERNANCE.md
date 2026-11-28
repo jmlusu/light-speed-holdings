@@ -30,23 +30,15 @@ This document establishes the mandatory governance framework for all public clai
 | `HISTORICAL` | **HISTORICAL** | Was true, no longer current (archived for reference) | ⚠️ Context only |
 | `UNVERIFIED_DO_NOT_PUBLISH` | **UNVERIFIED — DO NOT PUBLISH** | Cannot be verified, lacks evidence | ❌ **NO** |
 
-### Visual Badge Mapping (Design System)
+### Visual Badge Mapping — removed (CEO exception 2026-11-26)
 
-| Status | Border | Background | Text | Icon |
-|--------|--------|------------|------|------|
-| VERIFIED | `cyan/40` | `cyan/10` | `cyan` | ✓ Shield |
-| PROVEN_IN_HOUSE | `cyan/40` | `cyan/10` | `cyan` | ✓ Check |
-| PILOT | `red/40` | `red/10` | `red` | ⚠ Triangle |
-| DEMONSTRATION | `grey-light-text/40` | `grey-light-text/10` | `grey-light-text` | 👁 Eye |
-| FIELDABLE | `grey-light-text/40` | `grey-light-text/10` | `grey-light-text` | 📦 Box |
-| FUTURE | `grey-dark/40` | `grey-dark/10` | `grey-dark` | → Arrow |
-| HISTORICAL | `grey-dark/40` | `grey-dark/10` | `grey-dark` | 📜 Scroll |
+Status badges are no longer displayed on the public site. The classification values above remain in `claims-registry.json` and are the source of truth, but no visual badge mapping is rendered. Do not restore `Badge` components or tone styles without a new CEO decision.
 
 ---
 
 ## Mandatory Claim Categories
 
-Every claim about the following **must** carry a status badge and evidence reference:
+Every claim about the following **must** carry a registry classification and evidence reference (badges are no longer rendered, per CEO exception 2026-11-26):
 
 | Category | Examples | Evidence Required |
 |----------|----------|-------------------|
@@ -133,7 +125,7 @@ export interface ClaimRegistryEntry {
 ## Content-Specific Rules
 
 ### Website Pages
-- **Every metric, outcome, client reference, partnership** → Must have claim ID + status badge
+- **Every metric, outcome, client reference, partnership** → Must have claim ID + registry classification (no status badge rendered)
 - **Agent/department counts** → Sourced from `company-registry.yaml` only
 - **Use case status** → Uses Use Case status system (LIVE/PROVEN_IN_HOUSE/PILOT/DEMONSTRATION/FIELDABLE/FUTURE)
 - **Sector experience** → Uses Sector status system (PROVEN/CURRENT/DEMONSTRATION/FUTURE)
@@ -152,7 +144,7 @@ export interface ClaimRegistryEntry {
 ### Social Media / Press
 - **Same standards as website** — No lower bar for social
 - **Quote cards** → Must reference claim ID in alt text/metadata
-- **Metrics graphics** → Must include status badge in visual
+- **Metrics graphics** → Must include the claim classification in the source metadata (no visual badge)
 
 ---
 
@@ -192,7 +184,7 @@ export interface ClaimRegistryEntry {
 - [ ] All claims have Claim IDs
 - [ ] All claims have valid status (not UNVERIFIED)
 - [ ] All evidence references resolve
-- [ ] Status badges render correctly
+- [ ] Claim classifications are present in the registry (badges are not rendered, per CEO exception 2026-11-26)
 - [ ] No prohibited language present
 - [ ] CEO sign-off for `VERIFIED` client claims
 
@@ -275,15 +267,11 @@ export const claimsRegistry: ClaimRegistryEntry[] = [
 
 ### Component Usage
 ```tsx
-// In any component displaying a claim
+// In any component displaying a claim — badge rendering removed 2026-11-26
 import { getClaimById } from '@lightspeed/data/claims';
-import { Badge } from '@lightspeed/design-system';
 
 const claim = getClaimById('CLM-001');
-<>
-  <Text>{claim.claim}</Text>
-  <Badge variant={claim.status.toLowerCase()}>{claim.status}</Badge>
-</>
+<Text>{claim.claim}</Text>
 ```
 
 ---
@@ -311,7 +299,7 @@ const claim = getClaimById('CLM-001');
     # 2. All claim IDs resolve to registry
     # 3. No UNVERIFIED claims in published content
     # 4. Agent/department counts match registry
-    # 5. Status badges match registry
+    # 5. Claim classifications match registry (no badges rendered since 2026-11-26)
 ```
 
 ---

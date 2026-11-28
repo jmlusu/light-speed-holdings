@@ -119,9 +119,9 @@ export const OperatingModelOverview: React.FC<OperatingModelOverviewProps> = ({ 
         <SectionHeading
           theme={theme}
           level="h1"
-          eyebrow="THE AI-NATIVE COMPANY BUILDER"
-          title="An Operating Model Built on Seven HAOMTGV Pillars"
-          lead="LightSpeed Holdings builds complete operating models, with human authority directing coordinated agents inside defined, auditable boundaries."
+          eyebrow="AI-NATIVE ENGAGEMENT MODEL"
+          title="From Problem to Measured Outcome."
+          lead="From a real problem to a governed, measured AI capability — not from a pitch deck to a pilot that never ships."
         />
 
         {/* Interactive Architecture Visual Overview */}

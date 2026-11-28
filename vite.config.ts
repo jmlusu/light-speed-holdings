@@ -103,6 +103,7 @@ export default defineConfig(({ mode, command }) => {
           '**/output/**',
           '**/tmp/**',
           '**/research/**',
+          '**/presentations/**',
           '**/evals/**',
           '**/knowledge/**',
           '**/prompts/**',

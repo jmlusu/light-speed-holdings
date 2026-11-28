@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShieldCheck } from 'lucide-react';
+import { BigImageSection } from '../components/site/BigImageSection';
 import { PageIntro } from '../components/site/PageIntro';
 import { CtaBand } from '../components/site/CtaBand';
 
@@ -24,7 +25,7 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
   {
     heading: '3. Honesty & Claims',
     paragraphs: [
-      'We label claims as Proven in-house, In pilot, Fieldable in 2026, or In development. We do not invent client logos, testimonials, headcount figures, or ROI numbers. Published numbers must come from our verified operational record.',
+      'We do not invent client logos, testimonials, headcount figures, or ROI numbers. Published numbers must come from our verified operational record.',
     ],
   },
   {
@@ -80,6 +81,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ theme }) => {
      */}
   return (
     <>
+      <BigImageSection theme={theme} src="/assets/aistudio/BeforeAfterSectorBackground_d538f2ff.jpg" alt="LightSpeed terms and delivery" caption="Clear terms. Clear delivery." />
       <PageIntro
         theme={theme}
         eyebrow="LEGAL // TERMS"

@@ -1,7 +1,5 @@
 import React from 'react';
-import { HonestyBadge } from '../../components/site/HonestyBadge';
 import type { ContentMedia, ContentMediaSet, ScreenshotMedia, BrandMedia, IllustrationMedia } from '../../types';
-import { honestyLabel } from '../../data/siteContent';
 
 /** Check if media feature is enabled (behind feature flag for phased rollout) */
 const isMediaEnabled = (): boolean => {

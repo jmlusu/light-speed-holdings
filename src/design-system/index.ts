@@ -15,8 +15,6 @@ export type { ButtonProps } from './components/Button/Button';
 export { Card } from './components/Card/Card';
 export type { CardProps } from './components/Card/Card';
 
-export { Badge } from './components/Badge/Badge';
-export type { BadgeProps, BadgeVariant } from './components/Badge/Badge';
 
 export { Heading } from './components/Heading/Heading';
 export type { HeadingProps, HeadingLevel } from './components/Heading/Heading';

@@ -1,6 +1,4 @@
 import React from 'react';
-import { HonestyBadge } from '../site/HonestyBadge';
-import { honestyLabel } from '../../data/siteContent';
 
 interface ApprovalMatrixWalkthroughProps {
   theme: 'light' | 'dark';
@@ -48,7 +46,7 @@ export const ApprovalMatrixWalkthrough: React.FC<ApprovalMatrixWalkthroughProps>
         >
           One worked example
         </h3>
-        <HonestyBadge label={honestyLabel('Proven in-house')} />
+        <span className="font-body text-[11px] font-bold tracking-wide">Proven in-house</span>
       </div>
 
       <ol className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -8,11 +8,11 @@ LightSpeed Holdings is the AI-native company builder for Southern Africa. The vi
 
 **Key Characteristics:**
 
-- Governance‑visible: the approval matrix, lifecycle, and honesty badges are not decoration — they are the product
+- Governance‑visible: the approval matrix and lifecycle are not decoration — they are the product. Honesty badges were removed by CEO decision (2026-11-26).
 - Typographic rhythm: Arial as the single system font, with a clear display‑to‑body scale
 - Navy‑first colour strategy: the primary accent is rare by design, making its appearance meaningful
 - Mobile‑first spacing: the 4px grid resolves to compact mobile units before expanding to desktop rhythm
-- Transparency in evidence: the four-level honesty badge system (proven / pilot / fieldable / development) is surface‑visible, not hidden
+- Transparency in evidence: the four-level honesty system (proven / pilot / fieldable / development) remains in the claim registry; badges are no longer surface‑visible (CEO decision 2026-11-26)
 
 ## Colors
 
@@ -124,14 +124,9 @@ The design uses small (4px) and medium (8px) radii consistently. Full radius app
 
 **CTA band:** The `CtaBand` component uses the primary red button and a secondary navy-stroked call to action.
 
-### Honesty badges
+### Honesty badges — removed
 
-Four-tier system displayed as border-color + background-color + text-color combinations:
-
-- **Proven:** border `rgba(0, 191, 255, 0.4)`, background `rgba(0, 191, 255, 0.1)`, text `#00BFFF`
-- **Pilot:** border `rgba(230, 57, 70, 0.4)`, background `rgba(230, 57, 70, 0.1)`, text `#E63946`
-- **Fieldable:** border `rgba(156, 163, 175, 0.4)`, background `rgba(156, 163, 175, 0.1)`, text `#9CA3AF`
-- **Development:** border `rgba(107, 114, 128, 0.4)`, background `rgba(107, 114, 128, 0.1)`, text `#6B7280`
+CEO decision 2026-11-26: the honesty badge component, tone map, colour tokens and rendered badges were removed. The four evidence levels remain as registry data only. Do not reintroduce badge styling.
 
 ### Page structure
 
@@ -147,7 +142,7 @@ Four-tier system displayed as border-color + background-color + text-color combi
 - Use navy `#070A40` as the primary accent, keeping it ≤10% of any screen surface
 - Cyan `#00BFFF` as the trust signal — on focus rings, link colours, and success states
 - Red `#E63946` as the CTA accent; use it sparingly
-- Honesty badge colours exactly as specified — do not substitute or remix
+- Evidence levels live in the claim registry; do not render honesty badges (CEO decision 2026-11-26)
 - Arial as the single typeface family across all themes and surfaces
 - 4px corner radius on buttons, inputs, cards, and containers
 - 16px base unit / 4px scale for all spacing

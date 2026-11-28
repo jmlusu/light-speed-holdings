@@ -53,6 +53,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ theme, id }) => {
             eyebrow="HONEST ANSWERS"
             title="Frequently Asked Questions"
             lead="Straight answers grounded in how the platform actually works, including what we have not proven yet."
+            leadClassName={isLight ? 'text-[#070A40] font-medium' : 'text-[#9CA3AF]'}
           />
           <div className="max-w-3xl mx-auto space-y-3.5 mt-8">
             {faqs.map((faq) => (

@@ -69,7 +69,7 @@ export const faqs: readonly Faq[] = [
     registryId: 'faq-24',
     question: 'Is this proven with paying clients?',
     answer:
-      'Not yet. Nothing has been delivered to paying clients. All offers are fieldable in 2026, in pilot, or in active development. Every proof point on this site carries an explicit honesty badge. We would rather show where we are than invent a track record.',
+      'Not yet. Nothing has been delivered to paying clients. All offers are fieldable in 2026, in pilot, or in active development. We would rather show where we are than invent a track record.',
     evidence: [
       { source: 'claim.no-paying-clients', status: 'verified' },
       {

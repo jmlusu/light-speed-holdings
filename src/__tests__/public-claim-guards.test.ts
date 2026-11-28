@@ -18,7 +18,7 @@ describe('about-page metric tiles', () => {
     expect(aboutMetrics.map((m) => m.label)).not.toContain('Audit Trail Coverage');
   });
 
-  it('grounds every tile in a publishable, externally sourced claim with a badge', () => {
+  it('grounds every tile in a publishable, externally sourced claim', () => {
     const failures: string[] = [];
     for (const metric of aboutMetrics) {
       const claim = claims.get(metric.claimId);
@@ -26,7 +26,6 @@ describe('about-page metric tiles', () => {
       if (!PUBLISHABLE.has(claim.classification)) failures.push(`${metric.id}: ${claim.classification} cannot back a live metric`);
       if (!claim.evidenceRef?.trim()) failures.push(`${metric.id}: empty evidenceRef`);
       if (claim.evidenceRef?.startsWith('src/lib/enquiry.ts#')) failures.push(`${metric.id}: circular self-reference`);
-      if (!metric.badge?.label || !metric.badge?.tone) failures.push(`${metric.id}: missing honesty badge`);
     }
     expect(failures, failures.join('; ')).toEqual([]);
   });

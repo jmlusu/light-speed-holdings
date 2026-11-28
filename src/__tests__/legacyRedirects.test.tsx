@@ -107,9 +107,9 @@ describe('legacy redirects are honest and single-hop', () => {
     }
   });
 
-  it('homepage "Ask LightSpeed" CTA links to canonical /contact, not /ask', () => {
-    const vp = readFileSync('src/components/home/VisitorPathsSection.tsx', 'utf8');
-    expect(vp).toMatch(/<Link\s+to="\/contact"[^>]*>\s*Ask LightSpeed/);
-    expect(vp).not.toContain('<Link to="/ask"');
+  it('home page no longer mounts removed intro and visitor-path sections', () => {
+    const home = readFileSync('src/pages/HomePage.tsx', 'utf8');
+    expect(home).not.toContain('IntroductionSection');
+    expect(home).not.toContain('VisitorPathsSection');
   });
 });

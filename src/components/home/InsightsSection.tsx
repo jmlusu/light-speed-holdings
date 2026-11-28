@@ -112,6 +112,7 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ theme }) => {
           eyebrow="Research and Insights"
           title="Pharos — LightSpeed’s Research and Insights Engine"
           lead="Pharos turns LightSpeed’s agentic AI research, field observations, and operating experience into evidence-led publications. We publish briefs, white papers, system maps, data stories, AI-economics analyses, and Africa Watch monitors that connect findings to real use cases across Malawi, SADC, and Africa."
+          leadClassName={isLight ? 'text-[#070A40] font-medium' : 'text-[#9CA3AF]'}
         />
 
         <Link

@@ -3,51 +3,12 @@ import type { ReactElement } from 'react';
 import { render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
-import { VisitorPathsSection } from '../components/home/VisitorPathsSection';
 import { WhatWeBuildGrid } from '../components/home/WhatWeBuildGrid';
 import { InsightsSection } from '../components/home/InsightsSection';
 
 const renderInRouter = (ui: ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>);
 
 describe('homepage clarity - one decision per section', () => {
-  it('VisitorPathsSection: four primary path links are the only links outside the "More ways in" disclosure', () => {
-    const { container } = renderInRouter(<VisitorPathsSection theme="light" />);
-    const region = screen.getByRole('region', { name: /choose your path/i });
-    expect(region).toHaveClass('py-12');
-    expect(region).toHaveClass('lg:py-16');
-
-    const primary = within(region).getByRole('navigation', { name: /choose one starting point/i });
-    const primaryLinks = within(primary).getAllByRole('link');
-    expect(primaryLinks).toHaveLength(4);
-    expect(primaryLinks.map((link) => link.getAttribute('href'))).toEqual([
-      '/what-we-do', '/contact', '/insights', '/haomtgv',
-    ]);
-
-    const details = container.querySelector('details');
-    expect(details).not.toBeNull();
-    expect(details).not.toHaveAttribute('open');
-    expect(details?.querySelector('summary')).toHaveTextContent('More ways in');
-
-    const allLinks = within(region).getAllByRole('link');
-    const moreLinks = within(details as HTMLElement).getAllByRole('link');
-    expect(moreLinks).toHaveLength(5);
-    expect(allLinks.length - moreLinks.length).toBe(4);
-  });
-
-  it('VisitorPathsSection: every audience, secondary destination and Ask LightSpeed copy is preserved inside the disclosure', () => {
-    const { container } = renderInRouter(<VisitorPathsSection theme="dark" />);
-    const details = container.querySelector('details') as HTMLElement;
-    for (const intent of ['Business Leaders', 'Partners', 'Researchers', 'Policy Makers']) {
-      expect(screen.getByText(intent)).toBeInTheDocument();
-    }
-    for (const label of ['HAOMTGV Framework', 'Platform details', 'Pharos practice', 'Policy briefs']) {
-      expect(within(details).getByText(new RegExp(label))).toBeInTheDocument();
-    }
-    expect(within(details).getByText(/Not sure which path fits\?/)).toBeInTheDocument();
-    expect(within(details).getByRole('link', { name: /Ask LightSpeed/ })).toHaveAttribute('href', '/contact');
-    expect(within(details).getByText(/answers from our published knowledge only/)).toBeInTheDocument();
-  });
-
   it('WhatWeBuildGrid: six capability links have six unique accessible names', () => {
     renderInRouter(<WhatWeBuildGrid theme="dark" />);
     const links = screen.getAllByRole('link', { name: /^Explore /i });

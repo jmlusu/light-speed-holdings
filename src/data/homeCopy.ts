@@ -42,7 +42,7 @@ export const VALUES: ValuePillar[] = [
   },
   {
     title: 'Evidence Over Claims',
-    description: 'Every public statement is labeled: Proven in-house, In pilot, Fieldable, or In development. No blurring the line.',
+    description: 'We state what is proven, piloted, fieldable, or in development without blurring the line.',
   },
   {
     title: 'Governed by Design',

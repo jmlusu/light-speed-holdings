@@ -37,8 +37,8 @@ export const companyIdentity: CompanyIdentity = {
   positioning: 'The AI-native company builder for Southern Africa.',
   geographicProgression: ['Malawi', 'SADC', 'Africa'],
   northStar: 'We build AI-native companies.',
-  heroHeadline: 'Build, Govern & Scale Your Autonomous AI Workforce',
-  heroSubline: 'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems, in Malawi, across SADC, and beyond.',
+  heroHeadline: 'The AI-Native Orchestrator That Ships.',
+  heroSubline: 'Strategy. AI. Execution. Built for Africa and beyond. LightSpeed Holdings builds and scales AI-native solutions that turn bold ideas into real-world impact.',
   valueCycle: [
     'Strategy & Roadmap',
     'AI Design Sprint',
@@ -66,6 +66,13 @@ export const companyIdentity: CompanyIdentity = {
  */
 export const humanAuthorityStatement =
   'AI executes. Humans decide.';
+
+/**
+ * Hero canonical line (marketing) — formalized 2026-11-28
+ * Use verbatim in HeroSection.
+ */
+export const heroCanonicalLine =
+  'Human Direction. Intelligent Execution. Measurable Value';
 
 export const humanAuthorityStatementFull =
   'Agents execute. The Human CEO owns operational intent and final decision authority.';

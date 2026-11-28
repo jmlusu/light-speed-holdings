@@ -4,6 +4,8 @@ import { ArrowRight, ShieldCheck } from 'lucide-react';
 
 import { ProofPosturePanel } from '../components/home/ProofPosturePanel';
 import { OperatingModelOverview } from '../components/whatwedo/OperatingModelOverview';
+import { BigImageSection } from '../components/site/BigImageSection';
+import { ImageCarousel } from '../components/site/ImageCarousel';
 import { SixCapabilitiesSection } from '../components/whatwedo/SixCapabilitiesSection';
 import { IntegratedCapabilityMap } from '../components/whatwedo/IntegratedCapabilityMap';
 import { DeliveryLifecycleSection } from '../components/whatwedo/DeliveryLifecycleSection';
@@ -31,6 +33,12 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
 
         {/* 2. OPERATING MODEL OVERVIEW (HAOMTGV) */}
         <OperatingModelOverview theme={theme} />
+        <BigImageSection
+          theme={theme}
+          src="/assets/aistudio/Modern_Villa_Overlooking_a_Mountain_Valley_68700962.png"
+          alt="Integrated capability map and operating model"
+          caption="From intent to execution — one governed operating model."
+        />
         <div className="section-divider-navy" />
 
         {/* 3. SIX CAPABILITY AREAS */}
@@ -48,6 +56,16 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         {/* 5. DELIVERY APPROACH */}
         <DeliveryLifecycleSection theme={theme} />
         <div className="section-divider-cyan" />
+
+        <ImageCarousel
+          theme={theme}
+          images={[
+            { src: '/assets/images/audience_business_leaders_1793515174408.avif', alt: 'Business leaders', caption: 'For business leaders.' },
+            { src: '/assets/images/audience_partners_1793515174751.avif', alt: 'Partners', caption: 'For partners.' },
+            { src: '/assets/images/audience_researchers_1793515174898.avif', alt: 'Researchers', caption: 'For researchers.' },
+            { src: '/assets/images/audience_policy_makers_1793515176396.avif', alt: 'Policy makers', caption: 'For policy makers.' },
+          ]}
+        />
 
         {/* 6. ENGAGEMENT CTA */}
         <DistinctCTA

@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { SectionHeading } from '../site/SectionHeading';
-import { HonestyBadge } from '../site/HonestyBadge';
 import { Reveal } from '../Reveal';
 import { solutions, GOVERNANCE_SOLUTION } from '../../data/siteContent';
 import { HomeSection } from './HomeSection';
@@ -53,7 +52,6 @@ export const SolutionsSection: React.FC<SolutionsSectionProps> = ({ theme }) => 
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <span className="font-body text-[10px] font-bold tracking-widest text-[#E63946]">{sol.eyebrow}</span>
-                    <HonestyBadge label={sol.proof} />
                   </div>
                   <h3 className={`font-display font-bold text-base tracking-tight transition-colors ${isLight ? 'text-ls-navy group-hover:text-[#E63946]' : 'text-white group-hover:text-[#00BFFF]'}`}>
                     {sol.title}

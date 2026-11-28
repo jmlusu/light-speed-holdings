@@ -2,10 +2,9 @@ import React, { useState, useCallback, useRef } from 'react';
 import { MessageSquare, Sparkles, ArrowRight, Send, Bot, User, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { SectionHeading } from './site/SectionHeading';
 import { CtaBand } from './site/CtaBand';
-import { HonestyBadge } from './site/HonestyBadge';
 import { Reveal } from './Reveal';
 import { useSite } from '../site-context';
-import { solutions, honestyLabel } from '../data/siteContent';
+import { solutions } from '../data/siteContent';
 import { CTAS } from '@/data/ctas';
 import { Link } from 'react-router-dom';
 import { trackJourneyEvent } from '../hooks/useJourneyEvents';
@@ -174,7 +173,7 @@ export const AskLightSpeed: React.FC = () => {
   }, [addMessage, trackAskStarted]);
 
   const handleResultClick = useCallback((solution: typeof solutions[0]) => {
-    addMessage('assistant', `You selected ${solution.title}. This is a ${solution.honestyBadge} capability.`);
+    addMessage('assistant', `You selected ${solution.title}.`);
     setState(prev => ({ ...prev, step: 'cta' }));
   }, [addMessage]);
 
@@ -193,7 +192,7 @@ export const AskLightSpeed: React.FC = () => {
             level="h1"
             eyebrow="INTERACTIVE DISCOVERY"
             title="Ask LightSpeed"
-            lead="Tell us your challenge. Our AI discovery layer maps it to proven capabilities, governance models, and engagement paths, all with explicit honesty badges."
+            lead="Tell us your challenge. Our AI discovery layer maps it to proven capabilities, governance models, and engagement paths."
           />
         </Reveal>
 
@@ -329,7 +328,6 @@ export const AskLightSpeed: React.FC = () => {
                           {s.description.slice(0, 60)}...
                         </p>
                       </div>
-                      <HonestyBadge label={honestyLabel(s.honestyBadge)} />
                     </div>
                   </button>
                 ))}
@@ -479,7 +477,7 @@ export const AskLightSpeed: React.FC = () => {
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
               { icon: Sparkles, title: 'Structured Discovery', desc: 'Our AI discovery layer asks targeted questions to match your challenge to proven capabilities.' },
-              { icon: ShieldCheck, title: 'Honesty Guaranteed', desc: 'Every recommendation carries an explicit honesty badge: proven, pilot, fieldable, or development.' },
+              { icon: ShieldCheck, title: 'Honesty Guaranteed', desc: 'Every recommendation is grounded in our published evidence and capability status.' },
               { icon: MessageSquare, title: 'Executive Pathway', desc: 'Discovery maps directly to our engagement models: Boardroom Briefing, Architecture Sprint, Pilot, or Deployment.' },
             ].map((item, i) => (
               <div key={i} className={`p-6 rounded-2xl ${

@@ -316,7 +316,7 @@
     {
       "id": "faq-18",
       "question": "What sectors does LightSpeed work with?",
-      "answer": "LightSpeed targets 10 sectors across Africa and beyond: Financial Services (proven), Healthcare & Public Health (future), Agriculture & Agritech (pilot), Education & Academia (pilot), Government & Public Sector (current capability), Regulators & Standards Institutions (demonstration), Research & Universities (demonstration), SMEs & Private Enterprise (fieldable), Development & Nonprofit Organizations (pilot), Technology & Digital Businesses (proven in-house). Each sector carries an explicit honesty badge: we do not claim experience we do not have.",
+      "answer": "LightSpeed targets 10 sectors across Africa and beyond: Financial Services (proven), Healthcare & Public Health (future), Agriculture & Agritech (pilot), Education & Academia (pilot), Government & Public Sector (current capability), Regulators & Standards Institutions (demonstration), Research & Universities (demonstration), SMEs & Private Enterprise (fieldable), Development & Nonprofit Organizations (pilot), Technology & Digital Businesses (proven in-house). We do not claim experience we do not have.",
       "evidence": [
         {
           "source": "src/data/registries/sector-registry.json#10 target sectors with evidence classification",
@@ -406,7 +406,7 @@
     {
       "id": "faq-24",
       "question": "Is every Use Case a paying-client deployment?",
-      "answer": "Honestly: no. Nothing has been delivered to paying clients: all offers are fieldable in 2026, in pilot, or in active development, and every proof point on this site carries an explicit honesty badge. We would rather show you exactly where we are than invent a track record. Use Cases include: LIVE (J&S StopOver Bar), PROVEN IN-HOUSE (LightSpeed meta use case), PILOT (agricultural cooperative, university student management, health M&E, VSLA, Chichewa AI), DEMONSTRATION (enterprise automation, consulting firm scale, non-profit ops, government compliance, e-commerce, healthcare admin, financial services), FIELDABLE (SME digital presence), FUTURE (healthcare deployment).",
+      "answer": "Honestly: no. Nothing has been delivered to paying clients: all offers are fieldable in 2026, in pilot, or in active development. We would rather show you exactly where we are than invent a track record. Use Cases include: LIVE (J&S StopOver Bar), PROVEN IN-HOUSE (LightSpeed meta use case), PILOT (agricultural cooperative, university student management, health M&E, VSLA, Chichewa AI), DEMONSTRATION (enterprise automation, consulting firm scale, non-profit ops, government compliance, e-commerce, healthcare admin, financial services), FIELDABLE (SME digital presence), FUTURE (healthcare deployment).",
       "evidence": [
         {
           "source": "claim.no-paying-clients",

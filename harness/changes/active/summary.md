@@ -102,3 +102,9 @@ Not verified: CI, remote branch state, production. Evidence sources: `.superpowe
 3. **Triage deferred minors** (handoff Step 3): reviewer rulings in the ledger — `qa-lead` for contrast/test items, `cmo` for copy, `cto` for component colours, `clo` for registry copy.
 4. **Decide the deeper product critique** (handoff Step 4): `cpo` + `cmo` + `thought-leadership-lead`, with CEO sign-off on claims.
 5. **Before archive only after green CI:** update `docs/STATUS.md`, verify archive hygiene (no side-effect files dirty), run `harness-change.ps1 close completed`, then `lint-ecl.ps1`. Archive is deliberately not performed here.
+
+## CEO exception — honesty badges removed (2026-11-26)
+
+The CEO instructed full removal of the honesty badge system on a separate branch (`fix/remove-honesty-badges`). This overrides the earlier Task 2 work in this change record and the `PRODUCT.md` / `DESIGN.md` / `CLAIMS_GOVERNANCE.md` requirements that badges be displayed. Claim classifications remain in `claims-registry.json`; no badge is rendered. Do not restore badges without a new CEO decision. This change record is kept to preserve the history of the trust-and-clarity work.
+
+The CEO then asked to remove `ProofPosturePanel` ("What we have not proven yet") from the marketing site as well (T006, branch `fix/remove-proof-posture-panel`). The panel, its mounts on `/` and `/what-we-do`, and its dedicated tests were deleted; a regression test now asserts neither page mounts it.

@@ -10,7 +10,7 @@ import { leadership } from '../data/leadership';
 import { CAPABILITIES, capabilityTitles } from '../data/capabilities';
 import { faqs } from '../data/faqs';
 import { sectors, SECTOR_TIERS, sectorTierLegend } from '../data/sectors';
-import { insightCategories, honestyLabel } from '../data/siteContent';
+import { insightCategories } from '../data/siteContent';
 
 describe('content governance (MASTER_SPEC §17)', () => {
   it('CONTENT_CLAIMS is a non-empty registry', () => {
@@ -161,22 +161,5 @@ describe('insight categories (MASTER_SPEC §13)', () => {
     expect(insightCategories).toContain('Agentic AI');
     expect(insightCategories).toContain('African AI');
     expect(new Set(insightCategories).size).toBe(12);
-  });
-});
-
-describe('honesty badge label → tone mapper', () => {
-  it('maps every types.ts HonestyBadge string to the right tone', () => {
-    expect(honestyLabel('Fieldable in 2026').tone).toBe('fieldable');
-    expect(honestyLabel('In active development').tone).toBe('development');
-    expect(honestyLabel('In pilot').tone).toBe('pilot');
-    expect(honestyLabel('In pilot (composing evidence)').tone).toBe('pilot');
-    expect(honestyLabel('In pilot (proposed)').tone).toBe('pilot');
-    expect(honestyLabel('Proven in-house').tone).toBe('proven');
-    expect(honestyLabel('Live proof').tone).toBe('proven');
-    expect(honestyLabel('Published').tone).toBe('proven');
-  });
-
-  it('preserves the original label text', () => {
-    expect(honestyLabel('Proven in-house').label).toBe('Proven in-house');
   });
 });
