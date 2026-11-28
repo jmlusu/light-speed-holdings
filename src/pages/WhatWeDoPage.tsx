@@ -27,7 +27,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         <OperatingModelOverview theme={theme} />
         <BigImageSection
           theme={theme}
-          src="/assets/images/pharos_canonical_architecture_1793817675241.avif"
+          src="/assets/images/agent_network_topology_1793816821318.avif"
           alt="Integrated capability map"
           caption="From intent to execution — one governed operating model."
         />

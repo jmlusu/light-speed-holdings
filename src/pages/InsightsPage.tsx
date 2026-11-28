@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Download, Shield, Clock, Calendar } from 'lucide-react';
 import { NewsletterSignup } from '../components/NewsletterSignup';
 import { RelatedLinks } from '../components/site/RelatedLinks';
+import { BigImageSection } from '../components/site/BigImageSection';
 import { CtaBand } from '../components/site/CtaBand';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { Reveal } from '../components/Reveal';
@@ -75,6 +76,12 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
 
   return (
     <div className={`min-h-screen ${isLight ? 'bg-ls-grey-light text-ls-navy' : 'bg-ls-navy-dark text-white'}`}>
+      <BigImageSection
+        theme={theme}
+        src="/assets/images/pharos_editorial_hero_1793817662034.avif"
+        alt="Pharos editorial"
+        caption="Pharos — thought leadership for agentic AI."
+      />
       {/* Hero Section with Editorial Visualization */}
       <section className={`relative overflow-hidden px-6 lg:px-12 pt-28 sm:pt-32 pb-14 ${isLight ? 'bg-ls-white' : 'bg-[#03061C]'}`}>
         {/* Background Atmosphere */}

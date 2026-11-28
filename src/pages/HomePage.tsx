@@ -1,6 +1,7 @@
 import React from 'react';
 import { HeroSection } from '../components/HeroSection';
 import { BigImageSection } from '../components/site/BigImageSection';
+import { ImageCarousel } from '../components/site/ImageCarousel';
 import { WhatWeBuildGrid } from '../components/home/WhatWeBuildGrid';
 import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
 import { IntentToExecutionLifecycle } from '../components/home/IntentToExecutionLifecycle';
@@ -31,6 +32,16 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           src="/assets/images/identity_triptych_foundations_1793818127924.avif"
           alt="LightSpeed mission and vision"
           caption="ASPIRE. ACT. ACHIEVE. — building AI-native companies from Malawi to Africa."
+        />
+
+        {/* Sequence 3 - VISUAL STORY (carousel) */}
+        <ImageCarousel
+          theme={theme}
+          images={[
+            { src: '/assets/images/pharos_editorial_hero_1793817662034.avif', alt: 'Pharos editorial', caption: 'Pharos — thought leadership for agentic AI.' },
+            { src: '/assets/images/pharos_canonical_architecture_1793817675241.avif', alt: 'Canonical architecture', caption: 'Canonical architecture.' },
+            { src: '/assets/images/pharos_ai_orchestration_1793514971486.avif', alt: 'AI orchestration', caption: 'Orchestration at scale.' },
+          ]}
         />
 
         {/* Sequence 5 - COMMERCIAL SOLUTIONS OVERVIEW */}
