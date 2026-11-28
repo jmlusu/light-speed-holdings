@@ -79,7 +79,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
       <BigImageSection
         theme={theme}
         src="/assets/aistudio/Pharos2_85555724.jpg"
-        alt="Pharos editorial"
+        alt="Pharos thought leadership and research"
         caption="Pharos — thought leadership for agentic AI."
       />
       {/* Hero Section with Editorial Visualization */}

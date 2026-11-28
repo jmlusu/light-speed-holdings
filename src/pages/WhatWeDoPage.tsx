@@ -29,7 +29,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         <BigImageSection
           theme={theme}
           src="/assets/aistudio/Modern_Villa_Overlooking_a_Mountain_Valley_68700962.png"
-          alt="Integrated capability map"
+          alt="Integrated capability map and operating model"
           caption="From intent to execution — one governed operating model."
         />
         <div className="section-divider-navy" />

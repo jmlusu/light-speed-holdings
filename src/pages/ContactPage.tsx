@@ -18,7 +18,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ theme }) => {
      */}
   return (
     <>
-      <BigImageSection theme={theme} src="/assets/aistudio/call_to_action_blank_background_ee1fa8f8.jpg" alt="Contact" caption="Let's build together." />
+      <BigImageSection theme={theme} src="/assets/aistudio/call_to_action_blank_background_ee1fa8f8.jpg" alt="LightSpeed contact and collaboration" caption="Let's build together." />
       <ContactSection theme={theme} />
       <FaqSection theme={theme} />
     </>

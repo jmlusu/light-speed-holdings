@@ -17,7 +17,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ theme }) => {
 
   return (
     <>
-      <BigImageSection theme={theme} src="/assets/aistudio/ValuePropositionBackground_beecaad0.jpg" alt="FAQ" caption="Governance you can trust." />
+      <BigImageSection theme={theme} src="/assets/aistudio/ValuePropositionBackground_beecaad0.jpg" alt="LightSpeed governance and frequently asked questions" caption="Governance you can trust." />
       <PageIntro
         theme={theme}
         eyebrow="HONEST ANSWERS // REGISTRY §15"

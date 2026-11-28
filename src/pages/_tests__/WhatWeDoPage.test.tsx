@@ -10,7 +10,7 @@ describe('WhatWeDoPage Hero', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    const eyebrow = screen.getByText(/THE AI-NATIVE COMPANY BUILDER/);
+    const eyebrow = screen.getByText(/AI-NATIVE ENGAGEMENT MODEL/);
     expect(eyebrow).toBeInTheDocument();
   });
 
@@ -20,7 +20,7 @@ describe('WhatWeDoPage Hero', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    const headline = screen.getByRole('heading', { name: /An Operating Model Built on Seven HAOMTGV Pillars/ });
+    const headline = screen.getByRole('heading', { name: /From Problem to Measured Outcome\./ });
     expect(headline).toBeInTheDocument();
   });
 
@@ -30,7 +30,7 @@ describe('WhatWeDoPage Hero', () => {
         <WhatWeDoPage theme="light" />
       </MemoryRouter>
     );
-    const subhead = screen.getByText(/LightSpeed Holdings builds complete operating models/);
+    const subhead = screen.getByText(/From a real problem to a governed, measured AI capability/);
     expect(subhead).toBeInTheDocument();
   });
 
@@ -88,7 +88,7 @@ describe('WhatWeDoPage Dark Mode', () => {
         <WhatWeDoPage theme="dark" />
       </MemoryRouter>
     );
-    const darkHeading = screen.getByRole('heading', { name: /An Operating Model Built on Seven HAOMTGV Pillars/ });
+    const darkHeading = screen.getByRole('heading', { name: /From Problem to Measured Outcome\./ });
     expect(darkHeading).toBeInTheDocument();
   });
 });

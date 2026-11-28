@@ -14,7 +14,7 @@ Trackable plan to close the gaps listed in the session summary. Update status as
 - [ ] **R7** Add carousels/infographics to HAOMTGV, Privacy, Terms, and 404 where appropriate.
 
 ## Phase 3 — Accessibility (P1)
-- [ ] **R8** Replace generic alt text ("Contact", "FAQ", "Terms") with descriptive, context-specific alt text.
+- [x] **R8** Replace generic alt text ("Contact", "FAQ", "Terms") with descriptive, context-specific alt text.
 - [ ] **R9** Verify skip link, focus-visible rings, and keyboard navigation on all new sections.
 - [ ] **R10** Confirm `prefers-reduced-motion` collapses animations on new components.
 

@@ -31,7 +31,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         <BigImageSection
           theme={theme}
           src="/assets/images/identity_triptych_foundations_1793818127924.avif"
-          alt="LightSpeed mission and vision"
+          alt="LightSpeed mission, vision and values"
           caption="ASPIRE. ACT. ACHIEVE. — building AI-native companies from Malawi to Africa."
         />
 
