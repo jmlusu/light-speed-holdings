@@ -3,13 +3,13 @@
 Trackable plan to close the gaps listed in the session summary. Update status as items complete.
 
 ## Phase 1 — Image uniqueness & coverage (P1)
-- [ ] **R1** Audit all `/assets/images/*` references across `src/`. Build a duplicate/orphan report.
+- [x] **R1** Audit all `/assets/images/*` references across `src/`. Build a duplicate/orphan report. (see `image-audit-report.md`)
 - [ ] **R2** Remove or replace duplicate references so each image is used exactly once.
 - [ ] **R3** Add a test (`media-registry` or new) asserting no duplicate image references and no unregistered paths.
 - [ ] **R4** Add big imagery to remaining pages that only have a single image (HAOMTGV, Privacy, Terms) — second image or carousel.
 
 ## Phase 2 — Carousels & infographics (P1)
-- [ ] **R5** Add `ImageCarousel` to at least 2 more pages (What We Do, About or Insights).
+- [x] **R5** Add `ImageCarousel` to at least 2 more pages (What We Do, About or Insights).
 - [ ] **R6** Add `InfographicBlock` (mission/vision/values or page-specific) to at least 2 more pages.
 - [ ] **R7** Add carousels/infographics to HAOMTGV, Privacy, Terms, and 404 where appropriate.
 

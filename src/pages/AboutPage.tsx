@@ -1,6 +1,7 @@
 import React from 'react';
 import { AboutSection } from '../components/AboutSection';
 import { BigImageSection } from '../components/site/BigImageSection';
+import { ImageCarousel } from '../components/site/ImageCarousel';
 import { RelatedLinks } from '../components/site/RelatedLinks';
 
 interface AboutPageProps {
@@ -27,6 +28,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ theme, onRequestBriefing }
       <AboutSection
         theme={theme}
         onOpenContactModal={(intent) => onRequestBriefing(intent)}
+      />
+      <ImageCarousel
+        theme={theme}
+        images={[
+          { src: '/assets/aistudio/who_we_are_background_df66900f.jpg', alt: 'Who we are', caption: 'Who we are.' },
+          { src: '/assets/aistudio/HAOMTGV_Closed-Loop_AI_Pipeline_c8fb13d6.png', alt: 'Closed loop pipeline', caption: 'Closed-loop AI pipeline.' },
+        ]}
       />
       <RelatedLinks
         theme={theme}
