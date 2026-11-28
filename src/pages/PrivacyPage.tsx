@@ -61,7 +61,7 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ theme }) => {
      */}
   return (
     <>
-      <BigImageSection theme={theme} src="/assets/images/val_prop_bg_night_1793997847272.avif" alt="Privacy" caption="Your data, governed." />
+      <BigImageSection theme={theme} src="/assets/aistudio/Futuristic_Villa_Overlooking_Neon_Valley_84caad32.png" alt="Privacy" caption="Your data, governed." />
       <PageIntro
         theme={theme}
         eyebrow="LEGAL // PRIVACY"

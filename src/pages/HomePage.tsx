@@ -41,7 +41,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           images={[
             { src: '/assets/images/pharos_editorial_hero_1793817662034.avif', alt: 'Pharos editorial', caption: 'Pharos — thought leadership for agentic AI.' },
             { src: '/assets/images/pharos_canonical_architecture_1793817675241.avif', alt: 'Canonical architecture', caption: 'Canonical architecture.' },
-            { src: '/assets/images/pharos_ai_orchestration_1793514971486.avif', alt: 'AI orchestration', caption: 'Orchestration at scale.' },
+            { src: '/assets/aistudio/lightspeed_malawi_map_rightside_292682fa.jpg', alt: 'Malawi map', caption: 'From Malawi to Africa.' },
           ]}
         />
 
@@ -50,9 +50,9 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           theme={theme}
           title="Mission, Vision & Values"
           items={[
-            { label: 'Mission', value: 'Build AI-native companies', image: '/assets/images/solution_company_builder_1793514972767.avif' },
-            { label: 'Vision', value: 'AI-native Africa', image: '/assets/images/solution_market_intelligence_1793514973546.avif' },
-            { label: 'Values', value: 'Aspire. Act. Achieve.', image: '/assets/images/solution_workflow_collapsing_1793514973725.avif' },
+            { label: 'Mission', value: 'Build AI-native companies', image: '/assets/aistudio/AI_Venture_Studio_Lifecycle_Pipeline_30708830.png' },
+            { label: 'Vision', value: 'AI-native Africa', image: '/assets/diagrams/micro-illustrations/glyph-governance.svg' },
+            { label: 'Values', value: 'Aspire. Act. Achieve.', image: '/assets/diagrams/micro-illustrations/glyph-orchestration.svg' },
           ]}
         />
 

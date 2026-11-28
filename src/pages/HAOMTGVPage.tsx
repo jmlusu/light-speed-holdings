@@ -167,7 +167,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
         isLight ? 'bg-ls-grey-light text-ls-navy' : 'bg-ls-navy-dark text-ls-white'
       }`}
     >
-      <BigImageSection theme={theme} src="/assets/images/pharos_cta_pure_1793817814419.avif" alt="HAOMTGV" caption="Seven pillars. One governed model." />
+      <BigImageSection theme={theme} src="/assets/aistudio/HAOMTGV_Closed-Loop_AI_Pipeline_c8fb13d6.png" alt="HAOMTGV" caption="Seven pillars. One governed model." />
       {/* 1. EXECUTIVE HERO SECTION */}
       <section
         ref={heroReveal.ref}

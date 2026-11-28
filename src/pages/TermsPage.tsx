@@ -81,7 +81,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ theme }) => {
      */}
   return (
     <>
-      <BigImageSection theme={theme} src="/assets/images/before_after_sector_bg_light_1793889809250.avif" alt="Terms" caption="Clear terms. Clear delivery." />
+      <BigImageSection theme={theme} src="/assets/aistudio/BeforeAfterSectorBackground_d538f2ff.jpg" alt="Terms" caption="Clear terms. Clear delivery." />
       <PageIntro
         theme={theme}
         eyebrow="LEGAL // TERMS"

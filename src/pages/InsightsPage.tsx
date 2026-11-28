@@ -78,7 +78,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
     <div className={`min-h-screen ${isLight ? 'bg-ls-grey-light text-ls-navy' : 'bg-ls-navy-dark text-white'}`}>
       <BigImageSection
         theme={theme}
-        src="/assets/images/pharos_editorial_hero_1793817662034.avif"
+        src="/assets/aistudio/Pharos2_85555724.jpg"
         alt="Pharos editorial"
         caption="Pharos — thought leadership for agentic AI."
       />
