@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HonestyBadge } from '../site/HonestyBadge';
-import { honestyLabel } from '../../data/siteContent';
 
 interface ProofPosturePanelProps {
   theme: 'light' | 'dark';
@@ -44,7 +42,7 @@ export const ProofPosturePanel: React.FC<ProofPosturePanelProps> = ({ theme }) =
             </p>
           ))}
           <div className="flex flex-wrap items-center gap-3">
-            <HonestyBadge label={honestyLabel('Proven in-house')} />
+            <span className="font-body text-[11px] font-bold tracking-wide">Proven in-house</span>
             <Link
               to="/faq"
               className={`font-bold tracking-wide underline underline-offset-2 ${

@@ -1,8 +1,9 @@
 import React from 'react';
 import { HeroSection } from '../components/HeroSection';
-import { IntroductionSection } from '../components/home/IntroductionSection';
+import { BigImageSection } from '../components/site/BigImageSection';
 import { ProofPosturePanel } from '../components/home/ProofPosturePanel';
-import { VisitorPathsSection } from '../components/home/VisitorPathsSection';
+import { ImageCarousel } from '../components/site/ImageCarousel';
+import { InfographicBlock } from '../components/site/InfographicBlock';
 import { WhatWeBuildGrid } from '../components/home/WhatWeBuildGrid';
 import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
 import { IntentToExecutionLifecycle } from '../components/home/IntentToExecutionLifecycle';
@@ -32,24 +33,39 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           theme={theme}
           src="/assets/images/identity_triptych_foundations_1793818127924.avif"
           alt="LightSpeed mission, vision and values"
-          caption="ASPIRE. ACT. ACHIEVE. — building AI-native companies from Malawi to Africa."
+          caption="ASPIRE. ACT. ACHIEVE. - building AI-native companies from Malawi to Africa."
         />
 
         {/* Honest posture, visible early without adding a primary choice */}
         <ProofPosturePanel theme={theme} />
 
-        {/* Sequence 4 - VISITOR PATHS */}
-        <VisitorPathsSection theme={theme} />
+        {/* Sequence 3 - VISUAL STORY (carousel) */}
+        <ImageCarousel
+          theme={theme}
+          images={[
+            { src: '/assets/images/pharos_editorial_hero_1793817662034.avif', alt: 'Pharos editorial', caption: 'Pharos - thought leadership for agentic AI.' },
+            { src: '/assets/images/pharos_canonical_architecture_1793817675241.avif', alt: 'Canonical architecture', caption: 'Canonical architecture.' },
+            { src: '/assets/aistudio/lightspeed_malawi_map_rightside_292682fa.jpg', alt: 'Malawi map', caption: 'From Malawi to Africa.' },
+          ]}
+        />
+
+        {/* Sequence 4 - MISSION / VISION / VALUES INFOGRAPHIC */}
+        <InfographicBlock
+          theme={theme}
+          title="Mission, Vision & Values"
+          items={[
+            { label: 'Mission', value: 'Build AI-native companies', image: '/assets/aistudio/AI_Venture_Studio_Lifecycle_Pipeline_30708830.png' },
+            { label: 'Vision', value: 'AI-native Africa', image: '/assets/diagrams/micro-illustrations/glyph-governance.svg' },
+            { label: 'Values', value: 'Aspire. Act. Achieve.', image: '/assets/diagrams/micro-illustrations/glyph-orchestration.svg' },
+          ]}
+        />
 
         {/* Sequence 5 - COMMERCIAL SOLUTIONS OVERVIEW */}
         <WhatWeBuildGrid theme={theme} />
 
-        {/* Sequence 6 - TECHNICAL GOVERNANCE (Technical sequence grouping starts) */}
+        {/* Sequence 6 - TECHNICAL GOVERNANCE */}
         <HAOMTGVSection theme={theme} />
         <IntentToExecutionLifecycle theme={theme} />
-
-        {/* Sequence 8 - WORKFORCE REGISTRY */}
-        {/* Sequence 8 - WORKFORCE REGISTRY REMOVED */}
 
         {/* Sequence 9 - PHAROS HIGHLIGHTS */}
         <InsightsSection theme={theme} />
