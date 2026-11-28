@@ -10,7 +10,7 @@
 
 ## Purpose
 
-Keep every published claim classified, evidenced, current, and honestly worded. The audit exists to catch claims whose evidence has gone stale, whose status has drifted from reality, or whose wording implies endorsements we do not hold. Status badges were removed by CEO decision (2026-11-26); classifications remain in the registry. Non-compliance blocks publication (`docs/CLAIMS_GOVERNANCE.md` §1, §159–175, §291–315).
+Keep every published claim classified, evidenced, current, and honestly badged. The audit exists to catch claims whose evidence has gone stale, whose status has drifted from reality, or whose wording implies endorsements we do not hold. Non-compliance blocks publication (`docs/CLAIMS_GOVERNANCE.md` §1, §159–175, §291–315).
 
 ## Cadence
 
@@ -29,7 +29,7 @@ Run every item against `src/data/registries/claims-registry.json` and the render
 2. **Statuses current.** Each `classification` must still match the definitions in CLAIMS_GOVERNANCE.md §18–31 and the real state of the work. Check status transitions (PILOT → FIELDABLE, FUTURE → PILOT, etc.) per §237–247; a stale rung is a finding.
 3. **Expired claims flagged.** Every claim whose `expiryDate` has passed (or passes during the audit window) is flagged for re-verification or archive. Expiry is auto (§243); reuse without re-verification is a finding.
 4. **`UNVERIFIED_DO_NOT_PUBLISH` caught.** Scan all published content for claims classified `UNVERIFIED` / `UNVERIFIED_DO_NOT_PUBLISH` (§31, §167–172, §312). Any hit blocks publication and triggers takedown + root cause analysis (§297).
-5. **Written wording/evidence parity.** Public wording must not overstate the registry `classification` for that claim ID. Mismatches (e.g. a DEMONSTRATION claim described as verified, or an FAQ `evidence[].status: "verified"` on a DEMONSTRATION-classified claim) are findings. No badge parity check applies because badges were removed.
+5. **Rendered badge/evidence parity.** The badge rendered on the site must equal the registry `classification` for that claim ID, and the displayed wording must match the registry `text`. Mismatches (e.g. a DEMONSTRATION claim rendered with a stronger badge, or an FAQ `evidence[].status: "verified"` on a DEMONSTRATION-classified claim) are findings.
 
 ## Expiry watchlist — `expiryDate` 2026-12-28
 
@@ -89,12 +89,12 @@ Both claims' evidence refs point to a **retired** file (`src/data/useCaseCatalog
 
 ### Ruling
 
-**(a) — Reusable as preparation, not publication.** The exact existing wording in `faq-20` may be reused *as prepared material* with its **DEMONSTRATION** classification (the classification of `claim.sadc-governance-framework`; no badge is rendered) and the explicit caveat **"we do not claim formal regulatory endorsements or approvals"** already present in that answer. Re-source evidence is preserved above. Publication is **blocked pending CEO confirmation**; no site component may be edited and no regulator/counsel/residency claim may be published by this audit.
+**(a) — Reusable as preparation, not publication.** The exact existing wording in `faq-20` may be reused *as prepared material* with its **DEMONSTRATION** badge (the classification of `claim.sadc-governance-framework`) and the explicit caveat **"we do not claim formal regulatory endorsements or approvals"** already present in that answer. Re-source evidence is preserved above. Publication is **blocked pending CEO confirmation**; no site component may be edited and no regulator/counsel/residency claim may be published by this audit.
 
 ### Risks to carry into the audit
 
 - **History-only evidence.** Both refs resolve only via git history, not to a live file. The pre-publication gate requires "all evidence references resolve" (§194); the CLO/CEO must explicitly accept git-history evidence or require a live replacement before publication.
 - **Classification tension.** CLAIMS_GOVERNANCE.md §170 says an implied regulator endorsement should be written as "SADC Agentic AI Governance Framework in development" with `FUTURE`; `claim.sadc-governance-framework` is registered as `DEMONSTRATION`. Confirm the intended rung with the CEO before reuse.
 - **Verified-bar risk.** `claim.national-ai-strategy-submission` is classified `VERIFIED`, which CLAIMS_GOVERNANCE.md §84 defines as third-party verified, but the re-sourced evidence is an internal catalog entry with honestyBadge "Published" (self-attestation). Treat as a finding requiring CEO sign-off; do not upgrade wording beyond the sourced text.
-- **Evidence-label parity.** `faq-20` marks its evidence `verified` while the underlying claim is `DEMONSTRATION`; reconcile in the wording/evidence checklist before any copy change. No badge is rendered.
+- **Badge parity.** `faq-20` marks its evidence `verified` while the underlying claim is `DEMONSTRATION`; reconcile in the badge-parity checklist before any rendering change.
 - **Expiry.** Both claims expire 2026-12-28 and appear on the watchlist above; re-verify in the quarterly audit before any reuse.

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 
+import { ProofPosturePanel } from '../components/home/ProofPosturePanel';
 import { OperatingModelOverview } from '../components/whatwedo/OperatingModelOverview';
 import { BigImageSection } from '../components/site/BigImageSection';
 import { ImageCarousel } from '../components/site/ImageCarousel';
@@ -23,6 +24,12 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
   return (
     <div className={`min-h-screen ${isLight ? 'bg-[#F7F8F9] text-ls-navy' : 'bg-[#0A0D14] text-white'}`}>
       <main id="main-content" className="relative z-10 w-full">
+
+        {/* Honest posture, visible early without adding a primary choice.
+            Top padding keeps the disclosure clear of the sticky site header. */}
+        <div className="pt-24">
+          <ProofPosturePanel theme={theme} />
+        </div>
 
         {/* 2. OPERATING MODEL OVERVIEW (HAOMTGV) */}
         <OperatingModelOverview theme={theme} />
