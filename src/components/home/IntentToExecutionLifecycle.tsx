@@ -59,6 +59,7 @@ export const IntentToExecutionLifecycle: React.FC<IntentToExecutionLifecycleProp
           eyebrow="OPERATIONAL LIFECYCLE"
           title="Human Intent to Executable Value"
           lead="The 10-stage lifecycle governing every operation at LightSpeed Holdings. Human direction initiates the sequence, governance guards every transition, and persistent memory learns from every outcome."
+          leadClassName={isLight ? 'text-[#070A40] font-medium' : 'text-[#9CA3AF]'}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-16">

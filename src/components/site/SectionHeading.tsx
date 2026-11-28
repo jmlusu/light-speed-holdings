@@ -7,13 +7,15 @@ interface SectionHeadingProps {
   lead?: string;
   /** Heading level; use 'h1' for the single page title, default 'h2' for sections. */
   level?: 'h1' | 'h2';
+  /** Optional override for the lead paragraph text colour classes. */
+  leadClassName?: string;
 }
 
 /**
  * Centered section heading: mono eyebrow, display title, optional lead —
  * the shared rhythm used by every interior section across the site.
  */
-export const SectionHeading: React.FC<SectionHeadingProps> = ({ theme, eyebrow, title, lead, level = 'h2' }) => {
+export const SectionHeading: React.FC<SectionHeadingProps> = ({ theme, eyebrow, title, lead, level = 'h2', leadClassName }) => {
   const isLight = theme === 'light';
   const Heading = level;
   return (
@@ -24,7 +26,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({ theme, eyebrow, 
       <Heading className="text-3xl sm:text-5xl font-black tracking-tight font-display">{title}</Heading>
       {lead && (
         <p className={`text-sm sm:text-base leading-relaxed ${
-          isLight ? 'text-ls-grey-ink font-medium' : 'text-[#9CA3AF]'
+          leadClassName ?? (isLight ? 'text-ls-grey-ink font-medium' : 'text-[#9CA3AF]')
         }`}>
           {lead}
         </p>

@@ -72,7 +72,7 @@ export const humanAuthorityStatement =
  * Use verbatim in HeroSection.
  */
 export const heroCanonicalLine =
-  'Human Direction, Intelligent Execution, Measurable Value';
+  'Human Direction. Intelligent Execution. Measurable Value';
 
 export const humanAuthorityStatementFull =
   'Agents execute. The Human CEO owns operational intent and final decision authority.';

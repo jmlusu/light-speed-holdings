@@ -10,13 +10,13 @@
 
 ## HERO
 
-**Eyebrow:** LIGHTSPEED HOLDINGS // ENGAGEMENT MODEL
+**Eyebrow:** AI-NATIVE ENGAGEMENT MODEL
 
-**Headline:** Strategy. Build. Govern. Research & Policy.
-<!-- src: capabilities.ts CAPABILITIES titles; siteContent.ts capability cycle (Strategy -> Build -> Govern -> Research & Policy) -->
+**Headline:** From Problem to Measured Outcome.
+<!-- src: engagement-model PROBLEM→…→MEASURE chain (content/drafts/what-we-do.md § engagement model); approved via CMO → PMM → CPO review -->
 
-**Subheadline:** We help organizations move from a real problem to a governed, measured AI capability - not from a pitch deck to a pilot that never ships.
-<!-- src: Directive §15 (engagement model framing); §24 (no inflated promises) -->
+**Subheadline:** From a real problem to a governed, measured AI capability — not from a pitch deck to a pilot that never ships.
+<!-- src: Directive §15 (engagement model framing); §24 (no inflated promises); CPO evidence-based tweak (no "we move organizations" claim) -->
 
 **Primary CTA:** START A CONVERSATION -> `/contact`
 **Secondary CTA:** REQUEST AN AI READINESS ASSESSMENT -> `/contact`

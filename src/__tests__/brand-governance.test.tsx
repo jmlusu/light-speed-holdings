@@ -23,10 +23,14 @@ const pages = sourcesIn('src/pages');
 const GREEN_STATUS_RE =
   /(?:bg|text|border|ring|fill|stroke|from|to|shadow)-(?:ls-)?(?:emerald|green)(?:-\d{2,4})?(?:\/\d+)?|#(?:10B981|22C55E|16A34A|34D399)\b/i;
 
-describe('human authority statement', () => {
-  it('HeroSection renders the verbatim line "AI executes. Humans decide."', () => {
+describe('hero and human authority copy', () => {
+  it('HeroSection renders the updated headline, subtitle, and canonical line', () => {
     render(<MemoryRouter><HeroSection theme="dark" onRequestBriefing={() => {}} /></MemoryRouter>);
-    expect(screen.getByText(humanAuthorityStatement).textContent).toBe('AI executes. Humans decide.');
+    expect(screen.getByText('The AI-Native')).toBeTruthy();
+    expect(screen.getByText('Orchestrator')).toBeTruthy();
+    expect(screen.getByText('That Ships.')).toBeTruthy();
+    expect(screen.getByText(/LightSpeed Holdings builds and scales AI-native solutions that turn bold ideas into real-world impact\./)).toBeTruthy();
+    expect(screen.getByText('Human Direction. Intelligent Execution. Measurable Value')).toBeTruthy();
   });
 
   it('AboutSection renders the verbatim line "AI executes. Humans decide."', () => {
@@ -34,12 +38,10 @@ describe('human authority statement', () => {
     expect(screen.getByText('AI executes. Humans decide.')).toBeTruthy();
   });
 
-  it('both components import humanAuthorityStatement rather than hardcoding it', () => {
-    for (const path of ['src/components/HeroSection.tsx', 'src/components/AboutSection.tsx']) {
-      const code = readFileSync(path, 'utf8');
-      expect(code).toContain("import { humanAuthorityStatement } from '../data/shipped/company';");
-      expect(code).not.toContain("'AI executes. Humans decide.'");
-    }
+  it('AboutSection imports humanAuthorityStatement rather than hardcoding it', () => {
+    const code = readFileSync('src/components/AboutSection.tsx', 'utf8');
+    expect(code).toContain("import { humanAuthorityStatement } from '../data/shipped/company';");
+    expect(code).not.toContain("'AI executes. Humans decide.'");
   });
 });
 

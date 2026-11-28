@@ -99,6 +99,7 @@ export const WhatWeBuildGrid: React.FC<WhatWeBuildGridProps> = ({ theme = 'dark'
           eyebrow="PRACTICE AREAS"
           title="Six Capabilities. One Governed System."
           lead="LightSpeed engineers production-grade AI-native capabilities. Each practice area solves a fundamental enterprise operational bottleneck."
+          leadClassName={isLight ? 'text-[#070A40] font-medium' : 'text-[#9CA3AF]'}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">

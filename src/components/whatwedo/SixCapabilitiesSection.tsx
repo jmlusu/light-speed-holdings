@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SectionHeading } from '../site/SectionHeading';
+import { StatusBadge } from '../../site/StatusBadge';
+import type { SolutionStatus } from '../../site/StatusBadge';
 import { Building2, Zap, GitFork, Network, HardDrive, ShieldCheck, CheckCircle2, Lock, ArrowUpRight } from 'lucide-react';
 import { Icon3D, Icon3DName } from '../common';
 
@@ -8,7 +10,7 @@ interface CapabilityDetail {
   id: string;
   num: string;
   title: string;
-  status: 'Proven in-house' | 'Fieldable in 2026' | 'In pilot' | 'In development';
+  status: SolutionStatus;
   icon: any;
   icon3d: Icon3DName;
   image: string;
@@ -26,14 +28,14 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     id: 'cap-1',
     num: '01',
     title: 'AI-Native Company Building',
-    status: 'Proven in-house',
+    status: 'IN-HOUSE',
     icon: Building2,
     icon3d: 'home',
     image: '/assets/images/cap1_company_building_1793817051020.avif',
-    whatItIs: 'A strategy and build capability for launching and scaling companies where AI agents perform core execution.',
-    problem: 'New ventures face management overhead, hiring delays, and slow operational setup.',
+    whatItIs: 'A strategy and build capability for launching and operating companies where AI agents perform core execution, with human authority retained at the decision layer.',
+    problem: 'New ventures face management overhead, hiring delays, and slow operational setup before they can deliver.',
     whatWeBuild: [
-      'Venture operating models with defined 90-role hierarchies.',
+      'Agent role hierarchies modelled on our own 90-role operating model (see research).',
       'CEO control panels with budget and approval limits.',
       'Self-hosted or cloud deployment environments.',
     ],
@@ -46,7 +48,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     id: 'cap-2',
     num: '02',
     title: 'Intelligent Workflow Automation',
-    status: 'Fieldable in 2026',
+    status: 'PILOT',
     icon: Zap,
     icon3d: 'lightning',
     image: '/assets/images/cap2_workflow_automation_1793817065625.avif',
@@ -65,7 +67,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     id: 'cap-3',
     num: '03',
     title: 'Agentic Systems & Orchestration',
-    status: 'Proven in-house',
+    status: 'IN-HOUSE',
     icon: GitFork,
     icon3d: 'orchestration',
     image: '/assets/images/cap3_agentic_orchestration_1793817079580.avif',
@@ -85,7 +87,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     id: 'cap-4',
     num: '04',
     title: 'Enterprise AI Integration',
-    status: 'In development',
+    status: 'IN DEVELOPMENT',
     icon: Network,
     icon3d: 'network',
     image: '/assets/images/cap4_integration_pure_1793817124475.avif',
@@ -104,7 +106,7 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     id: 'cap-5',
     num: '05',
     title: 'Organizational Memory & Knowledge Systems',
-    status: 'Fieldable in 2026',
+    status: 'PILOT',
     icon: HardDrive,
     icon3d: 'memory',
     image: '/assets/images/cap5_organizational_memory_1793817139478.avif',
@@ -123,14 +125,14 @@ const SIX_CAPABILITIES: CapabilityDetail[] = [
     id: 'cap-6',
     num: '06',
     title: 'AI Governance & Decision Infrastructure',
-    status: 'Proven in-house',
+    status: 'IN-HOUSE',
     icon: ShieldCheck,
     icon3d: 'governance',
     image: '/assets/images/cap6_governance_infrastructure_1793817153646.avif',
     whatItIs: 'A risk-classified governance framework with human approval gates, compliance checks, and cryptographic audit records.',
     problem: 'Uncontrolled AI deployment can cause reputational damage, regulatory breaches, and incorrect automated actions.',
     whatWeBuild: [
-      'A five-tier approval matrix (`AUTO_APPROVE` through `CEO_ONLY`).',
+      'A five-tier approval matrix (AUTO_APPROVE through CEO_ONLY).',
       'Four execution gates (Contract, DPA, Compliance, Security).',
       'Append-only SHA-256 audit logs.',
     ],
@@ -156,15 +158,15 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
       <div className="max-w-7xl mx-auto">
         <SectionHeading
           theme={theme}
-          eyebrow="CAPABILITIES IN DETAIL"
-          title="Six Enterprise Practice Areas"
-          lead="See what LightSpeed builds, which problems each capability addresses, how it connects to HAOMTGV, and its stated implementation status."
+          eyebrow="SIX CAPABILITY AREAS"
+          title="What LightSpeed Builds"
+          lead="Six capabilities, each mapped to the HAOMTGV operating model. Select one to see the problem it addresses, what we build, and how it connects to the pillars."
         />
 
         {/* Capability Navigation Tabs */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12 mb-10">
           <div className="space-y-4">
-            <h3 className={`text-xs font-bold uppercase tracking-wider pl-1 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Operational Execution</h3>
+            <h3 className={`text-xs font-bold uppercase tracking-wider pl-1 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Build & Automate</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {SIX_CAPABILITIES.slice(0, 3).map((cap) => {
                 const isSelected = cap.id === selectedCap.id;
@@ -172,6 +174,7 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
                   <button
                     key={cap.id}
                     onClick={() => setSelectedCap(cap)}
+                    aria-pressed={isSelected}
                     className={`p-4 rounded-xl border transition-all text-left flex flex-col justify-between cursor-pointer ${
                       isSelected
                         ? isLight
@@ -198,7 +201,7 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
           </div>
 
           <div className="space-y-4">
-            <h3 className={`text-xs font-bold uppercase tracking-wider pl-1 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Strategy & Governance</h3>
+            <h3 className={`text-xs font-bold uppercase tracking-wider pl-1 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Integrate & Govern</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {SIX_CAPABILITIES.slice(3, 6).map((cap) => {
                 const isSelected = cap.id === selectedCap.id;
@@ -206,6 +209,7 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
                   <button
                     key={cap.id}
                     onClick={() => setSelectedCap(cap)}
+                    aria-pressed={isSelected}
                     className={`p-4 rounded-xl border transition-all text-left flex flex-col justify-between cursor-pointer ${
                       isSelected
                         ? isLight
@@ -233,9 +237,12 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
         </div>
 
         {/* Selected Capability Inspector Detail */}
-        <div className={`p-8 rounded-2xl border transition-all ${
-          isLight ? 'bg-white border-slate-200 shadow-xl' : 'bg-[#070A40]/90 border-white/10 shadow-2xl'
-        }`}>
+        <div
+          aria-live="polite"
+          className={`p-8 rounded-2xl border transition-all ${
+            isLight ? 'bg-white border-slate-200 shadow-xl' : 'bg-[#070A40]/90 border-white/10 shadow-2xl'
+          }`}
+        >
           <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200/20">
             <div className="flex items-center gap-3.5">
               <Icon3D name={selectedCap.icon3d} size="md" />
@@ -249,9 +256,18 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
               </div>
             </div>
 
-            <span className="text-xs font-body font-bold uppercase tracking-wider">
-              {selectedCap.status}
-            </span>
+            <div className="flex flex-col items-end gap-1">
+              <StatusBadge status={selectedCap.status} theme={theme} />
+              <span className={`text-[10px] font-body ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                {selectedCap.status === 'IN-HOUSE'
+                  ? 'Built and operated in our own company first.'
+                  : selectedCap.status === 'IN DEVELOPMENT'
+                  ? 'In development — available for scoped early engagement.'
+                  : selectedCap.status === 'PILOT'
+                  ? 'In pilot — available for scoped early engagement.'
+                  : ''}
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8 text-left">
@@ -277,7 +293,7 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
 
               <div>
                 <h4 className={`text-xs font-mono uppercase tracking-wider mb-2 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                  What LightSpeed Builds & Configures
+                  What this capability includes
                 </h4>
                 <ul className="space-y-2">
                   {selectedCap.whatWeBuild.map((item, idx) => (
@@ -314,7 +330,7 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
                   <img
                     key={selectedCap.id}
                     src={selectedCap.image}
-                    alt={`${selectedCap.title} architectural visualization`}
+                    alt={`${selectedCap.title} — capability illustration`}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     loading="lazy"
                   />
@@ -350,11 +366,31 @@ export const SixCapabilitiesSection: React.FC<SixCapabilitiesSectionProps> = ({ 
               </div>
 
               <div className="mt-8 pt-4 border-t border-slate-200/20 text-[10px] font-mono text-slate-400 flex items-center justify-between">
-                <span>HAOMTGV Grounded</span>
-                <span className="text-ls-cyan font-bold">Verified Architecture</span>
+                <span>HAOMTGV-aligned</span>
+                <span className="text-ls-cyan font-bold">Reference architecture</span>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Inline CTA row */}
+        <div className="mt-10 flex flex-wrap items-center gap-3.5">
+          <Link
+            to="/contact"
+            className="ripple-on group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-ls-red-cta hover:bg-ls-red-ink text-ls-white shadow-lg shadow-ls-red/30 hover:shadow-ls-red/50 transition-all cursor-pointer active:scale-[0.98]"
+          >
+            <span>Start a Conversation</span>
+          </Link>
+          <Link
+            to="/solutions"
+            className={`px-6 py-3.5 rounded-full font-bold text-xs tracking-widest transition-all shadow-xs flex items-center gap-2 cursor-pointer active:scale-[0.98] ${
+              isLight
+                ? 'bg-ls-navy hover:bg-[#0c125e] text-ls-white shadow-md'
+                : 'bg-ls-navy/90 hover:bg-ls-navy text-ls-white border border-white/10'
+            }`}
+          >
+            <span className="text-[#00BFFF]">Explore Solutions</span>
+          </Link>
         </div>
       </div>
     </section>
