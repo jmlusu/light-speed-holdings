@@ -15,8 +15,8 @@ Trackable plan to close the gaps listed in the session summary. Update status as
 
 ## Phase 3 — Accessibility (P1)
 - [x] **R8** Replace generic alt text ("Contact", "FAQ", "Terms") with descriptive, context-specific alt text.
-- [ ] **R9** Verify skip link, focus-visible rings, and keyboard navigation on all new sections.
-- [ ] **R10** Confirm `prefers-reduced-motion` collapses animations on new components.
+- [x] **R9** Verify skip link, focus-visible rings, and keyboard navigation on all new sections.
+- [x] **R10** Confirm `prefers-reduced-motion` collapses animations on new components.
 
 ## Phase 4 — Responsive & dark mode (P2)
 - [ ] **R11** Visual QA of big images on mobile (320–640px): crop points, height, text overlay legibility.

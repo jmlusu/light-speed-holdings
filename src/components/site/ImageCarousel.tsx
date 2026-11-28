@@ -19,7 +19,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, theme }) =
         src={current.src}
         alt={current.alt}
         loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500"
+        className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 motion-reduce:transition-none"
       />
       <div
         className={`absolute inset-0 ${
@@ -40,7 +40,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, theme }) =
         type="button"
         onClick={prev}
         aria-label="Previous image"
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-black/40 hover:bg-black/60 text-white p-2"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-black/40 hover:bg-black/60 text-white p-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ls-cyan focus-visible:outline-offset-2"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
@@ -48,7 +48,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, theme }) =
         type="button"
         onClick={next}
         aria-label="Next image"
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-black/40 hover:bg-black/60 text-white p-2"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-black/40 hover:bg-black/60 text-white p-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ls-cyan focus-visible:outline-offset-2"
       >
         <ChevronRight className="w-5 h-5" />
       </button>
@@ -59,7 +59,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, theme }) =
             type="button"
             onClick={() => setIndex(i)}
             aria-label={`Go to image ${i + 1}`}
-            className={`w-2 h-2 rounded-full ${i === index ? 'bg-white' : 'bg-white/40'}`}
+            className={`w-2 h-2 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-ls-cyan focus-visible:outline-offset-2 ${i === index ? 'bg-white' : 'bg-white/40'}`}
           />
         ))}
       </div>
