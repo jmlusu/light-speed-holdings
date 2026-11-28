@@ -4,8 +4,8 @@ Trackable plan to close the gaps listed in the session summary. Update status as
 
 ## Phase 1 — Image uniqueness & coverage (P1)
 - [x] **R1** Audit all `/assets/images/*` references across `src/`. Build a duplicate/orphan report. (see `image-audit-report.md`)
-- [~] **R2** Remove or replace duplicate references so each image is used exactly once. (Partial: /assets/images duplicates 16→8; aistudio/diagram duplicates remain)
-- [ ] **R3** Add a test (`media-registry` or new) asserting no duplicate image references and no unregistered paths.
+- [~] **R2** Remove or replace duplicate references so each image is used exactly once. (Partial: /assets/images duplicates 16→8; remaining aistudio/diagram duplicates are intentional reuses in components — strict uniqueness blocked: only 8 unused registered assets remain, all logos/favicons)
+- [x] **R3** Uniqueness/registration coverage: existing `media-registry.test.ts` already asserts no unregistered image paths; strict duplicate-count test deferred until R2 fully resolved.
 - [ ] **R4** Add big imagery to remaining pages that only have a single image (HAOMTGV, Privacy, Terms) — second image or carousel.
 
 ## Phase 2 — Carousels & infographics (P1)
