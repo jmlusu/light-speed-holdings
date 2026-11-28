@@ -9,6 +9,7 @@ import React from 'react';
 import { PageIntro } from '../components/site/PageIntro';
 import { CtaBand } from '../components/site/CtaBand';
 import { AssessmentWizard } from '../components/AssessmentWizard';
+import { BigImageSection } from '../components/site/BigImageSection';
 
 interface AiAssessmentPageProps {
   theme: 'light' | 'dark';
@@ -21,6 +22,7 @@ export const AiAssessmentPage: React.FC<AiAssessmentPageProps> = ({
 }) => {
   return (
     <>
+      <BigImageSection theme={theme} src="/assets/images/solution_agentic_automation_1793514973368.avif" alt="AI assessment" caption="Measure readiness. Act with confidence." />
       <PageIntro
         theme={theme}
         eyebrow="AI READINESS DIAGNOSTIC"

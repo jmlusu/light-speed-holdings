@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BigImageSection } from '../components/site/BigImageSection';
 import {
   Brain,
   Bot,
@@ -166,6 +167,7 @@ export const HaomtgvPage: React.FC<HaomtgvPageProps> = ({ theme, onRequestBriefi
         isLight ? 'bg-ls-grey-light text-ls-navy' : 'bg-ls-navy-dark text-ls-white'
       }`}
     >
+      <BigImageSection theme={theme} src="/assets/images/haomtgv_seven_pillars_1793817024291.avif" alt="HAOMTGV" caption="Seven pillars. One governed model." />
       {/* 1. EXECUTIVE HERO SECTION */}
       <section
         ref={heroReveal.ref}

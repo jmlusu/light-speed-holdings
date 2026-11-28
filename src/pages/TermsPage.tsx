@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShieldCheck } from 'lucide-react';
+import { BigImageSection } from '../components/site/BigImageSection';
 import { PageIntro } from '../components/site/PageIntro';
 import { CtaBand } from '../components/site/CtaBand';
 
@@ -80,6 +81,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ theme }) => {
      */}
   return (
     <>
+      <BigImageSection theme={theme} src="/assets/images/before_after_sector_bg_light_1793889809250.avif" alt="Terms" caption="Clear terms. Clear delivery." />
       <PageIntro
         theme={theme}
         eyebrow="LEGAL // TERMS"

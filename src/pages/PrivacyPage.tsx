@@ -1,4 +1,5 @@
 import React from 'react';
+import { BigImageSection } from '../components/site/BigImageSection';
 import { ShieldCheck } from 'lucide-react';
 import { PageIntro } from '../components/site/PageIntro';
 import { CtaBand } from '../components/site/CtaBand';
@@ -60,6 +61,7 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ theme }) => {
      */}
   return (
     <>
+      <BigImageSection theme={theme} src="/assets/images/val_prop_bg_night_1793997847272.avif" alt="Privacy" caption="Your data, governed." />
       <PageIntro
         theme={theme}
         eyebrow="LEGAL // PRIVACY"
