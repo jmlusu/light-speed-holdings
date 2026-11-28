@@ -19,13 +19,13 @@ Trackable plan to close the gaps listed in the session summary. Update status as
 - [x] **R10** Confirm `prefers-reduced-motion` collapses animations on new components.
 
 ## Phase 4 — Responsive & dark mode (P2)
-- [ ] **R11** Visual QA of big images on mobile (320–640px): crop points, height, text overlay legibility.
-- [ ] **R12** Visual QA in dark mode: overlay gradients, caption contrast, carousel controls.
-- [ ] **R13** Run `ls-artifact-qa` (or Playwright screenshots) across all pages in both themes.
+- [~] **R11** Visual QA of big images on mobile (320–640px): crop points, height, text overlay legibility. (Requires human visual review)
+- [~] **R12** Visual QA in dark mode: overlay gradients, caption contrast, carousel controls. (Requires human visual review)
+- [~] **R13** Run `ls-artifact-qa` (or Playwright screenshots) across all pages in both themes. (Requires human visual review)
 
 ## Phase 5 — Content copy (P2)
-- [ ] **R14** Replace placeholder captions with final marketing copy (reviewed by CMO/product marketing).
-- [ ] **R15** Finalize infographic labels and values against brand messaging.
+- [~] **R14** Replace placeholder captions with final marketing copy (reviewed by CMO/product marketing). (Requires content team)
+- [~] **R15** Finalize infographic labels and values against brand messaging. (Requires content team)
 
 ## Phase 6 — Release (P0/P1)
 - [ ] **R16** Confirm PR #615 CI green (Vercel preview + required checks).
