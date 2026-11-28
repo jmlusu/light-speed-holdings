@@ -1,5 +1,6 @@
 import React from 'react';
 import { AboutSection } from '../components/AboutSection';
+import { BigImageSection } from '../components/site/BigImageSection';
 import { RelatedLinks } from '../components/site/RelatedLinks';
 
 interface AboutPageProps {
@@ -17,6 +18,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ theme, onRequestBriefing }
      */}
   return (
     <>
+      <BigImageSection
+        theme={theme}
+        src="/assets/images/philosophy_triptych_clean_1793818099752.avif"
+        alt="LightSpeed philosophy"
+        caption="Human direction. Intelligent execution. Measurable value."
+      />
       <AboutSection
         theme={theme}
         onOpenContactModal={(intent) => onRequestBriefing(intent)}

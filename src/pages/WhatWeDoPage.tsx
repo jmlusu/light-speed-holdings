@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 
 import { OperatingModelOverview } from '../components/whatwedo/OperatingModelOverview';
+import { BigImageSection } from '../components/site/BigImageSection';
 import { SixCapabilitiesSection } from '../components/whatwedo/SixCapabilitiesSection';
 import { IntegratedCapabilityMap } from '../components/whatwedo/IntegratedCapabilityMap';
 import { DeliveryLifecycleSection } from '../components/whatwedo/DeliveryLifecycleSection';
@@ -24,6 +25,12 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
 
         {/* 2. OPERATING MODEL OVERVIEW (HAOMTGV) */}
         <OperatingModelOverview theme={theme} />
+        <BigImageSection
+          theme={theme}
+          src="/assets/images/pharos_canonical_architecture_1793817675241.avif"
+          alt="Integrated capability map"
+          caption="From intent to execution — one governed operating model."
+        />
         <div className="section-divider-navy" />
 
         {/* 3. SIX CAPABILITY AREAS */}

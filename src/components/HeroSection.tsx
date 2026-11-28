@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { homeImmersiveCopy } from '../data/homeImmersiveCopy';
-import { humanAuthorityStatement } from '../data/shipped/company';
+import { heroCanonicalLine } from '../data/shipped/company';
+
 
 interface HeroSectionProps {
   theme: 'light' | 'dark';
@@ -15,7 +15,6 @@ interface HeroSectionProps {
  */
 export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
-  const copy = homeImmersiveCopy;
 
   const bgImage = isLight
     ? '/assets/images/hero_cinematic_landscape_day.avif'
@@ -83,7 +82,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
                 isLight ? 'text-ls-navy' : 'text-white'
               }`}
             >
-              The AI-native
+              The AI-Native
             </span>
             <span
               className={`block ${
@@ -92,33 +91,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
                   : 'text-ls-cyan drop-shadow-[0_2px_24px_rgba(0,191,255,0.4)]'
               }`}
             >
-              company builder
+              Orchestrator
             </span>
             <span
               className={`block transition-colors duration-300 ${
                 isLight ? 'text-ls-navy' : 'text-white'
               }`}
             >
-              that ships.
+              That Ships.
             </span>
           </h1>
 
           {/* Subtitle Paragraph */}
           <p
             className={`text-left max-w-2xl text-base sm:text-lg md:text-xl font-normal leading-relaxed transition-colors duration-300 animate-fade-in-up delay-200 ${
-              isLight ? 'text-slate-700 font-medium' : 'text-slate-200'
+              isLight ? 'text-[#070A40] font-medium' : 'text-slate-200'
             }`}
           >
-            Strategy. AI. Execution. Built for Africa and beyond.
-            <br />
-            LightSpeed Holdings builds and scales AI-native companies that turn bold ideas into real-world impact, starting in Malawi and expanding across the SADC region and Africa.
+            Strategy. AI. Execution. Built for Africa and beyond. LightSpeed Holdings builds and scales AI-native solutions that turn bold ideas into real-world impact.
           </p>
 
-          {/* Human authority — canonical statement */}
+          {/* Canonical line */}
           <p className={`font-body text-sm sm:text-base font-bold tracking-wide border-l-4 pl-4 py-1 ${
             isLight ? 'border-ls-cyan-ink text-ls-navy' : 'border-ls-cyan text-white'
           }`}>
-            {humanAuthorityStatement}
+            {heroCanonicalLine}
           </p>
 
           <div className="flex flex-wrap items-center gap-3.5 pt-2 animate-fade-in-up delay-500">
