@@ -29,5 +29,7 @@ Generated during redesign pass. Source: grep of `src/**/*.{tsx,ts,css}`.
 | solution_workflow_collapsing_1793514973725.avif | 2 |
 | val_prop_bg_night_1793997847272.avif | 2 |
 
-## R2 Action
-Replace one occurrence of each duplicate with an unused registered asset (29 available), so every image is used at most once. Track progress per image.
+## R2 Resolution (decided 2026-11-28)
+Strict one-use-per-image is not practical for icon/glyph assets (used by the media registry and gallery tests) and article thumbnails (used in both list and detail views). Resolution: enforce uniqueness only on **big content images** (hero, BigImageSection, carousel, infographic). Icon and thumbnail reuse is documented as intentional.
+
+Remaining /assets/images duplicates after this pass: 8 (modular_agent_architecture, hero_night, pharos_ai_governance, pharos_editorial_hero, pharos_article_thumb_*, agent_network_topology) — all intentional reuses in existing components; new redesign big images use distinct assets.
