@@ -2,6 +2,7 @@ import React from 'react';
 import { HeroSection } from '../components/HeroSection';
 import { BigImageSection } from '../components/site/BigImageSection';
 import { ImageCarousel } from '../components/site/ImageCarousel';
+import { InfographicBlock } from '../components/site/InfographicBlock';
 import { WhatWeBuildGrid } from '../components/home/WhatWeBuildGrid';
 import { HAOMTGVSection } from '../components/home/HAOMTGVSection';
 import { IntentToExecutionLifecycle } from '../components/home/IntentToExecutionLifecycle';
@@ -41,6 +42,17 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             { src: '/assets/images/pharos_editorial_hero_1793817662034.avif', alt: 'Pharos editorial', caption: 'Pharos — thought leadership for agentic AI.' },
             { src: '/assets/images/pharos_canonical_architecture_1793817675241.avif', alt: 'Canonical architecture', caption: 'Canonical architecture.' },
             { src: '/assets/images/pharos_ai_orchestration_1793514971486.avif', alt: 'AI orchestration', caption: 'Orchestration at scale.' },
+          ]}
+        />
+
+        {/* Sequence 4 - MISSION / VISION / VALUES INFOGRAPHIC */}
+        <InfographicBlock
+          theme={theme}
+          title="Mission, Vision & Values"
+          items={[
+            { label: 'Mission', value: 'Build AI-native companies', image: '/assets/images/solution_company_builder_1793514972767.avif' },
+            { label: 'Vision', value: 'AI-native Africa', image: '/assets/images/solution_market_intelligence_1793514973546.avif' },
+            { label: 'Values', value: 'Aspire. Act. Achieve.', image: '/assets/images/solution_workflow_collapsing_1793514973725.avif' },
           ]}
         />
 
