@@ -23,7 +23,7 @@ infographic) is provided by `BigImageSection`, `ImageCarousel`, and
 | pharos_editorial_hero | Insights — Big image | BigImageSection |
 | cta_pathway_destination | Contact — Big image | BigImageSection |
 | pharos_ai_governance | FAQ — Big image | BigImageSection |
-| solution_agentic_automation | AI Assessment — Big image | BigImageSection |
+
 | val_prop_bg_night | Privacy — Big image | BigImageSection |
 | before_after_sector_bg_light | Terms — Big image | BigImageSection |
 
