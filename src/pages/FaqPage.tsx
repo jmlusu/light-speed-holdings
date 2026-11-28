@@ -3,6 +3,7 @@ import { PageIntro } from '../components/site/PageIntro';
 import { FaqCardList } from '../components/FaqCardList';
 import { CtaBand } from '../components/site/CtaBand';
 import { RelatedLinks } from '../components/site/RelatedLinks';
+import { BigImageSection } from '../components/site/BigImageSection';
 
 interface FaqPageProps {
   theme: 'light' | 'dark';
@@ -16,6 +17,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ theme }) => {
 
   return (
     <>
+      <BigImageSection theme={theme} src="/assets/images/pharos_ai_governance_1793514972204.avif" alt="FAQ" caption="Governance you can trust." />
       <PageIntro
         theme={theme}
         eyebrow="HONEST ANSWERS // REGISTRY §15"

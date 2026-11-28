@@ -1,6 +1,7 @@
 import React from 'react';
 import { ContactSection } from '../components/ContactSection';
 import { FaqSection } from '../components/site/FaqSection';
+import { BigImageSection } from '../components/site/BigImageSection';
 
 interface ContactPageProps {
   theme: 'light' | 'dark';
@@ -17,6 +18,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ theme }) => {
      */}
   return (
     <>
+      <BigImageSection theme={theme} src="/assets/images/cta_pathway_destination_1793817195986.avif" alt="Contact" caption="Let's build together." />
       <ContactSection theme={theme} />
       <FaqSection theme={theme} />
     </>
