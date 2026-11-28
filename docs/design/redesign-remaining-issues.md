@@ -10,7 +10,7 @@ Trackable plan to close the gaps listed in the session summary. Update status as
 
 ## Phase 2 — Carousels & infographics (P1)
 - [x] **R5** Add `ImageCarousel` to at least 2 more pages (What We Do, About or Insights).
-- [ ] **R6** Add `InfographicBlock` (mission/vision/values or page-specific) to at least 2 more pages.
+- [x] **R6** Add `InfographicBlock` (mission/vision/values or page-specific) to at least 2 more pages. (Home + About)
 - [ ] **R7** Add carousels/infographics to HAOMTGV, Privacy, Terms, and 404 where appropriate.
 
 ## Phase 3 — Accessibility (P1)
